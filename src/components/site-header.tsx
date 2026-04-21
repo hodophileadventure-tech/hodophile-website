@@ -137,7 +137,7 @@ export function SiteHeader() {
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         isTransparent
           ? "border-transparent bg-transparent"
-          : "border-b-4 border-[#ffc000] bg-[#fbfaf7]/92 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl"
+          : "border-b-4 border-[#fcc000] bg-[#fbfaf7]/92 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl"
       }`}
     >
       <div

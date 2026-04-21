@@ -277,7 +277,7 @@ export default function Home() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {serviceHighlights.map((item) => (
-            <article key={item.title} className="rounded-2xl border-4 border-[#ffc000] bg-white p-6 shadow-sm">
+            <article key={item.title} className="rounded-2xl border-4 border-[#fcc000] bg-white p-6 shadow-sm">
               <div className="h-11 w-11 overflow-hidden rounded-full border border-stone-200 bg-stone-100">
                 <Image
                   src={item.icon}
