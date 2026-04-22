@@ -25,7 +25,6 @@ export function SiteHeader() {
   }, []);
 
   const isHome = pathname === "/";
-  const isTransparent = isHome && !scrolled && !mobileOpen;
   const isToursActive = pathname.startsWith("/tours");
   const splitIndex = 4;
   const desktopLeftNavigation = navigation.slice(0, splitIndex);
@@ -44,9 +43,7 @@ export function SiteHeader() {
             className={`inline-flex items-center rounded-full px-3.5 py-2 text-[0.95rem] transition ${
               isToursActive
                 ? "text-[#ffc000]"
-                : isTransparent
-                  ? "text-white/90 hover:bg-white/10 hover:text-white"
-                  : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
+                : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
             }`}
           >
             {item.label}
@@ -122,7 +119,7 @@ export function SiteHeader() {
         className={`relative inline-flex items-center rounded-full px-3.5 py-2 text-[0.95rem] transition ${
           pathname === item.href
             ? "text-stone-900"
-            : isTransparent ? "text-white/90 hover:bg-white/10 hover:text-white" : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
+            : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
         } ${
           pathname === item.href ? "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:bg-[#ffc000]" : ""
         }`}
@@ -134,16 +131,10 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        isTransparent
-          ? "border-transparent bg-transparent"
-          : "border-b-4 border-[#fcc000] bg-[#fbfaf7]/92 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl"
-      }`}
+      className="fixed inset-x-0 top-0 z-50 border-b-4 border-[#ffc000] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)]"
     >
       <div
-        className={`relative mx-auto grid w-full max-w-7xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-2.5 lg:gap-3 lg:px-8 ${
-          isTransparent ? "rounded-b-2xl bg-black/35 backdrop-blur-md" : ""
-        }`}
+        className="relative mx-auto grid w-full max-w-7xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-2.5 lg:gap-3 lg:px-8"
       >
         <nav className="hidden items-center justify-end gap-0.5 lg:flex">
           {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
@@ -158,9 +149,7 @@ export function SiteHeader() {
             alt="Hodophile Adventures"
             width={520}
             height={282}
-            className={`h-20 w-auto max-w-none drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition group-hover:scale-[1.02] lg:h-[5.4rem] ${
-              isTransparent ? "" : ""
-            }`}
+            className="h-20 w-auto max-w-none drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition group-hover:scale-[1.02] lg:h-[5.4rem]"
             priority
           />
         </Link>
@@ -199,11 +188,7 @@ export function SiteHeader() {
               setToursOpen(false);
               setMobileOpen((prev) => !prev);
             }}
-            className={`inline-flex h-11 w-11 items-center justify-center rounded-full border transition lg:hidden ${
-              isTransparent
-                ? "border-white/45 bg-white/10 text-white"
-                : "border-stone-300 bg-white text-stone-700"
-            }`}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-stone-300 bg-white text-stone-700 transition lg:hidden"
             aria-expanded={mobileOpen}
             aria-label="Toggle navigation menu"
           >

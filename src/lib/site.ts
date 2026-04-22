@@ -6,9 +6,9 @@ export const siteConfig = {
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
     "https://hodophiletours.com",
-  email: "hello@hodophiletours.com",
-  phone: "+92 300 1234567",
-  whatsapp: "+923001234567",
+  email: "masood.ahmed@hodophile.pk",
+  phone: "+92337777460",
+  whatsapp: "+923377774460",
   location: "Hodophile Adventure, Plot# 111-113C, Dupatta Gali, PECHS, Block2, Tariq Road, Karachi, Pakistan, 75400",
 };
 

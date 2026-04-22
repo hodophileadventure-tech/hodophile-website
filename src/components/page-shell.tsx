@@ -18,7 +18,7 @@ export function PageShell({ children }: PageShellProps) {
       </main>
 
       <footer className="border-t border-[#d5a700] bg-[#ffc000]">
-        <div className="mx-auto grid w-full max-w-7xl gap-8 px-6 py-10 md:grid-cols-2 xl:grid-cols-[1.25fr_.85fr_.85fr_.85fr] lg:px-8">
+        <div className="mx-auto grid w-full max-w-7xl gap-8 px-6 py-10 md:grid-cols-2 xl:grid-cols-5 lg:px-8">
           <div className="max-w-xl">
             <div className="mb-5 inline-flex items-center gap-3">
               <Image src="/logo.png" alt="Hodophile Adventures" width={58} height={58} className="h-9 w-auto" />
@@ -130,6 +130,47 @@ export function PageShell({ children }: PageShellProps) {
                 height={460}
                 className="mx-auto h-auto w-full max-w-[13rem] object-contain"
               />
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-semibold uppercase text-black">Our Affiliations</h3>
+            <div className="mt-5 flex flex-col gap-6">
+              <div className="flex flex-row gap-6 items-center">
+                <div className="h-20 w-20 flex-shrink-0">
+                  <Image
+                    src="/images/footer/govt-pakistan.png"
+                    alt="Government of Pakistan"
+                    width={100}
+                    height={100}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <div className="text-base font-semibold text-black">
+                  <p>Lisence No.</p>
+                  <p>5436</p>
+                </div>
+              </div>
+              <div className="flex flex-row gap-6 items-center justify-start">
+                <div className="h-20 w-20 flex-shrink-0">
+                  <Image
+                    src="/images/footer/affiliation-1.png"
+                    alt="TAAP"
+                    width={100}
+                    height={100}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <div className="h-20 w-20 flex-shrink-0">
+                  <Image
+                    src="/images/footer/affiliation-2.png"
+                    alt="PATO"
+                    width={100}
+                    height={100}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

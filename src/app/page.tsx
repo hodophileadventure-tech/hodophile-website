@@ -145,13 +145,19 @@ export default function Home() {
     <PageShell>
       <section className="-mx-6 -mt-24 overflow-hidden lg:-mx-8">
         <div className="relative min-h-[82vh] border-b border-stone-200">
-          <Image src={heroImage} alt="Scenic Pakistan destination" fill priority sizes="100vw" className="object-cover" />
+          <video
+            src="/hero-video.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover"
+          />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,24,28,0.35)_0%,rgba(18,24,28,0.6)_100%)]" />
 
           <div className="relative z-10 mx-auto flex min-h-[82vh] w-full max-w-7xl items-end px-6 pb-16 pt-36 lg:px-8">
             <div className="max-w-4xl text-white">
-              <p className="text-xs uppercase tracking-[0.32em] text-white/75">Hodophile Adventures</p>
-              <h1 className="mt-5 font-serif text-5xl leading-[1.05] sm:text-6xl lg:text-7xl">
+              <h1 className="font-serif text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
                 Experience Pakistan's Most Cinematic Journeys—Unforgettably Curated.
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-7 text-white/85 sm:text-lg">
