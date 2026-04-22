@@ -152,7 +152,7 @@ export default function Home() {
             <div className="max-w-4xl text-white">
               <p className="text-xs uppercase tracking-[0.32em] text-white/75">Hodophile Adventures</p>
               <h1 className="mt-5 font-serif text-5xl leading-[1.05] sm:text-6xl lg:text-7xl">
-                Curated journeys through Pakistan, crafted with calm elegance.
+                Experience Pakistan's Most Cinematic Journeys—Unforgettably Curated.
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-7 text-white/85 sm:text-lg">
                 Discover cinematic landscapes, refined itineraries, and premium travel planning inspired by
