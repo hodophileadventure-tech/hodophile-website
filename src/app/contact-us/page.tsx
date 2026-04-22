@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ContactForm } from "@/components/contact-form";
 import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl, siteConfig } from "@/lib/site";
@@ -41,32 +42,7 @@ export default function ContactUsPage() {
           </div>
         </div>
 
-        <form className="rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-2 text-sm text-stone-700">
-              Name
-              <input className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-stone-900 outline-none ring-0 placeholder:text-stone-500 focus:border-[#fcc000]/50" type="text" placeholder="Your name" />
-            </label>
-            <label className="grid gap-2 text-sm text-stone-700">
-              Phone
-              <input className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-stone-900 outline-none ring-0 placeholder:text-stone-500 focus:border-[#fcc000]/50" type="tel" placeholder="Your phone number" />
-            </label>
-          </div>
-          <label className="mt-4 grid gap-2 text-sm text-stone-700">
-            Email
-            <input className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-stone-900 outline-none ring-0 placeholder:text-stone-500 focus:border-[#fcc000]/50" type="email" placeholder="you@example.com" />
-          </label>
-          <label className="mt-4 grid gap-2 text-sm text-stone-700">
-            Message
-            <textarea className="min-h-40 rounded-2xl border border-black/10 bg-white px-4 py-3 text-stone-900 outline-none ring-0 placeholder:text-stone-500 focus:border-[#fcc000]/50" placeholder="Tell us your destination, travel dates, and number of travelers." />
-          </label>
-          <button
-            type="submit"
-            className="mt-6 inline-flex rounded-full border border-[#fcc000]/40 bg-[#fcc000] px-6 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5"
-          >
-            Send inquiry
-          </button>
-        </form>
+        <ContactForm />
       </section>
     </PageShell>
   );
