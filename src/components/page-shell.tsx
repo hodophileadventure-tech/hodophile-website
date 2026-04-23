@@ -73,6 +73,18 @@ export function PageShell({ children }: PageShellProps) {
                   </svg>
                   <span className="sr-only">YouTube</span>
                 </a>
+                <a
+                  href="https://www.tiktok.com/@hodophile_adventures?_r=1&_t=ZS-95lv9tuUjnJ"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-black text-black transition hover:bg-black hover:text-[#ffc000]"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.68v13.67a2.4 2.4 0 1 1-4.77-2.3A2.4 2.4 0 0 1 9.1 9.66V5.92a6.07 6.07 0 0 0-6.85 6.59 6.18 6.18 0 0 0 6.03 6.06 6 6 0 0 0 5.27-2.87v-4.55a8.25 8.25 0 0 0 5.1 1.82v-3.49a4.83 4.83 0 0 1-1.18-.15Z" />
+                  </svg>
+                  <span className="sr-only">TikTok</span>
+                </a>
               </div>
             </div>
           </div>
