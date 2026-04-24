@@ -197,8 +197,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 space-y-8 mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <section className="mt-20 space-y-8">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Destinations</p>
             <h2 className="mt-3 font-serif text-4xl leading-tight text-stone-900 sm:text-5xl">
@@ -239,18 +240,21 @@ export default function Home() {
               </div>
             </article>
           ))}
+          </div>
         </div>
       </section>
 
-      <section className="mt-20 rounded-3xl border border-stone-300 bg-stone-200 p-5 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-7 mx-auto max-w-7xl px-6 lg:px-8">
-        <div>
-          <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Featured Tours</p>
-          <h2 className="mt-3 font-serif text-4xl leading-tight text-stone-900 sm:text-5xl">
-            Signature Tour Packages, Crafted for Comfort
-          </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
-            Compare top routes at a glance and jump directly into the package that matches your travel style.
-          </p>
+      <section className="mt-20 rounded-3xl border border-stone-300 bg-stone-200 shadow-[0_12px_36px_rgba(15,23,42,0.06)]">
+        <div className="mx-auto max-w-7xl px-6 py-5 lg:px-8 md:py-7">
+          <div>
+            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Featured Tours</p>
+            <h2 className="mt-3 font-serif text-4xl leading-tight text-stone-900 sm:text-5xl">
+              Signature Tour Packages, Crafted for Comfort
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
+              Compare top routes at a glance and jump directly into the package that matches your travel style.
+            </p>
+          </div>
 
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
@@ -279,13 +283,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mb-8">
-          <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Why Choose Us</p>
-          <h2 className="mt-3 font-serif text-4xl text-stone-900">Trustworthy planning with premium restraint.</h2>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {serviceHighlights.map((item) => (
+      <section className="mt-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mb-8">
+            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Why Choose Us</p>
+            <h2 className="mt-3 font-serif text-4xl text-stone-900">Trustworthy planning with premium restraint.</h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {serviceHighlights.map((item) => (
             <article key={item.title} className="rounded-2xl border-4 border-[#fcc000] bg-white p-6 shadow-sm">
               <div className="h-11 w-11 overflow-hidden rounded-full border border-stone-200 bg-stone-100">
                 <Image
@@ -299,14 +304,16 @@ export default function Home() {
               <h3 className="mt-5 text-xl font-semibold text-stone-900">{item.title}</h3>
               <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>
             </article>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="mt-20 overflow-hidden rounded-3xl border border-stone-200 bg-white p-8 shadow-[0_12px_36px_rgba(15,23,42,0.06)] mx-auto max-w-7xl px-6 lg:px-8">
-        <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Testimonials</p>
-        <h2 className="mt-3 font-serif text-4xl text-stone-900">Our clients don&apos;t just like us - they rave about us.</h2>
-        <div className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]">
+      <section className="mt-20 overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)]">
+        <div className="mx-auto max-w-7xl px-6 py-8 lg:px-8">
+          <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Testimonials</p>
+          <h2 className="mt-3 font-serif text-4xl text-stone-900">Our clients don&apos;t just like us - they rave about us.</h2>
+            <div className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]">
           {testimonials.map((story, index) => (
             <article
               key={`${story.name}-${index}`}
@@ -328,37 +335,40 @@ export default function Home() {
               <p className="text-sm leading-7 text-stone-600">&ldquo;{story.quote}&rdquo;</p>
             </article>
           ))}
+          </div>
         </div>
       </section>
 
-      <section className="mt-20 mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-sm">
-          <div className="relative bg-black">
-            <p className="absolute top-6 left-6 right-6 z-10 text-xs uppercase tracking-[0.32em] text-white font-semibold drop-shadow-lg">Hodophile Adventures Provide Free Travel Kit to Our Customers</p>
+      <section className="mt-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-sm">
+            <div className="relative bg-black">
+              <p className="absolute top-6 left-6 right-6 z-10 text-xs uppercase tracking-[0.32em] text-white font-semibold drop-shadow-lg">Hodophile Adventures Provide Free Travel Kit to Our Customers</p>
             <video
-              src="/travel-kit.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              controls={false}
-              className="w-full h-auto object-cover block"
-              style={{ display: 'block' }}
-            />
-          </div>
-          <div className="p-8 text-center">
-            <h2 className="font-serif text-4xl text-stone-900">Begin Your Next Journey</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-600">
-              Let us craft a destination experience around your style. Share your preferred route, travel month, and group details. We will curate a polished domestic itinerary with premium pacing and memorable scenic moments.
-            </p>
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
-              <Link href="/make-my-trip" className="inline-flex rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold !text-white transition hover:bg-stone-800">
-                Make My Trip
-              </Link>
-              <Link href="/contact-us" className="inline-flex rounded-full border border-[#ffc000] bg-[#0b0b0b] px-6 py-3 text-sm font-semibold !text-[#ffc000] shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:bg-black">
-                Contact Concierge
-              </Link>
+                src="/travel-kit.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                controls={false}
+                className="w-full h-auto object-cover block"
+                style={{ display: 'block' }}
+              />
+            </div>
+            <div className="p-8 text-center">
+              <h2 className="font-serif text-4xl text-stone-900">Begin Your Next Journey</h2>
+              <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-600">
+                Let us craft a destination experience around your style. Share your preferred route, travel month, and group details. We will curate a polished domestic itinerary with premium pacing and memorable scenic moments.
+              </p>
+              <div className="mt-7 flex flex-wrap justify-center gap-3">
+                <Link href="/make-my-trip" className="inline-flex rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold !text-white transition hover:bg-stone-800">
+                  Make My Trip
+                </Link>
+                <Link href="/contact-us" className="inline-flex rounded-full border border-[#ffc000] bg-[#0b0b0b] px-6 py-3 text-sm font-semibold !text-[#ffc000] shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:bg-black">
+                  Contact Concierge
+                </Link>
+              </div>
             </div>
           </div>
         </div>
