@@ -143,7 +143,7 @@ export default function Home() {
 
   return (
     <PageShell>
-      <section className="-mx-6 -mt-24 overflow-hidden lg:-mx-8">
+      <section className="-mx-6 -mt-24 -ml-[max(0px,calc((100vw-100%)/2))] -mr-[max(0px,calc((100vw-100%)/2))] overflow-hidden lg:-mx-8 lg:-ml-[max(0px,calc((100vw-100%)/2))] lg:-mr-[max(0px,calc((100vw-100%)/2))]">
         <div className="relative min-h-[82vh] border-b border-stone-200">
           <video
             src="/hero-video.mp4"
@@ -151,6 +151,7 @@ export default function Home() {
             muted
             loop
             playsInline
+            preload="auto"
             className="absolute inset-0 h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,24,28,0.35)_0%,rgba(18,24,28,0.6)_100%)]" />
