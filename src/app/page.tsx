@@ -329,20 +329,34 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 rounded-3xl border border-stone-200 bg-white p-8 text-center shadow-sm">
-        <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Begin Your Next Journey</p>
-        <h2 className="mt-4 font-serif text-4xl text-stone-900">Let us craft a destination experience around your style.</h2>
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-600">
-          Share your preferred route, travel month, and group details. We will curate a polished domestic itinerary
-          with premium pacing and memorable scenic moments.
-        </p>
-        <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <Link href="/make-my-trip" className="inline-flex rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold !text-white transition hover:bg-stone-800">
-            Make My Trip
-          </Link>
-          <Link href="/contact-us" className="inline-flex rounded-full border border-[#ffc000] bg-[#0b0b0b] px-6 py-3 text-sm font-semibold !text-[#ffc000] shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:bg-black">
-            Contact Concierge
-          </Link>
+      <section className="mt-20">
+        <div className="rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-sm">
+          <div className="relative">
+            <p className="absolute top-6 left-6 right-6 z-10 text-xs uppercase tracking-[0.32em] text-white font-semibold drop-shadow-lg">Hodophile Adventures Provide Free Travel Kit to Our Customers</p>
+            <video
+              src="/travel-kit.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              className="w-full h-auto rounded-t-2xl object-cover"
+            />
+          </div>
+          <div className="p-8 text-center">
+            <h2 className="font-serif text-4xl text-stone-900">Begin Your Next Journey</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-600">
+              Let us craft a destination experience around your style. Share your preferred route, travel month, and group details. We will curate a polished domestic itinerary with premium pacing and memorable scenic moments.
+            </p>
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              <Link href="/make-my-trip" className="inline-flex rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold !text-white transition hover:bg-stone-800">
+                Make My Trip
+              </Link>
+              <Link href="/contact-us" className="inline-flex rounded-full border border-[#ffc000] bg-[#0b0b0b] px-6 py-3 text-sm font-semibold !text-[#ffc000] shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:bg-black">
+                Contact Concierge
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
