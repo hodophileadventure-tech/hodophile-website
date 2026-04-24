@@ -3,16 +3,30 @@
 import { useState } from "react";
 
 export function MakeMyTripForm() {
+  const [startingPoint, setStartingPoint] = useState("");
   const [destination, setDestination] = useState("");
   const [transportation, setTransportation] = useState("road");
   const [minDays, setMinDays] = useState(0);
   const [kidsCount, setKidsCount] = useState(0);
   const [kidsAges, setKidsAges] = useState<string[]>([]);
 
-  const getMinimumDays = (dest: string, mode: string) => {
+  const getMinimumDays = (dest: string, mode: string, start: string) => {
     if (mode !== "road") return 0;
 
-    const dayMapping: { [key: string]: number } = {
+    // Minimum durations for Lahore, Islamabad, or Rawalpindi starting points
+    const northernStartMapping: { [key: string]: number } = {
+      "Hunza & Naltar": 6,
+      "Skardu & Basho": 6,
+      "Hunza & Skardu": 8,
+      "Swat Kalam & Malam Jabba": 4,
+      "Kashmir Arangkel & Taobat": 5,
+      "Swat Kalam, Malam Jabba & Shogran": 6,
+      "Kashmir Arangkel & Shogran": 5,
+      "Naran & Babusar": 4,
+    };
+
+    // Default mappings for other starting points
+    const defaultMapping: { [key: string]: number } = {
       "Hunza & Naltar": 10,
       "Skardu & Basho": 10,
       "Hunza & Skardu": 12,
@@ -23,19 +37,28 @@ export function MakeMyTripForm() {
       "Naran & Babusar": 8,
     };
 
-    return dayMapping[dest] || 0;
+    const isNorthernStart = ["Lahore", "Islamabad", "Rawalpindi"].includes(start);
+    const mapping = isNorthernStart ? northernStartMapping : defaultMapping;
+
+    return mapping[dest] || 0;
+  };
+
+  const handleStartingPointChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newStart = e.target.value;
+    setStartingPoint(newStart);
+    setMinDays(getMinimumDays(destination, transportation, newStart));
   };
 
   const handleDestinationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newDest = e.target.value;
     setDestination(newDest);
-    setMinDays(getMinimumDays(newDest, transportation));
+    setMinDays(getMinimumDays(newDest, transportation, startingPoint));
   };
 
   const handleTransportationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newMode = e.target.value;
     setTransportation(newMode);
-    setMinDays(getMinimumDays(destination, newMode));
+    setMinDays(getMinimumDays(destination, newMode, startingPoint));
   };
 
   const handleKidsCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,8 +96,12 @@ export function MakeMyTripForm() {
 
         <label className="grid gap-2 text-sm font-medium text-stone-900">
           Choose starting point *
-          <select className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15">
-            <option>Starting Point</option>
+          <select 
+            value={startingPoint}
+            onChange={handleStartingPointChange}
+            className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+          >
+            <option value="">Starting Point</option>
             <option>Karachi</option>
             <option>Lahore</option>
             <option>Islamabad</option>

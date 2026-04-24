@@ -57,7 +57,7 @@ export function HeroSlideshow() {
   const activeSlide = slides[activeIndex];
 
   return (
-    <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden px-6 py-16 sm:min-h-[560px] lg:px-8">
+    <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden py-16 sm:min-h-[560px]">
       {slides.map((slide, index) => (
         <div
           key={slide.src}
@@ -78,7 +78,7 @@ export function HeroSlideshow() {
 
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.14)_0%,rgba(0,0,0,0.35)_100%),radial-gradient(circle_at_center,rgba(252,192,0,0.1),transparent_40%)]" />
 
-      <div className="relative z-10 flex max-w-5xl flex-col items-center text-center">
+      <div className="relative z-10 flex max-w-5xl flex-col items-center text-center px-6 lg:px-8">
         <span className="inline-flex rounded-full border border-[#fcc000]/40 bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-[#8a6400] shadow-lg shadow-black/10 backdrop-blur">
           {activeSlide.label}
         </span>
