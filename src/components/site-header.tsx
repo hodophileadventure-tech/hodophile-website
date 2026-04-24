@@ -131,10 +131,10 @@ export function SiteHeader() {
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 border-b-4 border-[#ffc000] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)]"
+      className="fixed inset-x-0 top-0 z-50 border-b-4 border-[#fcc000] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)]"
     >
       <div
-        className="relative mx-auto grid w-full max-w-7xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-2.5 lg:gap-3 lg:px-8"
+        className="relative grid w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-2.5 lg:gap-3 lg:px-8"
       >
         <nav className="hidden items-center justify-end gap-0.5 lg:flex">
           {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}

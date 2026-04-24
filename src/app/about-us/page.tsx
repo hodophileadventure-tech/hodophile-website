@@ -30,7 +30,7 @@ export default function AboutUsPage() {
         description={`${siteConfig.name} helps travelers compare routes, plan trips, and move from idea to itinerary without a cluttered booking process.`}
       />
 
-      <section className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
+      <section className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-start mx-auto max-w-7xl px-6 lg:px-8">
         <div className="space-y-6">
           <h2 className="max-w-3xl font-serif text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">
             Travel planning with editorial clarity and local expertise.
@@ -56,7 +56,7 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      <section className="mt-16 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <section className="mt-16 grid gap-6 md:grid-cols-2 xl:grid-cols-4 mx-auto max-w-7xl px-6 lg:px-8">
         {servicePillars.map((pillar) => (
           <div key={pillar} className="rounded-3xl border border-black/10 bg-white/80 p-6 text-stone-700">
             <div className="mb-4 h-2 w-16 rounded-full bg-[#fcc000]" />

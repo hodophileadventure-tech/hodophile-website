@@ -30,7 +30,7 @@ export default function ContactUsPage() {
         description="Connect with our planning team for domestic Pakistan departures, route suggestions, and tailored itinerary support."
       />
 
-      <section className="mt-12 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="mt-12 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] mx-auto max-w-7xl px-6 lg:px-8">
         <div className="space-y-6">
           <h2 className="max-w-2xl font-serif text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">
             Speak with a travel advisor.

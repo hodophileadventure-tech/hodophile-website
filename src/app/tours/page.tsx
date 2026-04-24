@@ -31,7 +31,7 @@ export default function ToursPage() {
         description="Browse grouped routes and destination-first package pages designed for smooth planning and confident booking."
       />
 
-      <section className="mt-12 grid gap-6 lg:grid-cols-3">
+      <section className="mt-12 grid gap-6 lg:grid-cols-3 mx-auto max-w-7xl px-6 lg:px-8">
         {featuredPackages.map((trip) => (
           <article
             key={trip.name}

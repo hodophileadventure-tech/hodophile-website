@@ -13,7 +13,7 @@ export function PageShell({ children }: PageShellProps) {
     <div className="min-h-screen bg-[#f7f6f2] text-stone-900">
       <SiteHeader />
 
-      <main className="mx-auto w-full max-w-7xl px-6 pb-12 pt-24 lg:px-8">
+      <main className="w-full pb-12 pt-24">
         {children}
       </main>
 

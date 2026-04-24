@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <PageShell>
-      <section className="grid gap-8 lg:grid-cols-[1.2fr_.8fr] lg:items-start">
+      <section className="grid gap-8 lg:grid-cols-[1.2fr_.8fr] lg:items-start mx-auto max-w-7xl px-6 lg:px-8">
         <div className="space-y-6">
           <span className="inline-flex rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-4 py-2 text-sm font-medium text-[#fcc000]">
             About the brand
@@ -52,7 +52,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mt-16 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      <section className="mt-16 grid gap-6 md:grid-cols-2 xl:grid-cols-4 mx-auto max-w-7xl px-6 lg:px-8">
         {servicePillars.map((pillar) => (
           <div key={pillar} className="rounded-3xl border border-black/10 bg-white/80 p-6 text-stone-700">
             <div className="mb-4 h-2 w-16 rounded-full bg-[#fcc000]" />

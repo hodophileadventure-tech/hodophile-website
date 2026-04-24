@@ -30,7 +30,7 @@ export default function DestinationsPage() {
         description="Explore destination-led pages designed for discovery, route comparison, and premium itinerary planning."
       />
 
-      <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3 mx-auto max-w-7xl px-6 lg:px-8">
         {destinationHighlights.map((destination) => (
           <article
             key={destination.name}
