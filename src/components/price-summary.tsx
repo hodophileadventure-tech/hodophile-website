@@ -49,7 +49,6 @@ export function PriceSummary({ quotation, isLoading }: PriceSummaryProps) {
           {formatPKR(quotation.totalCost)}
         </p>
       </div>
-      </div>
     </div>
   );
 }
