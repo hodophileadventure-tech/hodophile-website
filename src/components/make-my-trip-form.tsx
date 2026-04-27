@@ -519,6 +519,12 @@ export function MakeMyTripForm() {
               </div>
             )}
 
+            {!quotation && tripDate && routeId && hotelId && roomId && vehicleName && (
+              <div className="rounded-[15px] bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+                ⚠️ Calculating quotation... If this persists, check browser console for details. Make sure all fields are properly selected.
+              </div>
+            )}
+
             {/* Submit Button */}
             <button
               type="submit"

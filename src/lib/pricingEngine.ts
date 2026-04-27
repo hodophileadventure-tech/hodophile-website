@@ -57,7 +57,10 @@ function calculateTransportCost(
   routeId: string
 ): number | null {
   const distance = getRouteDistance(routeId);
-  if (!distance) return null;
+  if (!distance) {
+    console.warn(`Distance not found for route: ${routeId}`);
+    return null;
+  }
 
   let fuelType: "petrol" | "diesel" = "petrol";
   let consumption = 8; // default
@@ -81,6 +84,9 @@ function calculateTransportCost(
   } else if (vehicleName.includes("Coaster")) {
     consumption = fuelConsumption.coaster.diesel;
     fuelType = "diesel";
+  } else {
+    // Fallback for unknown vehicles
+    console.warn(`Unknown vehicle type: ${vehicleName}, using defaults`);
   }
 
   // Calculate fuel needed
@@ -90,6 +96,8 @@ function calculateTransportCost(
 
   // Add driver allowance, maintenance, tolls, wear & tear via profit margin
   const transportCost = Math.round(baseFuelCost * profitMargin);
+
+  console.debug(`Transport calc - Vehicle: ${vehicleName}, Distance: ${distance}km, Consumption: ${consumption}km/l, Fuel: ${fuelNeeded}l, Cost: ${transportCost}`);
 
   return transportCost;
 }
@@ -128,63 +136,86 @@ function getRoomPrice(room: Room, season: string): number {
 export function calculateQuotation(
   input: QuotationInput
 ): QuotationBreakdown | null {
-  const route = getRouteById(input.routeId);
-  if (!route) return null;
+  try {
+    const route = getRouteById(input.routeId);
+    if (!route) {
+      console.warn(`Route not found: ${input.routeId}`);
+      return null;
+    }
 
-  // Use fuel-based transport cost calculation
-  const transportCost = calculateTransportCost(input.vehicleName, input.routeId);
-  if (!transportCost) return null;
+    // Use fuel-based transport cost calculation
+    const transportCost = calculateTransportCost(input.vehicleName, input.routeId);
+    if (transportCost === null) {
+      console.warn(`Transport cost calculation failed for vehicle: ${input.vehicleName}, route: ${input.routeId}`);
+      return null;
+    }
 
-  const hotel = getHotelById(input.hotelId);
-  if (!hotel) return null;
+    const hotel = getHotelById(input.hotelId);
+    if (!hotel) {
+      console.warn(`Hotel not found: ${input.hotelId}`);
+      return null;
+    }
 
-  const selectedRoom = hotel.rooms.find((r) => r.name === input.roomId);
-  if (!selectedRoom) return null;
+    const selectedRoom = hotel.rooms.find((r) => r.name === input.roomId);
+    if (!selectedRoom) {
+      console.warn(`Room not found: ${input.roomId} in hotel ${hotel.name}`);
+      console.debug(`Available rooms:`, hotel.rooms.map(r => r.name));
+      return null;
+    }
 
-  const season = getSeasonFromDate(input.tripDate);
-  const roomPrice = getRoomPrice(selectedRoom, season);
+    const season = getSeasonFromDate(input.tripDate);
+    const roomPrice = getRoomPrice(selectedRoom, season);
 
-  if (roomPrice === 0) return null;
+    if (roomPrice === 0) {
+      console.warn(`Room price is 0 for: ${selectedRoom.name}, season: ${season}`);
+      return null;
+    }
 
-  const hotelCost = roomPrice * input.numberOfRooms;
+    const hotelCost = roomPrice * input.numberOfRooms;
 
-  let jeepAddonsCost = 0;
-  const jeepDetails: string[] = [];
-  if (input.jeepAddons && input.jeepAddons.length > 0) {
-    jeepAddonsCost = calculateJeepCost(input.jeepAddons);
-    // You can enhance this to get addon names
-    jeepDetails.push(`Jeep addons: ${input.jeepAddons.length} selected`);
+    let jeepAddonsCost = 0;
+    const jeepDetails: string[] = [];
+    if (input.jeepAddons && input.jeepAddons.length > 0) {
+      jeepAddonsCost = calculateJeepCost(input.jeepAddons);
+      // You can enhance this to get addon names
+      jeepDetails.push(`Jeep addons: ${input.jeepAddons.length} selected`);
+    }
+
+    const subtotal = transportCost + hotelCost + jeepAddonsCost;
+    
+    // Add 30% markup
+    const MARKUP_PERCENTAGE = 0.30;
+    const markupAmount = Math.round(subtotal * MARKUP_PERCENTAGE);
+    const totalCost = subtotal + markupAmount;
+    
+    const numberOfGuests = input.adults + input.kids;
+    const perPersonCost =
+      numberOfGuests > 0 ? Math.round(totalCost / numberOfGuests) : 0;
+
+    console.log(`Quotation calculated successfully - Transport: ${transportCost}, Hotel: ${hotelCost}, Total: ${totalCost}`);
+
+    return {
+      transportCost,
+      hotelCost,
+      jeepAddonsCost,
+      subtotal,
+      markupAmount,
+      totalCost,
+      perPersonCost,
+      details: {
+        route: route.name,
+        vehicle: input.vehicleName,
+        hotel: hotel.name,
+        roomType: selectedRoom.name,
+        numberOfRooms: input.numberOfRooms,
+        numberOfGuests,
+        jeepAddonsDetails: jeepDetails,
+      },
+    };
+  } catch (error) {
+    console.error(`Error calculating quotation:`, error);
+    return null;
   }
-
-  const subtotal = transportCost + hotelCost + jeepAddonsCost;
-  
-  // Add 30% markup
-  const MARKUP_PERCENTAGE = 0.30;
-  const markupAmount = Math.round(subtotal * MARKUP_PERCENTAGE);
-  const totalCost = subtotal + markupAmount;
-  
-  const numberOfGuests = input.adults + input.kids;
-  const perPersonCost =
-    numberOfGuests > 0 ? Math.round(totalCost / numberOfGuests) : 0;
-
-  return {
-    transportCost,
-    hotelCost,
-    jeepAddonsCost,
-    subtotal,
-    markupAmount,
-    totalCost,
-    perPersonCost,
-    details: {
-      route: route.name,
-      vehicle: input.vehicleName,
-      hotel: hotel.name,
-      roomType: selectedRoom.name,
-      numberOfRooms: input.numberOfRooms,
-      numberOfGuests,
-      jeepAddonsDetails: jeepDetails,
-    },
-  };
 }
 
 export function formatPKR(amount: number): string {
