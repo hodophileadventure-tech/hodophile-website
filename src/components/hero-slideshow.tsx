@@ -83,9 +83,9 @@ export function HeroSlideshow() {
         </div>
       ))}
 
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.14)_0%,rgba(0,0,0,0.35)_100%),radial-gradient(circle_at_center,rgba(252,192,0,0.1),transparent_40%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.14)_0%,rgba(0,0,0,0.35)_100%),radial-gradient(circle_at_center,rgba(252,192,0,0.1),transparent_40%)] pointer-events-none" />
 
-      <div className="relative z-10 flex max-w-5xl flex-col items-center text-center px-6 lg:px-8">
+      <div className="relative z-10 flex max-w-5xl flex-col items-center text-center px-6 lg:px-8 pointer-events-auto">
         <span className="inline-flex rounded-full border border-[#fcc000]/40 bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-[#8a6400] shadow-lg shadow-black/10 backdrop-blur">
           {activeSlide.label}
         </span>
@@ -110,12 +110,12 @@ export function HeroSlideshow() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-wrap justify-center gap-3">
+        <div className="mt-12 flex flex-wrap justify-center gap-3 pointer-events-auto">
           {slides.map((slide) => (
             <Link
               key={slide.label}
               href={`/destinations/${slide.slug}`}
-              className="rounded-full border border-white/20 bg-black/20 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-white/90 backdrop-blur transition hover:border-white/60 hover:bg-black/40"
+              className="rounded-full border border-white/20 bg-black/20 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-white/90 backdrop-blur transition hover:border-white/60 hover:bg-black/40 cursor-pointer"
             >
               {slide.label}
             </Link>
