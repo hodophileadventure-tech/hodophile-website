@@ -1,0 +1,54 @@
+// This is your Prisma schema file.
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  route     String
+  vehicle   String
+  hotel     String
+  rooms     Int
+  adultsCount     Int   @default(2)
+  kidsCount       Int   @default(0)
+  jeepAddons String?  // JSON string of selected add-ons
+  totalPrice Int     // stored in PKR (no decimals)
+  tourType  String   @default("private") // "private" or "group"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([phone])
+  @@index([createdAt])
+}
+
+model Hotel {
+  id    String @id @default(cuid())
+  name  String
+  city  String
+  rooms String  // JSON array of room objects
+  seasons String?  // JSON object of seasonal pricing info
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([city])
+}
+
+model Route {
+  id    String @id @default(cuid())
+  name  String
+  slug  String @unique
+  duration Int
+  city  String
+  vehicles String  // JSON array of vehicle objects with pricing
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
