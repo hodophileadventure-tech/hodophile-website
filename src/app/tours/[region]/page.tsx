@@ -73,7 +73,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Packages</p>
-            <h2 className="mt-3 font-serif text-3xl text-stone-900">Select a package to explore details.</h2>
+            <h2 className="mt-3 font-serif text-3xl">Select a package to explore details.</h2>
           </div>
           <Link href="/tours" className="text-sm font-medium text-stone-700 transition hover:text-stone-900">
             Back to all tours

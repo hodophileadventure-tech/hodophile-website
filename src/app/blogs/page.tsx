@@ -36,7 +36,7 @@ export default function BlogsPage() {
             className="rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur"
           >
             <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/75">{post.category}</p>
-            <h2 className="mt-4 text-2xl font-semibold text-stone-900">{post.title}</h2>
+            <h2 className="mt-4 text-2xl font-semibold">{post.title}</h2>
             <p className="mt-3 text-sm leading-6 text-stone-600">{post.excerpt}</p>
           </article>
         ))}

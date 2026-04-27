@@ -158,7 +158,7 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,24,28,0.35)_0%,rgba(18,24,28,0.6)_100%)]" />
 
-          <div className="relative z-10 mx-auto flex min-h-[82vh] w-full max-w-7xl items-end px-6 pb-16 pt-36 lg:px-8">
+          <div className="relative z-10 flex min-h-[82vh] w-full items-end px-6 pb-16 pt-36 lg:px-8">
             <div className="max-w-4xl text-white">
               <h1 className="font-serif text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
                 Experience Pakistan's Most Cinematic Journeys—Unforgettably Curated.
@@ -185,7 +185,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative z-20 mx-auto -mt-12 w-full max-w-7xl px-6 pb-4 lg:px-8">
+          <div className="relative z-20 -mt-12 w-full px-6 pb-4 lg:px-8">
             <div className="grid gap-3 rounded-2xl border border-white/20 bg-white/10 p-3 backdrop-blur md:grid-cols-5">
               {destinations.map((destination) => (
                 <div key={destination.name} className="rounded-xl border border-white/15 bg-black/20 px-3 py-2 text-center text-xs font-medium uppercase tracking-[0.2em] text-white/85">
@@ -202,7 +202,7 @@ export default function Home() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
             <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Destinations</p>
-            <h2 className="mt-3 font-serif text-4xl leading-tight text-stone-900 sm:text-5xl">
+            <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
               Discover Pakistan&apos;s Most Loved Escapes
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
@@ -231,7 +231,7 @@ export default function Home() {
               </div>
 
               <div className="space-y-4 px-4 pb-5 pt-4">
-                <h3 className="font-serif text-[2.2rem] font-semibold leading-none text-stone-900">{destination.name}</h3>
+                <h3 className="font-serif text-[2.2rem] font-semibold leading-none">{destination.name}</h3>
                 <p className="text-[1.02rem] leading-8 text-stone-700">{destination.description}</p>
                 <div className="flex items-center justify-between border-t border-stone-200 pt-3">
                   <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">{destination.season}</p>
@@ -248,7 +248,7 @@ export default function Home() {
         <div className="px-6 py-5 lg:px-8 md:py-7">
           <div>
             <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Featured Tours</p>
-            <h2 className="mt-3 font-serif text-4xl leading-tight text-stone-900 sm:text-5xl">
+            <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
               Signature Tour Packages, Crafted for Comfort
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
@@ -269,7 +269,7 @@ export default function Home() {
                   />
                 </div>
                 <div className="flex h-full flex-col space-y-4 p-4">
-                  <h3 className="min-h-[3.5rem] text-center text-xl font-semibold leading-tight text-stone-900">{tour.name}</h3>
+                  <h3 className="min-h-[3.5rem] text-center text-xl font-semibold leading-tight">{tour.name}</h3>
                   <Link
                     href={tour.href}
                     className="mt-auto inline-flex w-full items-center justify-center rounded-md bg-[#0b0b0b] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] !text-[#ffc000] transition hover:bg-black"
@@ -287,7 +287,7 @@ export default function Home() {
         <div className="px-6 lg:px-8">
           <div className="mb-8">
             <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Why Choose Us</p>
-            <h2 className="mt-3 font-serif text-4xl text-stone-900">Trustworthy planning with premium restraint.</h2>
+            <h2 className="mt-3 font-serif text-4xl">Trustworthy planning with premium restraint.</h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {serviceHighlights.map((item) => (
@@ -301,7 +301,7 @@ export default function Home() {
                   className="h-full w-full object-cover"
                 />
               </div>
-              <h3 className="mt-5 text-xl font-semibold text-stone-900">{item.title}</h3>
+              <h3 className="mt-5 text-xl font-semibold">{item.title}</h3>
               <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>
             </article>
             ))}
@@ -312,7 +312,7 @@ export default function Home() {
       <section className="mt-20 overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
         <div className="px-6 py-8 lg:px-8">
           <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Testimonials</p>
-          <h2 className="mt-3 font-serif text-4xl text-stone-900">Our clients don&apos;t just like us - they rave about us.</h2>
+          <h2 className="mt-3 font-serif text-4xl">Our clients don&apos;t just like us - they rave about us.</h2>
             <div className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]">
           {testimonials.map((story, index) => (
             <article
@@ -328,7 +328,7 @@ export default function Home() {
                   className="h-12 w-12 rounded-full border border-stone-200 object-cover"
                 />
                 <div>
-                  <h3 className="text-sm font-semibold text-stone-900">{story.name}</h3>
+                  <h3 className="text-sm font-semibold">{story.name}</h3>
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">{story.role}</p>
                 </div>
               </div>
@@ -341,7 +341,7 @@ export default function Home() {
 
       <section className="mt-20 w-full">
         <div className="px-6 lg:px-8">
-          <div className="rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-sm">
+          <div className="mx-auto max-w-7xl rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-sm">
             <div className="relative bg-black">
               <p className="absolute top-6 left-6 right-6 z-10 text-xs uppercase tracking-[0.32em] text-white font-semibold drop-shadow-lg">Hodophile Adventures Provide Free Travel Kit to Our Customers</p>
             <video
@@ -357,7 +357,7 @@ export default function Home() {
               />
             </div>
             <div className="p-8 text-center">
-              <h2 className="font-serif text-4xl text-stone-900">Begin Your Next Journey</h2>
+              <h2 className="font-serif text-4xl">Begin Your Next Journey</h2>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-600">
                 Let us craft a destination experience around your style. Share your preferred route, travel month, and group details. We will curate a polished domestic itinerary with premium pacing and memorable scenic moments.
               </p>

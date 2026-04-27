@@ -39,7 +39,7 @@ export default function DestinationsPage() {
             <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/75">
               {destination.season}
             </p>
-            <h2 className="mt-4 text-2xl font-semibold text-stone-900">{destination.name}</h2>
+            <h2 className="mt-4 text-2xl font-semibold">{destination.name}</h2>
             <p className="mt-3 text-sm leading-6 text-stone-600">{destination.bestFor}</p>
           </article>
         ))}

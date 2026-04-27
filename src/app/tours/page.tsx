@@ -38,7 +38,7 @@ export default function ToursPage() {
             className="flex h-full flex-col rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur"
           >
             <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/75">{trip.duration}</p>
-            <h2 className="mt-4 text-2xl font-semibold text-stone-900">{trip.name}</h2>
+            <h2 className="mt-4 text-2xl font-semibold">{trip.name}</h2>
             <p className="mt-3 text-sm leading-6 text-stone-600">{trip.description}</p>
             <div className="mt-6 flex flex-wrap gap-2">
               {trip.highlights.map((item) => (
@@ -58,7 +58,7 @@ export default function ToursPage() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Tour Menu</p>
-            <h2 className="mt-3 font-serif text-3xl text-stone-900">Browse by tour group and package.</h2>
+            <h2 className="mt-3 font-serif text-3xl">Browse by tour group and package.</h2>
           </div>
           <Link href="/make-my-trip" className="text-sm font-medium text-stone-700 transition hover:text-stone-900">
             Need custom route?

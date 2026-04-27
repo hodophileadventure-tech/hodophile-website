@@ -26,7 +26,7 @@ export default function AboutPage() {
           <span className="inline-flex rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-4 py-2 text-sm font-medium text-[#fcc000]">
             About the brand
           </span>
-          <h1 className="max-w-3xl font-serif text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
+          <h1 className="max-w-3xl font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
             A domestic travel partner built for Pakistan routes and SEO-friendly growth.
           </h1>
           <p className="max-w-2xl text-lg leading-8 text-stone-600">

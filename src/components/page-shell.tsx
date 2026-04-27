@@ -18,7 +18,7 @@ export function PageShell({ children }: PageShellProps) {
       </main>
 
       <footer className="border-t border-[#d5a700] bg-[#ffc000]">
-        <div className="mx-auto grid w-full max-w-7xl gap-8 px-6 py-10 md:grid-cols-2 xl:grid-cols-5 lg:px-8">
+        <div className="grid w-full gap-8 px-6 py-10 md:grid-cols-2 xl:grid-cols-5 lg:px-8">
           <div className="max-w-xl">
             <div className="mb-5 inline-flex items-center gap-3">
               <Image src="/logo.png" alt="Hodophile Adventures" width={58} height={58} className="h-9 w-auto" />

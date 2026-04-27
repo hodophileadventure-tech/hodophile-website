@@ -55,7 +55,7 @@ export default function HoneymoonPackagesPage() {
             className="rounded-[2rem] border border-black/10 bg-white/85 p-6 shadow-sm backdrop-blur"
           >
             <p className="text-xs uppercase tracking-[0.3em] text-[#fcc000]">{item.duration}</p>
-            <h2 className="mt-3 text-2xl font-semibold text-stone-900">{item.name}</h2>
+            <h2 className="mt-3 text-2xl font-semibold">{item.name}</h2>
             <p className="mt-3 text-sm leading-7 text-stone-600">{item.detail}</p>
           </article>
         ))}

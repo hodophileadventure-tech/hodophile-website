@@ -63,7 +63,7 @@ export default function UmrahPackagesPage() {
             </div>
             <div className="p-6">
               <p className="text-xs uppercase tracking-[0.3em] text-[#fcc000]">{item.duration}</p>
-              <h2 className="mt-3 text-2xl font-semibold text-stone-900">{item.name}</h2>
+              <h2 className="mt-3 text-2xl font-semibold">{item.name}</h2>
               <p className="mt-3 text-sm leading-7 text-stone-600">{item.detail}</p>
             </div>
           </article>

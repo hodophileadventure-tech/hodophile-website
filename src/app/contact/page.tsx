@@ -27,7 +27,7 @@ export default function ContactPage() {
           <span className="inline-flex rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-4 py-2 text-sm font-medium text-[#fcc000]">
             Contact
           </span>
-          <h1 className="max-w-2xl font-serif text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
+          <h1 className="max-w-2xl font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
             Tell us where you want to go and we will shape the route around your travel goals.
           </h1>
           <div className="space-y-4 text-sm text-stone-600">

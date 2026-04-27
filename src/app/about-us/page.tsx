@@ -32,7 +32,7 @@ export default function AboutUsPage() {
 
       <section className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-start mx-auto max-w-7xl px-6 lg:px-8">
         <div className="space-y-6">
-          <h2 className="max-w-3xl font-serif text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">
+          <h2 className="max-w-3xl font-serif text-3xl font-semibold tracking-tight sm:text-4xl">
             Travel planning with editorial clarity and local expertise.
           </h2>
           <p className="max-w-2xl text-lg leading-8 text-stone-600">

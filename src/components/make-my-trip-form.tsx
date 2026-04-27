@@ -77,7 +77,7 @@ export function MakeMyTripForm() {
     <div className="w-[calc(100%-64px)] max-w-[420px] rounded-[15px] border border-white/20 bg-white/94 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm md:p-5">
       <div className="mb-6 text-center">
         <p className="text-[11px] uppercase tracking-[0.38em] text-[#8a6a00]">Plan my Journey</p>
-        <h1 className="mt-3 font-serif text-3xl leading-tight text-stone-900 sm:text-[2.6rem]">
+        <h1 className="mt-3 font-serif text-3xl leading-tight sm:text-[2.6rem]">
           plan my journey here
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-600">

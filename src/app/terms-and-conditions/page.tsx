@@ -51,7 +51,7 @@ export default function TermsAndConditionsPage() {
       <section className="mt-12 grid gap-6 md:grid-cols-2">
         {terms.map((term) => (
           <article key={term.title} className="rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur">
-            <h2 className="text-2xl font-semibold text-stone-900">{term.title}</h2>
+            <h2 className="text-2xl font-semibold">{term.title}</h2>
             <p className="mt-3 text-sm leading-7 text-stone-600">{term.body}</p>
           </article>
         ))}

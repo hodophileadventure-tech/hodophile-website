@@ -25,7 +25,7 @@ export default function BlogPage() {
         <span className="inline-flex rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-4 py-2 text-sm font-medium text-[#fcc000]">
           Travel blog
         </span>
-        <h1 className="max-w-3xl font-serif text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
+        <h1 className="max-w-3xl font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
           SEO-friendly articles that support destination pages and answer real traveler questions.
         </h1>
         <p className="max-w-2xl text-lg leading-8 text-stone-600">
@@ -41,7 +41,7 @@ export default function BlogPage() {
             className="rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur"
           >
             <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/75">{post.category}</p>
-            <h2 className="mt-4 text-2xl font-semibold text-stone-900">{post.title}</h2>
+            <h2 className="mt-4 text-2xl font-semibold">{post.title}</h2>
             <p className="mt-3 text-sm leading-6 text-stone-600">{post.excerpt}</p>
           </article>
         ))}
