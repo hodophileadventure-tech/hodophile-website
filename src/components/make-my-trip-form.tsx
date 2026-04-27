@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes } from "@/lib/data/routes";
 import { PriceSummary } from "./price-summary";
 
 export function MakeMyTripForm() {
+  const router = useRouter();
+  
   // Form state
   const [tripDate, setTripDate] = useState("");
   const [routeId, setRouteId] = useState("");
@@ -199,6 +202,30 @@ export function MakeMyTripForm() {
         return;
       }
 
+      // Get route and hotel info for quotation result page
+      const selectedRoute = routes.find((r) => r.id === routeId);
+      const selectedHotel = availableHotels.find((h) => h.id === hotelId);
+      const destination = selectedRoute?.city || "Destination";
+
+      // Prepare quotation data for result page
+      const quotationData = {
+        tripDate,
+        routeId,
+        destination,
+        hotelId,
+        roomType: roomId,
+        vehicleName,
+        numberOfRooms,
+        adults,
+        kids,
+        tourType,
+        totalCost: quotation.totalCost,
+      };
+
+      // Encode data and redirect to result page
+      const encoded = btoa(JSON.stringify(quotationData));
+
+      // Also send to API for WhatsApp notification
       const response = await fetch("/api/quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -220,19 +247,8 @@ export function MakeMyTripForm() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setSubmitMessage("✅ Quotation submitted! Our team will contact you via WhatsApp soon.");
-        // Reset form
-        setTripDate("");
-        setRouteId("");
-        setHotelId("");
-        setRoomId("");
-        setVehicleName("");
-        setNumberOfRooms(1);
-        setAdults(2);
-        setKids(0);
-        setCustomerName("");
-        setCustomerPhone("");
-        setQuotation(null);
+        // Redirect to quotation result page
+        router.push(`/quotation-result?data=${encoded}`);
       } else {
         setSubmitError(data.error || "Failed to submit quotation");
       }
