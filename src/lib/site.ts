@@ -122,6 +122,9 @@ export const tourMenu: TourMenuGroup[] = [
 
 export const allTourRoutes = tourMenu.flatMap((group) => [group.href, ...group.items.map((item) => item.href)]);
 
+export const destinationGallerySlugs = ["hunza", "skardu", "naran", "kashmir", "swat"];
+export const destinationGalleryRoutes = destinationGallerySlugs.map((slug) => `/destinations/${slug}`);
+
 export type Destination = {
   name: string;
   image: string;

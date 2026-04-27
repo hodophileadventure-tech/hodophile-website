@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { absoluteUrl, allTourRoutes } from "@/lib/site";
+import { absoluteUrl, allTourRoutes, destinationGalleryRoutes } from "@/lib/site";
 
 const routes = [
   "/",
@@ -19,6 +19,7 @@ const routes = [
   "/tours",
   "/umrah-packages",
   ...allTourRoutes,
+  ...destinationGalleryRoutes,
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type Slide = {
@@ -8,36 +9,42 @@ type Slide = {
   label: string;
   headline: string;
   description: string;
+  slug: string;
 };
 
 const slides: Slide[] = [
   {
     src: "/hero-images/hunza.avif",
     label: "Hunza",
+    slug: "hunza",
     headline: "Where the magical journey begins...",
     description: "Terraced valleys, dramatic peaks, and scenic stays built for Pakistan travel.",
   },
   {
     src: "/hero-images/skurdu.jpg",
     label: "Skardu",
+    slug: "skardu",
     headline: "Where the magical journey begins...",
     description: "Lakes, forts, and wide alpine views for slower, premium northern trips.",
   },
   {
     src: "/hero-images/Naran.jpg",
     label: "Naran",
+    slug: "naran",
     headline: "Where the magical journey begins...",
     description: "Road trips, river views, and summer escapes for families and groups.",
   },
   {
     src: "/hero-images/kashmir.jpg",
     label: "Kashmir",
+    slug: "kashmir",
     headline: "Where the magical journey begins...",
     description: "Soft valleys, clean air, and scenic routes for a calm getaway.",
   },
   {
     src: "/hero-images/Sawat.jpg",
     label: "Swat",
+    slug: "swat",
     headline: "Where the magical journey begins...",
     description: "Green hills and peaceful routes for a classic domestic Pakistan tour.",
   },
@@ -105,12 +112,13 @@ export function HeroSlideshow() {
 
         <div className="mt-12 flex flex-wrap justify-center gap-3">
           {slides.map((slide) => (
-            <span
+            <Link
               key={slide.label}
-              className="rounded-full border border-white/20 bg-black/20 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-white/90 backdrop-blur"
+              href={`/destinations/${slide.slug}`}
+              className="rounded-full border border-white/20 bg-black/20 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-white/90 backdrop-blur transition hover:border-white/60 hover:bg-black/40"
             >
               {slide.label}
-            </span>
+            </Link>
           ))}
         </div>
       </div>
