@@ -1,6 +1,8 @@
 import { getRouteById, getVehiclePrice } from "./data/routes";
 import { getHotelById } from "./data/hotels";
 import { calculateJeepCost } from "./data/jeeps";
+import { getRouteDistance } from "./data/distances";
+import { currentFuelPrices, fuelConsumption } from "./data/fuel";
 import type { Room } from "./data/hotels";
 
 export interface QuotationInput {
@@ -49,6 +51,49 @@ function getSeasonFromDate(date: string): "peak" | "blossom" | "off" | "fixed" {
   return "off";
 }
 
+// Calculate transport cost based on fuel consumption and distance
+function calculateTransportCost(
+  vehicleName: string,
+  routeId: string
+): number | null {
+  const distance = getRouteDistance(routeId);
+  if (!distance) return null;
+
+  let fuelType: "petrol" | "diesel" = "petrol";
+  let consumption = 8; // default
+  let profitMargin = 1.5; // 50% profit margin on fuel costs
+
+  // Determine fuel type and consumption for each vehicle
+  if (vehicleName === "Toyota Corolla") {
+    consumption = fuelConsumption.corolla.petrol;
+    fuelType = "petrol";
+  } else if (vehicleName === "Honda BRV") {
+    consumption = fuelConsumption.brv.petrol; // default to petrol
+    fuelType = "petrol";
+  } else if (vehicleName === "Prado") {
+    consumption = fuelConsumption.prado.diesel; // Prado typically diesel
+    fuelType = "diesel";
+  } else if (vehicleName.includes("Grand Cabin")) {
+    consumption = vehicleName.includes("Diesel")
+      ? fuelConsumption.grandCabin.diesel
+      : fuelConsumption.grandCabin.petrol;
+    fuelType = vehicleName.includes("Diesel") ? "diesel" : "petrol";
+  } else if (vehicleName.includes("Coaster")) {
+    consumption = fuelConsumption.coaster.diesel;
+    fuelType = "diesel";
+  }
+
+  // Calculate fuel needed
+  const fuelNeeded = distance / consumption;
+  const fuelPrice = fuelType === "petrol" ? currentFuelPrices.petrol : currentFuelPrices.diesel;
+  const baseFuelCost = Math.round(fuelNeeded * fuelPrice);
+
+  // Add driver allowance, maintenance, tolls, wear & tear via profit margin
+  const transportCost = Math.round(baseFuelCost * profitMargin);
+
+  return transportCost;
+}
+
 function getRoomPrice(room: Room, season: string): number {
   // Try season-specific price first
   if (season === "peak" && room.peak) return room.peak;
@@ -86,7 +131,8 @@ export function calculateQuotation(
   const route = getRouteById(input.routeId);
   if (!route) return null;
 
-  const transportCost = getVehiclePrice(input.routeId, input.vehicleName);
+  // Use fuel-based transport cost calculation
+  const transportCost = calculateTransportCost(input.vehicleName, input.routeId);
   if (!transportCost) return null;
 
   const hotel = getHotelById(input.hotelId);
