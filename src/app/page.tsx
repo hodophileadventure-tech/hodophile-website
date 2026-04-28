@@ -126,7 +126,7 @@ export default function Home() {
     },
     {
       name: "Skardu & Hunza",
-      image: "/images/destinations/featured-skardu-hunza-2.jpg",
+      image: "/images/destinations/featured-skardu-hunza.jpg",
       href: "/tours/northern-tours/hunza-valley-tour-packages",
     },
     {
