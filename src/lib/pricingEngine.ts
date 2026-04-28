@@ -171,7 +171,9 @@ export function calculateQuotation(
       return null;
     }
 
-    const hotelCost = roomPrice * input.numberOfRooms;
+    // Calculate nights: for an 8-day trip, that's 7 nights (duration - 1)
+    const numberOfNights = Math.max(1, route.duration - 1);
+    const hotelCost = roomPrice * input.numberOfRooms * numberOfNights;
 
     let jeepAddonsCost = 0;
     const jeepDetails: string[] = [];
@@ -192,7 +194,7 @@ export function calculateQuotation(
     const perPersonCost =
       numberOfGuests > 0 ? Math.round(totalCost / numberOfGuests) : 0;
 
-    console.log(`Quotation calculated successfully - Transport: ${transportCost}, Hotel: ${hotelCost}, Total: ${totalCost}`);
+    console.log(`Quotation calculated successfully - Transport: ${transportCost}, Hotel: ${hotelCost} (${roomPrice} × ${input.numberOfRooms} room(s) × ${numberOfNights} night(s)), Total: ${totalCost}`);
 
     return {
       transportCost,
