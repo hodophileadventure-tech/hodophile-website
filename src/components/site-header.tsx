@@ -133,9 +133,10 @@ export function SiteHeader() {
     <header
       className="fixed inset-x-0 top-0 z-50 border-b-4 border-[#fcc000] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)]"
     >
-      <div
-        className="relative grid w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-2.5 lg:gap-3 lg:px-8"
-      >
+      <div className="mx-auto max-w-7xl">
+        <div
+          className="relative grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-2.5 lg:gap-3 lg:px-8"
+        >
         <nav className="hidden items-center justify-end gap-0.5 lg:flex">
           {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
         </nav>
@@ -285,6 +286,7 @@ export function SiteHeader() {
           </Link>
         </div>
       ) : null}
+      </div>
     </header>
   );
 }

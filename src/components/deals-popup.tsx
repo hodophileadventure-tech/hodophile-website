@@ -9,12 +9,12 @@ export function DealsPopup() {
   useEffect(() => {
     setIsMounted(true);
     
-    // Check if user has closed the popup today
-    const lastClosed = localStorage.getItem("dealsPopupClosedAt");
-    const now = new Date().toDateString();
+    // Check if user has closed the popup in this session (page load)
+    const sessionKey = `dealsPopupClosed_${new Date().getTime()}`;
+    const wasClosedThisSession = sessionStorage.getItem("dealsPopupClosedThisSession");
     
-    // Show popup only if it hasn't been closed today
-    if (!lastClosed || lastClosed !== now) {
+    // Show popup only if it hasn't been closed in this session
+    if (!wasClosedThisSession) {
       // Delay showing popup by 1 second for better UX
       const timer = setTimeout(() => {
         setIsOpen(true);
@@ -26,8 +26,8 @@ export function DealsPopup() {
 
   const handleClose = () => {
     setIsOpen(false);
-    // Store that popup was closed today
-    localStorage.setItem("dealsPopupClosedAt", new Date().toDateString());
+    // Mark popup as closed for this session only
+    sessionStorage.setItem("dealsPopupClosedThisSession", "true");
   };
 
   if (!isMounted || !isOpen) return null;

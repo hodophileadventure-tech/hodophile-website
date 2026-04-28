@@ -11,14 +11,16 @@ type PageShellProps = {
 export function PageShell({ children }: PageShellProps) {
   return (
     <div className="min-h-screen bg-[#f7f6f2] text-stone-900">
-      <SiteHeader />
+      <div className="mx-auto max-w-7xl">
+        <SiteHeader />
+      </div>
 
-      <main className="w-full pb-12 pt-24">
+      <main className="mx-auto max-w-7xl pb-12 pt-24 px-4 md:px-6 lg:px-8">
         {children}
       </main>
 
       <footer className="border-t border-[#d5a700] bg-[#ffc000]">
-        <div className="grid w-full gap-8 px-6 py-10 md:grid-cols-2 xl:grid-cols-5 lg:px-8">
+        <div className="mx-auto max-w-7xl grid gap-8 px-4 py-10 md:grid-cols-2 xl:grid-cols-5 lg:px-8 md:px-6">
           <div className="max-w-xl">
             <div className="mb-5 inline-flex items-center gap-3">
               <Image src="/logo.png" alt="Hodophile Adventures" width={58} height={58} className="h-9 w-auto" />
