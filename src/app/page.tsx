@@ -259,13 +259,13 @@ export default function Home() {
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
               <article key={tour.name} className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)]">
-                <div className="relative h-[22rem] overflow-hidden">
+                <div className="relative h-[28rem] overflow-hidden bg-stone-100">
                   <Image
                     src={tour.image}
                     alt={tour.name}
                     fill
                     sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="object-cover transition duration-700 hover:scale-105"
+                    className="object-contain transition duration-700 hover:scale-105"
                   />
                 </div>
                 <div className="flex h-full flex-col space-y-4 p-4">
