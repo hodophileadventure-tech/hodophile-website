@@ -41,19 +41,19 @@ export function DealsPopup() {
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
         <div
-          className="relative w-full max-w-lg rounded-[15px] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-300"
+          className="relative w-full max-w-lg rounded-[15px] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-300 my-8"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Close Button */}
+          {/* Close Button - On Top of Image */}
           <button
             onClick={handleClose}
-            className="absolute top-3 right-3 z-10 bg-white/95 hover:bg-white p-1.5 sm:p-2 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
+            className="absolute top-3 right-3 z-20 bg-white/95 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
             aria-label="Close popup"
           >
             <svg
-              className="w-4 h-4 sm:w-5 sm:h-5 text-stone-900"
+              className="w-5 h-5 sm:w-6 sm:h-6 text-stone-900"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -67,8 +67,8 @@ export function DealsPopup() {
             </svg>
           </button>
 
-          {/* Image Container */}
-          <div className="w-full bg-black overflow-hidden">
+          {/* Image Container - Scrollable */}
+          <div className="w-full bg-black overflow-y-auto max-h-[80vh]">
             <img
               src="/images/summer-tour-2026.jpg"
               alt="Summer Tour 2026 - Special Deals"
@@ -77,7 +77,7 @@ export function DealsPopup() {
           </div>
 
           {/* Call-to-action button overlay */}
-          <div className="bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 sm:p-5 flex justify-center">
+          <div className="bg-gradient-to-t from-black/95 via-black/70 to-transparent p-4 sm:p-6 flex justify-center">
             <button
               onClick={() => {
                 handleClose();
