@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { calculateQuotation, type QuotationInput } from "@/lib/pricingEngine";
 import { sendWhatsAppNotification, logQuotationNotification } from "@/lib/whatsapp";
+import { saveQuotationToSheet } from "@/lib/googleSheets";
+import { getRouteById } from "@/lib/data/routes";
+import { getHotelById } from "@/lib/data/hotels";
 
 interface QuoteRequestBody extends QuotationInput {
   customerName: string;
   customerPhone: string;
+  startingPoint: string;
   tourType: string;
 }
 
@@ -53,6 +57,34 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Get route and hotel names for the sheet
+    const route = getRouteById(body.routeId);
+    const hotel = getHotelById(body.hotelId);
+
+    // Save quotation to Google Sheet
+    await saveQuotationToSheet({
+      customerName: body.customerName,
+      customerPhone: body.customerPhone,
+      startingPoint: body.startingPoint,
+      tripDate: body.tripDate,
+      route: route?.name || body.routeId,
+      destination: route?.name?.split("&")[0]?.trim() || "",
+      vehicle: body.vehicleName,
+      hotel: hotel?.name || body.hotelId,
+      roomType: body.roomId,
+      numberOfRooms: body.numberOfRooms,
+      adults: body.adults,
+      kids: body.kids || 0,
+      tourType: body.tourType,
+      transportCost: quotation.transportCost,
+      hotelCost: quotation.hotelCost,
+      jeepAddonsCost: quotation.jeepAddonsCost,
+      subtotal: quotation.subtotal,
+      markupAmount: quotation.markupAmount,
+      totalCost: quotation.totalCost,
+      perPersonCost: quotation.perPersonCost,
+    });
 
     // TODO: Save lead to database (once Prisma is set up)
     // const lead = await db.lead.create({

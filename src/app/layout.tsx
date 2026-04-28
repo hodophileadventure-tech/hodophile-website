@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 
 import { siteConfig } from "@/lib/site";
+import { DealsPopup } from "@/components/deals-popup";
 
 const poppins = Poppins({
   variable: "--font-body",
@@ -84,6 +85,7 @@ export default function RootLayout({
             __html: JSON.stringify([organizationSchema, websiteSchema]),
           }}
         />
+        <DealsPopup />
         {children}
       </body>
     </html>
