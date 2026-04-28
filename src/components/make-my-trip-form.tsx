@@ -34,35 +34,46 @@ export function MakeMyTripForm() {
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitError, setSubmitError] = useState("");
 
-  // Helper function to get default hotel by category
-  const getDefaultHotelByCategory = (hotels: Hotel[], category: string): string => {
-    const categoryMap: { [key: string]: string[] } = {
-      standard: [
-        "hermes-hotel-hunza",
-        "eagle-nest-swat",
-        "blue-ocean-kalam",
-        "hispar-hotel-skardu",
-        "ifq-premier-skardu",
-      ],
-      deluxe: [
-        "mulberry-hotel-hunza",
-        "khoj-hotel-skardu",
-        "qayam-hotels-hunza",
-        "maple-resort-skardu",
-        "spruce-resort-shogran",
-      ],
-      executive: [
-        "shangrila-resort-skardu",
-        "offto-resort-hunza",
-        "farme-resort-hunza",
-        "gumaan-resort-skardu",
-        "north-palace-khaplu",
-      ],
-    };
+  // Smart room selection based on price tier (not exact name matching)
+  const selectRoomByCategory = (rooms: any[], category: string): string => {
+    if (!rooms || rooms.length === 0) return "";
 
-    const preferredIds = categoryMap[category] || categoryMap.deluxe;
-    const defaultHotel = hotels.find((h) => preferredIds.includes(h.id));
-    return defaultHotel?.id || "";
+    // Calculate price for each room for comparison
+    const roomsWithPrice = rooms.map((room: any) => ({
+      name: room.name,
+      price:
+        room.price ||
+        room.peak ||
+        room.high ||
+        (Array.isArray(room.high) ? room.high[0] : 0) ||
+        room.double ||
+        room.low ||
+        (Array.isArray(room.low) ? room.low[0] : 0) ||
+        0,
+    }));
+
+    // Sort by price
+    roomsWithPrice.sort((a, b) => a.price - b.price);
+
+    // Select based on category
+    if (category === "standard") {
+      // Cheapest room
+      return roomsWithPrice[0]?.name || "";
+    } else if (category === "deluxe") {
+      // Middle room
+      const midIndex = Math.floor(roomsWithPrice.length / 2);
+      return roomsWithPrice[midIndex]?.name || "";
+    } else if (category === "executive") {
+      // Most expensive room
+      return roomsWithPrice[roomsWithPrice.length - 1]?.name || "";
+    }
+
+    return roomsWithPrice[0]?.name || "";
+  };
+
+  // Get first hotel for the city (simplified auto-select)
+  const getDefaultHotel = (hotels: Hotel[]): string => {
+    return hotels.length > 0 ? hotels[0].id : "";
   };
 
   // Vehicle capacity mapping
@@ -111,13 +122,13 @@ export function MakeMyTripForm() {
         const hotels = getHotelsByCity(selectedRoute.city);
         setAvailableHotels(hotels);
         
-        // Auto-select default hotel based on category
-        const defaultHotelId = getDefaultHotelByCategory(hotels, hotelCategory);
+        // Auto-select first available hotel (users can change)
+        const defaultHotelId = getDefaultHotel(hotels);
         setHotelId(defaultHotelId);
         setRoomId("");
       }
     }
-  }, [routeId, hotelCategory]);
+  }, [routeId]);
 
   // Update available rooms when hotel changes
   useEffect(() => {
@@ -126,19 +137,9 @@ export function MakeMyTripForm() {
       if (selectedHotel) {
         setAvailableRooms(selectedHotel.rooms);
         
-        // Auto-select a room based on category preference
-        const categoryRoomPreference: { [key: string]: string[] } = {
-          standard: ["Standard", "Budget Room", "Couple"],
-          deluxe: ["Deluxe", "Deluxe Room", "Deluxe Balcony Room"],
-          executive: ["Executive", "Executive Suite", "Premium", "Presidential"],
-        };
-        
-        const preferredRoomNames = categoryRoomPreference[hotelCategory] || categoryRoomPreference.deluxe;
-        const defaultRoom = selectedHotel.rooms.find((r) => 
-          preferredRoomNames.some(name => r.name.includes(name))
-        );
-        
-        setRoomId(defaultRoom?.name || "");
+        // Auto-select room based on category using price tier
+        const defaultRoom = selectRoomByCategory(selectedHotel.rooms, hotelCategory);
+        setRoomId(defaultRoom);
       }
     }
   }, [hotelId, availableHotels, hotelCategory]);
