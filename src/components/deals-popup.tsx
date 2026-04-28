@@ -36,12 +36,12 @@ export function DealsPopup() {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
         onClick={handleClose}
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div className="fixed inset-0 z-[101] flex items-center justify-center p-4 overflow-y-auto">
         <div
           className="relative w-full max-w-lg rounded-[15px] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-300 my-8"
           onClick={(e) => e.stopPropagation()}
@@ -49,7 +49,7 @@ export function DealsPopup() {
           {/* Close Button - On Top of Image */}
           <button
             onClick={handleClose}
-            className="absolute top-3 right-3 z-20 bg-white/95 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
+            className="absolute top-3 right-3 z-30 bg-white/95 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
             aria-label="Close popup"
           >
             <svg
