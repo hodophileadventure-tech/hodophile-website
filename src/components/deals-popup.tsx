@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
 
 export function DealsPopup() {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,7 +52,19 @@ export function DealsPopup() {
             className="absolute top-4 right-4 z-10 bg-white/90 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
             aria-label="Close popup"
           >
-            <X className="w-6 h-6 text-stone-900" strokeWidth={2.5} />
+            <svg
+              className="w-6 h-6 text-stone-900"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
           </button>
 
           {/* Image */}
