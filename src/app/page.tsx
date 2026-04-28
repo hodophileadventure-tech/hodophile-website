@@ -258,21 +258,21 @@ export default function Home() {
 
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
-              <article key={tour.name} className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)]">
-                <div className="relative h-[28rem] overflow-hidden bg-stone-100">
+              <article key={tour.name} className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
+                <div className="relative flex-1 min-h-[280px] overflow-hidden">
                   <Image
                     src={tour.image}
                     alt={tour.name}
                     fill
                     sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="object-contain transition duration-700 hover:scale-105"
+                    className="object-cover transition duration-700 hover:scale-105"
                   />
                 </div>
-                <div className="flex h-full flex-col space-y-4 p-4">
-                  <h3 className="min-h-[3.5rem] text-center text-xl font-semibold leading-tight">{tour.name}</h3>
+                <div className="p-4 flex flex-col">
+                  <h3 className="text-center text-lg font-semibold leading-tight">{tour.name}</h3>
                   <Link
                     href={tour.href}
-                    className="mt-auto inline-flex w-full items-center justify-center rounded-md bg-[#0b0b0b] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] !text-[#ffc000] transition hover:bg-black"
+                    className="mt-4 inline-flex w-full items-center justify-center rounded-md bg-[#0b0b0b] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] !text-[#ffc000] transition hover:bg-black"
                   >
                     View Details
                   </Link>
