@@ -259,20 +259,20 @@ export default function Home() {
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
               <article key={tour.name} className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
-                <div className="relative flex-1 min-h-[300px] bg-stone-100 overflow-hidden flex items-center justify-center">
+                <div className="relative h-[240px] overflow-hidden">
                   <Image
                     src={tour.image}
                     alt={tour.name}
                     fill
                     sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="object-contain transition duration-700 hover:scale-105"
+                    className="object-cover transition duration-700 hover:scale-105"
                   />
                 </div>
-                <div className="p-4 flex flex-col">
+                <div className="p-4 flex flex-col flex-1">
                   <h3 className="text-center text-lg font-semibold leading-tight text-[#ffc000]">{tour.name}</h3>
                   <Link
                     href={tour.href}
-                    className="mt-4 inline-flex w-full items-center justify-center rounded-md bg-[#0b0b0b] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] !text-[#ffc000] transition hover:bg-black"
+                    className="mt-auto inline-flex w-full items-center justify-center rounded-md bg-[#0b0b0b] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] !text-[#ffc000] transition hover:bg-black"
                   >
                     View Details
                   </Link>
