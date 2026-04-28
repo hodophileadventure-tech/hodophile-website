@@ -12,6 +12,7 @@ export function MakeMyTripForm() {
   
   // Form state
   const [tripDate, setTripDate] = useState("");
+  const [startingPoint, setStartingPoint] = useState("");
   const [routeId, setRouteId] = useState("");
   const [hotelCategory, setHotelCategory] = useState("deluxe"); // standard, deluxe, executive
   const [hotelId, setHotelId] = useState("");
@@ -211,6 +212,7 @@ export function MakeMyTripForm() {
       // Prepare quotation data for result page
       const quotationData = {
         tripDate,
+        startingPoint,
         routeId,
         destination,
         hotelId,
@@ -232,6 +234,7 @@ export function MakeMyTripForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tripDate,
+          startingPoint,
           routeId,
           hotelId,
           roomId,
@@ -311,6 +314,18 @@ export function MakeMyTripForm() {
                 value={tripDate}
                 onChange={(e) => setTripDate(e.target.value)}
                 className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+              />
+            </label>
+
+            <label className="grid gap-2 text-sm font-medium text-stone-900">
+              Starting Point *
+              <input
+                type="text"
+                required
+                placeholder="e.g., Karachi, Islamabad, Lahore..."
+                value={startingPoint}
+                onChange={(e) => setStartingPoint(e.target.value)}
+                className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
               />
             </label>
 
