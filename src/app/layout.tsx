@@ -24,6 +24,11 @@ export const metadata: Metadata = {
     "Skardu tours",
     "travel agency Pakistan",
   ],
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     type: "website",
     title: siteConfig.name,
