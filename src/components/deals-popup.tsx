@@ -41,19 +41,19 @@ export function DealsPopup() {
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6">
         <div
-          className="relative max-w-2xl w-full rounded-[15px] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-300"
+          className="relative w-full max-h-[90vh] rounded-[15px] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-300"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close Button */}
           <button
             onClick={handleClose}
-            className="absolute top-4 right-4 z-10 bg-white/90 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 bg-white/90 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
             aria-label="Close popup"
           >
             <svg
-              className="w-6 h-6 text-stone-900"
+              className="w-5 h-5 sm:w-6 sm:h-6 text-stone-900"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -67,22 +67,24 @@ export function DealsPopup() {
             </svg>
           </button>
 
-          {/* Image */}
-          <img
-            src="/images/summer-tour-2026.jpg"
-            alt="Summer Tour 2026 - Special Deals"
-            className="w-full h-auto"
-          />
+          {/* Image Container - Responsive */}
+          <div className="w-full bg-black flex items-center justify-center overflow-hidden max-h-[85vh]">
+            <img
+              src="/images/summer-tour-2026.jpg"
+              alt="Summer Tour 2026 - Special Deals"
+              className="w-full h-full object-contain"
+            />
+          </div>
 
-          {/* Optional: Call-to-action button overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 flex justify-center">
+          {/* Call-to-action button overlay */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-3 sm:p-4 md:p-6 flex justify-center">
             <button
               onClick={() => {
                 handleClose();
                 // Scroll to form or navigate
                 document.getElementById("make-my-trip-form")?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="bg-[#FCC000] hover:bg-[#ffd700] text-black font-semibold px-8 py-3 rounded-[15px] transition-all duration-200 hover:shadow-lg"
+              className="bg-[#FCC000] hover:bg-[#ffd700] text-black font-semibold px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base rounded-[15px] transition-all duration-200 hover:shadow-lg whitespace-nowrap"
             >
               Book Your Tour Now
             </button>
