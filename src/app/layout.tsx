@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { siteConfig } from "@/lib/site";
 import { DealsPopup } from "@/components/deals-popup";
+import { LeadCapturePopup } from "@/components/lead-capture-popup";
 
 const poppins = Poppins({
   variable: "--font-body",
@@ -86,6 +87,7 @@ export default function RootLayout({
           }}
         />
         <DealsPopup />
+        <LeadCapturePopup />
         {children}
       </body>
     </html>
