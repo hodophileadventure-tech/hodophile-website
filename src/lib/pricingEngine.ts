@@ -51,53 +51,20 @@ function getSeasonFromDate(date: string): "peak" | "blossom" | "off" | "fixed" {
   return "off";
 }
 
-// Calculate transport cost based on fuel consumption and distance
+// Calculate transport cost using fixed vehicle rental prices from routes
 function calculateTransportCost(
   vehicleName: string,
   routeId: string
 ): number | null {
-  const distance = getRouteDistance(routeId);
-  if (!distance) {
-    console.warn(`Distance not found for route: ${routeId}`);
+  const vehiclePrice = getVehiclePrice(routeId, vehicleName);
+  if (!vehiclePrice) {
+    console.warn(`Vehicle price not found for: ${vehicleName}, route: ${routeId}`);
     return null;
   }
 
-  let fuelType: "petrol" | "diesel" = "petrol";
-  let consumption = 8; // default
-  let profitMargin = 1.5; // 50% profit margin on fuel costs
-
-  // Determine fuel type and consumption for each vehicle
-  if (vehicleName === "Toyota Corolla") {
-    consumption = fuelConsumption.corolla.petrol;
-    fuelType = "petrol";
-  } else if (vehicleName === "Honda BRV") {
-    consumption = fuelConsumption.brv.petrol; // default to petrol
-    fuelType = "petrol";
-  } else if (vehicleName === "Prado") {
-    consumption = fuelConsumption.prado.diesel; // Prado typically diesel
-    fuelType = "diesel";
-  } else if (vehicleName.includes("Grand Cabin")) {
-    consumption = vehicleName.includes("Diesel")
-      ? fuelConsumption.grandCabin.diesel
-      : fuelConsumption.grandCabin.petrol;
-    fuelType = vehicleName.includes("Diesel") ? "diesel" : "petrol";
-  } else if (vehicleName.includes("Coaster")) {
-    consumption = fuelConsumption.coaster.diesel;
-    fuelType = "diesel";
-  } else {
-    // Fallback for unknown vehicles
-    console.warn(`Unknown vehicle type: ${vehicleName}, using defaults`);
-  }
-
-  // Calculate fuel needed
-  const fuelNeeded = distance / consumption;
-  const fuelPrice = fuelType === "petrol" ? currentFuelPrices.petrol : currentFuelPrices.diesel;
-  const baseFuelCost = Math.round(fuelNeeded * fuelPrice);
-
-  // Add driver allowance, maintenance, tolls, wear & tear via profit margin
-  const transportCost = Math.round(baseFuelCost * profitMargin);
-
-  console.debug(`Transport calc - Vehicle: ${vehicleName}, Distance: ${distance}km, Consumption: ${consumption}km/l, Fuel: ${fuelNeeded}l, Cost: ${transportCost}`);
+  console.debug(`Transport cost for ${vehicleName} on route ${routeId}: ${vehiclePrice} PKR`);
+  return vehiclePrice;
+}
 
   return transportCost;
 }
