@@ -66,9 +66,6 @@ function calculateTransportCost(
   return vehiclePrice;
 }
 
-  return transportCost;
-}
-
 function getRoomPrice(room: Room, season: string): number {
   // Try season-specific price first
   if (season === "peak" && room.peak) return room.peak;
