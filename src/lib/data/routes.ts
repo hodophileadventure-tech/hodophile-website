@@ -109,6 +109,7 @@ export const routes: Route[] = [
     name: "Naran & Babusar",
     slug: "naran-babusar",
     duration: 4,
+    vehicleDays: 4,
     direction: "ISB to ISB",
     city: "Shogran",
     minimumDays: 4,
