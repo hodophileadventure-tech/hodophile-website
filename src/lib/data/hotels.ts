@@ -484,6 +484,11 @@ export const hotels: Hotel[] = [
     rooms: [
       { name: "Standard Room", price: 15500 },
       { name: "Deluxe Room", price: 22000 },
+      {
+        name: "Superior Deluxe with Jacuzzi",
+        price: 32000,
+        image: "/images/destinations/bulj-al-swat-superior-deluxe.jpeg",
+      },
     ],
   },
   {

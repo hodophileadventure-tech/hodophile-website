@@ -593,16 +593,10 @@ export function MakeMyTripForm() {
                         <span className="text-red-600 font-bold">•</span>
                         <span>
                           <strong>{activity.name}</strong> ({activity.location})
-                          {activity.cost && (
-                            <span className="text-red-600 font-semibold"> +{activity.cost.toLocaleString('en-US')} PKR</span>
-                          )}
                         </span>
                       </li>
                     ))}
                 </ul>
-                <p className="text-sm text-red-700 mt-3 font-semibold">
-                  Total Jeep Cost: {mandatoryJeepCost.toLocaleString('en-US')} PKR
-                </p>
               </div>
             )}
 
