@@ -24,7 +24,8 @@ export interface Hotel {
     | "Shogran"
     | "Islamabad"
     | "Nathia Gali"
-    | "Naran";
+    | "Naran"
+    | "Chilas";
   rooms: Room[];
   seasons?: {
     peak?: string;
@@ -229,6 +230,38 @@ export const hotels: Hotel[] = [
     ],
   },
   {
+    id: "rockview-hotel-skardu",
+    name: "Rockview Hotel Skardu",
+    city: "Skardu",
+    rooms: [
+      { name: "Standard", price: 5000 },
+    ],
+  },
+  {
+    id: "mountain-view-hotel-skardu",
+    name: "Mountain View Hotel Skardu",
+    city: "Skardu",
+    rooms: [
+      { name: "Standard", price: 5000 },
+    ],
+  },
+  {
+    id: "dream-land-hotel-skardu",
+    name: "Dream Land Hotel Skardu",
+    city: "Skardu",
+    rooms: [
+      { name: "Standard", price: 5000 },
+    ],
+  },
+  {
+    id: "abbashah-hotel-skardu",
+    name: "Abbashah Hotel Skardu",
+    city: "Skardu",
+    rooms: [
+      { name: "Standard", price: 5000 },
+    ],
+  },
+  {
     id: "mulberry-hotel-hunza",
     name: "Mulberry Hotel Hunza",
     city: "Hunza",
@@ -336,6 +369,54 @@ export const hotels: Hotel[] = [
         low: 15000,
         high: 16500,
       },
+    ],
+  },
+  {
+    id: "the-consorts-resort-hunza",
+    name: "The Consorts Resort Hunza",
+    city: "Hunza",
+    rooms: [
+      { name: "Deluxe", price: 25000 },
+      { name: "Contemporary With Balcony", price: 35000 },
+      { name: "Exclusive With Infinity View & Balcony", price: 45000 },
+    ],
+  },
+  {
+    id: "al-barakaat-hotel-hunza",
+    name: "Al-Barakaat Hotel Hunza",
+    city: "Hunza",
+    seasons: {
+      low: "May",
+    },
+    rooms: [
+      { name: "Single Bed (1 Person, Breakfast, WiFi)", price: 5000 },
+      { name: "Double Room (1 Master, Breakfast, WiFi)", price: 6000 },
+      { name: "Twin Bed (2 Singles, Breakfast, WiFi)", price: 6000 },
+      { name: "Deluxe Room (1 Master + 1 Single, Breakfast, WiFi)", price: 8000 },
+    ],
+  },
+  {
+    id: "hunza-bliss-hunza",
+    name: "Hunza Bliss",
+    city: "Hunza",
+    rooms: [
+      { name: "Standard Room (1 Master + 1 Sofa Bed)", price: 8000 },
+      { name: "Standard Triple (1 Master + 1 Single Bed)", price: 8500 },
+      { name: "Standard Family (2 Master + 1 Single Bed)", price: 10500 },
+      { name: "Deluxe Room (1 Master + 1 Sofa Bed)", price: 11500 },
+      { name: "Deluxe Triple (1 Master + 1 Single Bed)", price: 12000 },
+      { name: "Deluxe Family (2 Master + 1 Single Bed)", price: 14000 },
+      { name: "Deluxe Family Suite (2 Splendid Large Size Rooms, upto 7-9 persons)", price: 20000 },
+      { name: "Executive Family Room (2 King-Sized Master Beds + 1 Sofa Bed, Mountain View)", price: 18500 },
+      { name: "Executive Family Suite (2 Splendid Large Rooms, 2 Private Washrooms, Upto 9-10 persons)", price: 35500 },
+    ],
+  },
+  {
+    id: "sun-rise-hotel-chilas",
+    name: "Sun Rise Hotel Chilas",
+    city: "Chilas",
+    rooms: [
+      { name: "Standard Room", price: 5000 },
     ],
   },
   {
@@ -546,6 +627,49 @@ export const hotels: Hotel[] = [
       { name: "Triple Bed (3 persons, Breakfast included)", low: 11500, high: 22000 },
       { name: "Four Bed (4 persons, Breakfast included)", low: 12500, high: 24000 },
       { name: "Suite Room (7 persons, Breakfast included)", low: 17500, high: 32000 },
+    ],
+  },
+  {
+    id: "hotel-mount-feast-naran",
+    name: "Hotel Mount Feast Naran",
+    city: "Naran",
+    rooms: [
+      { name: "Deluxe w/o balcony", price: 13000 },
+      { name: "Deluxe with balcony", price: 14500 },
+      { name: "Executive room", price: 18500 },
+      { name: "Executive addon", price: 20000 },
+      { name: "Triplet room", price: 20000 },
+      { name: "Quad room", price: 24000 },
+      { name: "Family room", price: 26000 },
+      { name: "Presidential Suite", price: 44000 },
+      { name: "Executive Suite", price: 35000 },
+    ],
+  },
+  {
+    id: "riviera-resort-naran",
+    name: "Riviera Resort Naran",
+    city: "Naran",
+    seasons: {
+      low: "May, Aug - Nov",
+      high: "Jun - Aug",
+    },
+    rooms: [
+      { name: "Standard Room (1 Master Bed, Breakfast)", low: 10000, high: 15000 },
+      { name: "Master Suite (1 Bed, Living Room, Terrace, Breakfast)", low: 25000, high: 30000 },
+      { name: "Family Deluxe Room River View (1 Master + 1 Single, Terrace, Breakfast)", low: 18000, high: 22000 },
+      { name: "Family Deluxe Room Mountain View (1 Master + 1 Single, Terrace, Breakfast)", low: 15000, high: 20000 },
+      { name: "VIP Deluxe Room River View (1 Master + 1 Single + 4 Person Sitting, Spacious, Terrace, Breakfast)", low: 22000, high: 27000 },
+      { name: "Royal Suite/Apartment River View (2 Bed Rooms, Lounge with 12 Sofa Seats, 10 Seater Dining Table, Terrace, Breakfast)", low: 40000, high: 55000 },
+      { name: "VIP Suite/Apartment Mountain View (3 Bed Rooms, Lounge with 12 Sofa Seats, 10 Seater Dining Table, Terrace, Breakfast)", low: 45000, high: 60000 },
+      { name: "Executive Suite/Apartment River View (3 Bed Rooms, Lounge with 14 Sofa Seats, 12 Seater Dining Table, Terrace, Breakfast)", low: 55000, high: 70000 },
+    ],
+  },
+  {
+    id: "kings-inn-naran",
+    name: "Kings Inn Naran",
+    city: "Naran",
+    rooms: [
+      { name: "Standard Room", price: 7000 },
     ],
   },
 ];

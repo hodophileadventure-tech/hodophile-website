@@ -42,6 +42,16 @@ export const routeDistances: RouteDistance[] = [
     distance: 2500, // Islamabad-based round trip distance
     description: "Islamabad → Chilas → Skardu → Hunza → Naran → Islamabad",
   },
+  {
+    routeId: "skardu-shigar-shangrila-10days",
+    distance: 1850, // Islamabad-based round trip distance
+    description: "Islamabad → Chilas → Skardu → Shigar → Shangrila → Naran → Islamabad",
+  },
+  {
+    routeId: "naran-hunza-naltar-10days",
+    distance: 1550, // Islamabad-based round trip distance
+    description: "Islamabad → Chilas → Naltar Valley → Hunza → Naran → Islamabad",
+  },
 ];
 
 export function getRouteDistance(routeId: string): number | undefined {

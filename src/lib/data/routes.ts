@@ -141,6 +141,46 @@ export const routes: Route[] = [
       { name: "Coaster 5C", price: 364000 },
     ],
   },
+  {
+    id: "skardu-shigar-shangrila-10days",
+    name: "Skardu, Shigar, & Shangrila (Group Tour)",
+    slug: "skardu-shigar-shangrila",
+    duration: 10,
+    vehicleDays: 6,
+    direction: "Karachi to Karachi / ISB to ISB",
+    city: "Skardu",
+    minimumDays: 10,
+    itinerary: "Day 1-2: Bus/Train to ISB | Day 3: ISB to Chilas | Days 4-7: Skardu/Shigar (4 days) | Day 8: Naran | Day 9: Return to ISB | Day 10: Arrive Karachi",
+    vehicles: [
+      { name: "Toyota Corolla", price: 123000 }, // 6 days vehicle use
+      { name: "Honda BRV", price: 142500 },
+      { name: "Prado", price: 253500 },
+      { name: "Grand Cabin Petrol", price: 194947 },
+      { name: "Grand Cabin Diesel", price: 194947 },
+      { name: "Coaster 4C", price: 269000 },
+      { name: "Coaster 5C", price: 281500 },
+    ],
+  },
+  {
+    id: "naran-hunza-naltar-10days",
+    name: "Naran, Hunza, & Naltar (Group Tour)",
+    slug: "naran-hunza-naltar",
+    duration: 10,
+    vehicleDays: 5,
+    direction: "Karachi to Karachi / ISB to ISB",
+    city: "Multi-City",
+    minimumDays: 10,
+    itinerary: "Day 1-2: Bus/Train to ISB | Day 3: ISB to Chilas | Days 4-7: Naltar/Hunza/Naran (5 days) | Day 8: Return to ISB | Day 9: Bus/Train departure | Day 10: Arrive Karachi",
+    vehicles: [
+      { name: "Toyota Corolla", price: 110000 }, // 5 days vehicle use, 1550 KM
+      { name: "Honda BRV", price: 130000 },
+      { name: "Prado", price: 232000 },
+      { name: "Grand Cabin Petrol", price: 177000 },
+      { name: "Grand Cabin Diesel", price: 177000 },
+      { name: "Coaster 4C", price: 247000 },
+      { name: "Coaster 5C", price: 258000 },
+    ],
+  },
 ];
 
 export function getRouteById(id: string): Route | undefined {
