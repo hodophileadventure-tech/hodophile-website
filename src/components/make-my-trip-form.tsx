@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
-import { routes } from "@/lib/data/routes";
+import { routes, type Route } from "@/lib/data/routes";
 import { PriceSummary } from "./price-summary";
 
 export function MakeMyTripForm() {
