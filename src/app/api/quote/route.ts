@@ -17,13 +17,12 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as QuoteRequestBody;
 
     // Validate required fields
+    const isMultiCity = body.multiCityHotels && body.multiCityNights;
     const required = [
       "customerName",
       "customerPhone",
       "routeId",
       "vehicleName",
-      "hotelId",
-      "roomId",
       "numberOfRooms",
       "adults",
       "tripDate",
@@ -38,12 +37,31 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Validate hotel selection based on tour type
+    if (isMultiCity) {
+      if (!body.multiCityHotels || !body.multiCityNights) {
+        return NextResponse.json(
+          { error: "Missing multi-city hotel selections" },
+          { status: 400 }
+        );
+      }
+    } else {
+      if (!body.hotelId || !body.roomId) {
+        return NextResponse.json(
+          { error: "Missing required field: hotelId or roomId" },
+          { status: 400 }
+        );
+      }
+    }
+
     // Calculate quotation
     const quotation = calculateQuotation({
       routeId: body.routeId,
       vehicleName: body.vehicleName,
       hotelId: body.hotelId,
       roomId: body.roomId,
+      multiCityHotels: body.multiCityHotels,
+      multiCityNights: body.multiCityNights,
       numberOfRooms: body.numberOfRooms,
       adults: body.adults,
       kids: body.kids || 0,
@@ -60,7 +78,25 @@ export async function POST(request: NextRequest) {
 
     // Get route and hotel names for the sheet
     const route = getRouteById(body.routeId);
-    const hotel = getHotelById(body.hotelId);
+    let hotelName = "";
+    let roomType = "";
+
+    if (isMultiCity && body.multiCityHotels) {
+      // Build hotel list for multi-city tours
+      const hotelNames = Object.entries(body.multiCityHotels)
+        .map(([city, info]) => {
+          const hotel = getHotelById(info.hotelId);
+          return `${city}: ${hotel?.name || info.hotelId}`;
+        })
+        .join(" | ");
+      hotelName = hotelNames;
+      roomType = "Multiple";
+    } else if (body.hotelId) {
+      // Single-city tour
+      const hotel = getHotelById(body.hotelId);
+      hotelName = hotel?.name || body.hotelId;
+      roomType = body.roomId || "";
+    }
 
     // Save quotation to Google Sheet
     await saveQuotationToSheet({
@@ -71,8 +107,8 @@ export async function POST(request: NextRequest) {
       route: route?.name || body.routeId,
       destination: route?.name?.split("&")[0]?.trim() || "",
       vehicle: body.vehicleName,
-      hotel: hotel?.name || body.hotelId,
-      roomType: body.roomId,
+      hotel: hotelName,
+      roomType: roomType,
       numberOfRooms: body.numberOfRooms,
       adults: body.adults,
       kids: body.kids || 0,
