@@ -7,7 +7,8 @@ export interface Route {
   id: string;
   name: string;
   slug: string;
-  duration: number; // days
+  duration: number; // total days including travel
+  vehicleDays: number; // actual days vehicle is used/needed
   direction: string; // "ISB to ISB", "Karachi to Skardu", etc.
   city: "Skardu" | "Hunza" | "Swat" | "Kashmir" | "Khaplu" | "Shogran" | "Islamabad" | "Nathia Gali" | "Multi-City";
   minimumDays: number;
@@ -21,6 +22,7 @@ export const routes: Route[] = [
     name: "Skardu & Hunza",
     slug: "skardu-hunza",
     duration: 8,
+    vehicleDays: 8,
     direction: "ISB to ISB",
     city: "Skardu",
     minimumDays: 8,
@@ -39,6 +41,7 @@ export const routes: Route[] = [
     name: "Hunza & Naltar",
     slug: "hunza-naltar",
     duration: 6,
+    vehicleDays: 6,
     direction: "ISB to ISB",
     city: "Hunza",
     minimumDays: 6,
@@ -55,6 +58,7 @@ export const routes: Route[] = [
     name: "Skardu & Basho",
     slug: "skardu-basho",
     duration: 6,
+    vehicleDays: 6,
     direction: "ISB to ISB",
     city: "Skardu",
     minimumDays: 6,
@@ -71,6 +75,7 @@ export const routes: Route[] = [
     name: "Swat Kalam & Malam Jabba",
     slug: "swat-kalam-malam-jabba",
     duration: 4,
+    vehicleDays: 4,
     direction: "ISB to ISB",
     city: "Swat",
     minimumDays: 4,
@@ -87,6 +92,7 @@ export const routes: Route[] = [
     name: "Kashmir Arangkel & Taobat",
     slug: "kashmir-arangkel-taobat",
     duration: 5,
+    vehicleDays: 5,
     direction: "ISB to ISB",
     city: "Kashmir",
     minimumDays: 5,
@@ -119,18 +125,19 @@ export const routes: Route[] = [
     name: "Naran, Hunza, Skardu, Shigar & Deosai",
     slug: "naran-hunza-skardu-deosai",
     duration: 12,
+    vehicleDays: 8,
     direction: "Karachi to Karachi / ISB to ISB",
     city: "Multi-City",
     minimumDays: 12,
-    itinerary: "Islamabad → Chilas → Skardu (3 nights) → Hunza (2 nights) → Naran (1 night) → Islamabad",
+    itinerary: "Days 1-2: Bus/Train to ISB | Days 3-10: Vehicle tour (8 days) | Days 11-12: Bus/Train back",
     vehicles: [
-      { name: "Toyota Corolla", price: 232000 },
-      { name: "Honda BRV", price: 268000 },
-      { name: "Prado", price: 610000 },
-      { name: "Grand Cabin Petrol", price: 385000 },
-      { name: "Grand Cabin Diesel", price: 378000 },
-      { name: "Coaster 4C", price: 522000 },
-      { name: "Coaster 5C", price: 546000 },
+      { name: "Toyota Corolla", price: 155000 }, // 8 days actual touring
+      { name: "Honda BRV", price: 179000 },
+      { name: "Prado", price: 338000 },
+      { name: "Grand Cabin Petrol", price: 257000 },
+      { name: "Grand Cabin Diesel", price: 252000 },
+      { name: "Coaster 4C", price: 348000 },
+      { name: "Coaster 5C", price: 364000 },
     ],
   },
 ];

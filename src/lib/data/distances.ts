@@ -39,8 +39,8 @@ export const routeDistances: RouteDistance[] = [
   },
   {
     routeId: "naran-hunza-skardu-deosai-12days",
-    distance: 3200, // Comprehensive multi-city tour with Deosai, Shigar, all local explorations
-    description: "Islamabad → Chilas → Skardu → Hunza → Naran → Islamabad with extensive local travel and Deosai expedition",
+    distance: 2500, // Islamabad-based round trip distance
+    description: "Islamabad → Chilas → Skardu → Hunza → Naran → Islamabad",
   },
 ];
 

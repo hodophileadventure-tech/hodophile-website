@@ -1,8 +1,9 @@
-import { getRouteById, getVehiclePrice } from "./data/routes";
+import { getRouteById } from "./data/routes";
 import { getHotelById } from "./data/hotels";
 import { calculateJeepCost } from "./data/jeeps";
 import { getRouteDistance } from "./data/distances";
-import { currentFuelPrices, fuelConsumption } from "./data/fuel";
+import { getVehicleRate } from "./data/vehicleRates";
+import { currentFuelPrices } from "./data/fuel";
 import type { Room } from "./data/hotels";
 
 export interface QuotationInput {
@@ -51,19 +52,44 @@ function getSeasonFromDate(date: string): "peak" | "blossom" | "off" | "fixed" {
   return "off";
 }
 
-// Calculate transport cost using fixed vehicle rental prices from routes
+// Calculate transport cost using dynamic pricing: fuel cost + daily rental rate + toll/tax
 function calculateTransportCost(
   vehicleName: string,
-  routeId: string
+  routeId: string,
+  vehicleDays: number = 8 // Default 8 days for multi-city tours; adjust as needed
 ): number | null {
-  const vehiclePrice = getVehiclePrice(routeId, vehicleName);
-  if (!vehiclePrice) {
-    console.warn(`Vehicle price not found for: ${vehicleName}, route: ${routeId}`);
+  const vehicleRate = getVehicleRate(vehicleName);
+  if (!vehicleRate) {
+    console.warn(`Vehicle rate not found for: ${vehicleName}`);
     return null;
   }
 
-  console.debug(`Transport cost for ${vehicleName} on route ${routeId}: ${vehiclePrice} PKR`);
-  return vehiclePrice;
+  const distance = getRouteDistance(routeId);
+  if (!distance) {
+    console.warn(`Distance not found for route: ${routeId}`);
+    return null;
+  }
+
+  // Get fuel price based on vehicle fuel type
+  const fuelPrice =
+    vehicleRate.fuelType === "diesel"
+      ? currentFuelPrices.diesel
+      : currentFuelPrices.petrol;
+
+  // Calculate fuel cost
+  const fuelNeeded = distance / vehicleRate.consumption;
+  const fuelCost = Math.round(fuelNeeded * fuelPrice);
+
+  // Calculate rental cost
+  const rentalCost = vehicleRate.dailyRate * vehicleDays;
+
+  // Total transport cost (fuel + rental + toll/tax)
+  const totalCost = fuelCost + rentalCost + vehicleRate.tollTax;
+
+  console.debug(
+    `Transport: ${vehicleName} | Distance: ${distance}km | Consumption: ${vehicleRate.consumption}km/L | Fuel: ${fuelNeeded.toFixed(1)}L × ${fuelPrice}PKR = ${fuelCost}PKR | Rental: ${vehicleRate.dailyRate}PKR × ${vehicleDays}days = ${rentalCost}PKR | Toll/Tax: ${vehicleRate.tollTax}PKR | Total: ${totalCost}PKR`
+  );
+  return totalCost;
 }
 
 function getRoomPrice(room: Room, season: string): number {
@@ -107,8 +133,12 @@ export function calculateQuotation(
       return null;
     }
 
-    // Use fuel-based transport cost calculation
-    const transportCost = calculateTransportCost(input.vehicleName, input.routeId);
+    // Use dynamic transport cost calculation with vehicle rental rates
+    const transportCost = calculateTransportCost(
+      input.vehicleName,
+      input.routeId,
+      route.vehicleDays
+    );
     if (transportCost === null) {
       console.warn(`Transport cost calculation failed for vehicle: ${input.vehicleName}, route: ${input.routeId}`);
       return null;

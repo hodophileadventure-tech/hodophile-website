@@ -23,7 +23,8 @@ export interface Hotel {
     | "Khaplu"
     | "Shogran"
     | "Islamabad"
-    | "Nathia Gali";
+    | "Nathia Gali"
+    | "Naran";
   rooms: Room[];
   seasons?: {
     peak?: string;
@@ -530,6 +531,21 @@ export const hotels: Hotel[] = [
       { name: "Cozy View Room", low: 8999, high: 13999 },
       { name: "Deluxe Room (Heating +2500)", low: 10999, high: 14999 },
       { name: "Executive Room (Heating +2500)", low: 12999, high: 19999 },
+    ],
+  },
+  {
+    id: "swiss-wood-cottages-naran",
+    name: "Swiss Wood Cottages Naran",
+    city: "Naran",
+    seasons: {
+      low: "May, Sep - Oct",
+      high: "Jun - Aug",
+    },
+    rooms: [
+      { name: "Master Bed (2 persons, Breakfast included)", low: 10500, high: 21000 },
+      { name: "Triple Bed (3 persons, Breakfast included)", low: 11500, high: 22000 },
+      { name: "Four Bed (4 persons, Breakfast included)", low: 12500, high: 24000 },
+      { name: "Suite Room (7 persons, Breakfast included)", low: 17500, high: 32000 },
     ],
   },
 ];
