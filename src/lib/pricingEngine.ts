@@ -17,6 +17,7 @@ export interface QuotationInput {
   adults: number;
   kids: number;
   jeepAddons?: { id: string; quantity: number }[];
+  mandatoryJeepCost?: number; // Mandatory jeep cost for this route (e.g., Deosai for 12-day tour)
   tripDate: string; // ISO date string
 }
 
@@ -221,10 +222,18 @@ export function calculateQuotation(
 
     let jeepAddonsCost = 0;
     const jeepDetails: string[] = [];
+    
+    // Add mandatory jeep costs
+    if (input.mandatoryJeepCost && input.mandatoryJeepCost > 0) {
+      jeepAddonsCost += input.mandatoryJeepCost;
+      jeepDetails.push(`Mandatory jeep activity: ${input.mandatoryJeepCost}`);
+    }
+    
+    // Add optional jeep addons
     if (input.jeepAddons && input.jeepAddons.length > 0) {
-      jeepAddonsCost = calculateJeepCost(input.jeepAddons);
-      // You can enhance this to get addon names
-      jeepDetails.push(`Jeep addons: ${input.jeepAddons.length} selected`);
+      const additionalJeepCost = calculateJeepCost(input.jeepAddons);
+      jeepAddonsCost += additionalJeepCost;
+      jeepDetails.push(`Additional jeep addons: ${input.jeepAddons.length} selected`);
     }
 
     const subtotal = transportCost + hotelCost + jeepAddonsCost;

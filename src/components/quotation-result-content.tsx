@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { routes } from "@/lib/data/routes";
 import { getHotelsByCity } from "@/lib/data/hotels";
 import { formatPKR } from "@/lib/pricingEngine";
+import { getRouteActivities } from "@/lib/data/routeActivities";
 
 export function QuotationResultContent() {
   const searchParams = useSearchParams();
@@ -42,19 +43,53 @@ export function QuotationResultContent() {
   }
 
   const route = routes.find((r) => r.id === quotation.routeId);
-  const hotels = getHotelsByCity(quotation.destination);
-  const hotel = hotels.find((h) => h.id === quotation.hotelId);
+  
+  // Handle multi-city or single-city hotels
+  let hotelDisplay = "";
+  let hotel = null;
+  
+  if (quotation.multiCityHotels && quotation.multiCityNights) {
+    // Multi-city tour
+    const hotelNames = Object.entries(quotation.multiCityHotels)
+      .map(([city, info]: [string, any]) => {
+        const cityHotels = getHotelsByCity(city);
+        const h = cityHotels.find((hotel) => hotel.id === info.hotelId);
+        return h?.name || info.hotelId;
+      })
+      .join(" + ");
+    hotelDisplay = hotelNames;
+  } else {
+    // Single-city tour
+    const hotels = getHotelsByCity(quotation.destination);
+    hotel = hotels.find((h) => h.id === quotation.hotelId);
+    hotelDisplay = hotel?.name || "Unknown";
+  }
 
-  // Generate day-by-day itinerary
+  // Generate day-by-day itinerary from route activities if available
   const generateItinerary = () => {
+    const routeActivityData = getRouteActivities(quotation.routeId);
+    
+    if (routeActivityData) {
+      // Use detailed route activities if available
+      return routeActivityData.activities.map((activity) => ({
+        day: activity.day,
+        title: activity.name,
+        description: activity.description,
+        isJeepRequired: activity.isJeepRequired,
+        location: activity.location,
+        cost: activity.cost,
+      }));
+    }
+    
+    // Fallback to simple itinerary if no route activities found
     const days = [];
-    const routeName = route?.name || "Tour";
     const duration = route?.duration || 5;
 
     days.push({
       day: 1,
       title: "Arrival",
-      description: `Arrive at Islamabad. Drive to ${quotation.destination}. Check-in at ${hotel?.name || "hotel"}.`,
+      description: `Arrive at Islamabad. Drive to ${quotation.destination}. Check-in at hotel.`,
+      isJeepRequired: false,
     });
 
     for (let i = 2; i < duration; i++) {
@@ -62,13 +97,15 @@ export function QuotationResultContent() {
         day: i,
         title: `Exploration Day ${i - 1}`,
         description: `Full day exploration of ${quotation.destination}. Visit local attractions and scenic spots.`,
+        isJeepRequired: false,
       });
     }
 
     days.push({
       day: duration,
       title: "Departure",
-      description: `Check-out from ${hotel?.name || "hotel"}. Drive back to Islamabad.`,
+      description: `Check-out from hotel. Drive back to Islamabad.`,
+      isJeepRequired: false,
     });
 
     return days;
@@ -96,12 +133,34 @@ export function QuotationResultContent() {
             {itinerary.map((dayItem, index) => (
               <div
                 key={index}
-                className="border-l-4 border-[#fcc000] pl-6 py-2"
+                className={`border-l-4 pl-6 py-3 rounded-r ${
+                  dayItem.isJeepRequired
+                    ? "border-l-red-500 bg-red-50"
+                    : "border-l-[#fcc000] bg-white"
+                }`}
               >
-                <h3 className="font-semibold text-stone-900">
-                  Day {dayItem.day}: {dayItem.title}
-                </h3>
-                <p className="text-stone-600 text-sm mt-1">{dayItem.description}</p>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-stone-900 flex items-center gap-2">
+                      Day {dayItem.day}: {dayItem.title}
+                      {dayItem.isJeepRequired && (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-200 text-red-700 text-xs font-bold rounded">
+                          🚙 JEEP REQUIRED
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-stone-600 text-sm mt-2">{dayItem.description}</p>
+                    {dayItem.location && (
+                      <p className="text-stone-500 text-xs mt-1">📍 {dayItem.location}</p>
+                    )}
+                  </div>
+                  {dayItem.isJeepRequired && dayItem.cost && (
+                    <div className="text-right">
+                      <p className="text-xs text-stone-600">Jeep Cost</p>
+                      <p className="font-bold text-red-600">+{formatPKR(dayItem.cost)}</p>
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -142,7 +201,7 @@ export function QuotationResultContent() {
               <div>
                 <p className="text-sm text-stone-600">Hotel</p>
                 <p className="text-lg font-semibold text-stone-900">
-                  {hotel?.name || "Unknown"}
+                  {hotelDisplay}
                 </p>
               </div>
               <div>
@@ -167,11 +226,43 @@ export function QuotationResultContent() {
           </div>
         </div>
 
+        {/* Cost Breakdown */}
+        <div className="bg-white rounded-[15px] border border-white/20 shadow-[0_30px_90px_rgba(0,0,0,0.28)] p-8 mb-8">
+          <h2 className="font-serif text-2xl text-stone-900 mb-6">💰 Cost Breakdown</h2>
+          <div className="space-y-3">
+            <div className="flex justify-between text-stone-700">
+              <span>Transportation</span>
+              <span className="font-semibold">{formatPKR(quotation.transportCost || 0)}</span>
+            </div>
+            <div className="flex justify-between text-stone-700">
+              <span>Accommodation</span>
+              <span className="font-semibold">{formatPKR(quotation.hotelCost || 0)}</span>
+            </div>
+            {quotation.jeepAddonsCost > 0 && (
+              <div className="flex justify-between text-stone-700">
+                <span>Jeep Add-ons</span>
+                <span className="font-semibold">{formatPKR(quotation.jeepAddonsCost)}</span>
+              </div>
+            )}
+            <div className="border-t border-stone-200 pt-3 flex justify-between text-stone-700">
+              <span>Subtotal</span>
+              <span className="font-semibold">{formatPKR(quotation.subtotal || 0)}</span>
+            </div>
+            <div className="flex justify-between text-stone-700">
+              <span>Service Charge (30%)</span>
+              <span className="font-semibold">{formatPKR(quotation.markupAmount || 0)}</span>
+            </div>
+          </div>
+        </div>
+
         {/* Quotation Summary */}
         <div className="bg-[#fcc000]/10 rounded-[15px] border-2 border-[#fcc000] p-8 text-center">
           <p className="text-stone-600 text-sm mb-3">💰 Total Trip Cost</p>
           <p className="font-serif text-5xl text-[#fcc000] font-bold">
             {formatPKR(quotation.totalCost)}
+          </p>
+          <p className="text-stone-600 text-sm mt-3">
+            Per Person: {formatPKR(quotation.perPersonCost || 0)}
           </p>
           <p className="text-stone-600 text-sm mt-6">
             ✅ This quotation includes all accommodations, transportation, and services.

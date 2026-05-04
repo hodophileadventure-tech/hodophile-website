@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes, type Route } from "@/lib/data/routes";
+import { getMandatoryJeepCost, getRouteActivities } from "@/lib/data/routeActivities";
 import { PriceSummary } from "./price-summary";
 
 export function MakeMyTripForm() {
@@ -35,6 +36,8 @@ export function MakeMyTripForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitError, setSubmitError] = useState("");
+  const [mandatoryJeepCost, setMandatoryJeepCost] = useState(0);
+  const [routeActivities, setRouteActivities] = useState<any>(null);
 
   // Smart room selection based on price tier (not exact name matching)
   const selectRoomByCategory = (rooms: any[], category: string): string => {
@@ -209,6 +212,13 @@ export function MakeMyTripForm() {
       if (selectedRoute) {
         setAvailableVehicles(selectedRoute.vehicles);
         setVehicleName("");
+        
+        // Update mandatory jeep cost and route activities
+        const jeepCost = getMandatoryJeepCost(routeId);
+        setMandatoryJeepCost(jeepCost);
+        
+        const activities = getRouteActivities(routeId);
+        setRouteActivities(activities);
       }
     }
   }, [routeId]);
@@ -314,6 +324,7 @@ export function MakeMyTripForm() {
                   adults,
                   kids,
                   tripDate,
+                  mandatoryJeepCost,
                 });
                 setQuotation(calc);
               } else {
@@ -331,6 +342,7 @@ export function MakeMyTripForm() {
               adults,
               kids,
               tripDate,
+              mandatoryJeepCost,
             });
             setQuotation(calc);
           } else {
@@ -341,7 +353,7 @@ export function MakeMyTripForm() {
     } else {
       setQuotation(null);
     }
-  }, [tripDate, routeId, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels]);
+  }, [tripDate, routeId, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, mandatoryJeepCost]);
 
   const handleKidsCountChange = (value: number) => {
     setKids(value);
@@ -396,8 +408,24 @@ export function MakeMyTripForm() {
         adults,
         kids,
         tourType,
+        // Include full breakdown
+        transportCost: quotation.transportCost,
+        hotelCost: quotation.hotelCost,
+        jeepAddonsCost: quotation.jeepAddonsCost,
+        subtotal: quotation.subtotal,
+        markupAmount: quotation.markupAmount,
         totalCost: quotation.totalCost,
+        perPersonCost: quotation.perPersonCost,
+        // Include multi-city data
         multiCityHotels: isMultiCityTour() ? multiCityHotels : undefined,
+        multiCityNights: isMultiCityTour() && routeId in multiCityConfig 
+          ? Object.fromEntries(
+              multiCityConfig[routeId as keyof typeof multiCityConfig].cities.map((city, i) => [
+                city,
+                multiCityConfig[routeId as keyof typeof multiCityConfig].nights[i],
+              ])
+            )
+          : undefined,
       };
 
       // Encode data and redirect to result page
@@ -420,6 +448,7 @@ export function MakeMyTripForm() {
           customerName,
           customerPhone,
           tourType,
+          mandatoryJeepCost,
           multiCityHotels: isMultiCityTour() ? multiCityHotels : undefined,
         }),
       });
@@ -549,6 +578,33 @@ export function MakeMyTripForm() {
                 <option value="executive">🌟 Executive - Premium</option>
               </select>
             </label>
+
+            {/* Mandatory Jeep Activities Alert */}
+            {mandatoryJeepCost > 0 && routeActivities && (
+              <div className="bg-red-50 border-2 border-red-300 rounded-[15px] p-4">
+                <h3 className="font-semibold text-red-900 mb-2 flex items-center gap-2">
+                  🚙 Included Jeep Activities
+                </h3>
+                <ul className="space-y-2">
+                  {routeActivities.activities
+                    .filter((a: any) => a.isJeepRequired)
+                    .map((activity: any, idx: number) => (
+                      <li key={idx} className="text-sm text-red-800 flex items-start gap-2">
+                        <span className="text-red-600 font-bold">•</span>
+                        <span>
+                          <strong>{activity.name}</strong> ({activity.location})
+                          {activity.cost && (
+                            <span className="text-red-600 font-semibold"> +{activity.cost.toLocaleString('en-US')} PKR</span>
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                </ul>
+                <p className="text-sm text-red-700 mt-3 font-semibold">
+                  Total Jeep Cost: {mandatoryJeepCost.toLocaleString('en-US')} PKR
+                </p>
+              </div>
+            )}
 
             {/* Hotel & Vehicle Selection */}
             {!isMultiCityTour() ? (

@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
       kids: body.kids || 0,
       tripDate: body.tripDate,
       jeepAddons: body.jeepAddons,
+      mandatoryJeepCost: body.mandatoryJeepCost,
     });
 
     if (!quotation) {
