@@ -17,6 +17,7 @@ export function MakeMyTripForm() {
   const [hotelCategory, setHotelCategory] = useState("deluxe"); // standard, deluxe, executive
   const [hotelId, setHotelId] = useState("");
   const [roomId, setRoomId] = useState("");
+  const [multiCityHotels, setMultiCityHotels] = useState<Record<string, { hotelId: string; roomId: string }>>({});
   const [vehicleName, setVehicleName] = useState("");
   const [tourType, setTourType] = useState("private");
   const [numberOfRooms, setNumberOfRooms] = useState(1);
@@ -77,6 +78,41 @@ export function MakeMyTripForm() {
     return hotels.length > 0 ? hotels[0].id : "";
   };
 
+  // Multi-city itinerary configuration
+  const multiCityConfig: Record<string, { cities: string[]; nights: number[] }> = {
+    "naran-hunza-skardu-deosai-12days": {
+      cities: ["Islamabad", "Skardu", "Hunza", "Naran"],
+      nights: [0, 3, 2, 1], // Islamabad is for optional pre-tour stay
+    },
+  };
+
+  const isMultiCityTour = (): boolean => {
+    return multiCityConfig[routeId] !== undefined;
+  };
+
+  // Initialize multi-city hotels with defaults
+  const initializeMultiCityHotels = (route: Route) => {
+    const config = multiCityConfig[route.id];
+    if (config) {
+      const defaults: Record<string, { hotelId: string; roomId: string }> = {};
+      for (const city of config.cities) {
+        const hotelsForCity = getHotelsByCity(city);
+        if (hotelsForCity.length > 0) {
+          const defaultHotelId = hotelsForCity[0].id;
+          const defaultRoom = selectRoomByCategory(
+            hotelsForCity[0].rooms,
+            hotelCategory
+          );
+          defaults[city] = {
+            hotelId: defaultHotelId,
+            roomId: defaultRoom,
+          };
+        }
+      }
+      setMultiCityHotels(defaults);
+    }
+  };
+
   // Vehicle capacity mapping
   const vehicleCapacity: { [key: string]: { min: number; max: number; seats: number } } = {
     "Toyota Corolla": { min: 1, max: 4, seats: 4 },
@@ -120,13 +156,19 @@ export function MakeMyTripForm() {
     if (routeId) {
       const selectedRoute = routes.find((r) => r.id === routeId);
       if (selectedRoute) {
-        const hotels = getHotelsByCity(selectedRoute.city);
-        setAvailableHotels(hotels);
-        
-        // Auto-select first available hotel (users can change)
-        const defaultHotelId = getDefaultHotel(hotels);
-        setHotelId(defaultHotelId);
-        setRoomId("");
+        // Check if this is a multi-city tour
+        if (selectedRoute.city === "Multi-City") {
+          initializeMultiCityHotels(selectedRoute);
+          setHotelId(""); // Clear single-city hotel for multi-city tours
+        } else {
+          const hotels = getHotelsByCity(selectedRoute.city);
+          setAvailableHotels(hotels);
+
+          // Auto-select first available hotel (users can change)
+          const defaultHotelId = getDefaultHotel(hotels);
+          setHotelId(defaultHotelId);
+          setRoomId("");
+        }
       }
     }
   }, [routeId]);
@@ -163,22 +205,33 @@ export function MakeMyTripForm() {
 
   // Calculate quotation when key fields change
   useEffect(() => {
-    if (tripDate && routeId && hotelId && roomId && vehicleName && numberOfRooms > 0 && adults > 0) {
-      const calc = calculateQuotation({
-        routeId,
-        vehicleName,
-        hotelId,
-        roomId,
-        numberOfRooms,
-        adults,
-        kids,
-        tripDate,
-      });
-      setQuotation(calc);
+    if (tripDate && routeId && vehicleName && numberOfRooms > 0 && adults > 0) {
+      // For multi-city tours, use the primary city's first hotel for pricing engine
+      // (simplified calculation - in reality you might want a more complex pricing model)
+      const useHotelId = isMultiCityTour() 
+        ? Object.values(multiCityHotels)[0]?.hotelId || ""
+        : hotelId;
+      const useRoomId = isMultiCityTour()
+        ? Object.values(multiCityHotels)[0]?.roomId || ""
+        : roomId;
+
+      if (useHotelId && useRoomId) {
+        const calc = calculateQuotation({
+          routeId,
+          vehicleName,
+          hotelId: useHotelId,
+          roomId: useRoomId,
+          numberOfRooms,
+          adults,
+          kids,
+          tripDate,
+        });
+        setQuotation(calc);
+      }
     } else {
       setQuotation(null);
     }
-  }, [tripDate, routeId, hotelId, roomId, vehicleName, numberOfRooms, adults, kids]);
+  }, [tripDate, routeId, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels]);
 
   const handleKidsCountChange = (value: number) => {
     setKids(value);
@@ -206,8 +259,19 @@ export function MakeMyTripForm() {
 
       // Get route and hotel info for quotation result page
       const selectedRoute = routes.find((r) => r.id === routeId);
-      const selectedHotel = availableHotels.find((h) => h.id === hotelId);
-      const destination = selectedRoute?.city || "Destination";
+      const destination = selectedRoute?.city === "Multi-City" 
+        ? selectedRoute?.name || "Multi-City Destination"
+        : selectedRoute?.city || "Destination";
+
+      // For multi-city, collect all hotels
+      let primaryHotelId = hotelId;
+      let primaryRoomId = roomId;
+      
+      if (isMultiCityTour()) {
+        const firstHotel = Object.values(multiCityHotels)[0];
+        primaryHotelId = firstHotel?.hotelId || "";
+        primaryRoomId = firstHotel?.roomId || "";
+      }
 
       // Prepare quotation data for result page
       const quotationData = {
@@ -215,14 +279,15 @@ export function MakeMyTripForm() {
         startingPoint,
         routeId,
         destination,
-        hotelId,
-        roomType: roomId,
+        hotelId: primaryHotelId,
+        roomType: primaryRoomId,
         vehicleName,
         numberOfRooms,
         adults,
         kids,
         tourType,
         totalCost: quotation.totalCost,
+        multiCityHotels: isMultiCityTour() ? multiCityHotels : undefined,
       };
 
       // Encode data and redirect to result page
@@ -236,8 +301,8 @@ export function MakeMyTripForm() {
           tripDate,
           startingPoint,
           routeId,
-          hotelId,
-          roomId,
+          hotelId: primaryHotelId,
+          roomId: primaryRoomId,
           vehicleName,
           numberOfRooms,
           adults,
@@ -245,6 +310,7 @@ export function MakeMyTripForm() {
           customerName,
           customerPhone,
           tourType,
+          multiCityHotels: isMultiCityTour() ? multiCityHotels : undefined,
         }),
       });
 
@@ -375,47 +441,130 @@ export function MakeMyTripForm() {
             </label>
 
             {/* Hotel & Vehicle Selection */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <label className="grid gap-2 text-sm font-medium text-stone-900">
-                Select Hotel *
-                <select
-                  required
-                  value={hotelId}
-                  onChange={(e) => setHotelId(e.target.value)}
-                  disabled={!routeId}
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
-                >
-                  <option value="">
-                    {!routeId ? "Select route first" : availableHotels.length === 0 ? "No hotels available" : "Choose a hotel..."}
-                  </option>
-                  {availableHotels.map((hotel) => (
-                    <option key={hotel.id} value={hotel.id}>
-                      {hotel.name}
+            {!isMultiCityTour() ? (
+              <div className="grid md:grid-cols-2 gap-4">
+                <label className="grid gap-2 text-sm font-medium text-stone-900">
+                  Select Hotel *
+                  <select
+                    required
+                    value={hotelId}
+                    onChange={(e) => setHotelId(e.target.value)}
+                    disabled={!routeId}
+                    className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
+                  >
+                    <option value="">
+                      {!routeId ? "Select route first" : availableHotels.length === 0 ? "No hotels available" : "Choose a hotel..."}
                     </option>
-                  ))}
-                </select>
-              </label>
+                    {availableHotels.map((hotel) => (
+                      <option key={hotel.id} value={hotel.id}>
+                        {hotel.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-              <label className="grid gap-2 text-sm font-medium text-stone-900">
-                Room Type *
-                <select
-                  required
-                  value={roomId}
-                  onChange={(e) => setRoomId(e.target.value)}
-                  disabled={!hotelId}
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
-                >
-                  <option value="">
-                    {!hotelId ? "Select hotel first" : availableRooms.length === 0 ? "No rooms available" : "Choose a room..."}
-                  </option>
-                  {availableRooms.map((room) => (
-                    <option key={room.name} value={room.name}>
-                      {room.name}
+                <label className="grid gap-2 text-sm font-medium text-stone-900">
+                  Room Type *
+                  <select
+                    required
+                    value={roomId}
+                    onChange={(e) => setRoomId(e.target.value)}
+                    disabled={!hotelId}
+                    className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
+                  >
+                    <option value="">
+                      {!hotelId ? "Select hotel first" : availableRooms.length === 0 ? "No rooms available" : "Choose a room..."}
                     </option>
-                  ))}
-                </select>
-              </label>
-            </div>
+                    {availableRooms.map((room) => (
+                      <option key={room.name} value={room.name}>
+                        {room.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            ) : (
+              <div className="rounded-[15px] border border-amber-200 bg-amber-50 p-4">
+                <p className="text-sm font-semibold text-amber-900 mb-4">
+                  🏨 Multi-City Tour: Select Hotels for Each Destination
+                </p>
+                {multiCityConfig[routeId]?.cities.map((city) => {
+                  const hotelsForCity = getHotelsByCity(city);
+                  const currentSelection = multiCityHotels[city];
+                  const selectedHotel = hotelsForCity.find(
+                    (h) => h.id === currentSelection?.hotelId
+                  );
+                  const nights = multiCityConfig[routeId]?.nights[
+                    multiCityConfig[routeId]?.cities.indexOf(city)
+                  ];
+
+                  return (
+                    <div
+                      key={city}
+                      className="mb-4 pb-4 border-b border-amber-200 last:border-b-0"
+                    >
+                      <p className="text-xs uppercase tracking-widest text-amber-800 mb-3">
+                        {city}
+                        {nights && nights > 0 && ` • ${nights} night${nights > 1 ? "s" : ""}`}
+                      </p>
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <label className="grid gap-2 text-sm font-medium text-stone-900">
+                          Hotel {nights === 0 ? "(Optional)" : "*"}
+                          <select
+                            value={currentSelection?.hotelId || ""}
+                            onChange={(e) =>
+                              setMultiCityHotels({
+                                ...multiCityHotels,
+                                [city]: {
+                                  ...currentSelection,
+                                  hotelId: e.target.value,
+                                  roomId: "",
+                                },
+                              })
+                            }
+                            required={nights !== 0}
+                            className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                          >
+                            <option value="">Select hotel...</option>
+                            {hotelsForCity.map((hotel) => (
+                              <option key={hotel.id} value={hotel.id}>
+                                {hotel.name}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+
+                        <label className="grid gap-2 text-sm font-medium text-stone-900">
+                          Room Type {nights === 0 ? "" : "*"}
+                          <select
+                            value={currentSelection?.roomId || ""}
+                            onChange={(e) =>
+                              setMultiCityHotels({
+                                ...multiCityHotels,
+                                [city]: {
+                                  ...currentSelection,
+                                  roomId: e.target.value,
+                                },
+                              })
+                            }
+                            disabled={!currentSelection?.hotelId}
+                            required={nights !== 0}
+                            className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
+                          >
+                            <option value="">Select room...</option>
+                            {selectedHotel?.rooms.map((room) => (
+                              <option key={room.name} value={room.name}>
+                                {room.name}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             <label className="grid gap-2 text-sm font-medium text-stone-900">
               Select Vehicle *
@@ -535,7 +684,7 @@ export function MakeMyTripForm() {
               </div>
             )}
 
-            {!quotation && tripDate && routeId && hotelId && roomId && vehicleName && (
+            {!quotation && tripDate && routeId && vehicleName && (
               <div className="rounded-[15px] bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
                 ⚠️ Calculating quotation... If this persists, check browser console for details. Make sure all fields are properly selected.
               </div>

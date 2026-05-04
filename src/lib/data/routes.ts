@@ -9,9 +9,10 @@ export interface Route {
   slug: string;
   duration: number; // days
   direction: string; // "ISB to ISB", "Karachi to Skardu", etc.
-  city: "Skardu" | "Hunza" | "Swat" | "Kashmir" | "Khaplu" | "Shogran";
+  city: "Skardu" | "Hunza" | "Swat" | "Kashmir" | "Khaplu" | "Shogran" | "Islamabad" | "Nathia Gali" | "Multi-City";
   minimumDays: number;
   vehicles: VehiclePrice[];
+  itinerary?: string; // For multi-city tours
 }
 
 export const routes: Route[] = [
@@ -111,6 +112,25 @@ export const routes: Route[] = [
       { name: "Prado", price: 82000 },
       { name: "Grand Cabin", price: 86000 },
       { name: "Coaster", price: 117000 },
+    ],
+  },
+  {
+    id: "naran-hunza-skardu-deosai-12days",
+    name: "Naran, Hunza, Skardu, Shigar & Deosai",
+    slug: "naran-hunza-skardu-deosai",
+    duration: 12,
+    direction: "Karachi to Karachi / ISB to ISB",
+    city: "Multi-City",
+    minimumDays: 12,
+    itinerary: "Islamabad → Chilas → Skardu (3 nights) → Hunza (2 nights) → Naran (1 night) → Islamabad",
+    vehicles: [
+      { name: "Toyota Corolla", price: 232000 },
+      { name: "Honda BRV", price: 268000 },
+      { name: "Prado", price: 610000 },
+      { name: "Grand Cabin Petrol", price: 385000 },
+      { name: "Grand Cabin Diesel", price: 378000 },
+      { name: "Coaster 4C", price: 522000 },
+      { name: "Coaster 5C", price: 546000 },
     ],
   },
 ];

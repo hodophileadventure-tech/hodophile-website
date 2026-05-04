@@ -15,12 +15,22 @@ export interface Room {
 export interface Hotel {
   id: string;
   name: string;
-  city: "Skardu" | "Hunza" | "Swat" | "Kashmir" | "Khaplu" | "Shogran";
+  city:
+    | "Skardu"
+    | "Hunza"
+    | "Swat"
+    | "Kashmir"
+    | "Khaplu"
+    | "Shogran"
+    | "Islamabad"
+    | "Nathia Gali";
   rooms: Room[];
   seasons?: {
     peak?: string;
     blossom?: string;
     off?: string;
+    low?: string;
+    high?: string;
     [key: string]: string | undefined;
   };
 }
@@ -416,6 +426,110 @@ export const hotels: Hotel[] = [
       { name: "Standard", price: 13500 },
       { name: "Luxury Family", price: 39500 },
       { name: "Presidential Suite", price: 65500 },
+    ],
+  },
+  {
+    id: "hotel-index-islamabad",
+    name: "Hotel Index Islamabad",
+    city: "Islamabad",
+    rooms: [
+      { name: "Master", price: 6500 },
+      { name: "Triple", price: 7000 },
+      { name: "Quad", price: 7500 },
+      { name: "Penta", price: 8500 },
+    ],
+  },
+  {
+    id: "grand-hotel-islamabad",
+    name: "Grand Hotel Islamabad",
+    city: "Islamabad",
+    rooms: [
+      { name: "Standard Room (+tax)", price: 18000 },
+      { name: "Deluxe Room (+tax)", price: 20000 },
+      { name: "Executive Room (+tax)", price: 22000 },
+      { name: "Family Room (+tax)", price: 24000 },
+    ],
+  },
+  {
+    id: "hotel-redline-islamabad",
+    name: "Hotel Redline Islamabad",
+    city: "Islamabad",
+    rooms: [
+      { name: "Single", price: 7000 },
+      { name: "Double", price: 9360 },
+      { name: "Triple", price: 11700 },
+    ],
+  },
+  {
+    id: "sharda-lodge-kashmir",
+    name: "Sharda Lodge",
+    city: "Kashmir",
+    rooms: [
+      { name: "River Facing Room", price: 7500 },
+      { name: "Standard View Room", price: 6500 },
+    ],
+  },
+  {
+    id: "nathia-lodge-nathia-gali",
+    name: "Nathia Lodge",
+    city: "Nathia Gali",
+    rooms: [
+      { name: "Ground Floor", price: 15000 },
+      { name: "First Floor Family Deluxe", price: 18500 },
+      { name: "Second Floor Family Premium", price: 30000 },
+      { name: "Full Lodge", price: 45000 },
+    ],
+  },
+  {
+    id: "corner-cottage-arangkel",
+    name: "Hotel Corner Cottage Arangkel",
+    city: "Kashmir",
+    rooms: [
+      { name: "Standard", price: 7000 },
+      { name: "Deluxe", price: 8500 },
+      { name: "Executive", price: 9500 },
+    ],
+  },
+  {
+    id: "timber-resort-keran",
+    name: "Timber Resort Keran Kashmir",
+    city: "Kashmir",
+    rooms: [
+      { name: "Standard Room (Building, max 2 persons)", price: 5000 },
+      { name: "Deluxe Room (Building)", price: 12000 },
+      { name: "Resort 1-B/2-B/3-B", price: 20000 },
+      { name: "Resort 1-A/2-A/3-A/4-A/5-A", low: 30000, high: 35000 },
+    ],
+  },
+  {
+    id: "arangkel-wanderlust-resort",
+    name: "Arangkel Wanderlust Resort",
+    city: "Kashmir",
+    seasons: {
+      low: "Mar - May, Sep - Dec",
+      high: "Jun - Aug",
+    },
+    rooms: [
+      { name: "Rustic Cottage Room", low: 5999, high: 8999 },
+      { name: "Standard Room", low: 7999, high: 12999 },
+      { name: "Deluxe Room (Heating +2500)", low: 8999, high: 13999 },
+      { name: "Family Room (Heating +2500)", low: 10999, high: 15999 },
+      { name: "Executive Room (Heating +2500)", low: 12999, high: 19999 },
+    ],
+  },
+  {
+    id: "arangkel-wanderlust-resort-second",
+    name: "Arangkel Wanderlust Resort (Second Hotel)",
+    city: "Kashmir",
+    seasons: {
+      low: "Mar - May, Sep - Dec",
+      high: "Jun - Aug",
+    },
+    rooms: [
+      { name: "Cozy Room", low: 7999, high: 10999 },
+      { name: "Cozy View Room", low: 8999, high: 13999 },
+      { name: "Deluxe Room (Heating +2500)", low: 10999, high: 14999 },
+      { name: "Executive Room (Heating +2500)", low: 12999, high: 19999 },
     ],
   },
 ];
