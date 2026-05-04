@@ -90,6 +90,8 @@ export function QuotationResultContent() {
       title: "Arrival",
       description: `Arrive at Islamabad. Drive to ${quotation.destination}. Check-in at hotel.`,
       isJeepRequired: false,
+      location: quotation.destination || "",
+      cost: undefined,
     });
 
     for (let i = 2; i < duration; i++) {
@@ -98,6 +100,8 @@ export function QuotationResultContent() {
         title: `Exploration Day ${i - 1}`,
         description: `Full day exploration of ${quotation.destination}. Visit local attractions and scenic spots.`,
         isJeepRequired: false,
+        location: quotation.destination || "",
+        cost: undefined,
       });
     }
 
@@ -106,6 +110,8 @@ export function QuotationResultContent() {
       title: "Departure",
       description: `Check-out from hotel. Drive back to Islamabad.`,
       isJeepRequired: false,
+      location: "Islamabad",
+      cost: undefined,
     });
 
     return days;
