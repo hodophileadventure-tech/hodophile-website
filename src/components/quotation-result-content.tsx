@@ -232,35 +232,6 @@ export function QuotationResultContent() {
           </div>
         </div>
 
-        {/* Cost Breakdown */}
-        <div className="bg-white rounded-[15px] border border-white/20 shadow-[0_30px_90px_rgba(0,0,0,0.28)] p-8 mb-8">
-          <h2 className="font-serif text-2xl text-stone-900 mb-6">💰 Cost Breakdown</h2>
-          <div className="space-y-3">
-            <div className="flex justify-between text-stone-700">
-              <span>Transportation</span>
-              <span className="font-semibold">{formatPKR(quotation.transportCost || 0)}</span>
-            </div>
-            <div className="flex justify-between text-stone-700">
-              <span>Accommodation</span>
-              <span className="font-semibold">{formatPKR(quotation.hotelCost || 0)}</span>
-            </div>
-            {quotation.jeepAddonsCost > 0 && (
-              <div className="flex justify-between text-stone-700">
-                <span>Jeep Add-ons</span>
-                <span className="font-semibold">{formatPKR(quotation.jeepAddonsCost)}</span>
-              </div>
-            )}
-            <div className="border-t border-stone-200 pt-3 flex justify-between text-stone-700">
-              <span>Subtotal</span>
-              <span className="font-semibold">{formatPKR(quotation.subtotal || 0)}</span>
-            </div>
-            <div className="flex justify-between text-stone-700">
-              <span>Service Charge (30%)</span>
-              <span className="font-semibold">{formatPKR(quotation.markupAmount || 0)}</span>
-            </div>
-          </div>
-        </div>
-
         {/* Quotation Summary */}
         <div className="bg-[#fcc000]/10 rounded-[15px] border-2 border-[#fcc000] p-8 text-center">
           <p className="text-stone-600 text-sm mb-3">💰 Total Trip Cost</p>
