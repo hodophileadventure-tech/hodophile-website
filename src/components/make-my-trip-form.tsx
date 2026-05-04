@@ -78,6 +78,58 @@ export function MakeMyTripForm() {
     return hotels.length > 0 ? hotels[0].id : "";
   };
 
+  // Get cheapest hotel for a category
+  const selectHotelByCategory = (hotels: Hotel[], category: string): string => {
+    if (!hotels || hotels.length === 0) return "";
+
+    const hotelsWithPrice = hotels.map((hotel) => {
+      // Get first room's cheapest price
+      const firstRoom = hotel.rooms[0];
+      let price = 0;
+      if (firstRoom) {
+        price =
+          firstRoom.price ||
+          firstRoom.peak ||
+          firstRoom.high ||
+          (Array.isArray(firstRoom.high) ? firstRoom.high[0] : 0) ||
+          firstRoom.double ||
+          firstRoom.low ||
+          (Array.isArray(firstRoom.low) ? firstRoom.low[0] : 0) ||
+          0;
+      }
+      return { id: hotel.id, price };
+    });
+
+    // Sort by price
+    hotelsWithPrice.sort((a, b) => a.price - b.price);
+
+    if (category === "standard") {
+      // Cheapest hotel
+      return hotelsWithPrice[0]?.id || "";
+    } else if (category === "deluxe") {
+      // Middle-priced hotel
+      const midIndex = Math.floor(hotelsWithPrice.length / 2);
+      return hotelsWithPrice[midIndex]?.id || "";
+    } else if (category === "executive") {
+      // Most expensive hotel
+      return hotelsWithPrice[hotelsWithPrice.length - 1]?.id || "";
+    }
+
+    return hotelsWithPrice[0]?.id || "";
+  };
+
+  // Calculate rooms needed (max 4 people per room)
+  const calculateRoomsNeeded = (guestCount: number): number => {
+    return Math.ceil(guestCount / 4);
+  };
+
+  // Check if Islamabad hotel is mandatory
+  const isIslamabadHotelMandatory = (): boolean => {
+    if (!isMultiCityTour()) return false;
+    const startingPointLower = startingPoint.toLowerCase().trim();
+    return startingPointLower !== "islamabad" && startingPointLower !== "rawalpindi";
+  };
+
   // Multi-city itinerary configuration
   const multiCityConfig: Record<string, { cities: string[]; nights: number[] }> = {
     "naran-hunza-skardu-deosai-12days": {
@@ -98,11 +150,13 @@ export function MakeMyTripForm() {
       for (const city of config.cities) {
         const hotelsForCity = getHotelsByCity(city);
         if (hotelsForCity.length > 0) {
-          const defaultHotelId = hotelsForCity[0].id;
-          const defaultRoom = selectRoomByCategory(
-            hotelsForCity[0].rooms,
-            hotelCategory
-          );
+          // Use category-based hotel selection
+          const defaultHotelId = selectHotelByCategory(hotelsForCity, hotelCategory);
+          const selectedHotel = hotelsForCity.find((h) => h.id === defaultHotelId);
+          const defaultRoom = selectedHotel
+            ? selectRoomByCategory(selectedHotel.rooms, hotelCategory)
+            : "";
+
           defaults[city] = {
             hotelId: defaultHotelId,
             roomId: defaultRoom,
@@ -164,14 +218,26 @@ export function MakeMyTripForm() {
           const hotels = getHotelsByCity(selectedRoute.city);
           setAvailableHotels(hotels);
 
-          // Auto-select first available hotel (users can change)
-          const defaultHotelId = getDefaultHotel(hotels);
+          // Auto-select hotel based on category (not just first)
+          const defaultHotelId = selectHotelByCategory(hotels, hotelCategory);
           setHotelId(defaultHotelId);
           setRoomId("");
         }
       }
     }
-  }, [routeId]);
+  }, [routeId, hotelCategory]);
+
+  // Update hotel selections when hotel category changes
+  useEffect(() => {
+    if (isMultiCityTour()) {
+      initializeMultiCityHotels(routes.find((r) => r.id === routeId)!);
+    } else if (availableHotels.length > 0) {
+      // For single-city tours, update hotel selection based on category
+      const newHotelId = selectHotelByCategory(availableHotels, hotelCategory);
+      setHotelId(newHotelId);
+      setRoomId("");
+    }
+  }, [hotelCategory]);
 
   // Update available rooms when hotel changes
   useEffect(() => {
@@ -202,6 +268,12 @@ export function MakeMyTripForm() {
       }
     }
   }, [adults, kids, totalGuests, vehicleName, availableVehicles]);
+
+  // Auto-calculate rooms based on guest count (max 4 per room)
+  useEffect(() => {
+    const roomsNeeded = calculateRoomsNeeded(totalGuests);
+    setNumberOfRooms(roomsNeeded);
+  }, [adults, kids, totalGuests]);
 
   // Calculate quotation when key fields change
   useEffect(() => {
@@ -488,6 +560,15 @@ export function MakeMyTripForm() {
                 <p className="text-sm font-semibold text-amber-900 mb-4">
                   🏨 Multi-City Tour: Select Hotels for Each Destination
                 </p>
+                
+                {isIslamabadHotelMandatory() && (
+                  <div className="rounded-[10px] bg-red-50 border border-red-200 p-3 mb-4">
+                    <p className="text-xs font-semibold text-red-800">
+                      ⚠️ You're starting from {startingPoint}. Islamabad hotel stay is MANDATORY.
+                    </p>
+                  </div>
+                )}
+
                 {multiCityConfig[routeId]?.cities.map((city) => {
                   const hotelsForCity = getHotelsByCity(city);
                   const currentSelection = multiCityHotels[city];
@@ -497,19 +578,25 @@ export function MakeMyTripForm() {
                   const nights = multiCityConfig[routeId]?.nights[
                     multiCityConfig[routeId]?.cities.indexOf(city)
                   ];
+                  const isMandatory = city === "Islamabad" && isIslamabadHotelMandatory();
+                  const isOptional = nights === 0 && !isMandatory;
 
                   return (
                     <div
                       key={city}
-                      className="mb-4 pb-4 border-b border-amber-200 last:border-b-0"
+                      className={`mb-4 pb-4 border-b border-amber-200 last:border-b-0 ${
+                        isMandatory ? "rounded-[10px] bg-red-50 p-3 border border-red-200" : ""
+                      }`}
                     >
                       <p className="text-xs uppercase tracking-widest text-amber-800 mb-3">
                         {city}
                         {nights && nights > 0 && ` • ${nights} night${nights > 1 ? "s" : ""}`}
+                        {isMandatory && " • REQUIRED"}
+                        {isOptional && " • (Optional)"}
                       </p>
                       <div className="grid md:grid-cols-2 gap-3">
                         <label className="grid gap-2 text-sm font-medium text-stone-900">
-                          Hotel {nights === 0 ? "(Optional)" : "*"}
+                          Hotel {isMandatory ? "* REQUIRED" : nights === 0 ? "(Optional)" : "*"}
                           <select
                             value={currentSelection?.hotelId || ""}
                             onChange={(e) =>
@@ -522,8 +609,10 @@ export function MakeMyTripForm() {
                                 },
                               })
                             }
-                            required={nights !== 0}
-                            className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                            required={nights !== 0 || isMandatory}
+                            className={`rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 ${
+                              isMandatory ? "border-red-300 focus:ring-red-200" : ""
+                            }`}
                           >
                             <option value="">Select hotel...</option>
                             {hotelsForCity.map((hotel) => (
@@ -535,7 +624,7 @@ export function MakeMyTripForm() {
                         </label>
 
                         <label className="grid gap-2 text-sm font-medium text-stone-900">
-                          Room Type {nights === 0 ? "" : "*"}
+                          Room Type {isMandatory ? "* REQUIRED" : nights === 0 ? "" : "*"}
                           <select
                             value={currentSelection?.roomId || ""}
                             onChange={(e) =>
@@ -548,8 +637,10 @@ export function MakeMyTripForm() {
                               })
                             }
                             disabled={!currentSelection?.hotelId}
-                            required={nights !== 0}
-                            className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
+                            required={nights !== 0 || isMandatory}
+                            className={`rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 ${
+                              isMandatory ? "border-red-300 focus:ring-red-200" : ""
+                            }`}
                           >
                             <option value="">Select room...</option>
                             {selectedHotel?.rooms.map((room) => (
@@ -613,19 +704,11 @@ export function MakeMyTripForm() {
             {/* Guest & Room Details */}
             <div className="grid md:grid-cols-3 gap-4">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
-                Number of Rooms *
-                <select
-                  required
-                  value={numberOfRooms}
-                  onChange={(e) => setNumberOfRooms(parseInt(e.target.value))}
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                >
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <option key={n} value={n}>
-                      {n} {n === 1 ? "Room" : "Rooms"}
-                    </option>
-                  ))}
-                </select>
+                Number of Rooms (Auto-Calculated)
+                <div className="rounded-[15px] border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-900">
+                  <div className="font-semibold">{numberOfRooms} {numberOfRooms === 1 ? "Room" : "Rooms"}</div>
+                  <div className="text-xs text-stone-600 mt-1">4 people max/room</div>
+                </div>
               </label>
 
               <label className="grid gap-2 text-sm font-medium text-stone-900">
