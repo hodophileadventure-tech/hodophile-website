@@ -136,6 +136,14 @@ export function MakeMyTripForm() {
       cities: ["Islamabad", "Skardu", "Hunza", "Naran"],
       nights: [0, 3, 2, 1], // Islamabad is for optional pre-tour stay
     },
+    "skardu-shigar-shangrila-10days": {
+      cities: ["Chilas", "Skardu", "Naran"],
+      nights: [1, 4, 1], // Day 3: Chilas, Days 4-7: Skardu, Day 8: Naran
+    },
+    "naran-hunza-naltar-10days": {
+      cities: ["Chilas", "Hunza", "Naran"],
+      nights: [1, 3, 1], // Day 3: Chilas, Days 4-7: Hunza/Naltar, Day 8: Naran
+    },
   };
 
   const isMultiCityTour = (): boolean => {
@@ -278,27 +286,57 @@ export function MakeMyTripForm() {
   // Calculate quotation when key fields change
   useEffect(() => {
     if (tripDate && routeId && vehicleName && numberOfRooms > 0 && adults > 0) {
-      // For multi-city tours, use the primary city's first hotel for pricing engine
-      // (simplified calculation - in reality you might want a more complex pricing model)
-      const useHotelId = isMultiCityTour() 
-        ? Object.values(multiCityHotels)[0]?.hotelId || ""
-        : hotelId;
-      const useRoomId = isMultiCityTour()
-        ? Object.values(multiCityHotels)[0]?.roomId || ""
-        : roomId;
+      if (routeId) {
+        const selectedRoute = routes.find((r) => r.id === routeId);
+        if (selectedRoute) {
+          // Check if this is a multi-city tour
+          if (isMultiCityTour() && selectedRoute.city === "Multi-City") {
+            // Build multiCityNights from config
+            const config = multiCityConfig[routeId];
+            if (config) {
+              const multiCityNights: Record<string, number> = {};
+              config.cities.forEach((city, index) => {
+                multiCityNights[city] = config.nights[index];
+              });
 
-      if (useHotelId && useRoomId) {
-        const calc = calculateQuotation({
-          routeId,
-          vehicleName,
-          hotelId: useHotelId,
-          roomId: useRoomId,
-          numberOfRooms,
-          adults,
-          kids,
-          tripDate,
-        });
-        setQuotation(calc);
+              // Check if all hotels are selected
+              const allHotelsSelected = config.cities.every(
+                (city) => multiCityHotels[city]?.hotelId && multiCityHotels[city]?.roomId
+              );
+
+              if (allHotelsSelected) {
+                const calc = calculateQuotation({
+                  routeId,
+                  vehicleName,
+                  multiCityHotels,
+                  multiCityNights,
+                  numberOfRooms,
+                  adults,
+                  kids,
+                  tripDate,
+                });
+                setQuotation(calc);
+              } else {
+                setQuotation(null);
+              }
+            }
+          } else if (hotelId && roomId) {
+            // Single-city tour
+            const calc = calculateQuotation({
+              routeId,
+              vehicleName,
+              hotelId,
+              roomId,
+              numberOfRooms,
+              adults,
+              kids,
+              tripDate,
+            });
+            setQuotation(calc);
+          } else {
+            setQuotation(null);
+          }
+        }
       }
     } else {
       setQuotation(null);

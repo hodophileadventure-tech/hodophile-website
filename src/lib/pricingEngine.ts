@@ -9,8 +9,10 @@ import type { Room } from "./data/hotels";
 export interface QuotationInput {
   routeId: string;
   vehicleName: string;
-  hotelId: string;
-  roomId: string; // identifier for the selected room
+  hotelId?: string;
+  roomId?: string; // identifier for the selected room
+  multiCityHotels?: Record<string, { hotelId: string; roomId: string }>;
+  multiCityNights?: Record<string, number>; // nights for each city
   numberOfRooms: number;
   adults: number;
   kids: number;
@@ -144,30 +146,78 @@ export function calculateQuotation(
       return null;
     }
 
-    const hotel = getHotelById(input.hotelId);
-    if (!hotel) {
-      console.warn(`Hotel not found: ${input.hotelId}`);
+    // Handle multi-city hotels or single hotel
+    let hotelCost = 0;
+    let hotelName = "Unknown";
+
+    if (input.multiCityHotels && input.multiCityNights) {
+      // Multi-city tour: calculate costs for each city
+      const season = getSeasonFromDate(input.tripDate);
+      let totalHotelCost = 0;
+      const hotelNames: string[] = [];
+
+      for (const [city, nights] of Object.entries(input.multiCityNights)) {
+        const cityHotelInfo = input.multiCityHotels[city];
+        if (!cityHotelInfo) continue;
+
+        const hotel = getHotelById(cityHotelInfo.hotelId);
+        if (!hotel) {
+          console.warn(`Hotel not found for city ${city}: ${cityHotelInfo.hotelId}`);
+          continue;
+        }
+
+        const selectedRoom = hotel.rooms.find((r) => r.name === cityHotelInfo.roomId);
+        if (!selectedRoom) {
+          console.warn(`Room not found: ${cityHotelInfo.roomId} in hotel ${hotel.name}`);
+          continue;
+        }
+
+        const roomPrice = getRoomPrice(selectedRoom, season);
+        if (roomPrice === 0) {
+          console.warn(`Room price is 0 for: ${selectedRoom.name}, season: ${season}`);
+          continue;
+        }
+
+        const cityCost = roomPrice * input.numberOfRooms * nights;
+        totalHotelCost += cityCost;
+        hotelNames.push(`${hotel.name} (${city})`);
+
+        console.debug(`City ${city}: ${selectedRoom.name} @ ${roomPrice} × ${input.numberOfRooms} rooms × ${nights} nights = ${cityCost}`);
+      }
+
+      hotelCost = totalHotelCost;
+      hotelName = hotelNames.join(" + ");
+    } else if (input.hotelId && input.roomId) {
+      // Single-city tour
+      const hotel = getHotelById(input.hotelId);
+      if (!hotel) {
+        console.warn(`Hotel not found: ${input.hotelId}`);
+        return null;
+      }
+
+      const selectedRoom = hotel.rooms.find((r) => r.name === input.roomId);
+      if (!selectedRoom) {
+        console.warn(`Room not found: ${input.roomId} in hotel ${hotel.name}`);
+        console.debug(`Available rooms:`, hotel.rooms.map(r => r.name));
+        return null;
+      }
+
+      const season = getSeasonFromDate(input.tripDate);
+      const roomPrice = getRoomPrice(selectedRoom, season);
+
+      if (roomPrice === 0) {
+        console.warn(`Room price is 0 for: ${selectedRoom.name}, season: ${season}`);
+        return null;
+      }
+
+      // Calculate nights: for an 8-day trip, that's 7 nights (duration - 1)
+      const numberOfNights = Math.max(1, route.duration - 1);
+      hotelCost = roomPrice * input.numberOfRooms * numberOfNights;
+      hotelName = hotel.name;
+    } else {
+      console.warn(`No hotel information provided for quotation`);
       return null;
     }
-
-    const selectedRoom = hotel.rooms.find((r) => r.name === input.roomId);
-    if (!selectedRoom) {
-      console.warn(`Room not found: ${input.roomId} in hotel ${hotel.name}`);
-      console.debug(`Available rooms:`, hotel.rooms.map(r => r.name));
-      return null;
-    }
-
-    const season = getSeasonFromDate(input.tripDate);
-    const roomPrice = getRoomPrice(selectedRoom, season);
-
-    if (roomPrice === 0) {
-      console.warn(`Room price is 0 for: ${selectedRoom.name}, season: ${season}`);
-      return null;
-    }
-
-    // Calculate nights: for an 8-day trip, that's 7 nights (duration - 1)
-    const numberOfNights = Math.max(1, route.duration - 1);
-    const hotelCost = roomPrice * input.numberOfRooms * numberOfNights;
 
     let jeepAddonsCost = 0;
     const jeepDetails: string[] = [];
@@ -188,7 +238,7 @@ export function calculateQuotation(
     const perPersonCost =
       numberOfGuests > 0 ? Math.round(totalCost / numberOfGuests) : 0;
 
-    console.log(`Quotation calculated successfully - Transport: ${transportCost}, Hotel: ${hotelCost} (${roomPrice} × ${input.numberOfRooms} room(s) × ${numberOfNights} night(s)), Total: ${totalCost}`);
+    console.log(`Quotation calculated successfully - Transport: ${transportCost}, Hotel: ${hotelCost}, Total: ${totalCost}`);
 
     return {
       transportCost,
@@ -201,8 +251,8 @@ export function calculateQuotation(
       details: {
         route: route.name,
         vehicle: input.vehicleName,
-        hotel: hotel.name,
-        roomType: selectedRoom.name,
+        hotel: hotelName,
+        roomType: input.roomId || "Multiple",
         numberOfRooms: input.numberOfRooms,
         numberOfGuests,
         jeepAddonsDetails: jeepDetails,
