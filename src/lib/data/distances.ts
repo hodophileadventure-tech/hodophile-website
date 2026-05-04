@@ -37,6 +37,11 @@ export const routeDistances: RouteDistance[] = [
     distance: 1200, // Naran and Babusar pass exploration
     description: "Islamabad to Naran, Babusar and back with local travel",
   },
+  {
+    routeId: "naran-hunza-skardu-deosai-12days",
+    distance: 3200, // Comprehensive multi-city tour with Deosai, Shigar, all local explorations
+    description: "Islamabad → Chilas → Skardu → Hunza → Naran → Islamabad with extensive local travel and Deosai expedition",
+  },
 ];
 
 export function getRouteDistance(routeId: string): number | undefined {
