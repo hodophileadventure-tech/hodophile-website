@@ -134,7 +134,7 @@ export function SiteHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b-4 border-[#fcc000] bg-[#fbfaf7]/95 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl">
-      <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-2.5 lg:gap-3 lg:px-8">
+      <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-1.5 px-4 py-1.5 lg:gap-2 lg:px-8">
         <nav className="hidden items-center justify-end gap-0.5 lg:flex">
           {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
         </nav>
@@ -148,7 +148,7 @@ export function SiteHeader() {
             alt="Hodophile Adventures"
             width={520}
             height={282}
-            className={`h-20 w-auto max-w-none drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition group-hover:scale-[1.02] lg:h-[5.4rem] ${
+            className={`h-16 w-auto max-w-none drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition group-hover:scale-[1.02] lg:h-[4.5rem] ${
               isTransparent ? "" : ""
             }`}
             priority
@@ -178,7 +178,7 @@ export function SiteHeader() {
               alt="Hodophile Adventures"
               width={360}
               height={195}
-              className="h-18 w-auto max-w-none drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)] transition group-hover:scale-[1.02]"
+              className="h-14 w-auto max-w-none drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)] transition group-hover:scale-[1.02]"
               priority
             />
           </Link>
