@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
+import type { QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes, type Route } from "@/lib/data/routes";
 import { getMandatoryJeepCost, getRouteActivities } from "@/lib/data/routeActivities";
@@ -36,6 +36,8 @@ export function MakeMyTripForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitError, setSubmitError] = useState("");
+  const [previewError, setPreviewError] = useState("");
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
   const [mandatoryJeepCost, setMandatoryJeepCost] = useState(0);
   const [routeActivities, setRouteActivities] = useState<any>(null);
 
@@ -293,6 +295,35 @@ export function MakeMyTripForm() {
     setNumberOfRooms(roomsNeeded);
   }, [adults, kids, totalGuests]);
 
+  async function fetchQuotationPreview(payload: Record<string, unknown>) {
+    setPreviewError("");
+    setIsPreviewLoading(true);
+
+    try {
+      const response = await fetch("/api/quote/calc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data?.quotation) {
+        const message = data?.error || "Unable to calculate quotation at the moment.";
+        setPreviewError(message);
+        return null;
+      }
+
+      return data.quotation as QuotationBreakdown;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
+      console.warn("Failed to fetch quotation preview:", error);
+      setPreviewError(message);
+      return null;
+    } finally {
+      setIsPreviewLoading(false);
+    }
+  }
+
   // Calculate quotation when key fields change
   useEffect(() => {
     const updateQuotation = async () => {
@@ -316,7 +347,7 @@ export function MakeMyTripForm() {
                 );
 
                 if (allHotelsSelected) {
-                  const calc = await calculateQuotation({
+                  const calc = await fetchQuotationPreview({
                     routeId,
                     vehicleName,
                     multiCityHotels,
@@ -334,7 +365,7 @@ export function MakeMyTripForm() {
               }
             } else if (hotelId && roomId) {
               // Single-city tour
-              const calc = await calculateQuotation({
+              const calc = await fetchQuotationPreview({
                 routeId,
                 vehicleName,
                 hotelId,
@@ -917,9 +948,21 @@ export function MakeMyTripForm() {
               </div>
             )}
 
-            {!quotation && tripDate && routeId && vehicleName && (
+            {previewError && (
+              <div className="rounded-[15px] bg-red-50 border border-red-200 p-4 text-sm text-red-800">
+                {previewError}
+              </div>
+            )}
+
+            {!quotation && isPreviewLoading && tripDate && routeId && vehicleName && (
               <div className="rounded-[15px] bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
                 ⚠️ Calculating quotation... If this persists, check browser console for details. Make sure all fields are properly selected.
+              </div>
+            )}
+
+            {!quotation && !isPreviewLoading && previewError && (
+              <div className="rounded-[15px] bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+                ⚠️ Your selection is valid, but live pricing could not be loaded. Please try again or contact support.
               </div>
             )}
 
@@ -936,7 +979,7 @@ export function MakeMyTripForm() {
 
         {/* Price Summary Sidebar */}
         <div className="md:sticky md:top-6 md:h-fit">
-          <PriceSummary quotation={quotation} isLoading={false} />
+          <PriceSummary quotation={quotation} isLoading={isPreviewLoading} />
         </div>
       </div>
     </div>

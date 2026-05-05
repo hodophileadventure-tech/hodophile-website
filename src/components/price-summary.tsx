@@ -1,7 +1,7 @@
 "use client";
 
 import type { QuotationBreakdown } from "@/lib/pricingEngine";
-import { formatPKR } from "@/lib/pricingEngine";
+import { formatPKR } from "@/lib/currency";
 
 interface PriceSummaryProps {
   quotation: QuotationBreakdown | null;
