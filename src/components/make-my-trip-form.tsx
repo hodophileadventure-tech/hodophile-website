@@ -602,46 +602,76 @@ export function MakeMyTripForm() {
 
             {/* Hotel & Vehicle Selection */}
             {!isMultiCityTour() ? (
-              <div className="grid md:grid-cols-2 gap-4">
-                <label className="grid gap-2 text-sm font-medium text-stone-900">
-                  Select Hotel *
-                  <select
-                    required
-                    value={hotelId}
-                    onChange={(e) => setHotelId(e.target.value)}
-                    disabled={!routeId}
-                    className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
-                  >
-                    <option value="">
-                      {!routeId ? "Select route first" : availableHotels.length === 0 ? "No hotels available" : "Choose a hotel..."}
-                    </option>
-                    {availableHotels.map((hotel) => (
-                      <option key={hotel.id} value={hotel.id}>
-                        {hotel.name}
+              <div className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <label className="grid gap-2 text-sm font-medium text-stone-900">
+                    Select Hotel *
+                    <select
+                      required
+                      value={hotelId}
+                      onChange={(e) => setHotelId(e.target.value)}
+                      disabled={!routeId}
+                      className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
+                    >
+                      <option value="">
+                        {!routeId ? "Select route first" : availableHotels.length === 0 ? "No hotels available" : "Choose a hotel..."}
                       </option>
-                    ))}
-                  </select>
-                </label>
+                      {availableHotels.map((hotel) => (
+                        <option key={hotel.id} value={hotel.id}>
+                          {hotel.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
 
-                <label className="grid gap-2 text-sm font-medium text-stone-900">
-                  Room Type *
-                  <select
-                    required
-                    value={roomId}
-                    onChange={(e) => setRoomId(e.target.value)}
-                    disabled={!hotelId}
-                    className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
-                  >
-                    <option value="">
-                      {!hotelId ? "Select hotel first" : availableRooms.length === 0 ? "No rooms available" : "Choose a room..."}
-                    </option>
-                    {availableRooms.map((room) => (
-                      <option key={room.name} value={room.name}>
-                        {room.name}
+                  <label className="grid gap-2 text-sm font-medium text-stone-900">
+                    Room Type *
+                    <select
+                      required
+                      value={roomId}
+                      onChange={(e) => setRoomId(e.target.value)}
+                      disabled={!hotelId}
+                      className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
+                    >
+                      <option value="">
+                        {!hotelId ? "Select hotel first" : availableRooms.length === 0 ? "No rooms available" : "Choose a room..."}
                       </option>
-                    ))}
-                  </select>
-                </label>
+                      {availableRooms.map((room) => (
+                        <option key={room.name} value={room.name}>
+                          {room.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                {/* Hotel Image Display */}
+                {hotelId && availableHotels.find((h) => h.id === hotelId)?.image && (
+                  <div className="rounded-[15px] border border-stone-200 overflow-hidden bg-stone-100">
+                    <img
+                      src={availableHotels.find((h) => h.id === hotelId)?.image}
+                      alt={availableHotels.find((h) => h.id === hotelId)?.name}
+                      className="w-full h-40 object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Room Image Display */}
+                {roomId && availableRooms.find((r) => r.name === roomId)?.image && (
+                  <div className="rounded-[15px] border border-stone-200 overflow-hidden bg-stone-100">
+                    <img
+                      src={availableRooms.find((r) => r.name === roomId)?.image}
+                      alt={roomId}
+                      className="w-full h-40 object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             ) : (
               <div className="rounded-[15px] border border-amber-200 bg-amber-50 p-4">
@@ -738,6 +768,34 @@ export function MakeMyTripForm() {
                             ))}
                           </select>
                         </label>
+                      </div>
+
+                      {/* Hotel & Room Images for Multi-City */}
+                      <div className="grid md:grid-cols-2 gap-3 mt-3">
+                        {selectedHotel?.image && (
+                          <div className="rounded-[10px] border border-stone-200 overflow-hidden bg-stone-100">
+                            <img
+                              src={selectedHotel.image}
+                              alt={selectedHotel.name}
+                              className="w-full h-28 object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        )}
+                        {selectedHotel && currentSelection?.roomId && selectedHotel.rooms.find((r) => r.name === currentSelection.roomId)?.image && (
+                          <div className="rounded-[10px] border border-stone-200 overflow-hidden bg-stone-100">
+                            <img
+                              src={selectedHotel.rooms.find((r) => r.name === currentSelection.roomId)?.image}
+                              alt={currentSelection.roomId}
+                              className="w-full h-28 object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                   );

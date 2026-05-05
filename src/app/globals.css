@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #f6f1e1;
   --foreground: #111111;
   --accent: #fcc000;
   --brand-black: #0b0b0b;
@@ -33,13 +33,4 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: var(--brand-gold);
 }
