@@ -204,7 +204,11 @@ async function calculateTransportCostFromDB(
     
     if (!vehicle) {
       console.warn(`Vehicle not found: ${vehicleName}`);
-      return calculateTransportCost(vehicleName, routeId, vehicleDays);
+      const fallbackTransportCost = calculateTransportCost(vehicleName, routeId, vehicleDays);
+      return {
+        transportCost: fallbackTransportCost,
+        baseTransportCost: fallbackTransportCost,
+      };
     }
 
     // Try route & vehicle-specific transport pricing first
@@ -233,7 +237,11 @@ async function calculateTransportCostFromDB(
     const vehiclePrice = await getVehiclePriceFromDB(vehicleName);
     if (!vehiclePrice) {
       console.warn(`Vehicle price not found in DB for: ${vehicleName}`);
-      return calculateTransportCost(vehicleName, routeId, vehicleDays);
+      const fallbackTransportCost = calculateTransportCost(vehicleName, routeId, vehicleDays);
+      return {
+        transportCost: fallbackTransportCost,
+        baseTransportCost: fallbackTransportCost,
+      };
     }
 
     // Editable DB-backed transport formula
