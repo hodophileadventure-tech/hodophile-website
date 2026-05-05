@@ -54,8 +54,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Calculate quotation
-    const quotation = calculateQuotation({
+    // Calculate quotation (now async)
+    const quotation = await calculateQuotation({
       routeId: body.routeId,
       vehicleName: body.vehicleName,
       hotelId: body.hotelId,

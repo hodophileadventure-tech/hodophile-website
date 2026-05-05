@@ -10,45 +10,262 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Lead {
-  id        String   @id @default(cuid())
-  name      String
-  phone     String
-  route     String
-  vehicle   String
-  hotel     String
-  rooms     Int
-  adultsCount     Int   @default(2)
-  kidsCount       Int   @default(0)
-  jeepAddons String?  // JSON string of selected add-ons
-  totalPrice Int     // stored in PKR (no decimals)
-  tourType  String   @default("private") // "private" or "group"
+// ============== DESTINATIONS & LOCATIONS ==============
+
+model Destination {
+  id          String   @id // Format: dest-{slug}
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  image       String?
+  region      String   // e.g., "Northern Areas", "Hunza Valley"
+  bestSeason  String?  // e.g., "June-September"
+  elevation   Int?     // in meters
+  difficulty  String   @default("moderate") // easy, moderate, challenging
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  hotels      Hotel[]
+  tours       Tour[]
+  
+  @@index([region])
+  @@index([slug])
+}
+
+// ============== HOTELS & ACCOMMODATIONS ==============
+
+model Hotel {
+  id          String   @id // Format: hotel-{city}-{name-slug}
+  name        String   @unique
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId String
+  city        String
+  address     String?
+  phone       String?
+  email       String?
+  website     String?
+  description String?
+  image       String?
+  rating      Float?   // 1-5 stars
+  amenities   String?  // JSON array of amenities
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  rooms       HotelRoom[]
+  
+  @@index([city])
+  @@index([destinationId])
+}
+
+model HotelRoom {
+  id          String   @id // Format: room-{hotel-id}-{roomtype-slug}
+  hotel       Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  hotelId     String
+  roomType    String   // e.g., "Single", "Double", "Suite", "Dorm"
+  capacity    Int      @default(2) // max occupancy
+  description String?
+  image       String?
+  amenities   String?  // JSON array
+  basePricePerNight Int // in PKR
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  seasonalPrices SeasonalPrice[]
+  bookings    Booking[]
+  
+  @@unique([hotelId, roomType])
+  @@index([hotelId])
+  @@index([roomType])
+}
+
+model SeasonalPrice {
+  id        String   @id // Format: season-{roomId}-{season}
+  room      HotelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId    String
+  season    String   // "peak", "blossom", "off"
+  startDate DateTime
+  endDate   DateTime
+  pricePerNight Int // in PKR
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  @@index([roomId])
+  @@index([season])
+}
 
+// ============== VEHICLES ==============
+
+model Vehicle {
+  id          String   @id // Format: vehicle-{name-slug}
+  name        String   @unique
+  type        String   // e.g., "SUV", "Jeep", "Coaster", "Bus"
+  capacity    Int      // max passengers
+  pricePerKm  Int      // in PKR
+  image       String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  tours               Tour[]
+  transportPricing    TransportPricing[]
+  
+  @@index([type])
+}
+
+// ============== PRICING CONFIG ==============
+
+model PricingConfig {
+  id String @id // Format: pricing-config-default
+
+  transportBaseMultiplier Float @default(1)
+  peakMultiplier          Float @default(1.3)
+  blossomMultiplier       Float @default(1.15)
+  offMultiplier           Float @default(0.85)
+  markupPercentage        Float @default(30)
+  fuelSurchargePercentage Float @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============== TOURS & PACKAGES ==============
+
+model Tour {
+  id          String   @id // Format: tour-{slug}
+  name        String
+  slug        String   @unique
+  description String?
+  image       String?
+  duration    Int      // in days
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  destinationId String
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicleId   String
+  basePricePerPerson Int // in PKR (per person)
+  maxGroupSize Int?
+  minGroupSize Int?
+  itinerary   String?  // JSON array of daily itineraries
+  included    String?  // JSON array of included items
+  excluded    String?  // JSON array of excluded items
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  bookings    Booking[]
+  
+  @@index([destinationId])
+  @@index([slug])
+}
+
+// ============== BOOKINGS & LEADS ==============
+
+model Lead {
+  id          String   @id // Format: lead-{phone}-{timestamp}
+  name        String
+  phone       String
+  email       String?
+  route       String?
+  vehicle     String?
+  hotel       String?
+  rooms       Int      @default(1)
+  adultsCount Int      @default(2)
+  kidsCount   Int      @default(0)
+  jeepAddons  String?  // JSON string of selected add-ons
+  totalPrice  Int?     // stored in PKR (no decimals)
+  tourType    String   @default("private") // "private" or "group"
+  message     String?
+  status      String   @default("new") // new, contacted, quoted, booked, rejected
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
   @@index([phone])
+  @@index([createdAt])
+  @@index([status])
+}
+
+model Booking {
+  id          String   @id // Format: booking-{tour}-{date}
+  tour        Tour     @relation(fields: [tourId], references: [id])
+  tourId      String
+  room        HotelRoom @relation(fields: [roomId], references: [id])
+  roomId      String
+  clientName  String
+  clientPhone String
+  clientEmail String?
+  numberOfRooms Int
+  numberOfNights Int
+  checkInDate DateTime
+  checkOutDate DateTime
+  adultsCount Int      @default(2)
+  kidsCount   Int      @default(0)
+  totalPrice  Int      // in PKR
+  status      String   @default("pending") // pending, confirmed, cancelled, completed
+  specialRequests String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([tourId])
+  @@index([roomId])
+  @@index([clientPhone])
+  @@index([status])
+}
+
+// ============== REVIEWS & TESTIMONIALS ==============
+
+model Review {
+  id          String   @id // Format: review-{tour}-{date}
+  name      String
+  email     String?
+  tourName  String
+  hotelName String?
+  rating    Int      // 1-5
+  comment   String
+  image     String?
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([approved])
   @@index([createdAt])
 }
 
-model Hotel {
-  id    String @id @default(cuid())
-  name  String
-  city  String
-  rooms String  // JSON array of room objects
-  seasons String?  // JSON object of seasonal pricing info
+// ============== TRANSPORT PRICING ==============
+
+model TransportPricing {
+  id String @id @default(cuid())
+  
+  // Route and vehicle this pricing applies to
+  routeId  String
+  route    Route  @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  
+  // Formula: (Km ÷ vehicleAverageConsumption) × fuelPricePerLiter + dailyRentalRate × numberOfDays
+  fuelPricePerLiter     Int      // in PKR per liter
+  dailyRentalRate       Int      // in PKR per day for this vehicle
+  vehicleAverageConsumption Float  // km per liter (consumption rate)
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([city])
+  
+  @@unique([routeId, vehicleId])
+  @@index([routeId])
+  @@index([vehicleId])
 }
 
+// ============== ROUTES ==============
+
 model Route {
-  id    String @id @default(cuid())
-  name  String
-  slug  String @unique
-  duration Int
-  city  String
-  vehicles String  // JSON array of vehicle objects with pricing
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  duration  Int
+  city      String
+  vehicles  String   // JSON array of vehicle objects with pricing
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  transportPricing TransportPricing[]
+  
+  @@index([city])
 }

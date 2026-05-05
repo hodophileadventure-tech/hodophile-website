@@ -5,6 +5,25 @@ import { getRouteDistance } from "./data/distances";
 import { getVehicleRate } from "./data/vehicleRates";
 import { currentFuelPrices } from "./data/fuel";
 import type { Room } from "./data/hotels";
+import prisma from "./prisma";
+
+type PricingConfigRow = {
+  transportBaseMultiplier: number;
+  peakMultiplier: number;
+  blossomMultiplier: number;
+  offMultiplier: number;
+  markupPercentage: number;
+  fuelSurchargePercentage: number;
+};
+
+const DEFAULT_PRICING_CONFIG: PricingConfigRow = {
+  transportBaseMultiplier: 1,
+  peakMultiplier: 1.3,
+  blossomMultiplier: 1.15,
+  offMultiplier: 0.85,
+  markupPercentage: 30,
+  fuelSurchargePercentage: 0,
+};
 
 export interface QuotationInput {
   routeId: string;
@@ -53,6 +72,178 @@ function getSeasonFromDate(date: string): "peak" | "blossom" | "off" | "fixed" {
   // Off-season: August - February (8,12-2)
   // Note: Off-season can vary, so we default to "off"
   return "off";
+}
+
+async function getPricingConfig(): Promise<PricingConfigRow> {
+  try {
+    const config = await prisma.pricingConfig.findFirst({
+      orderBy: { updatedAt: 'desc' },
+    });
+
+    if (!config) {
+      return DEFAULT_PRICING_CONFIG;
+    }
+
+    return {
+      transportBaseMultiplier: config.transportBaseMultiplier ?? DEFAULT_PRICING_CONFIG.transportBaseMultiplier,
+      peakMultiplier: config.peakMultiplier ?? DEFAULT_PRICING_CONFIG.peakMultiplier,
+      blossomMultiplier: config.blossomMultiplier ?? DEFAULT_PRICING_CONFIG.blossomMultiplier,
+      offMultiplier: config.offMultiplier ?? DEFAULT_PRICING_CONFIG.offMultiplier,
+      markupPercentage: config.markupPercentage ?? DEFAULT_PRICING_CONFIG.markupPercentage,
+      fuelSurchargePercentage: config.fuelSurchargePercentage ?? DEFAULT_PRICING_CONFIG.fuelSurchargePercentage,
+    };
+  } catch (error) {
+    console.warn('Error loading pricing config, using defaults:', error);
+    return DEFAULT_PRICING_CONFIG;
+  }
+}
+
+// Get room price from database by season
+async function getRoomPriceFromDB(
+  roomId: string,
+  season: "peak" | "blossom" | "off" | "fixed"
+): Promise<number | null> {
+  try {
+    // If season is "fixed" or unknown, just return base price
+    if (season === "fixed" || !["peak", "blossom", "off"].includes(season)) {
+      const room = await prisma.hotelRoom.findUnique({
+        where: { id: roomId },
+      });
+      return room?.basePricePerNight || null;
+    }
+
+    const seasonalPrice = await prisma.seasonalPrice.findFirst({
+      where: {
+        roomId: roomId,
+        season: season as "peak" | "blossom" | "off",
+      },
+    });
+
+    if (seasonalPrice) return seasonalPrice.pricePerNight;
+
+    // Fallback to base price if no seasonal price found
+    const room = await prisma.hotelRoom.findUnique({
+      where: { id: roomId },
+    });
+
+    return room?.basePricePerNight || null;
+  } catch (error) {
+    console.warn(`Error fetching room price from DB for room ${roomId}:`, error);
+    return null;
+  }
+}
+
+// Get route-specific transport pricing if available
+async function getTransportPricingByRoute(routeId: string, vehicleId: string) {
+  try {
+    const pricing = await prisma.transportPricing.findUnique({
+      where: { 
+        routeId_vehicleId: {
+          routeId,
+          vehicleId,
+        }
+      },
+    });
+    return pricing;
+  } catch (error) {
+    console.warn(`Error fetching transport pricing for route ${routeId} and vehicle ${vehicleId}:`, error);
+    return null;
+  }
+}
+
+// Get vehicle price per km from database
+async function getVehiclePriceFromDB(vehicleName: string): Promise<number | null> {
+  try {
+    const vehicle = await prisma.vehicle.findUnique({
+      where: { name: vehicleName },
+    });
+
+    return vehicle?.pricePerKm || null;
+  } catch (error) {
+    console.warn(`Error fetching vehicle price from DB for ${vehicleName}:`, error);
+    return null;
+  }
+}
+
+// Calculate transport cost using DB data
+async function calculateTransportCostFromDB(
+  vehicleName: string,
+  routeId: string,
+  vehicleDays: number = 8,
+  season: "peak" | "blossom" | "off" | "fixed" = "off"
+): Promise<number | null> {
+  try {
+    const distance = getRouteDistance(routeId);
+    if (!distance) {
+      console.warn(`Distance not found for route: ${routeId}`);
+      return null;
+    }
+
+    const pricingConfig = await getPricingConfig();
+    const seasonalMultiplier =
+      season === "peak"
+        ? pricingConfig.peakMultiplier
+        : season === "blossom"
+          ? pricingConfig.blossomMultiplier
+          : season === "off"
+            ? pricingConfig.offMultiplier
+            : 1;
+
+    // Get vehicle to find its ID
+    const vehicle = await prisma.vehicle.findUnique({
+      where: { name: vehicleName },
+    });
+    
+    if (!vehicle) {
+      console.warn(`Vehicle not found: ${vehicleName}`);
+      return calculateTransportCost(vehicleName, routeId, vehicleDays);
+    }
+
+    // Try route & vehicle-specific transport pricing first
+    const routePricing = await getTransportPricingByRoute(routeId, vehicle.id);
+    
+    if (routePricing) {
+      // Use editable formula: (Km ÷ consumption) × fuelPrice + dailyRate × days
+      const fuelCost = Math.round((distance / routePricing.vehicleAverageConsumption) * routePricing.fuelPricePerLiter);
+      const rentalCost = routePricing.dailyRentalRate * vehicleDays;
+      const baseTransportCost = fuelCost + rentalCost;
+      
+      // Apply seasonal multiplier
+      const costWithSeason = baseTransportCost * seasonalMultiplier;
+      
+      // Apply global fuel surcharge
+      const fuelSurcharge = Math.round(costWithSeason * (pricingConfig.fuelSurchargePercentage / 100));
+      const transportCost = Math.round(costWithSeason + fuelSurcharge);
+
+      console.debug(
+        `Route Transport: ${routeId} | Vehicle: ${vehicleName} | Distance: ${distance}km | Consumption: ${routePricing.vehicleAverageConsumption}km/L | Fuel: (${distance}÷${routePricing.vehicleAverageConsumption})×${routePricing.fuelPricePerLiter}=${fuelCost}PKR | Rental: ${routePricing.dailyRentalRate}×${vehicleDays}=${rentalCost}PKR | Base: ${baseTransportCost}PKR | Seasonal (×${seasonalMultiplier}): ${costWithSeason}PKR | Total: ${transportCost}PKR`
+      );
+      return transportCost;
+    }
+
+    // Fallback to vehicle-based pricing
+    const vehiclePrice = await getVehiclePriceFromDB(vehicleName);
+    if (!vehiclePrice) {
+      console.warn(`Vehicle price not found in DB for: ${vehicleName}`);
+      return calculateTransportCost(vehicleName, routeId, vehicleDays);
+    }
+
+    // Editable DB-backed transport formula
+    // pricePerKm × distance × base multiplier × seasonal multiplier
+    const baseTransportCost = vehiclePrice * distance * pricingConfig.transportBaseMultiplier * seasonalMultiplier;
+    const fuelSurcharge = Math.round(baseTransportCost * (pricingConfig.fuelSurchargePercentage / 100));
+    const transportCost = Math.round(
+      baseTransportCost + fuelSurcharge
+    );
+
+    console.debug(
+      `DB Transport: ${vehicleName} | Price/km: ${vehiclePrice} PKR | Distance: ${distance}km | Total: ${transportCost}PKR`
+    );
+    return transportCost;
+  } catch (error) {
+    console.warn(`Error calculating transport cost from DB:`, error);
+    return calculateTransportCost(vehicleName, routeId, vehicleDays);
+  }
 }
 
 // Calculate transport cost using dynamic pricing: fuel cost + daily rental rate + toll/tax
@@ -126,9 +317,9 @@ function getRoomPrice(room: Room, season: string): number {
   return 0;
 }
 
-export function calculateQuotation(
+export async function calculateQuotation(
   input: QuotationInput
-): QuotationBreakdown | null {
+): Promise<QuotationBreakdown | null> {
   try {
     const route = getRouteById(input.routeId);
     if (!route) {
@@ -136,11 +327,14 @@ export function calculateQuotation(
       return null;
     }
 
-    // Use dynamic transport cost calculation with vehicle rental rates
-    const transportCost = calculateTransportCost(
+    const season = getSeasonFromDate(input.tripDate);
+
+    // Use database transport cost calculation
+    const transportCost = await calculateTransportCostFromDB(
       input.vehicleName,
       input.routeId,
-      route.vehicleDays
+      route.vehicleDays,
+      season
     );
     if (transportCost === null) {
       console.warn(`Transport cost calculation failed for vehicle: ${input.vehicleName}, route: ${input.routeId}`);
@@ -152,8 +346,7 @@ export function calculateQuotation(
     let hotelName = "Unknown";
 
     if (input.multiCityHotels && input.multiCityNights) {
-      // Multi-city tour: calculate costs for each city
-      const season = getSeasonFromDate(input.tripDate);
+      // Multi-city tour: calculate costs for each city using DB
       let totalHotelCost = 0;
       const hotelNames: string[] = [];
 
@@ -161,60 +354,124 @@ export function calculateQuotation(
         const cityHotelInfo = input.multiCityHotels[city];
         if (!cityHotelInfo) continue;
 
-        const hotel = getHotelById(cityHotelInfo.hotelId);
-        if (!hotel) {
-          console.warn(`Hotel not found for city ${city}: ${cityHotelInfo.hotelId}`);
+        try {
+          // Fetch hotel and room from DB
+          const hotelFromDB = await prisma.hotel.findUnique({
+            where: { id: cityHotelInfo.hotelId },
+            include: { rooms: true },
+          });
+
+          if (!hotelFromDB) {
+            console.warn(`Hotel not found in DB for city ${city}: ${cityHotelInfo.hotelId}`);
+            continue;
+          }
+
+          // Try to find room by ID, then by roomType name
+          let roomFromDB = await prisma.hotelRoom.findUnique({
+            where: { id: cityHotelInfo.roomId },
+          });
+
+          if (!roomFromDB) {
+            // Try by roomType name
+            roomFromDB = await prisma.hotelRoom.findFirst({
+              where: {
+                hotelId: cityHotelInfo.hotelId,
+                roomType: cityHotelInfo.roomId,
+              },
+            });
+          }
+
+          if (!roomFromDB) {
+            console.warn(`Room not found in DB: ${cityHotelInfo.roomId} in hotel ${cityHotelInfo.hotelId}`);
+            continue;
+          }
+
+          const roomPrice = await getRoomPriceFromDB(roomFromDB.id, season);
+          if (!roomPrice) {
+            console.warn(`Room price is 0 for: ${roomFromDB.roomType}, season: ${season}`);
+            continue;
+          }
+
+          const cityCost = roomPrice * input.numberOfRooms * nights;
+          totalHotelCost += cityCost;
+          hotelNames.push(`${hotelFromDB.name} (${city})`);
+
+          console.debug(`City ${city}: ${roomFromDB.roomType} @ ${roomPrice} × ${input.numberOfRooms} rooms × ${nights} nights = ${cityCost}`);
+        } catch (error) {
+          console.warn(`Error processing city ${city}:`, error);
           continue;
         }
-
-        const selectedRoom = hotel.rooms.find((r) => r.name === cityHotelInfo.roomId);
-        if (!selectedRoom) {
-          console.warn(`Room not found: ${cityHotelInfo.roomId} in hotel ${hotel.name}`);
-          continue;
-        }
-
-        const roomPrice = getRoomPrice(selectedRoom, season);
-        if (roomPrice === 0) {
-          console.warn(`Room price is 0 for: ${selectedRoom.name}, season: ${season}`);
-          continue;
-        }
-
-        const cityCost = roomPrice * input.numberOfRooms * nights;
-        totalHotelCost += cityCost;
-        hotelNames.push(`${hotel.name} (${city})`);
-
-        console.debug(`City ${city}: ${selectedRoom.name} @ ${roomPrice} × ${input.numberOfRooms} rooms × ${nights} nights = ${cityCost}`);
       }
 
       hotelCost = totalHotelCost;
       hotelName = hotelNames.join(" + ");
     } else if (input.hotelId && input.roomId) {
-      // Single-city tour
-      const hotel = getHotelById(input.hotelId);
-      if (!hotel) {
-        console.warn(`Hotel not found: ${input.hotelId}`);
-        return null;
+      // Single-city tour using DB
+      try {
+        const hotelFromDB = await prisma.hotel.findUnique({
+          where: { id: input.hotelId },
+        });
+
+        if (!hotelFromDB) {
+          console.warn(`Hotel not found in DB: ${input.hotelId}`);
+          return null;
+        }
+
+        // Try to find room by ID, then by roomType name
+        let roomFromDB = await prisma.hotelRoom.findUnique({
+          where: { id: input.roomId },
+        });
+
+        if (!roomFromDB) {
+          // Try by roomType name
+          roomFromDB = await prisma.hotelRoom.findFirst({
+            where: {
+              hotelId: input.hotelId,
+              roomType: input.roomId,
+            },
+          });
+        }
+
+        if (!roomFromDB) {
+          console.warn(`Room not found in DB: ${input.roomId} in hotel ${input.hotelId}`);
+          return null;
+        }
+
+        const roomPrice = await getRoomPriceFromDB(roomFromDB.id, season);
+        if (!roomPrice) {
+          console.warn(`Room price is 0 for: ${roomFromDB.roomType}, season: ${season}`);
+          return null;
+        }
+
+        // Calculate nights: for an 8-day trip, that's 7 nights (duration - 1)
+        const numberOfNights = Math.max(1, route.duration - 1);
+        hotelCost = roomPrice * input.numberOfRooms * numberOfNights;
+        hotelName = hotelFromDB.name;
+      } catch (error) {
+        console.warn(`Error fetching hotel/room from DB:`, error);
+        // Fallback to static data
+        const hotel = getHotelById(input.hotelId);
+        if (!hotel) {
+          console.warn(`Hotel not found in static data: ${input.hotelId}`);
+          return null;
+        }
+
+        const selectedRoom = hotel.rooms.find((r) => r.name === input.roomId);
+        if (!selectedRoom) {
+          console.warn(`Room not found: ${input.roomId} in hotel ${hotel.name}`);
+          return null;
+        }
+
+        const roomPrice = getRoomPrice(selectedRoom, season);
+        if (roomPrice === 0) {
+          console.warn(`Room price is 0 for: ${selectedRoom.name}, season: ${season}`);
+          return null;
+        }
+
+        const numberOfNights = Math.max(1, route.duration - 1);
+        hotelCost = roomPrice * input.numberOfRooms * numberOfNights;
+        hotelName = hotel.name;
       }
-
-      const selectedRoom = hotel.rooms.find((r) => r.name === input.roomId);
-      if (!selectedRoom) {
-        console.warn(`Room not found: ${input.roomId} in hotel ${hotel.name}`);
-        console.debug(`Available rooms:`, hotel.rooms.map(r => r.name));
-        return null;
-      }
-
-      const season = getSeasonFromDate(input.tripDate);
-      const roomPrice = getRoomPrice(selectedRoom, season);
-
-      if (roomPrice === 0) {
-        console.warn(`Room price is 0 for: ${selectedRoom.name}, season: ${season}`);
-        return null;
-      }
-
-      // Calculate nights: for an 8-day trip, that's 7 nights (duration - 1)
-      const numberOfNights = Math.max(1, route.duration - 1);
-      hotelCost = roomPrice * input.numberOfRooms * numberOfNights;
-      hotelName = hotel.name;
     } else {
       console.warn(`No hotel information provided for quotation`);
       return null;
@@ -238,9 +495,8 @@ export function calculateQuotation(
 
     const subtotal = transportCost + hotelCost + jeepAddonsCost;
     
-    // Add 30% markup
-    const MARKUP_PERCENTAGE = 0.30;
-    const markupAmount = Math.round(subtotal * MARKUP_PERCENTAGE);
+    const pricingConfig = await getPricingConfig();
+    const markupAmount = Math.round(subtotal * (pricingConfig.markupPercentage / 100));
     const totalCost = subtotal + markupAmount;
     
     const numberOfGuests = input.adults + input.kids;

@@ -295,64 +295,68 @@ export function MakeMyTripForm() {
 
   // Calculate quotation when key fields change
   useEffect(() => {
-    if (tripDate && routeId && vehicleName && numberOfRooms > 0 && adults > 0) {
-      if (routeId) {
-        const selectedRoute = routes.find((r) => r.id === routeId);
-        if (selectedRoute) {
-          // Check if this is a multi-city tour
-          if (isMultiCityTour() && selectedRoute.city === "Multi-City") {
-            // Build multiCityNights from config
-            const config = multiCityConfig[routeId];
-            if (config) {
-              const multiCityNights: Record<string, number> = {};
-              config.cities.forEach((city, index) => {
-                multiCityNights[city] = config.nights[index];
-              });
-
-              // Check if all hotels are selected
-              const allHotelsSelected = config.cities.every(
-                (city) => multiCityHotels[city]?.hotelId && multiCityHotels[city]?.roomId
-              );
-
-              if (allHotelsSelected) {
-                const calc = calculateQuotation({
-                  routeId,
-                  vehicleName,
-                  multiCityHotels,
-                  multiCityNights,
-                  numberOfRooms,
-                  adults,
-                  kids,
-                  tripDate,
-                  mandatoryJeepCost,
+    const updateQuotation = async () => {
+      if (tripDate && routeId && vehicleName && numberOfRooms > 0 && adults > 0) {
+        if (routeId) {
+          const selectedRoute = routes.find((r) => r.id === routeId);
+          if (selectedRoute) {
+            // Check if this is a multi-city tour
+            if (isMultiCityTour() && selectedRoute.city === "Multi-City") {
+              // Build multiCityNights from config
+              const config = multiCityConfig[routeId];
+              if (config) {
+                const multiCityNights: Record<string, number> = {};
+                config.cities.forEach((city, index) => {
+                  multiCityNights[city] = config.nights[index];
                 });
-                setQuotation(calc);
-              } else {
-                setQuotation(null);
+
+                // Check if all hotels are selected
+                const allHotelsSelected = config.cities.every(
+                  (city) => multiCityHotels[city]?.hotelId && multiCityHotels[city]?.roomId
+                );
+
+                if (allHotelsSelected) {
+                  const calc = await calculateQuotation({
+                    routeId,
+                    vehicleName,
+                    multiCityHotels,
+                    multiCityNights,
+                    numberOfRooms,
+                    adults,
+                    kids,
+                    tripDate,
+                    mandatoryJeepCost,
+                  });
+                  setQuotation(calc);
+                } else {
+                  setQuotation(null);
+                }
               }
+            } else if (hotelId && roomId) {
+              // Single-city tour
+              const calc = await calculateQuotation({
+                routeId,
+                vehicleName,
+                hotelId,
+                roomId,
+                numberOfRooms,
+                adults,
+                kids,
+                tripDate,
+                mandatoryJeepCost,
+              });
+              setQuotation(calc);
+            } else {
+              setQuotation(null);
             }
-          } else if (hotelId && roomId) {
-            // Single-city tour
-            const calc = calculateQuotation({
-              routeId,
-              vehicleName,
-              hotelId,
-              roomId,
-              numberOfRooms,
-              adults,
-              kids,
-              tripDate,
-              mandatoryJeepCost,
-            });
-            setQuotation(calc);
-          } else {
-            setQuotation(null);
           }
         }
+      } else {
+        setQuotation(null);
       }
-    } else {
-      setQuotation(null);
-    }
+    };
+
+    updateQuotation();
   }, [tripDate, routeId, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, mandatoryJeepCost]);
 
   const handleKidsCountChange = (value: number) => {
