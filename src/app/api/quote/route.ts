@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     const validationError = buildValidationError(body);
     if (validationError) {
       return NextResponse.json(
-        { error: validationError, details: "Invalid quote request payload." },
+        { error: validationError, details: validationError },
         { status: 400 }
       );
     }

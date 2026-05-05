@@ -487,6 +487,15 @@ export function MakeMyTripForm() {
           tourType,
           mandatoryJeepCost,
           multiCityHotels: isMultiCityTour() ? multiCityHotels : undefined,
+          multiCityNights:
+            isMultiCityTour() && routeId in multiCityConfig
+              ? Object.fromEntries(
+                  multiCityConfig[routeId as keyof typeof multiCityConfig].cities.map((city, i) => [
+                    city,
+                    multiCityConfig[routeId as keyof typeof multiCityConfig].nights[i],
+                  ])
+                )
+              : undefined,
         }),
       });
 
