@@ -25,7 +25,7 @@ export function SiteHeader() {
   }, []);
 
   const isHome = pathname === "/";
-  const isTransparent = isHome && !scrolled && !mobileOpen;
+  const isTransparent = false;
   const isToursActive = pathname.startsWith("/tours");
   const splitIndex = 4;
   const desktopLeftNavigation = navigation.slice(0, splitIndex);
