@@ -48,6 +48,8 @@ export interface QuotationBreakdown {
   markupAmount: number; // 30% markup
   totalCost: number;
   perPersonCost: number;
+  baseHotelCost?: number;
+  baseTransportCost?: number;
   details: {
     route: string;
     vehicle: string;
@@ -98,7 +100,7 @@ async function getPricingConfig(): Promise<PricingConfigRow> {
   }
 }
 
-// Get room price from database by season
+// Get room price from database using the base rate only
 async function getRoomPriceFromDB(
   roomId: string,
   season: "peak" | "blossom" | "off" | "fixed"
@@ -109,30 +111,7 @@ async function getRoomPriceFromDB(
     });
     if (!room) return null;
 
-    if (season === "fixed") {
-      return room.basePricePerNight;
-    }
-
-    const seasonalPrice = await prisma.seasonalPrice.findFirst({
-      where: {
-        roomId: roomId,
-        season: season as "peak" | "blossom" | "off",
-      },
-    });
-
-    const multiplier =
-      season === "peak"
-        ? 1.3
-        : season === "blossom"
-        ? 1.15
-        : 0.85;
-    const expectedSeasonalPrice = Math.round(room.basePricePerNight * multiplier);
-
-    if (seasonalPrice && seasonalPrice.pricePerNight === expectedSeasonalPrice) {
-      return seasonalPrice.pricePerNight;
-    }
-
-    return expectedSeasonalPrice;
+    return room.basePricePerNight;
   } catch (error) {
     console.warn(`Error fetching room price from DB for room ${roomId}:`, error);
     return null;
@@ -177,7 +156,7 @@ async function calculateTransportCostFromDB(
   routeId: string,
   vehicleDays: number = 8,
   season: "peak" | "blossom" | "off" | "fixed" = "off"
-): Promise<number | null> {
+): Promise<{ transportCost: number | null; baseTransportCost?: number | null } | null> {
   try {
     const distance = getRouteDistance(routeId);
     if (!distance) {
@@ -186,14 +165,6 @@ async function calculateTransportCostFromDB(
     }
 
     const pricingConfig = await getPricingConfig();
-    const seasonalMultiplier =
-      season === "peak"
-        ? pricingConfig.peakMultiplier
-        : season === "blossom"
-          ? pricingConfig.blossomMultiplier
-          : season === "off"
-            ? pricingConfig.offMultiplier
-            : 1;
 
     // Get vehicle to find its ID
     const vehicle = await prisma.vehicle.findUnique({
@@ -202,7 +173,11 @@ async function calculateTransportCostFromDB(
     
     if (!vehicle) {
       console.warn(`Vehicle not found: ${vehicleName}`);
-      return calculateTransportCost(vehicleName, routeId, vehicleDays);
+      const fallbackTransportCost = calculateTransportCost(vehicleName, routeId, vehicleDays);
+      return {
+        transportCost: fallbackTransportCost,
+        baseTransportCost: fallbackTransportCost,
+      };
     }
 
     // Try route & vehicle-specific transport pricing first
@@ -213,42 +188,36 @@ async function calculateTransportCostFromDB(
       const fuelCost = Math.round((distance / routePricing.vehicleAverageConsumption) * routePricing.fuelPricePerLiter);
       const rentalCost = routePricing.dailyRentalRate * vehicleDays;
       const baseTransportCost = fuelCost + rentalCost;
-      
-      // Apply seasonal multiplier
-      const costWithSeason = baseTransportCost * seasonalMultiplier;
-      
-      // Apply global fuel surcharge
-      const fuelSurcharge = Math.round(costWithSeason * (pricingConfig.fuelSurchargePercentage / 100));
-      const transportCost = Math.round(costWithSeason + fuelSurcharge);
-
+      const transportCost = baseTransportCost;
       console.debug(
-        `Route Transport: ${routeId} | Vehicle: ${vehicleName} | Distance: ${distance}km | Consumption: ${routePricing.vehicleAverageConsumption}km/L | Fuel: (${distance}÷${routePricing.vehicleAverageConsumption})×${routePricing.fuelPricePerLiter}=${fuelCost}PKR | Rental: ${routePricing.dailyRentalRate}×${vehicleDays}=${rentalCost}PKR | Base: ${baseTransportCost}PKR | Seasonal (×${seasonalMultiplier}): ${costWithSeason}PKR | Total: ${transportCost}PKR`
+        `Route Transport: ${routeId} | Vehicle: ${vehicleName} | Distance: ${distance}km | Consumption: ${routePricing.vehicleAverageConsumption}km/L | Fuel: (${distance}÷${routePricing.vehicleAverageConsumption})×${routePricing.fuelPricePerLiter}=${fuelCost}PKR | Rental: ${routePricing.dailyRentalRate}×${vehicleDays}=${rentalCost}PKR | Base: ${baseTransportCost}PKR | Total: ${transportCost}PKR`
       );
-      return transportCost;
+      return { transportCost, baseTransportCost };
     }
 
     // Fallback to vehicle-based pricing
     const vehiclePrice = await getVehiclePriceFromDB(vehicleName);
     if (!vehiclePrice) {
       console.warn(`Vehicle price not found in DB for: ${vehicleName}`);
-      return calculateTransportCost(vehicleName, routeId, vehicleDays);
+      const fallbackTransportCost = calculateTransportCost(vehicleName, routeId, vehicleDays);
+      return {
+        transportCost: fallbackTransportCost,
+        baseTransportCost: fallbackTransportCost,
+      };
     }
 
-    // Editable DB-backed transport formula
-    // pricePerKm × distance × base multiplier × seasonal multiplier
-    const baseTransportCost = vehiclePrice * distance * pricingConfig.transportBaseMultiplier * seasonalMultiplier;
-    const fuelSurcharge = Math.round(baseTransportCost * (pricingConfig.fuelSurchargePercentage / 100));
-    const transportCost = Math.round(
-      baseTransportCost + fuelSurcharge
-    );
+    // Editable DB-backed transport formula using base pricing only
+    const baseTransportCost = vehiclePrice * distance * pricingConfig.transportBaseMultiplier;
+    const transportCost = baseTransportCost;
 
     console.debug(
       `DB Transport: ${vehicleName} | Price/km: ${vehiclePrice} PKR | Distance: ${distance}km | Total: ${transportCost}PKR`
     );
-    return transportCost;
+    return { transportCost, baseTransportCost };
   } catch (error) {
     console.warn(`Error calculating transport cost from DB:`, error);
-    return calculateTransportCost(vehicleName, routeId, vehicleDays);
+    const fallback = calculateTransportCost(vehicleName, routeId, vehicleDays);
+    return { transportCost: fallback, baseTransportCost: fallback };
   }
 }
 
@@ -293,25 +262,19 @@ function calculateTransportCost(
 }
 
 function getRoomPrice(room: Room, season: string): number {
-  // Try season-specific price first
-  if (season === "peak" && room.peak) return room.peak;
-  if (season === "blossom" && room.blossom) return room.blossom;
-  if (season === "off" && room.off) return room.off;
-
-  // Fall back to low/high pricing
-  if (season === "peak" || season === "high") {
-    if (Array.isArray(room.high)) return room.high[0];
-    if (room.high) return room.high;
-  }
-  if (season === "off" || season === "low") {
-    if (Array.isArray(room.low)) return room.low[0];
-    if (room.low) return room.low;
-  }
-
-  // Fall back to fixed price
+  // Use base price for fallback logic, ignoring seasonal fluctuations.
   if (room.price) return room.price;
 
-  // Fall back to occupancy-specific price (avg of double/triple/quad)
+  if (room.low) {
+    if (Array.isArray(room.low)) return room.low[0];
+    return room.low;
+  }
+
+  if (room.high) {
+    if (Array.isArray(room.high)) return room.high[0];
+    return room.high;
+  }
+
   const prices = [];
   if (room.double) prices.push(room.double);
   if (room.triple) prices.push(room.triple);
@@ -364,21 +327,24 @@ export async function calculateQuotation(
 
     const season = getSeasonFromDate(input.tripDate);
 
-    // Use database transport cost calculation
-    const transportCost = await calculateTransportCostFromDB(
+    // Use database transport cost calculation (also retrieve base transport)
+    const transportResult = await calculateTransportCostFromDB(
       input.vehicleName,
       input.routeId,
       route.vehicleDays,
       season
     );
-    if (transportCost === null) {
+    if (!transportResult || transportResult.transportCost === null) {
       console.warn(`Transport cost calculation failed for vehicle: ${input.vehicleName}, route: ${input.routeId}`);
       return null;
     }
+    const transportCost = transportResult.transportCost;
+    const baseTransportCost = transportResult.baseTransportCost ?? transportCost;
 
     // Handle multi-city hotels or single hotel
     let hotelCost = 0;
     let hotelName = "Unknown";
+    let baseHotelCost = 0;
 
     if (input.multiCityHotels && input.multiCityNights) {
       // Multi-city tour: calculate costs for each city using DB
@@ -444,14 +410,17 @@ export async function calculateQuotation(
             continue;
           }
 
-          const roomPrice = await getRoomPriceFromDB(roomFromDB.id, season);
-          if (!roomPrice) {
-            console.warn(`Room price is 0 for: ${roomFromDB.roomType}, season: ${season}`);
-            continue;
-          }
+            const roomPrice = await getRoomPriceFromDB(roomFromDB.id, season);
+            if (!roomPrice) {
+              console.warn(`Room price is 0 for: ${roomFromDB.roomType}, season: ${season}`);
+              continue;
+            }
 
-          const cityCost = roomPrice * input.numberOfRooms * nights;
-          totalHotelCost += cityCost;
+            const basePrice = roomFromDB.basePricePerNight ?? roomPrice;
+            baseHotelCost += basePrice * input.numberOfRooms * nights;
+
+            const cityCost = roomPrice * input.numberOfRooms * nights;
+            totalHotelCost += cityCost;
           hotelNames.push(`${hotelFromDB.name} (${city})`);
 
           console.debug(`City ${city}: ${roomFromDB.roomType} @ ${roomPrice} × ${input.numberOfRooms} rooms × ${nights} nights = ${cityCost}`);
@@ -507,6 +476,9 @@ export async function calculateQuotation(
 
         // Calculate nights: for an 8-day trip, that's 7 nights (duration - 1)
         const numberOfNights = Math.max(1, route.duration - 1);
+        const basePrice = roomFromDB.basePricePerNight ?? roomPrice;
+        baseHotelCost = basePrice * input.numberOfRooms * numberOfNights;
+
         hotelCost = roomPrice * input.numberOfRooms * numberOfNights;
         hotelName = hotelFromDB.name;
       } catch (error) {
@@ -555,6 +527,12 @@ export async function calculateQuotation(
       jeepDetails.push(`Additional jeep addons: ${input.jeepAddons.length} selected`);
     }
 
+    // Ensure baseHotelCost is present (if not computed, fall back to hotelCost)
+    if (typeof baseHotelCost === "undefined") {
+      // @ts-ignore - ensure variable exists in older branches
+      baseHotelCost = hotelCost;
+    }
+
     const subtotal = transportCost + hotelCost + jeepAddonsCost;
     
     const pricingConfig = await getPricingConfig();
@@ -570,6 +548,8 @@ export async function calculateQuotation(
     return {
       transportCost,
       hotelCost,
+      baseHotelCost,
+      baseTransportCost,
       jeepAddonsCost,
       subtotal,
       markupAmount,

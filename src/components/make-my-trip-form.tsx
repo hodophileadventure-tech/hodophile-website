@@ -155,12 +155,28 @@ export function MakeMyTripForm() {
     return multiCityConfig[routeId] !== undefined;
   };
 
+  const isStartingPointIslamabad = (): boolean => {
+    const normalized = startingPoint.trim().toLowerCase();
+    return normalized === "islamabad" || normalized === "rawalpindi";
+  };
+
+  const shouldShowCityHotel = (city: string): boolean => {
+    if (city === "Islamabad" && isMultiCityTour()) {
+      return !isStartingPointIslamabad();
+    }
+    return true;
+  };
+
   // Initialize multi-city hotels with defaults
   const initializeMultiCityHotels = (route: Route) => {
     const config = multiCityConfig[route.id];
     if (config) {
       const defaults: Record<string, { hotelId: string; roomId: string }> = {};
       for (const city of config.cities) {
+        if (!shouldShowCityHotel(city)) {
+          continue;
+        }
+
         const hotelsForCity = getHotelsByCity(city);
         if (hotelsForCity.length > 0) {
           // Use category-based hotel selection
@@ -245,7 +261,7 @@ export function MakeMyTripForm() {
         }
       }
     }
-  }, [routeId, hotelCategory]);
+  }, [routeId, hotelCategory, startingPoint]);
 
   // Update hotel selections when hotel category changes
   useEffect(() => {
@@ -343,8 +359,9 @@ export function MakeMyTripForm() {
                   multiCityNights[city] = config.nights[index];
                 });
 
-                // Check if all hotels are selected
-                const allHotelsSelected = config.cities.every(
+                // Check if all hotels are selected for visible cities
+                const visibleCities = config.cities.filter((city) => shouldShowCityHotel(city));
+                const allHotelsSelected = visibleCities.every(
                   (city) => multiCityHotels[city]?.hotelId && multiCityHotels[city]?.roomId
                 );
 
@@ -735,7 +752,7 @@ export function MakeMyTripForm() {
                   </div>
                 )}
 
-                {multiCityConfig[routeId]?.cities.map((city) => {
+                {multiCityConfig[routeId]?.cities.filter((city) => shouldShowCityHotel(city)).map((city) => {
                   const hotelsForCity = getHotelsByCity(city);
                   const currentSelection = multiCityHotels[city];
                   const selectedHotel = hotelsForCity.find(
