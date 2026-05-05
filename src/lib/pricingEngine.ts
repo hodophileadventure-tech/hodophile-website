@@ -100,7 +100,7 @@ async function getPricingConfig(): Promise<PricingConfigRow> {
   }
 }
 
-// Get room price from database by season
+// Get room price from database using the base rate only
 async function getRoomPriceFromDB(
   roomId: string,
   season: "peak" | "blossom" | "off" | "fixed"
@@ -111,30 +111,7 @@ async function getRoomPriceFromDB(
     });
     if (!room) return null;
 
-    if (season === "fixed") {
-      return room.basePricePerNight;
-    }
-
-    const seasonalPrice = await prisma.seasonalPrice.findFirst({
-      where: {
-        roomId: roomId,
-        season: season as "peak" | "blossom" | "off",
-      },
-    });
-
-    const multiplier =
-      season === "peak"
-        ? 1.3
-        : season === "blossom"
-        ? 1.15
-        : 0.85;
-    const expectedSeasonalPrice = Math.round(room.basePricePerNight * multiplier);
-
-    if (seasonalPrice && seasonalPrice.pricePerNight === expectedSeasonalPrice) {
-      return seasonalPrice.pricePerNight;
-    }
-
-    return expectedSeasonalPrice;
+    return room.basePricePerNight;
   } catch (error) {
     console.warn(`Error fetching room price from DB for room ${roomId}:`, error);
     return null;
@@ -188,14 +165,6 @@ async function calculateTransportCostFromDB(
     }
 
     const pricingConfig = await getPricingConfig();
-    const seasonalMultiplier =
-      season === "peak"
-        ? pricingConfig.peakMultiplier
-        : season === "blossom"
-          ? pricingConfig.blossomMultiplier
-          : season === "off"
-            ? pricingConfig.offMultiplier
-            : 1;
 
     // Get vehicle to find its ID
     const vehicle = await prisma.vehicle.findUnique({
@@ -219,16 +188,9 @@ async function calculateTransportCostFromDB(
       const fuelCost = Math.round((distance / routePricing.vehicleAverageConsumption) * routePricing.fuelPricePerLiter);
       const rentalCost = routePricing.dailyRentalRate * vehicleDays;
       const baseTransportCost = fuelCost + rentalCost;
-
-      // Apply seasonal multiplier
-      const costWithSeason = baseTransportCost * seasonalMultiplier;
-
-      // Apply global fuel surcharge
-      const fuelSurcharge = Math.round(costWithSeason * (pricingConfig.fuelSurchargePercentage / 100));
-      const transportCost = Math.round(costWithSeason + fuelSurcharge);
-
+      const transportCost = baseTransportCost;
       console.debug(
-        `Route Transport: ${routeId} | Vehicle: ${vehicleName} | Distance: ${distance}km | Consumption: ${routePricing.vehicleAverageConsumption}km/L | Fuel: (${distance}÷${routePricing.vehicleAverageConsumption})×${routePricing.fuelPricePerLiter}=${fuelCost}PKR | Rental: ${routePricing.dailyRentalRate}×${vehicleDays}=${rentalCost}PKR | Base: ${baseTransportCost}PKR | Seasonal (×${seasonalMultiplier}): ${costWithSeason}PKR | Total: ${transportCost}PKR`
+        `Route Transport: ${routeId} | Vehicle: ${vehicleName} | Distance: ${distance}km | Consumption: ${routePricing.vehicleAverageConsumption}km/L | Fuel: (${distance}÷${routePricing.vehicleAverageConsumption})×${routePricing.fuelPricePerLiter}=${fuelCost}PKR | Rental: ${routePricing.dailyRentalRate}×${vehicleDays}=${rentalCost}PKR | Base: ${baseTransportCost}PKR | Total: ${transportCost}PKR`
       );
       return { transportCost, baseTransportCost };
     }
@@ -244,12 +206,9 @@ async function calculateTransportCostFromDB(
       };
     }
 
-    // Editable DB-backed transport formula
-    // pricePerKm × distance × base multiplier (baseTransportCost BEFORE seasonal)
+    // Editable DB-backed transport formula using base pricing only
     const baseTransportCost = vehiclePrice * distance * pricingConfig.transportBaseMultiplier;
-    const costWithSeason = baseTransportCost * seasonalMultiplier;
-    const fuelSurcharge = Math.round(costWithSeason * (pricingConfig.fuelSurchargePercentage / 100));
-    const transportCost = Math.round(costWithSeason + fuelSurcharge);
+    const transportCost = baseTransportCost;
 
     console.debug(
       `DB Transport: ${vehicleName} | Price/km: ${vehiclePrice} PKR | Distance: ${distance}km | Total: ${transportCost}PKR`
@@ -303,25 +262,19 @@ function calculateTransportCost(
 }
 
 function getRoomPrice(room: Room, season: string): number {
-  // Try season-specific price first
-  if (season === "peak" && room.peak) return room.peak;
-  if (season === "blossom" && room.blossom) return room.blossom;
-  if (season === "off" && room.off) return room.off;
-
-  // Fall back to low/high pricing
-  if (season === "peak" || season === "high") {
-    if (Array.isArray(room.high)) return room.high[0];
-    if (room.high) return room.high;
-  }
-  if (season === "off" || season === "low") {
-    if (Array.isArray(room.low)) return room.low[0];
-    if (room.low) return room.low;
-  }
-
-  // Fall back to fixed price
+  // Use base price for fallback logic, ignoring seasonal fluctuations.
   if (room.price) return room.price;
 
-  // Fall back to occupancy-specific price (avg of double/triple/quad)
+  if (room.low) {
+    if (Array.isArray(room.low)) return room.low[0];
+    return room.low;
+  }
+
+  if (room.high) {
+    if (Array.isArray(room.high)) return room.high[0];
+    return room.high;
+  }
+
   const prices = [];
   if (room.double) prices.push(room.double);
   if (room.triple) prices.push(room.triple);
