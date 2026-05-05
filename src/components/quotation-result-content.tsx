@@ -160,12 +160,6 @@ export function QuotationResultContent() {
                       <p className="text-stone-500 text-xs mt-1">📍 {dayItem.location}</p>
                     )}
                   </div>
-                  {dayItem.isJeepRequired && dayItem.cost && (
-                    <div className="text-right">
-                      <p className="text-xs text-stone-600">Jeep Cost</p>
-                      <p className="font-bold text-red-600">+{formatPKR(dayItem.cost)}</p>
-                    </div>
-                  )}
                 </div>
               </div>
             ))}

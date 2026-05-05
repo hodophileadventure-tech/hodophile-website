@@ -325,9 +325,9 @@ async function main() {
     const dest = destinations.find(d => d.slug === destSlug);
     if (!dest) continue;
 
-    const hotelId = generateHotelId(hotelData.city, hotelData.name);
+    const hotelId = hotelData.id || generateHotelId(hotelData.city, hotelData.name);
     const hotel = await prisma.hotel.upsert({
-      where: { name: hotelData.name },
+      where: { id: hotelId },
       update: {},
       create: { id: hotelId, name: hotelData.name, destinationId: dest.id, city: hotelData.city },
     });
@@ -370,7 +370,7 @@ async function main() {
             season: 'peak',
             startDate: new Date('2026-06-01'),
             endDate: new Date('2026-09-30'),
-            pricePerNight: Math.floor(basePrice * 1.3),
+            pricePerNight: Math.round(basePrice * 1.3),
           },
         }).catch(() => {}),
         prisma.seasonalPrice.create({
@@ -380,7 +380,7 @@ async function main() {
             season: 'blossom',
             startDate: new Date('2026-03-01'),
             endDate: new Date('2026-05-31'),
-            pricePerNight: Math.floor(basePrice * 1.15),
+            pricePerNight: Math.round(basePrice * 1.15),
           },
         }).catch(() => {}),
         prisma.seasonalPrice.create({
@@ -390,7 +390,7 @@ async function main() {
             season: 'off',
             startDate: new Date('2026-10-01'),
             endDate: new Date('2026-02-28'),
-            pricePerNight: Math.floor(basePrice * 0.85),
+            pricePerNight: Math.round(basePrice * 0.85),
           },
         }).catch(() => {}),
       ]);

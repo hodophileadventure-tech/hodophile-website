@@ -104,12 +104,13 @@ async function getRoomPriceFromDB(
   season: "peak" | "blossom" | "off" | "fixed"
 ): Promise<number | null> {
   try {
-    // If season is "fixed" or unknown, just return base price
-    if (season === "fixed" || !["peak", "blossom", "off"].includes(season)) {
-      const room = await prisma.hotelRoom.findUnique({
-        where: { id: roomId },
-      });
-      return room?.basePricePerNight || null;
+    const room = await prisma.hotelRoom.findUnique({
+      where: { id: roomId },
+    });
+    if (!room) return null;
+
+    if (season === "fixed") {
+      return room.basePricePerNight;
     }
 
     const seasonalPrice = await prisma.seasonalPrice.findFirst({
@@ -119,14 +120,19 @@ async function getRoomPriceFromDB(
       },
     });
 
-    if (seasonalPrice) return seasonalPrice.pricePerNight;
+    const multiplier =
+      season === "peak"
+        ? 1.3
+        : season === "blossom"
+        ? 1.15
+        : 0.85;
+    const expectedSeasonalPrice = Math.round(room.basePricePerNight * multiplier);
 
-    // Fallback to base price if no seasonal price found
-    const room = await prisma.hotelRoom.findUnique({
-      where: { id: roomId },
-    });
+    if (seasonalPrice && seasonalPrice.pricePerNight === expectedSeasonalPrice) {
+      return seasonalPrice.pricePerNight;
+    }
 
-    return room?.basePricePerNight || null;
+    return expectedSeasonalPrice;
   } catch (error) {
     console.warn(`Error fetching room price from DB for room ${roomId}:`, error);
     return null;
@@ -317,6 +323,35 @@ function getRoomPrice(room: Room, season: string): number {
   return 0;
 }
 
+export function normalizeId(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^ -]+/g, "")
+    .replace(/[^ -\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+async function findHotelByIdOrName(hotelId: string | undefined) {
+  if (!hotelId) return null;
+  const normalizedHotelId = normalizeId(hotelId);
+
+  const hotel = await prisma.hotel.findFirst({
+    where: {
+      OR: [
+        { id: hotelId },
+        { id: { contains: normalizedHotelId } },
+        { name: { contains: hotelId, mode: 'insensitive' } },
+        { name: { contains: normalizedHotelId, mode: 'insensitive' } },
+      ],
+    },
+  });
+
+  return hotel;
+}
+
 export async function calculateQuotation(
   input: QuotationInput
 ): Promise<QuotationBreakdown | null> {
@@ -356,10 +391,24 @@ export async function calculateQuotation(
 
         try {
           // Fetch hotel and room from DB
-          const hotelFromDB = await prisma.hotel.findUnique({
+          let hotelFromDB = await prisma.hotel.findUnique({
             where: { id: cityHotelInfo.hotelId },
             include: { rooms: true },
           });
+
+          if (!hotelFromDB) {
+            hotelFromDB = await prisma.hotel.findFirst({
+              where: {
+                OR: [
+                  { id: cityHotelInfo.hotelId },
+                  { id: { contains: normalizeId(cityHotelInfo.hotelId) } },
+                  { name: { contains: cityHotelInfo.hotelId, mode: 'insensitive' } },
+                  { name: { contains: normalizeId(cityHotelInfo.hotelId), mode: 'insensitive' } },
+                ],
+              },
+              include: { rooms: true },
+            });
+          }
 
           if (!hotelFromDB) {
             console.warn(`Hotel not found in DB for city ${city}: ${cityHotelInfo.hotelId}`);
@@ -370,6 +419,15 @@ export async function calculateQuotation(
           let roomFromDB = await prisma.hotelRoom.findUnique({
             where: { id: cityHotelInfo.roomId },
           });
+
+          if (!roomFromDB) {
+            roomFromDB = await prisma.hotelRoom.findFirst({
+              where: {
+                hotelId: hotelFromDB.id,
+                roomType: cityHotelInfo.roomId,
+              },
+            });
+          }
 
           if (!roomFromDB) {
             // Try by roomType name
@@ -408,9 +466,13 @@ export async function calculateQuotation(
     } else if (input.hotelId && input.roomId) {
       // Single-city tour using DB
       try {
-        const hotelFromDB = await prisma.hotel.findUnique({
+        let hotelFromDB = await prisma.hotel.findUnique({
           where: { id: input.hotelId },
         });
+
+        if (!hotelFromDB) {
+          hotelFromDB = await findHotelByIdOrName(input.hotelId);
+        }
 
         if (!hotelFromDB) {
           console.warn(`Hotel not found in DB: ${input.hotelId}`);
