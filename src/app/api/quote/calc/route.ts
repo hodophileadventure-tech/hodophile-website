@@ -5,9 +5,20 @@ export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as QuotationInput;
 
-    if (!body.routeId || !body.vehicleName || !body.numberOfRooms || !body.adults || !body.tripDate) {
+    const missingFields = [
+      !body.routeId && "routeId",
+      !body.vehicleName && "vehicleName",
+      !body.numberOfRooms && "numberOfRooms",
+      !body.adults && "adults",
+      !body.tripDate && "tripDate",
+    ].filter(Boolean);
+
+    if (missingFields.length > 0) {
       return NextResponse.json(
-        { error: "Missing required quotation fields" },
+        {
+          error: `Missing required fields: ${missingFields.join(", ")}`,
+          details: "Live quotation preview requires route, vehicle, guests, and trip date.",
+        },
         { status: 400 }
       );
     }
@@ -15,7 +26,10 @@ export async function POST(request: NextRequest) {
     const quotation = await calculateQuotation(body);
     if (!quotation) {
       return NextResponse.json(
-        { error: "Unable to calculate quotation" },
+        {
+          error: "Unable to calculate quotation.",
+          details: "Please verify your hotel and route selections.",
+        },
         { status: 400 }
       );
     }

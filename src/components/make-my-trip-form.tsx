@@ -308,7 +308,9 @@ export function MakeMyTripForm() {
       const data = await response.json();
 
       if (!response.ok || !data?.quotation) {
-        const message = data?.error || "Unable to calculate quotation at the moment.";
+        const message = data?.details
+          ? `${data?.error || "Unable to calculate quotation at the moment."} — ${data.details}`
+          : data?.error || "Unable to calculate quotation at the moment.";
         setPreviewError(message);
         return null;
       }
@@ -494,7 +496,9 @@ export function MakeMyTripForm() {
         // Redirect to quotation result page
         router.push(`/quotation-result?data=${encoded}`);
       } else {
-        setSubmitError(data.error || "Failed to submit quotation");
+        setSubmitError(
+          data.details ? `${data.error || "Failed to submit quotation"}: ${data.details}` : data.error || "Failed to submit quotation"
+        );
       }
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "An error occurred");
