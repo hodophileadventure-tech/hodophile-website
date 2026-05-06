@@ -137,7 +137,7 @@ export type Destination = {
 export const destinations: Destination[] = [
   {
     name: "Hunza",
-    image: "/images/destinations/hunza.avif",
+    image: "/images/destinations/hunza-custom.jpg",
     description: "Terraced valleys, dramatic peaks, and heritage villages for scenic slow travel.",
     season: "May to October",
     duration: "6 Days",
@@ -145,7 +145,7 @@ export const destinations: Destination[] = [
   },
   {
     name: "Skardu",
-    image: "/images/destinations/skardu.jpg",
+    image: "/images/destinations/skardu-1080x1920.png",
     description: "Alpine lakes, forts, and cinematic mountain routes for immersive northern tours.",
     season: "April to October",
     duration: "7 Days",
@@ -153,7 +153,7 @@ export const destinations: Destination[] = [
   },
   {
     name: "Naran",
-    image: "/images/destinations/naran-saif.jpg",
+    image: "/images/destinations/naran-hd.jpg",
     description: "River valleys, emerald meadows, and summer road journeys with crisp mountain air.",
     season: "May to September",
     duration: "4 Days",
@@ -161,7 +161,7 @@ export const destinations: Destination[] = [
   },
   {
     name: "Swat",
-    image: "/images/destinations/swat.jpg",
+    image: "/images/destinations/swat-hd.jpg",
     description: "Pine landscapes and calm valleys tailored for family and group travelers.",
     season: "April to November",
     duration: "4 Days",
