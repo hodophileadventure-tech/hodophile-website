@@ -99,7 +99,8 @@ export async function calculateRoomPrice(
 
   // Find applicable seasonal price
   const seasonal = room.seasonalPrices.find(
-    (sp) => checkInDate >= sp.startDate && checkInDate <= sp.endDate,
+    (sp: { startDate: Date; endDate: Date; pricePerNight: number }) =>
+      checkInDate >= sp.startDate && checkInDate <= sp.endDate,
   );
 
   const pricePerNight = seasonal?.pricePerNight || room.basePricePerNight;

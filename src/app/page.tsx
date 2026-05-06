@@ -119,11 +119,16 @@ export default function Home() {
   ];
 
   const heroImage = destinations[0]?.image ?? "/images/destinations/hunza.avif";
-  const packageCards = featuredTourCards.map((tour) => ({
-    name: tour.title,
-    image: tour.homeImage,
-    href: `/tours/featured/${tour.slug}`,
-  }));
+  const packageCards = featuredTourCards.map((tour) => {
+    const [firstPart, rest] = tour.title.split(/,\s+(.+)/);
+
+    return {
+      titleParts: rest ? [firstPart + ",", rest] : [tour.title],
+      name: tour.title,
+      image: tour.homeImage,
+      href: `/tours/featured/${tour.slug}`,
+    };
+  });
 
   return (
     <PageShell>
@@ -245,7 +250,7 @@ export default function Home() {
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
               <article key={tour.name} className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
-                <div className="relative h-[240px] overflow-hidden bg-[#0b0b0b] p-2">
+                <div className="relative h-[240px] overflow-hidden bg-[#0b0b0b] p-3">
                   <Image
                     src={tour.image}
                     alt={tour.name}
@@ -254,11 +259,20 @@ export default function Home() {
                     className="object-contain object-center transition duration-700 hover:scale-[1.02]"
                   />
                 </div>
-                <div className="p-4 flex flex-col flex-1">
-                  <h3 className="text-center text-lg font-semibold leading-tight text-[#ffc000]">{tour.name}</h3>
+                <div className="p-5 flex flex-col justify-between gap-5 flex-1">
+                  <h3 className="text-center text-lg font-semibold leading-7 text-[#ffc000]">
+                    {tour.titleParts.length > 1 ? (
+                      <>
+                        <span className="block">{tour.titleParts[0]}</span>
+                        <span className="block">{tour.titleParts[1]}</span>
+                      </>
+                    ) : (
+                      tour.name
+                    )}
+                  </h3>
                   <Link
                     href={tour.href}
-                    className="mt-auto inline-flex w-full items-center justify-center rounded-md bg-[#0b0b0b] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] !text-[#ffc000] transition hover:bg-black"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-[#0b0b0b] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] !text-[#ffc000] transition hover:bg-black"
                   >
                     View Details
                   </Link>

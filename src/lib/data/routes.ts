@@ -181,6 +181,24 @@ export const routes: Route[] = [
       { name: "Coaster 5C", price: 258000 },
     ],
   },
+  {
+    id: "kashmir-taobat-9days",
+    name: "9 Days Kashmir, Arangkel & Taobat",
+    slug: "kashmir-taobat",
+    duration: 9,
+    vehicleDays: 5,
+    direction: "Karachi to Karachi / ISB to ISB",
+    city: "Kashmir",
+    minimumDays: 9,
+    itinerary: "Day 1: Karachi departure | Day 2: Islamabad arrival | Day 3: Islamabad to Sharda | Day 4: Taobat | Day 5: Arang Kel | Day 6: Nagar Valley | Day 7: Return to Islamabad | Day 8: Karachi departure | Day 9: Karachi arrival",
+    vehicles: [
+      { name: "Toyota Corolla", price: 60000 },
+      { name: "Honda BRV", price: 75000 },
+      { name: "Prado", price: 100000 },
+      { name: "Grand Cabin", price: 105000 },
+      { name: "Coaster", price: 145000 },
+    ],
+  },
 ];
 
 export function getRouteById(id: string): Route | undefined {

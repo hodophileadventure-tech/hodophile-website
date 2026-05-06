@@ -555,7 +555,7 @@ export function MakeMyTripForm() {
                   className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 >
                   <option value="">Choose a destination...</option>
-                  {routes.slice(-3).map((route) => (
+                  {routes.map((route) => (
                     <option key={route.id} value={route.id}>
                       {route.name} ({route.duration} days)
                     </option>
