@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { routes } from "@/lib/data/routes";
 import { getHotelsByCity } from "@/lib/data/hotels";
-import { formatPKR } from "@/lib/pricingEngine";
+import { formatPKR } from "@/lib/currency";
 import { getRouteActivities } from "@/lib/data/routeActivities";
 import { getMandatoryJeepCost } from "@/lib/data/routeActivities";
 

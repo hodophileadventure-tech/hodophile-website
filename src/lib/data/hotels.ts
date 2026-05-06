@@ -10,6 +10,7 @@ export interface Room {
   low?: number | number[];
   high?: number | number[];
   extra_mattress?: number;
+  image?: string; // Room photo URL
 }
 
 export interface Hotel {
@@ -26,6 +27,7 @@ export interface Hotel {
     | "Nathia Gali"
     | "Naran"
     | "Chilas";
+  image?: string; // Hotel main photo URL
   rooms: Room[];
   seasons?: {
     peak?: string;
@@ -42,6 +44,7 @@ export const hotels: Hotel[] = [
     id: "skardu-dera-lamsa",
     name: "Skardu Dera Lamsa",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/72/720/72087/72087a_z.jpg",
     seasons: {
       peak: "June - September",
       blossom: "March - May",
@@ -53,24 +56,28 @@ export const hotels: Hotel[] = [
         peak: 35000,
         blossom: 26999,
         off: 21850,
+        image: "https://images.booking.com/data2/Hotel/72/720/72087/72087_362_z.jpg",
       },
       {
         name: "Dera Deluxe Room",
         peak: 30000,
         blossom: 22500,
         off: 19500,
+        image: "https://images.booking.com/data2/Hotel/72/720/72087/72087_363_z.jpg",
       },
       {
         name: "Dera Family Suite",
         peak: 55000,
         blossom: 35999,
         off: 31999,
+        image: "https://images.booking.com/data2/Hotel/72/720/72087/72087_364_z.jpg",
       },
       {
         name: "Heritage Villa",
         peak: 79900,
         blossom: 60999,
         off: 45999,
+        image: "https://images.booking.com/data2/Hotel/72/720/72087/72087_365_z.jpg",
       },
     ],
   },
@@ -78,18 +85,20 @@ export const hotels: Hotel[] = [
     id: "hispar-hotel-skardu",
     name: "Hispar Hotel Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/73/735/73517/73517a_z.jpg",
     rooms: [
-      { name: "Standard", price: 12000 },
-      { name: "Deluxe", price: 16000 },
-      { name: "Deluxe Family", price: 16000 },
-      { name: "Deluxe Plus", price: 18000 },
-      { name: "Deluxe Family Plus", price: 18000 },
+      { name: "Standard", price: 12000, image: "https://images.booking.com/data2/Hotel/73/735/73517/73517_262_z.jpg" },
+      { name: "Deluxe", price: 16000, image: "https://images.booking.com/data2/Hotel/73/735/73517/73517_263_z.jpg" },
+      { name: "Deluxe Family", price: 16000, image: "https://images.booking.com/data2/Hotel/73/735/73517/73517_264_z.jpg" },
+      { name: "Deluxe Plus", price: 18000, image: "https://images.booking.com/data2/Hotel/73/735/73517/73517_265_z.jpg" },
+      { name: "Deluxe Family Plus", price: 18000, image: "https://images.booking.com/data2/Hotel/73/735/73517/73517_266_z.jpg" },
     ],
   },
   {
     id: "khoj-hotel-skardu",
     name: "Khoj Hotel Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/74/745/74512/74512a_z.jpg",
     seasons: {
       peak: "May - September",
       off: "September - February",
@@ -99,21 +108,25 @@ export const hotels: Hotel[] = [
         name: "River Edge King Hammock Villa",
         peak: 52000,
         off: 42000,
+        image: "https://images.booking.com/data2/Hotel/74/745/74512_101_z.jpg",
       },
       {
         name: "River View Loft Villa",
         peak: 48000,
         off: 38000,
+        image: "https://images.booking.com/data2/Hotel/74/745/74512_102_z.jpg",
       },
       {
         name: "River View Family Villa",
         peak: 48000,
         off: 38000,
+        image: "https://images.booking.com/data2/Hotel/74/745/74512_103_z.jpg",
       },
       {
         name: "River Edge Loft Hammock Villa",
         peak: 57000,
         off: 47000,
+        image: "https://images.booking.com/data2/Hotel/74/745/74512_104_z.jpg",
       },
     ],
   },
@@ -121,16 +134,19 @@ export const hotels: Hotel[] = [
     id: "khar-hotel-skardu",
     name: "Khar Hotel Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/75/755/75523/75523a_z.jpg",
     rooms: [
       {
         name: "Twin Master",
         peak: 35000,
         off: 35000,
+        image: "https://images.booking.com/data2/Hotel/75/755/75523_201_z.jpg",
       },
       {
         name: "Master",
         peak: 32500,
         off: 32500,
+        image: "https://images.booking.com/data2/Hotel/75/755/75523_202_z.jpg",
       },
     ],
   },
@@ -468,6 +484,11 @@ export const hotels: Hotel[] = [
     rooms: [
       { name: "Standard Room", price: 15500 },
       { name: "Deluxe Room", price: 22000 },
+      {
+        name: "Superior Deluxe with Jacuzzi",
+        price: 32000,
+        image: "/images/destinations/bulj-al-swat-superior-deluxe.jpeg",
+      },
     ],
   },
   {
@@ -560,6 +581,38 @@ export const hotels: Hotel[] = [
       { name: "First Floor Family Deluxe", price: 18500 },
       { name: "Second Floor Family Premium", price: 30000 },
       { name: "Full Lodge", price: 45000 },
+    ],
+  },
+  {
+    id: "snowline-residence-nathia-gali",
+    name: "Snowline Residence",
+    city: "Nathia Gali",
+    image: "/images/destinations/snowline-luxury-suite.jpeg",
+    rooms: [
+      {
+        name: "Deluxe Suite (3 persons)",
+        price: 15000,
+        extra_mattress: 1500,
+        image: "/images/destinations/snowline-luxury-suite.jpeg",
+      },
+      {
+        name: "Luxury Suite (3 persons)",
+        price: 22000,
+        extra_mattress: 1500,
+        image: "/images/destinations/snowline-luxury-suite.jpeg",
+      },
+      {
+        name: "Executive Suite (5 persons)",
+        price: 35000,
+        extra_mattress: 1500,
+        image: "/images/destinations/snowline-luxury-suite.jpeg",
+      },
+      {
+        name: "Deluxe Suite Plus (5 persons)",
+        price: 20000,
+        extra_mattress: 1500,
+        image: "/images/destinations/snowline-luxury-suite.jpeg",
+      },
     ],
   },
   {

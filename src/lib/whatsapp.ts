@@ -1,5 +1,5 @@
 import type { QuotationBreakdown } from "./pricingEngine";
-import { formatPKR } from "./pricingEngine";
+import { formatPKR } from "./currency";
 
 export interface WhatsAppMessage {
   customerName: string;

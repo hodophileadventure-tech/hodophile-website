@@ -12,50 +12,71 @@ interface QuoteRequestBody extends QuotationInput {
   tourType: string;
 }
 
+function getMissingFields(body: QuoteRequestBody) {
+  const required = [
+    "customerName",
+    "customerPhone",
+    "routeId",
+    "vehicleName",
+    "numberOfRooms",
+    "adults",
+    "tripDate",
+  ];
+  return required.filter((field) => !body[field as keyof QuoteRequestBody]);
+}
+
+function buildValidationError(body: QuoteRequestBody) {
+  const missing = getMissingFields(body);
+  if (missing.length > 0) {
+    return `Missing required field(s): ${missing.join(", ")}`;
+  }
+
+  const route = getRouteById(body.routeId);
+  if (!route) {
+    return `Invalid route selected: ${body.routeId}`;
+  }
+
+  const isMultiCity = Boolean(body.multiCityHotels && body.multiCityNights);
+  if (isMultiCity) {
+    if (!body.multiCityHotels || !body.multiCityNights) {
+      return "Multi-city tour requires hotel and night selections.";
+    }
+
+    // Ensure required cities have at least one hotel/room selected
+    const missingCitySelections = Object.entries(body.multiCityNights)
+      .filter(([, nights]) => nights > 0)
+      .map(([city, nights]) => ({ city, nights }))
+      .filter(({ city }) => {
+        const selection = body.multiCityHotels?.[city];
+        return !selection?.hotelId || !selection?.roomId;
+      })
+      .map(({ city }) => city);
+
+    if (missingCitySelections.length > 0) {
+      return `Please select hotel and room for: ${missingCitySelections.join(", ")}`;
+    }
+  } else {
+    if (!body.hotelId || !body.roomId) {
+      return "Please select both hotel and room for the tour.";
+    }
+  }
+
+  return null;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as QuoteRequestBody;
-
-    // Validate required fields
-    const isMultiCity = body.multiCityHotels && body.multiCityNights;
-    const required = [
-      "customerName",
-      "customerPhone",
-      "routeId",
-      "vehicleName",
-      "numberOfRooms",
-      "adults",
-      "tripDate",
-    ];
-
-    for (const field of required) {
-      if (!body[field as keyof QuoteRequestBody]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}` },
-          { status: 400 }
-        );
-      }
+    const validationError = buildValidationError(body);
+    if (validationError) {
+      return NextResponse.json(
+        { error: validationError, details: validationError },
+        { status: 400 }
+      );
     }
 
-    // Validate hotel selection based on tour type
-    if (isMultiCity) {
-      if (!body.multiCityHotels || !body.multiCityNights) {
-        return NextResponse.json(
-          { error: "Missing multi-city hotel selections" },
-          { status: 400 }
-        );
-      }
-    } else {
-      if (!body.hotelId || !body.roomId) {
-        return NextResponse.json(
-          { error: "Missing required field: hotelId or roomId" },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Calculate quotation
-    const quotation = calculateQuotation({
+    // Calculate quotation (now async)
+    const quotation = await calculateQuotation({
       routeId: body.routeId,
       vehicleName: body.vehicleName,
       hotelId: body.hotelId,
@@ -79,6 +100,7 @@ export async function POST(request: NextRequest) {
 
     // Get route and hotel names for the sheet
     const route = getRouteById(body.routeId);
+    const isMultiCity = Boolean(body.multiCityHotels && body.multiCityNights);
     let hotelName = "";
     let roomType = "";
 
