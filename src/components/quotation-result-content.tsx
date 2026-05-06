@@ -6,12 +6,15 @@ import { routes } from "@/lib/data/routes";
 import { getHotelsByCity } from "@/lib/data/hotels";
 import { formatPKR } from "@/lib/pricingEngine";
 import { getRouteActivities } from "@/lib/data/routeActivities";
+import { getMandatoryJeepCost } from "@/lib/data/routeActivities";
 
 export function QuotationResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [quotation, setQuotation] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [editingHotels, setEditingHotels] = useState<Record<string, { hotelId: string; roomId: string }>>({});
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     try {
@@ -160,12 +163,6 @@ export function QuotationResultContent() {
                       <p className="text-stone-500 text-xs mt-1">📍 {dayItem.location}</p>
                     )}
                   </div>
-                  {dayItem.isJeepRequired && dayItem.cost && (
-                    <div className="text-right">
-                      <p className="text-xs text-stone-600">Jeep Cost</p>
-                      <p className="font-bold text-red-600">+{formatPKR(dayItem.cost)}</p>
-                    </div>
-                  )}
                 </div>
               </div>
             ))}
@@ -205,10 +202,76 @@ export function QuotationResultContent() {
 
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-stone-600">Hotel</p>
-                <p className="text-lg font-semibold text-stone-900">
-                  {hotelDisplay}
-                </p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm text-stone-600">Hotel</p>
+                  <button
+                    onClick={() => setIsEditing(!isEditing)}
+                    className="text-xs px-3 py-1 rounded bg-[#fcc000] text-black hover:bg-[#fcc000]/90 font-semibold transition"
+                  >
+                    {isEditing ? "Done" : "✏️ Edit"}
+                  </button>
+                </div>
+                {isEditing ? (
+                  <div className="mt-2 space-y-3">
+                    {quotation.multiCityHotels && quotation.multiCityNights ? (
+                      Object.entries(quotation.multiCityNights).map(([city, nights]: [string, any]) => {
+                        const cityHotels = getHotelsByCity(city);
+                        const currentHotelId = editingHotels[city]?.hotelId || quotation.multiCityHotels?.[city]?.hotelId;
+                        const selectedHotel = cityHotels.find(h => h.id === currentHotelId);
+                        const rooms = selectedHotel?.rooms || [];
+                        
+                        return (
+                          <div key={city} className="border border-stone-200 rounded p-3 bg-stone-50">
+                            <p className="text-sm font-medium text-stone-900 mb-2">{city}</p>
+                            <select
+                              value={currentHotelId || ""}
+                              onChange={(e) => {
+                                setEditingHotels({
+                                  ...editingHotels,
+                                  [city]: {
+                                    hotelId: e.target.value,
+                                    roomId: quotation.multiCityHotels?.[city]?.roomId || ""
+                                  }
+                                });
+                                quotation.multiCityHotels[city].hotelId = e.target.value;
+                              }}
+                              className="w-full mb-2 px-2 py-1 border border-stone-200 rounded text-sm"
+                            >
+                              <option value="">Select hotel</option>
+                              {cityHotels.map(h => (
+                                <option key={h.id} value={h.id}>{h.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <select
+                        value={editingHotels.singleCity?.hotelId || quotation.hotelId || ""}
+                        onChange={(e) => {
+                          setEditingHotels({
+                            ...editingHotels,
+                            singleCity: {
+                              hotelId: e.target.value,
+                              roomId: quotation.hotelId ? quotation.roomId : ""
+                            }
+                          });
+                          quotation.hotelId = e.target.value;
+                        }}
+                        className="w-full px-2 py-1 border border-stone-200 rounded text-sm"
+                      >
+                        <option value="">Select hotel</option>
+                        {getHotelsByCity(quotation.destination).map(h => (
+                          <option key={h.id} value={h.id}>{h.name}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-lg font-semibold text-stone-900">
+                    {hotelDisplay}
+                  </p>
+                )}
               </div>
               <div>
                 <p className="text-sm text-stone-600">Room Type</p>
@@ -228,35 +291,6 @@ export function QuotationResultContent() {
                   {quotation.tourType}
                 </p>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Cost Breakdown */}
-        <div className="bg-white rounded-[15px] border border-white/20 shadow-[0_30px_90px_rgba(0,0,0,0.28)] p-8 mb-8">
-          <h2 className="font-serif text-2xl text-stone-900 mb-6">💰 Cost Breakdown</h2>
-          <div className="space-y-3">
-            <div className="flex justify-between text-stone-700">
-              <span>Transportation</span>
-              <span className="font-semibold">{formatPKR(quotation.transportCost || 0)}</span>
-            </div>
-            <div className="flex justify-between text-stone-700">
-              <span>Accommodation</span>
-              <span className="font-semibold">{formatPKR(quotation.hotelCost || 0)}</span>
-            </div>
-            {quotation.jeepAddonsCost > 0 && (
-              <div className="flex justify-between text-stone-700">
-                <span>Jeep Add-ons</span>
-                <span className="font-semibold">{formatPKR(quotation.jeepAddonsCost)}</span>
-              </div>
-            )}
-            <div className="border-t border-stone-200 pt-3 flex justify-between text-stone-700">
-              <span>Subtotal</span>
-              <span className="font-semibold">{formatPKR(quotation.subtotal || 0)}</span>
-            </div>
-            <div className="flex justify-between text-stone-700">
-              <span>Service Charge (30%)</span>
-              <span className="font-semibold">{formatPKR(quotation.markupAmount || 0)}</span>
             </div>
           </div>
         </div>

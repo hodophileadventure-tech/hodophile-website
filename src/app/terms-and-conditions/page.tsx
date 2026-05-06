@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 
 export default function TermsAndConditionsPage() {
   return (
-    <PageShell>
+    <PageShell wide>
       <PageHeroImage
         image="/images/editorial/editorial-7.jpg"
         imageAlt="Mountain road and clouds"

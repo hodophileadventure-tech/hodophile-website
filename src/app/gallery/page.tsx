@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function GalleryPage() {
   return (
-    <PageShell>
+    <PageShell wide>
       <PageHeroImage
         image="/images/editorial/editorial-2.jpg"
         imageAlt="Panoramic destination view"

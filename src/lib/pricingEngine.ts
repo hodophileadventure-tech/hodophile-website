@@ -96,7 +96,10 @@ function calculateTransportCost(
 }
 
 function getRoomPrice(room: Room, season: string): number {
-  // Try season-specific price first
+  // Always use base price if available
+  if (room.price) return room.price;
+
+  // Fall back to season-specific price
   if (season === "peak" && room.peak) return room.peak;
   if (season === "blossom" && room.blossom) return room.blossom;
   if (season === "off" && room.off) return room.off;
@@ -110,9 +113,6 @@ function getRoomPrice(room: Room, season: string): number {
     if (Array.isArray(room.low)) return room.low[0];
     if (room.low) return room.low;
   }
-
-  // Fall back to fixed price
-  if (room.price) return room.price;
 
   // Fall back to occupancy-specific price (avg of double/triple/quad)
   const prices = [];

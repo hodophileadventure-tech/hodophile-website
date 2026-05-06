@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function ContactUsPage() {
   return (
-    <PageShell>
+    <PageShell wide>
       <PageHeroImage
         image="/images/editorial/editorial-3.jpg"
         imageAlt="Scenic mountains at sunset"
@@ -30,7 +30,7 @@ export default function ContactUsPage() {
         description="Connect with our planning team for domestic Pakistan departures, route suggestions, and tailored itinerary support."
       />
 
-      <section className="mt-12 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] mx-auto max-w-7xl px-6 lg:px-8">
+      <section className="mt-12 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
         <div className="space-y-6">
           <h2 className="max-w-2xl font-serif text-3xl font-semibold tracking-tight sm:text-4xl">
             Speak with a travel advisor.

@@ -22,20 +22,20 @@ export function TourLanding({
 }: TourLandingProps) {
   return (
     <section className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)]">
-      <div className="grid gap-0 lg:grid-cols-[1.05fr_.95fr]">
+      <div className="grid gap-0 lg:grid-cols-[1.08fr_.92fr]">
         <div className="relative min-h-[28rem]">
           <Image src={image} alt={title} fill priority sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,11,11,0.08)_0%,rgba(11,11,11,0.58)_100%)]" />
-          <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+          <div className="absolute inset-x-0 bottom-0 p-6 text-white lg:p-8">
             <p className="text-xs uppercase tracking-[0.32em] text-white/70">{eyebrow}</p>
-            <h1 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">{title}</h1>
+            <h1 className="mt-3 max-w-3xl font-serif text-4xl leading-tight sm:text-5xl lg:text-6xl">{title}</h1>
           </div>
         </div>
 
-        <div className="flex flex-col justify-between p-8 lg:p-10">
+        <div className="flex flex-col justify-between p-8 lg:p-10 xl:p-12">
           <div>
             <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Tour overview</p>
-            <p className="mt-4 max-w-xl text-base leading-8 text-stone-600">{description}</p>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-stone-600">{description}</p>
             <div className="mt-8 flex flex-wrap gap-2">
               {highlights.map((item) => (
                 <span

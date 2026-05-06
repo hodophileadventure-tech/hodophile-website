@@ -89,7 +89,7 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
   }
 
   return (
-    <PageShell>
+    <PageShell wide>
       <TourLanding
         eyebrow={group.label}
         title={item.label}

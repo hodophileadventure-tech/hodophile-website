@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { absoluteUrl, allTourRoutes, destinationGalleryRoutes } from "@/lib/site";
+import { featuredTourRoutePaths } from "@/lib/data/featured-tour-cards";
 
 const routes = [
   "/",
@@ -19,6 +20,7 @@ const routes = [
   "/tours",
   "/umrah-packages",
   ...allTourRoutes,
+  ...featuredTourRoutePaths,
   ...destinationGalleryRoutes,
 ];
 

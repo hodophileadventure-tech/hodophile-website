@@ -6,22 +6,26 @@ import { SiteHeader } from "@/components/site-header";
 
 type PageShellProps = {
   children: ReactNode;
+  wide?: boolean;
 };
 
-export function PageShell({ children }: PageShellProps) {
+export function PageShell({ children, wide = false }: PageShellProps) {
+  const shellWidthClass = wide ? "max-w-[96rem]" : "max-w-7xl";
+  const mainPaddingClass = wide ? "px-4 md:px-6 lg:px-10 xl:px-14" : "px-4 md:px-6 lg:px-8";
+
   return (
     <div className="min-h-screen bg-[#f7f6f2] text-stone-900">
       <div className="mx-auto max-w-7xl">
         <SiteHeader />
       </div>
 
-      <main className="mx-auto max-w-7xl pb-12 pt-24 px-4 md:px-6 lg:px-8">
+      <main className={`mx-auto ${shellWidthClass} pb-12 pt-24 ${mainPaddingClass}`}>
         {children}
       </main>
 
       <footer className="border-t border-[#d5a700] bg-[#ffc000]">
-        <div className="mx-auto max-w-7xl grid gap-8 px-4 py-10 md:grid-cols-2 xl:grid-cols-5 lg:px-8 md:px-6">
-          <div className="max-w-xl">
+        <div className="mx-auto max-w-[96rem] grid gap-10 px-4 py-10 md:grid-cols-2 xl:grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] lg:px-10 xl:px-14">
+          <div className="max-w-2xl">
             <div className="mb-5 inline-flex items-center gap-3">
               <Image src="/logo.png" alt="Hodophile Adventures" width={58} height={58} className="h-9 w-auto" />
               <h2 className="text-lg font-semibold uppercase tracking-[0.1em] text-black">Hodophile Adventures</h2>
@@ -91,7 +95,7 @@ export function PageShell({ children }: PageShellProps) {
             </div>
           </div>
 
-          <div>
+          <div className="xl:pl-4">
             <h3 className="text-2xl font-semibold uppercase text-black">Customer Service</h3>
             <div className="mt-5 overflow-hidden rounded-2xl bg-[#ffd24d] p-3">
               <Image
@@ -104,7 +108,7 @@ export function PageShell({ children }: PageShellProps) {
             </div>
           </div>
 
-          <div>
+          <div className="xl:pl-4">
             <h3 className="text-2xl font-semibold uppercase text-black">Quick Links</h3>
             <div className="mt-5 grid gap-2 text-base font-medium text-black">
               <Link href="/about-us" className="inline-flex items-center gap-2 transition hover:translate-x-1">
@@ -134,7 +138,7 @@ export function PageShell({ children }: PageShellProps) {
             </div>
           </div>
 
-          <div>
+          <div className="xl:pl-4">
             <h3 className="text-2xl font-semibold uppercase text-black">100% Satisfaction</h3>
             <div className="mt-5 overflow-hidden rounded-2xl bg-[#ffd24d] p-3">
               <Image
@@ -147,7 +151,7 @@ export function PageShell({ children }: PageShellProps) {
             </div>
           </div>
 
-          <div>
+          <div className="xl:pl-4">
             <h3 className="text-xl font-semibold uppercase text-black">Our Affiliations</h3>
             <div className="mt-5 flex flex-col gap-6">
               <div className="flex flex-row gap-6 items-center">

@@ -133,11 +133,11 @@ export function SiteHeader() {
     <header
       className="fixed inset-x-0 top-0 z-50 border-b-4 border-[#fcc000] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)]"
     >
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-[96rem]">
         <div
-          className="relative grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-2.5 lg:gap-3 lg:px-8"
+          className="relative grid grid-cols-[minmax(0,1.3fr)_auto_minmax(0,1.3fr)_auto] items-center gap-4 px-4 py-2.5 lg:gap-8 lg:px-10 xl:px-14"
         >
-        <nav className="hidden items-center justify-end gap-0.5 lg:flex">
+        <nav className="hidden w-full items-center justify-between gap-2 lg:flex lg:pr-6 xl:pr-10">
           {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
         </nav>
 
@@ -155,7 +155,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden items-center justify-start gap-0.5 lg:flex">
+        <nav className="hidden w-full items-center justify-between gap-2 lg:flex lg:pl-6 xl:pl-10">
           {desktopRightNavigation.map((item) => renderDesktopNavItem(item))}
         </nav>
 

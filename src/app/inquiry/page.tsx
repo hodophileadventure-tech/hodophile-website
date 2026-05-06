@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function InquiryPage() {
   return (
-    <PageShell>
+    <PageShell wide>
       <PageHeroImage
         image="/images/editorial/editorial-6.jpg"
         imageAlt="Travelers in scenic valley"

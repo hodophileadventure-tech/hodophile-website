@@ -39,7 +39,7 @@ const honeymoonPackages = [
 
 export default function HoneymoonPackagesPage() {
   return (
-    <PageShell>
+    <PageShell wide>
       <PageHeroImage
         image="/images/editorial/editorial-2.jpg"
         imageAlt="Romantic valley getaway"

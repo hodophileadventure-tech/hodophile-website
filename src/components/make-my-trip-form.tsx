@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes, type Route } from "@/lib/data/routes";
-import { getMandatoryJeepCost, getRouteActivities } from "@/lib/data/routeActivities";
-import { PriceSummary } from "./price-summary";
+import { getMandatoryJeepCost } from "@/lib/data/routeActivities";
 
 export function MakeMyTripForm() {
   const router = useRouter();
@@ -37,7 +36,6 @@ export function MakeMyTripForm() {
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitError, setSubmitError] = useState("");
   const [mandatoryJeepCost, setMandatoryJeepCost] = useState(0);
-  const [routeActivities, setRouteActivities] = useState<any>(null);
 
   // Smart room selection based on price tier (not exact name matching)
   const selectRoomByCategory = (rooms: any[], category: string): string => {
@@ -153,6 +151,16 @@ export function MakeMyTripForm() {
     return multiCityConfig[routeId] !== undefined;
   };
 
+  const getVisibleMultiCityConfig = (selectedRouteId: string) => {
+    const config = multiCityConfig[selectedRouteId as keyof typeof multiCityConfig];
+    if (!config) return null;
+
+    const cities = config.cities.filter((city) => city !== "Islamabad" || isIslamabadHotelMandatory());
+    const nights = cities.map((city) => config.nights[config.cities.indexOf(city)]);
+
+    return { cities, nights };
+  };
+
   // Initialize multi-city hotels with defaults
   const initializeMultiCityHotels = (route: Route) => {
     const config = multiCityConfig[route.id];
@@ -216,9 +224,6 @@ export function MakeMyTripForm() {
         // Update mandatory jeep cost and route activities
         const jeepCost = getMandatoryJeepCost(routeId);
         setMandatoryJeepCost(jeepCost);
-        
-        const activities = getRouteActivities(routeId);
-        setRouteActivities(activities);
       }
     }
   }, [routeId]);
@@ -233,7 +238,9 @@ export function MakeMyTripForm() {
           initializeMultiCityHotels(selectedRoute);
           setHotelId(""); // Clear single-city hotel for multi-city tours
         } else {
-          const hotels = getHotelsByCity(selectedRoute.city);
+          const hotels = getHotelsByCity(selectedRoute.city).filter(
+            (hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory(),
+          );
           setAvailableHotels(hotels);
 
           // Auto-select hotel based on category (not just first)
@@ -243,19 +250,22 @@ export function MakeMyTripForm() {
         }
       }
     }
-  }, [routeId, hotelCategory]);
+  }, [routeId, hotelCategory, startingPoint]);
 
   // Update hotel selections when hotel category changes
   useEffect(() => {
     if (isMultiCityTour()) {
-      initializeMultiCityHotels(routes.find((r) => r.id === routeId)!);
+      const selectedRoute = routes.find((r) => r.id === routeId);
+      if (selectedRoute) {
+        initializeMultiCityHotels(selectedRoute);
+      }
     } else if (availableHotels.length > 0) {
       // For single-city tours, update hotel selection based on category
       const newHotelId = selectHotelByCategory(availableHotels, hotelCategory);
       setHotelId(newHotelId);
       setRoomId("");
     }
-  }, [hotelCategory]);
+  }, [hotelCategory, startingPoint]);
 
   // Update available rooms when hotel changes
   useEffect(() => {
@@ -302,7 +312,7 @@ export function MakeMyTripForm() {
           // Check if this is a multi-city tour
           if (isMultiCityTour() && selectedRoute.city === "Multi-City") {
             // Build multiCityNights from config
-            const config = multiCityConfig[routeId];
+              const config = getVisibleMultiCityConfig(routeId);
             if (config) {
               const multiCityNights: Record<string, number> = {};
               config.cities.forEach((city, index) => {
@@ -420,9 +430,9 @@ export function MakeMyTripForm() {
         multiCityHotels: isMultiCityTour() ? multiCityHotels : undefined,
         multiCityNights: isMultiCityTour() && routeId in multiCityConfig 
           ? Object.fromEntries(
-              multiCityConfig[routeId as keyof typeof multiCityConfig].cities.map((city, i) => [
+              (getVisibleMultiCityConfig(routeId)?.cities || []).map((city, i) => [
                 city,
-                multiCityConfig[routeId as keyof typeof multiCityConfig].nights[i],
+                getVisibleMultiCityConfig(routeId)?.nights[i] ?? 0,
               ])
             )
           : undefined,
@@ -469,10 +479,11 @@ export function MakeMyTripForm() {
   };
 
   return (
-    <div className="grid gap-6 max-w-7xl mx-auto">
-      <div className="grid md:grid-cols-[1fr_350px] gap-6">
+    <div className="flex justify-center items-start min-h-screen">
+      <div className="w-full max-w-7xl px-4">
+        <div className="grid gap-6 grid-cols-1 overflow-visible">
         {/* Main Form */}
-        <div className="w-full rounded-[15px] border border-white/20 bg-white/94 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm md:p-6">
+        <div className="w-full rounded-[15px] border border-white/20 bg-white/94 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm md:p-6 overflow-visible">
           <div className="mb-6 text-center md:text-left">
             <p className="text-[11px] uppercase tracking-[0.38em] text-[#8a6a00]">Plan my Journey</p>
             <h1 className="mt-3 font-serif text-3xl leading-tight sm:text-[2.6rem]">
@@ -485,7 +496,7 @@ export function MakeMyTripForm() {
 
           <form onSubmit={handleSubmit} className="grid gap-4">
             {/* Customer Info */}
-            <div className="grid md:grid-cols-2 gap-4 pb-4 border-b border-stone-200">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4 border-b border-stone-200">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
                 Your Name *
                 <input
@@ -534,7 +545,7 @@ export function MakeMyTripForm() {
               />
             </label>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
                 Select Route *
                 <select
@@ -544,7 +555,7 @@ export function MakeMyTripForm() {
                   className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 >
                   <option value="">Choose a destination...</option>
-                  {routes.map((route) => (
+                  {routes.slice(-3).map((route) => (
                     <option key={route.id} value={route.id}>
                       {route.name} ({route.duration} days)
                     </option>
@@ -579,44 +590,17 @@ export function MakeMyTripForm() {
               </select>
             </label>
 
-            {/* Mandatory Jeep Activities Alert */}
-            {mandatoryJeepCost > 0 && routeActivities && (
-              <div className="bg-red-50 border-2 border-red-300 rounded-[15px] p-4">
-                <h3 className="font-semibold text-red-900 mb-2 flex items-center gap-2">
-                  🚙 Included Jeep Activities
-                </h3>
-                <ul className="space-y-2">
-                  {routeActivities.activities
-                    .filter((a: any) => a.isJeepRequired)
-                    .map((activity: any, idx: number) => (
-                      <li key={idx} className="text-sm text-red-800 flex items-start gap-2">
-                        <span className="text-red-600 font-bold">•</span>
-                        <span>
-                          <strong>{activity.name}</strong> ({activity.location})
-                          {activity.cost && (
-                            <span className="text-red-600 font-semibold"> +{activity.cost.toLocaleString('en-US')} PKR</span>
-                          )}
-                        </span>
-                      </li>
-                    ))}
-                </ul>
-                <p className="text-sm text-red-700 mt-3 font-semibold">
-                  Total Jeep Cost: {mandatoryJeepCost.toLocaleString('en-US')} PKR
-                </p>
-              </div>
-            )}
-
             {/* Hotel & Vehicle Selection */}
             {!isMultiCityTour() ? (
-              <div className="grid md:grid-cols-2 gap-4">
-                <label className="grid gap-2 text-sm font-medium text-stone-900">
+              <div className="grid gap-4 grid-cols-1 xl:grid-cols-2">
+                <label className="grid gap-2 text-sm font-medium text-stone-900 min-w-0">
                   Select Hotel *
                   <select
                     required
                     value={hotelId}
                     onChange={(e) => setHotelId(e.target.value)}
                     disabled={!routeId}
-                    className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
+                    className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 appearance-none w-full"
                   >
                     <option value="">
                       {!routeId ? "Select route first" : availableHotels.length === 0 ? "No hotels available" : "Choose a hotel..."}
@@ -629,14 +613,14 @@ export function MakeMyTripForm() {
                   </select>
                 </label>
 
-                <label className="grid gap-2 text-sm font-medium text-stone-900">
+                <label className="grid gap-2 text-sm font-medium text-stone-900 min-w-0 z-50 overflow-hidden">
                   Room Type *
                   <select
                     required
                     value={roomId}
                     onChange={(e) => setRoomId(e.target.value)}
                     disabled={!hotelId}
-                    className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
+                    className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 appearance-none w-full overflow-hidden text-ellipsis"
                   >
                     <option value="">
                       {!hotelId ? "Select hotel first" : availableRooms.length === 0 ? "No rooms available" : "Choose a room..."}
@@ -663,15 +647,14 @@ export function MakeMyTripForm() {
                   </div>
                 )}
 
-                {multiCityConfig[routeId]?.cities.map((city) => {
+                {(getVisibleMultiCityConfig(routeId)?.cities || []).map((city) => {
                   const hotelsForCity = getHotelsByCity(city);
                   const currentSelection = multiCityHotels[city];
                   const selectedHotel = hotelsForCity.find(
                     (h) => h.id === currentSelection?.hotelId
                   );
-                  const nights = multiCityConfig[routeId]?.nights[
-                    multiCityConfig[routeId]?.cities.indexOf(city)
-                  ];
+                  const visibleConfig = getVisibleMultiCityConfig(routeId);
+                  const nights = visibleConfig?.nights[visibleConfig.cities.indexOf(city)];
                   const isMandatory = city === "Islamabad" && isIslamabadHotelMandatory();
                   const isOptional = nights === 0 && !isMandatory;
 
@@ -688,7 +671,7 @@ export function MakeMyTripForm() {
                         {isMandatory && " • REQUIRED"}
                         {isOptional && " • (Optional)"}
                       </p>
-                      <div className="grid md:grid-cols-2 gap-3">
+                      <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
                         <label className="grid gap-2 text-sm font-medium text-stone-900">
                           Hotel {isMandatory ? "* REQUIRED" : nights === 0 ? "(Optional)" : "*"}
                           <select
@@ -717,7 +700,7 @@ export function MakeMyTripForm() {
                           </select>
                         </label>
 
-                        <label className="grid gap-2 text-sm font-medium text-stone-900">
+                        <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
                           Room Type {isMandatory ? "* REQUIRED" : nights === 0 ? "" : "*"}
                           <select
                             value={currentSelection?.roomId || ""}
@@ -732,7 +715,7 @@ export function MakeMyTripForm() {
                             }
                             disabled={!currentSelection?.hotelId}
                             required={nights !== 0 || isMandatory}
-                            className={`rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 ${
+                            className={`rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis ${
                               isMandatory ? "border-red-300 focus:ring-red-200" : ""
                             }`}
                           >
@@ -796,7 +779,7 @@ export function MakeMyTripForm() {
             )}
 
             {/* Guest & Room Details */}
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid gap-4 grid-cols-1 xl:grid-cols-3">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
                 Number of Rooms (Auto-Calculated)
                 <div className="rounded-[15px] border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-900">
@@ -805,7 +788,7 @@ export function MakeMyTripForm() {
                 </div>
               </label>
 
-              <label className="grid gap-2 text-sm font-medium text-stone-900">
+              <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
                 Adults *
                 <input
                   type="number"
@@ -813,18 +796,18 @@ export function MakeMyTripForm() {
                   required
                   value={adults}
                   onChange={(e) => setAdults(parseInt(e.target.value) || 1)}
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 w-full"
                 />
               </label>
 
-              <label className="grid gap-2 text-sm font-medium text-stone-900">
+              <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
                 Kids
                 <input
                   type="number"
                   min="0"
                   value={kids}
                   onChange={(e) => handleKidsCountChange(parseInt(e.target.value) || 0)}
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 w-full"
                 />
               </label>
             </div>
@@ -833,7 +816,7 @@ export function MakeMyTripForm() {
             {kids > 0 && (
               <div className="grid gap-3 p-4 rounded-[15px] bg-[#fcc000]/5 border border-[#fcc000]/20">
                 <p className="text-sm font-medium text-stone-900">Ages of Kids</p>
-                <div className="grid md:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                   {Array.from({ length: kids }).map((_, index) => (
                     <input
                       key={index}
@@ -877,11 +860,7 @@ export function MakeMyTripForm() {
             </button>
           </form>
         </div>
-
-        {/* Price Summary Sidebar */}
-        <div className="md:sticky md:top-6 md:h-fit">
-          <PriceSummary quotation={quotation} isLoading={false} />
-        </div>
+      </div>
       </div>
     </div>
   );

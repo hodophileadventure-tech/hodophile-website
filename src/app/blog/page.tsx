@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   return (
-    <PageShell>
+    <PageShell wide>
       <section className="space-y-6">
         <span className="inline-flex rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-4 py-2 text-sm font-medium text-[#fcc000]">
           Travel blog

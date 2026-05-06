@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function BlogsPage() {
   return (
-    <PageShell>
+    <PageShell wide>
       <PageHeroImage
         image="/images/editorial/editorial-2.jpg"
         imageAlt="Valley road through mountains"
@@ -29,7 +29,7 @@ export default function BlogsPage() {
         description="Short travel articles that support route pages and answer common planning questions before booking."
       />
 
-      <section className="mt-12 grid gap-6 lg:grid-cols-3 mx-auto max-w-7xl px-6 lg:px-8">
+      <section className="mt-12 grid gap-6 lg:grid-cols-3 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
         {blogPosts.map((post) => (
           <article
             key={post.title}

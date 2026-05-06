@@ -58,7 +58,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
   }
 
   return (
-    <PageShell>
+    <PageShell wide>
       <TourLanding
         eyebrow="Tour Group"
         title={group.label}

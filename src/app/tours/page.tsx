@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function ToursPage() {
   return (
-    <PageShell>
+    <PageShell wide>
       <PageHeroImage
         image="/images/editorial/editorial-8.jpg"
         imageAlt="Scenic tour route"
@@ -31,7 +31,7 @@ export default function ToursPage() {
         description="Browse grouped routes and destination-first package pages designed for smooth planning and confident booking."
       />
 
-      <section className="mt-12 grid gap-6 lg:grid-cols-3 mx-auto max-w-7xl px-6 lg:px-8">
+      <section className="mt-12 grid gap-6 lg:grid-cols-3 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
         {featuredPackages.map((trip) => (
           <article
             key={trip.name}

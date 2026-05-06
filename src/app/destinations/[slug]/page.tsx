@@ -103,7 +103,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
   }
 
   return (
-    <PageShell>
+    <PageShell wide>
       <section className="space-y-6">
         <div>
           <Link href="/destinations" className="text-sm font-medium text-[#ffc000] hover:text-[#ffd24d]">

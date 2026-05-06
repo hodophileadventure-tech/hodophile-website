@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import { PageShell } from "@/components/page-shell";
+import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, destinations } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -118,28 +119,11 @@ export default function Home() {
   ];
 
   const heroImage = destinations[0]?.image ?? "/images/destinations/hunza.avif";
-  const packageCards = [
-    {
-      name: "Skardu & Basho Valley",
-      image: "/images/destinations/featured-skardu-basho.jpg",
-      href: "/tours/northern-tours/skardu-valley-tour-packages",
-    },
-    {
-      name: "Skardu & Hunza",
-      image: "/images/destinations/featured-skardu-hunza.jpg",
-      href: "/tours/northern-tours/hunza-valley-tour-packages",
-    },
-    {
-      name: "Hunza & Naltar",
-      image: "/images/destinations/featured-hunza-naltar.jpg",
-      href: "/tours/northern-tours/hunza-valley-tour-packages",
-    },
-    {
-      name: "Swat, Kalam & Malam Jabba",
-      image: "/images/destinations/featured-kalam-malam-jabba.jpg",
-      href: "/tours/northern-tours/swat-valley-tour-packages",
-    },
-  ];
+  const packageCards = featuredTourCards.map((tour) => ({
+    name: tour.title,
+    image: tour.homeImage,
+    href: `/tours/featured/${tour.slug}`,
+  }));
 
   return (
     <PageShell>
@@ -259,13 +243,13 @@ export default function Home() {
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
               <article key={tour.name} className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
-                <div className="relative h-[240px] overflow-hidden">
+                <div className="relative h-[240px] overflow-hidden bg-[#0b0b0b] p-2">
                   <Image
                     src={tour.image}
                     alt={tour.name}
                     fill
                     sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="object-cover transition duration-700 hover:scale-105"
+                    className="object-contain object-center transition duration-700 hover:scale-[1.02]"
                   />
                 </div>
                 <div className="p-4 flex flex-col flex-1">

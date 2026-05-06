@@ -43,7 +43,7 @@ const umrahPackages = [
 
 export default function UmrahPackagesPage() {
   return (
-    <PageShell>
+    <PageShell wide>
       <PageHeroImage
         image="/images/umrah/kabah.jpg"
         imageAlt="Travel planning for Umrah"
@@ -52,7 +52,7 @@ export default function UmrahPackagesPage() {
         description="Compare package tiers and submit your preferred travel window for personalized Umrah assistance."
       />
 
-      <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
         {umrahPackages.map((item) => (
           <article
             key={item.name}
