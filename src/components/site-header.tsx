@@ -40,7 +40,7 @@ export function SiteHeader() {
         >
           <Link
             href={item.href}
-            className={`inline-flex items-center rounded-full px-3 py-1.5 text-[0.9rem] transition ${
+            className={`inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1.5 text-[0.9rem] transition ${
               isToursActive
                 ? "text-[#ffc000]"
                 : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
@@ -116,7 +116,7 @@ export function SiteHeader() {
       <Link
         key={item.href}
         href={item.href}
-        className={`relative inline-flex items-center rounded-full px-3.5 py-2 text-[0.95rem] transition ${
+        className={`relative inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-2 text-[0.9rem] transition ${
           pathname === item.href
             ? "text-stone-900"
             : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
@@ -135,9 +135,9 @@ export function SiteHeader() {
     >
       <div className="mx-auto max-w-[96rem]">
         <div
-          className="relative grid grid-cols-[minmax(0,1.3fr)_auto_minmax(0,1.3fr)_auto] items-center gap-3 px-4 py-1 lg:gap-6 lg:px-8 xl:px-12"
+          className="relative min-w-0 grid grid-cols-[minmax(0,1.3fr)_auto_minmax(0,1.3fr)_auto] items-center gap-3 px-4 py-1 lg:gap-6 lg:px-8 xl:px-12"
         >
-        <nav className="hidden w-full items-center justify-between gap-2 lg:flex lg:pr-6 xl:pr-10">
+        <nav className="hidden w-full min-w-0 items-center justify-between gap-2 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
           {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
         </nav>
 
@@ -155,7 +155,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden w-full items-center justify-between gap-2 lg:flex lg:pl-6 xl:pl-10">
+        <nav className="hidden w-full min-w-0 items-center justify-between gap-2 lg:flex lg:flex-nowrap lg:pl-6 xl:pl-10">
           {desktopRightNavigation.map((item) => renderDesktopNavItem(item))}
         </nav>
 
