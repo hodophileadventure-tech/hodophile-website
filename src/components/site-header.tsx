@@ -135,9 +135,9 @@ export function SiteHeader() {
     >
       <div className="mx-auto max-w-[96rem]">
         <div
-          className="relative min-w-0 grid grid-cols-[minmax(0,1.3fr)_auto_minmax(0,1.3fr)_auto] items-center gap-3 px-4 py-1 lg:gap-6 lg:px-8 xl:px-12"
+          className="relative min-w-0 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-1 lg:gap-6 lg:px-8 xl:px-12"
         >
-        <nav className="hidden w-full min-w-0 items-center justify-between gap-2 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
+        <nav className="hidden w-full min-w-0 overflow-hidden items-center justify-between gap-2 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
           {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
         </nav>
 
@@ -155,11 +155,11 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden w-full min-w-0 items-center justify-between gap-2 lg:flex lg:flex-nowrap lg:pl-6 xl:pl-10">
+        <nav className="hidden w-full min-w-0 overflow-hidden items-center justify-between gap-2 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
           {desktopRightNavigation.map((item) => renderDesktopNavItem(item))}
         </nav>
 
-        <div className="hidden justify-self-end lg:flex">
+        <div className="hidden justify-self-end min-w-0 flex-none lg:flex">
           <Link
             href="/make-my-trip"
             className="inline-flex whitespace-nowrap rounded-full border border-[#ffc000] bg-[#ffc000] px-4 py-1.5 text-sm font-semibold !text-[#0b0b0b] shadow-[0_6px_20px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
