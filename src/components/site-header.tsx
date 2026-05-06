@@ -137,7 +137,7 @@ export function SiteHeader() {
         <div
           className="relative min-w-0 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-1 lg:gap-6 lg:px-8 xl:px-12"
         >
-        <nav className="hidden w-full min-w-0 overflow-hidden items-center justify-between gap-2 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
+        <nav className="hidden w-full min-w-0 items-center justify-start gap-1 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
           {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
         </nav>
 
@@ -155,7 +155,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden w-full min-w-0 overflow-hidden items-center justify-between gap-2 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
+        <nav className="hidden w-full min-w-0 items-center justify-start gap-1 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
           {desktopRightNavigation.map((item) => renderDesktopNavItem(item))}
         </nav>
 
