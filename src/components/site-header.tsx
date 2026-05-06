@@ -40,7 +40,7 @@ export function SiteHeader() {
         >
           <Link
             href={item.href}
-            className={`inline-flex items-center rounded-full px-3.5 py-2 text-[0.95rem] transition ${
+            className={`inline-flex items-center rounded-full px-3 py-1.5 text-[0.9rem] transition ${
               isToursActive
                 ? "text-[#ffc000]"
                 : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
@@ -135,7 +135,7 @@ export function SiteHeader() {
     >
       <div className="mx-auto max-w-[96rem]">
         <div
-          className="relative grid grid-cols-[minmax(0,1.3fr)_auto_minmax(0,1.3fr)_auto] items-center gap-4 px-4 py-2.5 lg:gap-8 lg:px-10 xl:px-14"
+          className="relative grid grid-cols-[minmax(0,1.3fr)_auto_minmax(0,1.3fr)_auto] items-center gap-3 px-4 py-1 lg:gap-6 lg:px-8 xl:px-12"
         >
         <nav className="hidden w-full items-center justify-between gap-2 lg:flex lg:pr-6 xl:pr-10">
           {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
@@ -143,14 +143,14 @@ export function SiteHeader() {
 
         <Link
           href="/"
-          className="group hidden justify-self-center rounded-full px-1 py-0 lg:block"
+          className="group relative hidden h-[4.25rem] w-[13rem] justify-self-center overflow-hidden rounded-full px-1 py-0 lg:block"
         >
           <Image
             src="/logo-transparent.png"
             alt="Hodophile Adventures"
-            width={520}
-            height={282}
-            className="h-20 w-auto max-w-none drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition group-hover:scale-[1.02] lg:h-[5.4rem]"
+            fill
+            sizes="208px"
+            className="object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition group-hover:scale-[1.02]"
             priority
           />
         </Link>
@@ -162,7 +162,7 @@ export function SiteHeader() {
         <div className="hidden justify-self-end lg:flex">
           <Link
             href="/make-my-trip"
-            className="inline-flex whitespace-nowrap rounded-full border border-[#ffc000] bg-[#ffc000] px-4 py-2 text-sm font-semibold !text-[#0b0b0b] shadow-[0_6px_20px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
+            className="inline-flex whitespace-nowrap rounded-full border border-[#ffc000] bg-[#ffc000] px-4 py-1.5 text-sm font-semibold !text-[#0b0b0b] shadow-[0_6px_20px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
           >
             Plan Trip
           </Link>
@@ -171,14 +171,14 @@ export function SiteHeader() {
         <div className="col-span-4 flex items-center justify-between lg:hidden">
           <Link
             href="/"
-            className="group inline-flex shrink-0 items-center rounded-full px-1 py-0"
+            className="group relative inline-flex h-[3.5rem] w-[10rem] shrink-0 items-center overflow-hidden rounded-full px-1 py-0"
           >
             <Image
               src="/logo-transparent.png"
               alt="Hodophile Adventures"
-              width={360}
-              height={195}
-              className="h-18 w-auto max-w-none drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)] transition group-hover:scale-[1.02]"
+              fill
+              sizes="160px"
+              className="object-contain drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)] transition group-hover:scale-[1.02]"
               priority
             />
           </Link>
