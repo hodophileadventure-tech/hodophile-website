@@ -155,12 +155,12 @@ export function PageShell({ children, wide = false }: PageShellProps) {
             <h3 className="text-xl font-semibold uppercase text-black">Our Affiliations</h3>
             <div className="mt-5 flex flex-col gap-6">
               <div className="flex flex-row gap-6 items-center">
-                <div className="h-28 w-28 flex-shrink-0">
+                <div className="h-20 w-20 flex-shrink-0">
                   <Image
                     src="/images/footer/govt-pakistan.png"
                     alt="Government of Pakistan"
-                    width={120}
-                    height={120}
+                    width={80}
+                    height={80}
                     className="h-full w-full object-contain"
                   />
                 </div>
@@ -170,21 +170,21 @@ export function PageShell({ children, wide = false }: PageShellProps) {
                 </div>
               </div>
               <div className="flex flex-row gap-6 items-center justify-start">
-                <div className="h-28 w-28 flex-shrink-0">
+                <div className="h-20 w-20 flex-shrink-0">
                   <Image
                     src="/images/footer/taap-logo.png"
                     alt="TAAP"
-                    width={120}
-                    height={120}
+                    width={80}
+                    height={80}
                     className="h-full w-full object-contain"
                   />
                 </div>
-                <div className="h-28 w-28 flex-shrink-0">
+                <div className="h-20 w-20 flex-shrink-0">
                   <Image
                     src="/images/footer/affiliation-2.png"
                     alt="PATO"
-                    width={120}
-                    height={120}
+                    width={80}
+                    height={80}
                     className="h-full w-full object-contain"
                   />
                 </div>

@@ -51,13 +51,13 @@ export function TourLanding({
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
               href={ctaHref}
-              className="inline-flex rounded-full border border-[#ffc000] bg-[#ffc000] px-5 py-3 text-sm font-semibold !text-[#0b0b0b] shadow-[0_10px_22px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
+              className="inline-flex rounded-full border border-[#fcc000] bg-[#fcc000] px-5 py-3 text-sm font-semibold !text-[#0b0b0b] shadow-[0_10px_22px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
             >
               {ctaLabel}
             </Link>
             <Link
               href="/tours"
-              className="inline-flex rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-800 transition hover:border-stone-400 hover:text-stone-900"
+              className="inline-flex rounded-full border border-[#fcc000] bg-white px-5 py-3 text-sm font-semibold text-[#fcc000] transition hover:border-[#fcc000] hover:bg-[#fff8df]"
             >
               Back to Tours
             </Link>

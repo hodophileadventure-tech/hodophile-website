@@ -20,6 +20,73 @@ export type TourDetailSection = {
   content: string[];
 };
 
+export const featuredTourTermsAndConditions: TourDetailSection[] = [
+  {
+    title: "Terms & conditions",
+    content: [
+      "Our Terms & Conditions are strictly followed and applied.",
+      "We encourage you to read and agree carefully before booking a trip with us.",
+      "HODOPHILE ADVENTURES reserves the right to cancel a trip without prior notice for any reasons deemed appropriate by them. In such a case the registered participants will receive a full refund.",
+      "Due to situations like weather, local politics, transport, best interest of the client, or other factors beyond the control of management, the itinerary can change. If alterations are necessary, management will decide the best alternative while keeping the interests of the whole group in mind. We will try our best to visit other main points if changes are required.",
+    ],
+  },
+  {
+    title: "SECTION 2: Strictly Prohibited",
+    content: [
+      "The members shall not be indulged in any act reflecting moral or character failing during the activities.",
+      "Using drugs or being found in any party to drug sale or possession is strictly prohibited. If anyone is found or caught using any kind of drug, they will be expelled from the trip right away on the spot and the person will not be eligible for any kind of refund.",
+      "Management reserves the right to terminate or regret any participant due to indiscipline and the person will not be eligible for any kind of refund.",
+      "Smoking in the transport is strictly prohibited. Use of violent behavior including altercation, insinuations of indecent kind, verbal and physical abuse and assault, aggravated behavior, or any other act amounting to unbecoming of a member are strictly prohibited.",
+    ],
+  },
+  {
+    title: "SECTION 3: Respect and Privacy",
+    content: [
+      "All members would give extra care for the local environmental care. Garbage (tins, water bottles, wrappers etc.) shall be suitably disposed without polluting water sources.",
+    ],
+  },
+  {
+    title: "SECTION 4: Rights of Management",
+    content: [
+      "Management reserves the right to use event photos for electronic/digital media. If anyone has concerns, we will blur their face.",
+      "The decision of the food menu will be completely in the hands of the management.",
+    ],
+  },
+  {
+    title: "SECTION 5: VEHICLE DEMAGE",
+    content: [
+      "HODOPHILE ADVENTURES will not pay any vehicle charges in case of road closed due to heavy snowfall or landslide.",
+      "On steep ascends in mountainous areas, the air conditioning of the vehicle could be turned off to prevent from overheating. As we know the vehicle is machinery, so if it breaks down at any point for any reason, then the management will not be responsible for that.",
+      "In case of damage of vehicle, hotels and the club's equipment i.e. trekking sticks, rain coats, rafting pedals, shoes and many others by any of the participants, the particular participant will be held responsible and payable for that damaged.",
+      "The check-out time of the hotels is at 12:00 PM and check-in time is at 2:00 PM. So, if the tour arrives ahead of time, all the participants will patiently wait for the rooms.",
+    ],
+  },
+  {
+    title: "SECTION 6: INSURANCE & NATURAL DISASTERS",
+    content: [
+      "Travel insurance is not covered in the tour price. You can arrange travel insurance with your preferred insurance company.",
+      "We will try our possible level best and care will be taken for the safety of members; still, each venture can be fraught with endangers of unforeseen natural disasters like avalanches and crevasse falls or any other accidents, and sometimes such disasters cannot be ruled out. In any such type of accident during the whole tour, the company, group leader and the tour organizers will not be held responsible in any form.",
+      "In case of unforeseen events like land sliding, any extra costs incurred won't be the responsibility of the management.",
+      "In case of theft, loss or damage to personal belongings during the duration of the trip, management will not be held responsible in any case.",
+      "Tours inherit the risks of injuries or health issues at times. Participants need to consider these risks before booking their trips. In case of any mishap, injury or accident, the management will not be held responsible in any form.",
+      "All activities shall be done by members on their own accord and HODOPHILE ADVENTURES Pakistan will not be responsible for any mishaps whatsoever.",
+      "HODOPHILE ADVENTURES shall not be responsible for anything not mentioned explicitly.",
+    ],
+  },
+  {
+    title: "SECTION 7: Cancellation & Booking Policy",
+    content: [
+      "When you make a booking, kindly view the terms & conditions which reflects the cancellation, refund with booking terms & conditions. If you find difficulty in cancelling, you can get the same cancelled by calling our numbers. Cancellation of your request may require a minimum processing time, subject to specific terms and conditions applicable to the type of tour.",
+      "There may be a full cancellation penalty on our booked tours, which are cancelled after the cancellation deadline mentioned in the terms and conditions.",
+      "You agree to bear the full cost of any booking and cancellation fees for any services booked but not utilized for any reason. In some cases, HODOPHILE ADVENTURES may charge cancellation or amendment fees in addition to those imposed by travel service providers.",
+      "HODOPHILE ADVENTURES reserves the right to decline any booking for any reason and shall not be held liable for any resulting claims of losses or compensation. In such an event, HODOPHILE ADVENTURES shall refund to you all unutilized money collected from you for that.",
+      "For bookings which have already been paid by you, when cancelled, refunds will be made based on the refund policy mentioned in terms and conditions while making the booking. For corporate or customized tours, it may take between 15 to 25 working days for the amount to get credited into your account. Refund policies may vary for every tour and service.",
+      "Cancellation policy is subject to change. It is purely depending upon the cancellation policy of respective hotels. In peak seasons, some hotels may charge 100% cancellation.",
+      "Cancellation Policy: 48 HRS or less, 100% cancellation charges of the advanced amount apply. More than 48 HRS, 50% cancellation charges of the advanced amount apply. 4 days or more, no cancellation charges. No amount will be refunded if any person leaves the trip at any stage due to any reason.",
+    ],
+  },
+];
+
 export type FeaturedTourCard = {
   slug: string;
   title: string;
@@ -124,6 +191,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
     includes: [
       "Hotel accommodations on shared room basis",
       "Luxury ground transport",
+      "4x4 Jeep ride",
       "Breakfasts and dinners as per itinerary",
       "Tolls and taxes",
       "Tour guide services",
@@ -278,7 +346,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
   {
     slug: "skardu-deosai",
     title: "10 Days Skardu, Shigar & Shangrila",
-    homeImage: "/images/featured-tours/10days-skardu-deosai.jpg.jpeg",
+    homeImage: "/images/featured-tours/skardu-deosai.jpg.jpeg",
     heroImage: "/images/destinations/skardu.jpg",
     duration: "10 Days / 7 Nights",
     summary: "A rugged Skardu route with Shangrila, Shigar Fort, Sarfranga Cold Desert, and Deosai.",
@@ -328,6 +396,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
           { label: "Twin-2 Person Sharing", price: "Rs. 47,000" },
           { label: "Solo Single Room", price: "Rs. 67,000" },
         ],
+        note: "Prices are per person and exclude round-trip tickets between Karachi and Islamabad.",
       },
     ],
     childPolicy: [
@@ -342,6 +411,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
     includes: [
       "Hotel accommodations on sharing basis",
       "Luxury transport",
+      "4x4 Jeep ride",
       "Breakfasts and dinners as noted",
       "Tolls and taxes",
       "Tour guide services",
@@ -377,17 +447,6 @@ export const featuredTourCards: FeaturedTourCard[] = [
     ],
     detailSections: [
       {
-        title: "Details",
-        content: [
-          "Departure from Karachi by bus or train; air travel on request for additional charges.",
-          "Meals on the bus or train are not included in the package.",
-          "Airport/station pickup is available on request for an extra charge.",
-          "Hotel check-in begins at 2:00 PM.",
-          "First-night dinner is served in rooms between 9:30 PM and 10:00 PM.",
-          "The tour begins in Chilas on Day 3 with the Hazara Motorway route.",
-        ],
-      },
-      {
         title: "Menu During Trip",
         content: [
           "Breakfast: Anda, Paratha, Tea, Channa, Omelet on rotation.",
@@ -400,15 +459,6 @@ export const featuredTourCards: FeaturedTourCard[] = [
           "50% refund if cancellation occurs 7 days before the tour.",
           "30% refund if cancellation occurs 3 days before the tour.",
           "0% refund if cancellation occurs one day before the tour.",
-        ],
-      },
-      {
-        title: "Terms & Conditions",
-        content: [
-          "Minimum group size is 10 participants. If the trip is canceled due to low registration, guests may receive a full refund or transfer to the next trip.",
-          "No refunds are provided for natural disasters, road closures, or other circumstances beyond the organizer's control.",
-          "Personal weapons, drugs, and alcohol are strictly prohibited.",
-          "Sightseeing tickets for forts are not included in the package.",
         ],
       },
       {
@@ -549,6 +599,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
           { label: "Twin-2 Person Sharing", price: "Rs. 53,700" },
           { label: "Solo Single Room", price: "Rs. 81,700" },
         ],
+        note: "Prices are per person and exclude round-trip tickets between Karachi and Islamabad.",
       },
     ],
     childPolicy: [
@@ -599,17 +650,6 @@ export const featuredTourCards: FeaturedTourCard[] = [
     ],
     detailSections: [
       {
-        title: "Details",
-        content: [
-          "Departure from Karachi by bus or train; airline option available on request.",
-          "Meals on the bus/train are not included.",
-          "Airport/station pickup is available on request for an extra charge.",
-          "Hotel check-in starts from 2:00 PM.",
-          "First-night dinner is served in rooms between 9:30 PM and 10:00 PM.",
-          "The tour begins in Chilas on Day 3 after the Hazara Motorway leg.",
-        ],
-      },
-      {
         title: "Menu During Trip",
         content: [
           "Breakfast includes Anda, Paratha, Tea, Channa, and Omelet on rotation.",
@@ -622,16 +662,6 @@ export const featuredTourCards: FeaturedTourCard[] = [
           "50% refund if cancellation is made 7 days before the event.",
           "30% refund if cancellation is made 3 days before the event.",
           "0% refund if cancellation is made one day before the event.",
-        ],
-      },
-      {
-        title: "Terms & Conditions",
-        content: [
-          "Minimum group size is 10; trips canceled due to low registration may receive a full refund or transfer.",
-          "No refunds for natural disasters, road closures, or events beyond human control.",
-          "Hodophile Adventures can cancel or change bookings and terms at any time.",
-          "Personal weapons, drugs, and alcohol are not permitted.",
-          "Sightseeing tickets for forts are not included.",
         ],
       },
       {
@@ -769,6 +799,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
           { label: "Twin-2 Person Sharing", price: "Rs. 47,000" },
           { label: "Solo Single Room", price: "Rs. 67,000" },
         ],
+        note: "Prices are per person and exclude round-trip tickets between Karachi and Islamabad.",
       },
     ],
     childPolicy: [
@@ -783,6 +814,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
     includes: [
       "Hotel accommodations",
       "Luxury transport",
+      "4x4 Jeep ride",
       "Breakfasts and dinners",
       "Tolls and taxes",
       "Tour guide",
@@ -818,17 +850,6 @@ export const featuredTourCards: FeaturedTourCard[] = [
     ],
     detailSections: [
       {
-        title: "Details",
-        content: [
-          "Departure from Karachi by bus or train; airline option available on request.",
-          "Meals on the bus/train are not included.",
-          "Airport/station pickup is available on request for an extra charge.",
-          "Hotel check-in starts from 2:00 PM.",
-          "First-night dinner is served in rooms between 9:30 PM and 10:00 PM.",
-          "The tour begins on Day 3 in Chilas after the Hazara Motorway leg.",
-        ],
-      },
-      {
         title: "Menu During Trip",
         content: [
           "Breakfast includes Anda, Paratha, Tea, Channa, and Omelet on rotation.",
@@ -841,16 +862,6 @@ export const featuredTourCards: FeaturedTourCard[] = [
           "50% refund if cancellation is made 7 days before the event.",
           "30% refund if cancellation is made 3 days before the event.",
           "0% refund if cancellation is made one day before the event.",
-        ],
-      },
-      {
-        title: "Terms & Conditions",
-        content: [
-          "Minimum group size is 10; trips canceled due to low registration may receive a full refund or transfer.",
-          "No refunds for natural disasters, road closures, or events beyond human control.",
-          "Hodophile Adventures can cancel or change bookings and terms at any time.",
-          "Personal weapons, drugs, and alcohol are not permitted.",
-          "Sightseeing tickets for forts are not included.",
         ],
       },
       {

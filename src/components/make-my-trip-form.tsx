@@ -145,6 +145,10 @@ export function MakeMyTripForm() {
       cities: ["Chilas", "Hunza", "Naran"],
       nights: [1, 3, 1], // Day 3: Chilas, Days 4-7: Hunza/Naltar, Day 8: Naran
     },
+    "kashmir-taobat-9days": {
+      cities: ["Islamabad", "Kashmir", "Taobat"],
+      nights: [1, 2, 2], // Islamabad arrival night, Kashmir/Taobat stay, return night layout
+    },
   };
 
   const isMultiCityTour = (): boolean => {
@@ -233,8 +237,8 @@ export function MakeMyTripForm() {
     if (routeId) {
       const selectedRoute = routes.find((r) => r.id === routeId);
       if (selectedRoute) {
-        // Check if this is a multi-city tour
-        if (selectedRoute.city === "Multi-City") {
+        // Check if this is a configured multi-city tour
+        if (isMultiCityTour()) {
           initializeMultiCityHotels(selectedRoute);
           setHotelId(""); // Clear single-city hotel for multi-city tours
         } else {
@@ -310,7 +314,7 @@ export function MakeMyTripForm() {
         const selectedRoute = routes.find((r) => r.id === routeId);
         if (selectedRoute) {
           // Check if this is a multi-city tour
-          if (isMultiCityTour() && selectedRoute.city === "Multi-City") {
+          if (isMultiCityTour()) {
             // Build multiCityNights from config
               const config = getVisibleMultiCityConfig(routeId);
             if (config) {
