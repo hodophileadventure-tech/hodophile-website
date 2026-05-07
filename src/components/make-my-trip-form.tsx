@@ -127,6 +127,8 @@ export function MakeMyTripForm() {
   // Check if Islamabad hotel is mandatory
   const isIslamabadHotelMandatory = (): boolean => {
     if (!isMultiCityTour()) return false;
+    const config = multiCityConfig[routeId as keyof typeof multiCityConfig];
+    if (!config || !config.cities.includes("Islamabad")) return false;
     const startingPointLower = startingPoint.toLowerCase().trim();
     return startingPointLower !== "islamabad" && startingPointLower !== "rawalpindi";
   };
@@ -138,17 +140,40 @@ export function MakeMyTripForm() {
       nights: [0, 3, 2, 1], // Islamabad is for optional pre-tour stay
     },
     "skardu-shigar-shangrila-10days": {
-      cities: ["Chilas", "Skardu", "Naran"],
-      nights: [1, 4, 1], // Day 3: Chilas, Days 4-7: Skardu, Day 8: Naran
+      cities: ["Islamabad", "Chilas", "Skardu", "Naran"],
+      nights: [2, 1, 4, 1], // Karachi members: ISB stay + tour nights
     },
     "naran-hunza-naltar-10days": {
-      cities: ["Chilas", "Hunza", "Naran"],
-      nights: [1, 3, 1], // Day 3: Chilas, Days 4-7: Hunza/Naltar, Day 8: Naran
+      cities: ["Islamabad", "Chilas", "Hunza", "Naran"],
+      nights: [2, 1, 3, 1], // Karachi members: ISB stay + tour nights
     },
     "kashmir-taobat-9days": {
-      cities: ["Islamabad", "Kashmir", "Taobat"],
-      nights: [1, 2, 2], // Islamabad arrival night, Kashmir/Taobat stay, return night layout
+      cities: ["Islamabad", "Sharda", "Taobat", "Arangkel", "Keran"],
+      nights: [2, 1, 1, 1, 1], // Karachi flow: 2 ISB nights + Sharda/Taobat/Arangkel/Keran
     },
+  };
+
+  // Route-specific hotel curation for location-accurate group tours.
+  const routeCityHotelPreferences: Record<string, Record<string, string[]>> = {
+    "kashmir-taobat-9days": {
+      Islamabad: ["hotel-index-islamabad", "hotel-redline-islamabad", "grand-hotel-islamabad"],
+      Sharda: ["sharda-lodge-kashmir"],
+      Taobat: ["corner-view-cottage-taobat", "shangrila-taobat"],
+      Arangkel: ["corner-cottage-arangkel", "arangkel-wanderlust-resort", "arangkel-wanderlust-resort-second"],
+      Keran: ["ibex-cottage-keran", "keran-resort-kashmir", "timber-resort-keran"],
+    },
+  };
+
+  const getHotelsForRouteCity = (selectedRouteId: string, city: string): Hotel[] => {
+    const baseHotels = getHotelsByCity(city);
+    const preferredIds = routeCityHotelPreferences[selectedRouteId]?.[city];
+
+    if (!preferredIds || preferredIds.length === 0) {
+      return baseHotels;
+    }
+
+    const preferred = baseHotels.filter((hotel) => preferredIds.includes(hotel.id));
+    return preferred.length > 0 ? preferred : baseHotels;
   };
 
   const isMultiCityTour = (): boolean => {
@@ -171,7 +196,7 @@ export function MakeMyTripForm() {
     if (config) {
       const defaults: Record<string, { hotelId: string; roomId: string }> = {};
       for (const city of config.cities) {
-        const hotelsForCity = getHotelsByCity(city);
+        const hotelsForCity = getHotelsForRouteCity(route.id, city);
         if (hotelsForCity.length > 0) {
           // Use category-based hotel selection
           const defaultHotelId = selectHotelByCategory(hotelsForCity, hotelCategory);
@@ -660,7 +685,7 @@ export function MakeMyTripForm() {
                 )}
 
                 {(getVisibleMultiCityConfig(routeId)?.cities || []).map((city) => {
-                  const hotelsForCity = getHotelsByCity(city);
+                  const hotelsForCity = getHotelsForRouteCity(routeId, city);
                   const currentSelection = multiCityHotels[city];
                   const selectedHotel = hotelsForCity.find(
                     (h) => h.id === currentSelection?.hotelId

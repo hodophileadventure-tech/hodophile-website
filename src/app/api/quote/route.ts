@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Save quotation to Google Sheet
-    await saveQuotationToSheet({
+    const sheetSaveResult = await saveQuotationToSheet({
       customerName: body.customerName,
       customerPhone: body.customerPhone,
       startingPoint: body.startingPoint,
@@ -156,6 +156,16 @@ export async function POST(request: NextRequest) {
       totalCost: quotation.totalCost,
       perPersonCost: quotation.perPersonCost,
     });
+
+    if (!sheetSaveResult.success) {
+      return NextResponse.json(
+        {
+          error: "Unable to save lead in Google Sheets.",
+          details: sheetSaveResult.error || "Sheet write failed",
+        },
+        { status: 502 }
+      );
+    }
 
     // TODO: Save lead to database (once Prisma is set up)
     // const lead = await db.lead.create({

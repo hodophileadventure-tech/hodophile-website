@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Replace with your Google Apps Script Web App URL
-const GOOGLE_APPS_SCRIPT_URL = process.env.GOOGLE_APPS_SCRIPT_URL || '';
+const GOOGLE_LEADS_SCRIPT_URL =
+  process.env.GOOGLE_APP_SCRIPT_URL ||
+  process.env.GOOGLE_LEADS_SCRIPT_URL ||
+  '';
 
 interface LeadData {
   name: string;
@@ -22,9 +25,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // If no Google Apps Script URL is configured, just return success (for development)
-    if (!GOOGLE_APPS_SCRIPT_URL) {
-      console.warn('GOOGLE_APPS_SCRIPT_URL not configured. Lead data would be:');
+    // In development, allow local testing without sheet integration.
+    if (!GOOGLE_LEADS_SCRIPT_URL) {
+      if (process.env.NODE_ENV !== 'development') {
+        return NextResponse.json(
+          { error: 'Lead script URL is not configured on the server' },
+          { status: 500 }
+        );
+      }
+
+      console.warn('Lead script URL not configured. Lead data would be:');
       console.log(body);
 
       return NextResponse.json(
@@ -38,7 +48,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send to Google Apps Script
-    const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+    const response = await fetch(GOOGLE_LEADS_SCRIPT_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

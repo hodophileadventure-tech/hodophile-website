@@ -330,6 +330,87 @@ export const routeActivities: Record<string, RouteActivitiesMap> = {
     ],
     mandatoryJeepCost: 0,
   },
+
+  "kashmir-taobat-9days": {
+    routeId: "kashmir-taobat-9days",
+    activities: [
+      {
+        name: "Karachi Departure",
+        location: "Karachi",
+        day: 1,
+        isJeepRequired: false,
+        description:
+          "Departure from Karachi via bus or train. Meals during transit are not included.",
+      },
+      {
+        name: "Islamabad Arrival & Check-in",
+        location: "Islamabad",
+        day: 2,
+        isJeepRequired: false,
+        description:
+          "Arrive in Rawalpindi/Islamabad. Self-transfer to hotel. Dinner is served for the Karachi group upon scheduled arrival window.",
+      },
+      {
+        name: "Islamabad to Sharda Valley",
+        location: "Sharda",
+        day: 3,
+        isJeepRequired: false,
+        description:
+          "Tour starts from Islamabad with scenic drive via Murree Expressway. En-route short stops include Dhani Waterfall, Chilliana LOC, Hydropower Project, and Keran LOC point.",
+      },
+      {
+        name: "Sharda to Taobat (4x4 Transfer)",
+        location: "Taobat",
+        day: 4,
+        isJeepRequired: true,
+        included: true,
+        description:
+          "Travel from Sharda to Taobat via 4x4 jeep. Visit Halmat village on the way and enjoy free exploration time in Taobat Valley.",
+      },
+      {
+        name: "Taobat to Arangkel",
+        location: "Arangkel",
+        day: 5,
+        isJeepRequired: true,
+        included: true,
+        description:
+          "Jeep transfer toward Kel, doli/cable-car crossing, and trek to Arangkel. Evening free time for sunset and valley views.",
+      },
+      {
+        name: "Arangkel to Keran/Sharda Belt",
+        location: "Nagar Valley / Keran",
+        day: 6,
+        isJeepRequired: false,
+        description:
+          "Trek back to Kel, continue toward Sharda/Keran, and visit Sharda Bridge and riverside points before hotel check-in.",
+      },
+      {
+        name: "Return to Islamabad",
+        location: "Islamabad",
+        day: 7,
+        isJeepRequired: false,
+        description:
+          "Breakfast and departure for Islamabad with short stop at Kundal Shahi Waterfall. Tour ends here for Islamabad participants.",
+      },
+      {
+        name: "Karachi Departure Leg",
+        location: "Islamabad to Karachi",
+        day: 8,
+        isJeepRequired: false,
+        description:
+          "Check-out and self-transfer to bus terminal or railway station for departure to Karachi. Breakfast is not included.",
+      },
+      {
+        name: "Karachi Arrival",
+        location: "Karachi",
+        day: 9,
+        isJeepRequired: false,
+        description: "Arrival in Karachi. End of services.",
+      },
+    ],
+    // 4x4 segments are included in this group package.
+    mandatoryJeepCost: 0,
+  },
 };
 
 export function getRouteActivities(routeId: string): RouteActivitiesMap | null {

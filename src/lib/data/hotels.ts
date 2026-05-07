@@ -572,6 +572,24 @@ export const hotels: Hotel[] = [
     ],
   },
   {
+    id: "corner-view-cottage-taobat",
+    name: "Corner View Cottage Taobat",
+    city: "Kashmir",
+    rooms: [
+      { name: "Standard Room", price: 8500 },
+      { name: "Deluxe Room", price: 10500 },
+    ],
+  },
+  {
+    id: "shangrila-taobat",
+    name: "Shangrila Taobat",
+    city: "Kashmir",
+    rooms: [
+      { name: "Standard Cottage", price: 9000 },
+      { name: "Deluxe Cottage", price: 12000 },
+    ],
+  },
+  {
     id: "nathia-lodge-nathia-gali",
     name: "Nathia Lodge",
     city: "Nathia Gali",
@@ -633,6 +651,24 @@ export const hotels: Hotel[] = [
       { name: "Deluxe Room (Building)", price: 12000 },
       { name: "Resort 1-B/2-B/3-B", price: 20000 },
       { name: "Resort 1-A/2-A/3-A/4-A/5-A", low: 30000, high: 35000 },
+    ],
+  },
+  {
+    id: "ibex-cottage-keran",
+    name: "Ibex Cottage Keran",
+    city: "Kashmir",
+    rooms: [
+      { name: "Standard Room", price: 8000 },
+      { name: "Deluxe Room", price: 9800 },
+    ],
+  },
+  {
+    id: "keran-resort-kashmir",
+    name: "Keran Resort Kashmir",
+    city: "Kashmir",
+    rooms: [
+      { name: "Standard Room", price: 8500 },
+      { name: "Executive Room", price: 11000 },
     ],
   },
   {
@@ -730,6 +766,8 @@ const hotelCityAliases: Record<string, string> = {
   Taobat: "Kashmir",
   "Arang Kel": "Kashmir",
   Arangkel: "Kashmir",
+  Sharda: "Kashmir",
+  Keran: "Kashmir",
 };
 
 function resolveHotelCity(city: string): string {

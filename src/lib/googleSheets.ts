@@ -36,7 +36,10 @@ export async function saveQuotationToSheet(
   record: Omit<QuotationRecord, "timestamp">
 ) {
   try {
-    const sheetUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL || process.env.GOOGLE_APPS_SCRIPT_URL;
+    const sheetUrl =
+      process.env.GOOGLE_SHEET_WEBHOOK_URL ||
+      process.env.GOOGLE_APPS_SCRIPT_URL ||
+      process.env.GOOGLE_QUOTATION_SCRIPT_URL;
     
     if (!sheetUrl) {
       console.warn("No Google Sheets webhook configured - skipping quotation save");
