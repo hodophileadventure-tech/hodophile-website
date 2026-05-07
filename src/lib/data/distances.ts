@@ -33,6 +33,11 @@ export const routeDistances: RouteDistance[] = [
     description: "Islamabad to Kashmir, Arangkel, Taobat and back",
   },
   {
+    routeId: "kashmir-taobat-9days",
+    distance: 650, // Round trip distance for Kashmir & Taobat package (user-provided)
+    description: "Islamabad to Sharda/Taobat/Arangkel round trip (Kashmir & Taobat package)",
+  },
+  {
     routeId: "naran-babusar-4days",
     distance: 1200, // Naran and Babusar pass exploration
     description: "Islamabad to Naran, Babusar and back with local travel",

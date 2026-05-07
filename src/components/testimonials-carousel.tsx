@@ -19,6 +19,8 @@ export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps
   const [centerIndex, setCenterIndex] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentIndexRef = useRef(0);
+  const intervalRef = useRef<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   const updateCenterItem = () => {
     const scroller = scrollerRef.current;
@@ -56,7 +58,7 @@ export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps
       setTimeout(() => setCenterIndex(next), 600);
     };
 
-    const intervalId = window.setInterval(step, 3000);
+
     scroller.addEventListener("scroll", updateCenterItem);
     // start from the very first card
     currentIndexRef.current = 0;
@@ -64,16 +66,69 @@ export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps
     setCenterIndex(0);
     scroller.scrollTo({ left: 0 });
 
+    // Pause when the user interacts via pointer/touch/hover/focus
+    const onPointerEnter = () => setIsPaused(true);
+    const onPointerLeave = () => setIsPaused(false);
+    const onPointerDown = () => setIsPaused(true);
+    const onPointerUp = () => setIsPaused(false);
+
+    scroller.addEventListener("mouseenter", onPointerEnter);
+    scroller.addEventListener("mouseleave", onPointerLeave);
+    scroller.addEventListener("pointerdown", onPointerDown);
+    scroller.addEventListener("pointerup", onPointerUp);
+    scroller.addEventListener("touchstart", onPointerDown, { passive: true });
+    scroller.addEventListener("touchend", onPointerUp);
+
     return () => {
-      window.clearInterval(intervalId);
       scroller.removeEventListener("scroll", updateCenterItem);
+      scroller.removeEventListener("mouseenter", onPointerEnter);
+      scroller.removeEventListener("mouseleave", onPointerLeave);
+      scroller.removeEventListener("pointerdown", onPointerDown);
+      scroller.removeEventListener("pointerup", onPointerUp);
+      scroller.removeEventListener("touchstart", onPointerDown as EventListener);
+      scroller.removeEventListener("touchend", onPointerUp as EventListener);
     };
   }, [testimonials.length]);
+
+  // Manage auto-advance interval and respond to pause state reliably
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller || testimonials.length < 2) return;
+
+    const firstCard = scroller.firstElementChild as HTMLElement | null;
+    if (!firstCard) return;
+
+    const step = () => {
+      const cardWidth = firstCard.getBoundingClientRect().width;
+      const cardGap = Number.parseFloat(getComputedStyle(scroller).columnGap || getComputedStyle(scroller).gap || "0") || 0;
+      const next = (currentIndexRef.current + 1) % testimonials.length;
+      const targetLeft = next * (cardWidth + cardGap);
+      scroller.scrollTo({ left: targetLeft, behavior: "smooth" });
+      currentIndexRef.current = next;
+      setCurrentIndex(next);
+      setTimeout(() => setCenterIndex(next), 600);
+    };
+
+    if (!isPaused) {
+      intervalRef.current = window.setInterval(step, 3000) as unknown as number;
+    }
+
+    return () => {
+      if (intervalRef.current != null) {
+        window.clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [testimonials.length, isPaused]);
 
   return (
     <div
       ref={scrollerRef}
       className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-visible px-2 py-6 [scrollbar-width:thin]"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
     >
       {testimonials.map((story, index) => (
         <article
