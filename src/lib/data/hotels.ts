@@ -42,19 +42,8 @@ export interface Hotel {
 export const hotels: Hotel[] = [
   {
     id: "skardu-dera-lamsa",
-
-const hotelCityAliases: Record<string, string> = {
-  Taobat: "Kashmir",
-  "Arang Kel": "Kashmir",
-  Arangkel: "Kashmir",
-};
-
-function resolveHotelCity(city: string): string {
-  return hotelCityAliases[city] || city;
-}
     name: "Skardu Dera Lamsa",
     city: "Skardu",
-  return hotels.filter((hotel) => hotel.city === resolveHotelCity(city));
     seasons: {
       peak: "June - September",
       blossom: "March - May",
@@ -737,10 +726,20 @@ function resolveHotelCity(city: string): string {
   },
 ];
 
+const hotelCityAliases: Record<string, string> = {
+  Taobat: "Kashmir",
+  "Arang Kel": "Kashmir",
+  Arangkel: "Kashmir",
+};
+
+function resolveHotelCity(city: string): string {
+  return hotelCityAliases[city] || city;
+}
+
 export function getHotelsByCity(
   city: string
 ): Hotel[] {
-  return hotels.filter((h) => h.city === city);
+  return hotels.filter((hotel) => hotel.city === resolveHotelCity(city));
 }
 
 export function getHotelById(id: string): Hotel | undefined {
