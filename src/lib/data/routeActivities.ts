@@ -408,8 +408,8 @@ export const routeActivities: Record<string, RouteActivitiesMap> = {
         description: "Arrival in Karachi. End of services.",
       },
     ],
-    // 4x4 segments are included in this group package.
-    mandatoryJeepCost: 0,
+    // 4x4 segments are included in this group package and billed as a mandatory jeep transfer cost.
+    mandatoryJeepCost: 23000,
   },
 };
 
