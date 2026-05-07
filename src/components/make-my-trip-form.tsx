@@ -409,6 +409,16 @@ export function MakeMyTripForm() {
         primaryRoomId = firstHotel?.roomId || "";
       }
 
+      const selectedMultiCityNights =
+        isMultiCityTour() && routeId in multiCityConfig
+          ? Object.fromEntries(
+              (getVisibleMultiCityConfig(routeId)?.cities || []).map((city, i) => [
+                city,
+                getVisibleMultiCityConfig(routeId)?.nights[i] ?? 0,
+              ])
+            )
+          : undefined;
+
       // Prepare quotation data for result page
       const quotationData = {
         tripDate,
@@ -421,6 +431,8 @@ export function MakeMyTripForm() {
         numberOfRooms,
         adults,
         kids,
+        kidsAges,
+        hotelCategory,
         tourType,
         // Include full breakdown
         transportCost: quotation.transportCost,
@@ -432,14 +444,7 @@ export function MakeMyTripForm() {
         perPersonCost: quotation.perPersonCost,
         // Include multi-city data
         multiCityHotels: isMultiCityTour() ? multiCityHotels : undefined,
-        multiCityNights: isMultiCityTour() && routeId in multiCityConfig 
-          ? Object.fromEntries(
-              (getVisibleMultiCityConfig(routeId)?.cities || []).map((city, i) => [
-                city,
-                getVisibleMultiCityConfig(routeId)?.nights[i] ?? 0,
-              ])
-            )
-          : undefined,
+        multiCityNights: selectedMultiCityNights,
       };
 
       // Encode data and redirect to result page
@@ -459,11 +464,14 @@ export function MakeMyTripForm() {
           numberOfRooms,
           adults,
           kids,
+          kidsAges,
+          hotelCategory,
           customerName,
           customerPhone,
           tourType,
           mandatoryJeepCost,
           multiCityHotels: isMultiCityTour() ? multiCityHotels : undefined,
+          multiCityNights: selectedMultiCityNights,
         }),
       });
 

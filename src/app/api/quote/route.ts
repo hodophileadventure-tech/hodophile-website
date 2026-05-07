@@ -10,6 +10,8 @@ interface QuoteRequestBody extends QuotationInput {
   customerPhone: string;
   startingPoint: string;
   tourType: string;
+  kidsAges?: string[];
+  hotelCategory?: string;
 }
 
 function getMissingFields(body: QuoteRequestBody) {
@@ -127,15 +129,25 @@ export async function POST(request: NextRequest) {
       customerPhone: body.customerPhone,
       startingPoint: body.startingPoint,
       tripDate: body.tripDate,
+      routeId: body.routeId,
       route: route?.name || body.routeId,
       destination: route?.name?.split("&")[0]?.trim() || "",
+      destinationCity: route?.city || "",
+      routeDurationDays: route?.duration || 0,
+      routeDirection: route?.direction || "",
+      routeItinerary: route?.itinerary || "",
       vehicle: body.vehicleName,
       hotel: hotelName,
+      hotelCategory: body.hotelCategory || "",
       roomType: roomType,
       numberOfRooms: body.numberOfRooms,
       adults: body.adults,
       kids: body.kids || 0,
+      kidsAges: body.kidsAges || [],
       tourType: body.tourType,
+      isMultiCity,
+      multiCityHotels: body.multiCityHotels,
+      multiCityNights: body.multiCityNights,
       transportCost: quotation.transportCost,
       hotelCost: quotation.hotelCost,
       jeepAddonsCost: quotation.jeepAddonsCost,

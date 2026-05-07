@@ -18,8 +18,9 @@
  */
 
 // CONFIGURATION: Replace with your actual spreadsheet ID
-const SPREADSHEET_ID = '1mvF7GoYIn1iGbDxoc1oDBrbdRgM2fk9W9AX-UCKgD4E';
+const SPREADSHEET_ID = '1TZea-g_bZKQ2Dmfh_q53oSkVEvpeF8asyhb_XF8Rt1k';
 const SHEET_NAME = 'Leads'; // Name of the sheet where data will be stored
+const QUOTATIONS_SHEET_NAME = 'Quotations';
 
 /**
  * Main handler for POST requests
@@ -35,6 +36,13 @@ function doPost(e) {
       ).setMimeType(ContentService.MimeType.JSON);
     }
 
+    if (payload.action === 'addQuotation') {
+      const result = addQuotationToSheet(payload.data);
+      return ContentService.createTextOutput(
+        JSON.stringify(result)
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+
     return ContentService.createTextOutput(
       JSON.stringify({ success: false, error: 'Unknown action' })
     ).setMimeType(ContentService.MimeType.JSON);
@@ -42,6 +50,100 @@ function doPost(e) {
     return ContentService.createTextOutput(
       JSON.stringify({ success: false, error: error.toString() })
     ).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * Add a quotation lead to the Google Sheet
+ */
+function addQuotationToSheet(data) {
+  try {
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = spreadsheet.getSheetByName(QUOTATIONS_SHEET_NAME);
+
+    if (!sheet) {
+      sheet = spreadsheet.insertSheet(QUOTATIONS_SHEET_NAME);
+      sheet.appendRow([
+        'Timestamp',
+        'Customer Name',
+        'Phone',
+        'Starting Point',
+        'Trip Date',
+        'Route ID',
+        'Route',
+        'Destination',
+        'Destination City',
+        'Route Duration (Days)',
+        'Route Direction',
+        'Route Itinerary',
+        'Vehicle',
+        'Hotel',
+        'Hotel Category',
+        'Room Type',
+        'Rooms',
+        'Adults',
+        'Kids',
+        'Kids Ages',
+        'Tour Type',
+        'Is Multi-City',
+        'Multi-City Hotels',
+        'Multi-City Nights',
+        'Transport Cost',
+        'Hotel Cost',
+        'Jeep Addons Cost',
+        'Subtotal',
+        'Markup',
+        'Total Cost',
+        'Per Person Cost',
+      ]);
+    }
+
+    const row = [
+      data.timestamp || new Date().toISOString(),
+      data.customerName || '',
+      data.customerPhone || '',
+      data.startingPoint || '',
+      data.tripDate || '',
+      data.routeId || '',
+      data.route || '',
+      data.destination || '',
+      data.destinationCity || '',
+      data.routeDurationDays || 0,
+      data.routeDirection || '',
+      data.routeItinerary || '',
+      data.vehicle || '',
+      data.hotel || '',
+      data.hotelCategory || '',
+      data.roomType || '',
+      data.numberOfRooms || 0,
+      data.adults || 0,
+      data.kids || 0,
+      Array.isArray(data.kidsAges) ? data.kidsAges.join(', ') : '',
+      data.tourType || '',
+      data.isMultiCity ? 'Yes' : 'No',
+      JSON.stringify(data.multiCityHotels || {}),
+      JSON.stringify(data.multiCityNights || {}),
+      data.transportCost || 0,
+      data.hotelCost || 0,
+      data.jeepAddonsCost || 0,
+      data.subtotal || 0,
+      data.markupAmount || 0,
+      data.totalCost || 0,
+      data.perPersonCost || 0,
+    ];
+
+    sheet.appendRow(row);
+
+    return {
+      success: true,
+      message: 'Quotation added successfully',
+      rowNumber: sheet.getLastRow(),
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.toString(),
+    };
   }
 }
 

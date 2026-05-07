@@ -1,20 +1,28 @@
-import type { QuotationBreakdown } from "./pricingEngine";
-
 interface QuotationRecord {
   timestamp: string;
   customerName: string;
   customerPhone: string;
   startingPoint: string;
   tripDate: string;
+  routeId: string;
   route: string;
   destination: string;
+  destinationCity: string;
+  routeDurationDays: number;
+  routeDirection: string;
+  routeItinerary: string;
   vehicle: string;
   hotel: string;
+  hotelCategory: string;
   roomType: string;
   numberOfRooms: number;
   adults: number;
   kids: number;
+  kidsAges: string[];
   tourType: string;
+  isMultiCity: boolean;
+  multiCityHotels?: Record<string, { hotelId: string; roomId: string }>;
+  multiCityNights?: Record<string, number>;
   transportCost: number;
   hotelCost: number;
   jeepAddonsCost: number;
@@ -28,10 +36,10 @@ export async function saveQuotationToSheet(
   record: Omit<QuotationRecord, "timestamp">
 ) {
   try {
-    const sheetUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+    const sheetUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL || process.env.GOOGLE_APPS_SCRIPT_URL;
     
     if (!sheetUrl) {
-      console.warn("GOOGLE_SHEET_WEBHOOK_URL not configured - skipping sheet save");
+      console.warn("No Google Sheets webhook configured - skipping quotation save");
       return { success: false, error: "Sheet URL not configured" };
     }
 
@@ -48,15 +56,25 @@ export async function saveQuotationToSheet(
         dataWithTimestamp.customerPhone,
         dataWithTimestamp.startingPoint,
         dataWithTimestamp.tripDate,
+        dataWithTimestamp.routeId,
         dataWithTimestamp.route,
         dataWithTimestamp.destination,
+        dataWithTimestamp.destinationCity,
+        dataWithTimestamp.routeDurationDays,
+        dataWithTimestamp.routeDirection,
+        dataWithTimestamp.routeItinerary,
         dataWithTimestamp.vehicle,
         dataWithTimestamp.hotel,
+        dataWithTimestamp.hotelCategory,
         dataWithTimestamp.roomType,
         dataWithTimestamp.numberOfRooms,
         dataWithTimestamp.adults,
         dataWithTimestamp.kids,
+        dataWithTimestamp.kidsAges.join(", "),
         dataWithTimestamp.tourType,
+        dataWithTimestamp.isMultiCity ? "Yes" : "No",
+        JSON.stringify(dataWithTimestamp.multiCityHotels || {}),
+        JSON.stringify(dataWithTimestamp.multiCityNights || {}),
         dataWithTimestamp.transportCost,
         dataWithTimestamp.hotelCost,
         dataWithTimestamp.jeepAddonsCost,
@@ -67,11 +85,13 @@ export async function saveQuotationToSheet(
       ],
     ];
 
-    // Send to webhook (AppSheet, Make.com, or Zapier)
+    // Send a compatible payload for both Apps Script and generic webhooks.
     const response = await fetch(sheetUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        action: "addQuotation",
+        data: dataWithTimestamp,
         values,
         fields: [
           "Timestamp",
@@ -79,15 +99,25 @@ export async function saveQuotationToSheet(
           "Phone",
           "Starting Point",
           "Trip Date",
+          "Route ID",
           "Route",
           "Destination",
+          "Destination City",
+          "Route Duration (Days)",
+          "Route Direction",
+          "Route Itinerary",
           "Vehicle",
           "Hotel",
+          "Hotel Category",
           "Room Type",
           "Rooms",
           "Adults",
           "Kids",
+          "Kids Ages",
           "Tour Type",
+          "Is Multi-City",
+          "Multi-City Hotels",
+          "Multi-City Nights",
           "Transport Cost",
           "Hotel Cost",
           "Jeep Addons Cost",
