@@ -186,7 +186,7 @@ export const routes: Route[] = [
     name: "9 Days Kashmir, Arangkel & Taobat",
     slug: "kashmir-taobat",
     duration: 9,
-    vehicleDays: 5,
+    vehicleDays: 6,
     direction: "Karachi to Karachi / ISB to ISB",
     city: "Kashmir",
     minimumDays: 9,

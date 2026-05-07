@@ -14,7 +14,7 @@ export function MakeMyTripForm() {
   const [tripDate, setTripDate] = useState("");
   const [startingPoint, setStartingPoint] = useState("");
   const [routeId, setRouteId] = useState("");
-  const [hotelCategory, setHotelCategory] = useState("deluxe"); // standard, deluxe, executive
+  const [hotelCategory, setHotelCategory] = useState("standard"); // standard, deluxe, executive
   const [hotelId, setHotelId] = useState("");
   const [roomId, setRoomId] = useState("");
   const [multiCityHotels, setMultiCityHotels] = useState<Record<string, { hotelId: string; roomId: string }>>({});
