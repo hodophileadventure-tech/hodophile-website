@@ -20,14 +20,14 @@ export function LeadCapturePopup() {
   });
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
-  // Show popup after 120 seconds (but only once per session)
+  // Show popup after 60 seconds (but only once per session)
   useEffect(() => {
     const hasShownPopup = sessionStorage.getItem('leadCapturePopupShown');
     if (!hasShownPopup) {
       const timer = setTimeout(() => {
         setIsVisible(true);
         sessionStorage.setItem('leadCapturePopupShown', 'true');
-      }, 120000); // 120 seconds
+      }, 60000); // 60 seconds
 
       return () => clearTimeout(timer);
     }
@@ -254,7 +254,7 @@ export function LeadCapturePopup() {
               <div className="text-green-500 text-4xl mb-3">✓</div>
               <h3 className="text-lg font-bold text-gray-800 mb-2">Thank You!</h3>
               <p className="text-gray-600 text-sm">
-                We'll send you exclusive deals and travel offers via WhatsApp soon.
+                We&apos;ll send you exclusive deals and travel offers via WhatsApp soon.
               </p>
             </div>
           )}

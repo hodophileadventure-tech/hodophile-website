@@ -118,13 +118,13 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
           </div>
 
           {tour.includes?.length ? (
-            <div className="mt-5 rounded-[1.5rem] border border-stone-200 bg-white p-5 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.32em] text-stone-500">This Tour Includes</p>
+            <div className="mt-5 rounded-[1.5rem] border border-stone-200 bg-[#fff8df] p-5 shadow-sm">
+              <p className="text-xs uppercase tracking-[0.32em] text-stone-500 font-semibold text-stone-900">This Tour Includes</p>
               <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">
                 {tour.includes.map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#fcc000]" />
-                    <span>{item}</span>
+                    <span className="font-semibold">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -148,9 +148,9 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
                     {tour.attractions.map((item) => (
                       <span
                         key={item}
-                        className="inline-flex items-center gap-2 rounded-full border border-red-400/30 bg-red-50 px-3 py-2 text-sm text-stone-800"
+                        className="inline-flex items-center gap-2 rounded-full border border-[#fcc000]/30 bg-[#fff8df] px-3 py-2 text-sm text-stone-800"
                       >
-                        <span className="flex h-2.5 w-2.5 rounded-full bg-red-500" />
+                        <span className="flex h-2.5 w-2.5 rounded-full bg-[#fcc000]" />
                         {item}
                       </span>
                     ))}

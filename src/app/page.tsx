@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import { PageShell } from "@/components/page-shell";
+import TestimonialsCarousel from "@/components/testimonials-carousel";
 import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, destinations } from "@/lib/site";
 
@@ -150,7 +151,7 @@ export default function Home() {
           <div className="relative z-10 flex min-h-[82vh] w-full items-end px-6 pb-16 pt-36 lg:px-8">
             <div className="max-w-4xl text-white">
               <h1 className="font-serif text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
-                Experience Pakistan's Most Cinematic Journeys—Unforgettably Curated.
+                Experience Pakistan&apos;s Most Cinematic Journeys—Unforgettably Curated.
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-7 text-white/85 sm:text-lg">
                 Discover cinematic landscapes, refined itineraries, and premium travel planning inspired by
@@ -313,29 +314,7 @@ export default function Home() {
         <div className="px-6 py-8 lg:px-8">
           <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Testimonials</p>
           <h2 className="mt-3 font-serif text-4xl">Our clients don&apos;t just like us - they rave about us.</h2>
-            <div className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]">
-          {testimonials.map((story, index) => (
-            <article
-              key={`${story.name}-${index}`}
-              className="w-[20rem] shrink-0 snap-start rounded-2xl border border-stone-200 bg-stone-50 p-5 sm:w-[22rem]"
-            >
-              <div className="mb-4 flex items-center gap-3">
-                <Image
-                  src={story.image}
-                  alt={story.name}
-                  width={52}
-                  height={52}
-                  className="h-12 w-12 rounded-full border border-stone-200 object-cover"
-                />
-                <div>
-                  <h3 className="text-sm font-semibold">{story.name}</h3>
-                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">{story.role}</p>
-                </div>
-              </div>
-              <p className="text-sm leading-7 text-stone-600">&ldquo;{story.quote}&rdquo;</p>
-            </article>
-          ))}
-          </div>
+          <TestimonialsCarousel testimonials={testimonials} />
         </div>
       </section>
 
@@ -352,7 +331,7 @@ export default function Home() {
                 playsInline
                 preload="metadata"
                 controls={false}
-                className="w-full h-auto object-cover block"
+                className="w-full max-h-[26rem] h-auto object-cover block"
                 style={{ display: 'block' }}
               />
             </div>
