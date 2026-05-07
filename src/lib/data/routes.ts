@@ -192,6 +192,9 @@ export const routes: Route[] = [
     minimumDays: 9,
     itinerary: "Day 1: Karachi departure via bus/train | Day 2: Islamabad arrival & check-in | Day 3: Islamabad to Sharda via Murree Expressway | Day 4: Taobat via 4x4 jeep | Day 5: Kel-Arangkel transfer and trek | Day 6: Return via Sharda/Keran belt | Day 7: Return to Islamabad | Day 8: Islamabad to Karachi departure | Day 9: Karachi arrival",
     vehicles: [
+      { name: "Toyota Corolla", price: 60000 },
+      { name: "Honda BRV", price: 75000 },
+      { name: "Prado", price: 100000 },
       { name: "Grand Cabin Petrol", price: 105000 },
       { name: "Grand Cabin Diesel", price: 105000 },
       { name: "Coaster 4C", price: 145000 },
