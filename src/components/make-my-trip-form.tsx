@@ -428,12 +428,6 @@ export function MakeMyTripForm() {
       let primaryHotelId = hotelId;
       let primaryRoomId = roomId;
       
-      if (isMultiCityTour()) {
-        const firstHotel = Object.values(multiCityHotels)[0];
-        primaryHotelId = firstHotel?.hotelId || "";
-        primaryRoomId = firstHotel?.roomId || "";
-      }
-
       const selectedMultiCityNights =
         isMultiCityTour() && routeId in multiCityConfig
           ? Object.fromEntries(
@@ -443,6 +437,11 @@ export function MakeMyTripForm() {
               ])
             )
           : undefined;
+
+      if (isMultiCityTour()) {
+        primaryHotelId = "";
+        primaryRoomId = "Multiple";
+      }
 
       // Prepare quotation data for result page
       const quotationData = {

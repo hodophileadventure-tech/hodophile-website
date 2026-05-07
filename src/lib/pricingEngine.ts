@@ -104,14 +104,29 @@ function getRoomPrice(room: Room, season: string): number {
   if (season === "blossom" && room.blossom) return room.blossom;
   if (season === "off" && room.off) return room.off;
 
-  // Fall back to low/high pricing
+  // Use high/low values when specific season pricing is unavailable
   if (season === "peak" || season === "high") {
     if (Array.isArray(room.high)) return room.high[0];
     if (room.high) return room.high;
+    if (Array.isArray(room.blossom)) return room.blossom[0];
+    if (room.blossom) return room.blossom;
+    if (Array.isArray(room.low)) return room.low[0];
+    if (room.low) return room.low;
   }
+
+  if (season === "blossom") {
+    if (room.blossom) return room.blossom;
+    if (Array.isArray(room.high)) return room.high[0];
+    if (room.high) return room.high;
+    if (Array.isArray(room.low)) return room.low[0];
+    if (room.low) return room.low;
+  }
+
   if (season === "off" || season === "low") {
     if (Array.isArray(room.low)) return room.low[0];
     if (room.low) return room.low;
+    if (Array.isArray(room.high)) return room.high[0];
+    if (room.high) return room.high;
   }
 
   // Fall back to occupancy-specific price (avg of double/triple/quad)

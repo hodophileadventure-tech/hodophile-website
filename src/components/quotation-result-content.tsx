@@ -50,6 +50,8 @@ export function QuotationResultContent() {
   // Handle multi-city or single-city hotels
   let hotelDisplay = "";
   let hotel = null;
+  let roomTypeDisplay = quotation.roomType;
+  let roomDetailsDisplay = "";
   
   if (quotation.multiCityHotels && quotation.multiCityNights) {
     // Multi-city tour
@@ -61,6 +63,14 @@ export function QuotationResultContent() {
       })
       .join(" + ");
     hotelDisplay = hotelNames;
+    roomTypeDisplay = "Multiple";
+    roomDetailsDisplay = Object.entries(quotation.multiCityHotels)
+      .map(([city, info]: [string, any]) => {
+        const cityHotels = getHotelsByCity(city);
+        const h = cityHotels.find((hotel) => hotel.id === info.hotelId);
+        return `${city}: ${h?.name || info.hotelId} — ${info.roomId || "Room"}`;
+      })
+      .join(" | ");
   } else {
     // Single-city tour
     const hotels = getHotelsByCity(quotation.destination);
@@ -276,8 +286,13 @@ export function QuotationResultContent() {
               <div>
                 <p className="text-sm text-stone-600">Room Type</p>
                 <p className="text-lg font-semibold text-stone-900">
-                  {quotation.roomType}
+                  {roomTypeDisplay}
                 </p>
+                {roomDetailsDisplay ? (
+                  <p className="mt-2 text-sm text-stone-500">
+                    {roomDetailsDisplay}
+                  </p>
+                ) : null}
               </div>
               <div>
                 <p className="text-sm text-stone-600">Number of Rooms</p>
