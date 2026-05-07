@@ -17,6 +17,8 @@ type TestimonialsCarouselProps = {
 export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const [centerIndex, setCenterIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const currentIndexRef = useRef(0);
 
   const updateCenterItem = () => {
     const scroller = scrollerRef.current;
@@ -27,7 +29,10 @@ export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps
     const cardGap = Number.parseFloat(getComputedStyle(scroller).columnGap || getComputedStyle(scroller).gap || "0") || 0;
     const scrollCenter = scroller.scrollLeft + scroller.clientWidth / 2;
     const index = Math.round((scrollCenter - cardWidth / 2) / (cardWidth + cardGap)) % testimonials.length;
-    setCenterIndex(Math.max(0, index));
+    const resolved = Math.max(0, index);
+    setCenterIndex(resolved);
+    setCurrentIndex(resolved);
+    currentIndexRef.current = resolved;
   };
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -38,29 +43,26 @@ export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps
 
     const step = () => {
       const firstCard = scroller.firstElementChild as HTMLElement | null;
-
-      if (!firstCard) {
-        return;
-      }
+      if (!firstCard) return;
 
       const cardWidth = firstCard.getBoundingClientRect().width;
       const cardGap = Number.parseFloat(getComputedStyle(scroller).columnGap || getComputedStyle(scroller).gap || "0") || 0;
-      const nextScrollLeft = scroller.scrollLeft + cardWidth + cardGap;
-      const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
+      const next = (currentIndexRef.current + 1) % testimonials.length;
+      const targetLeft = next * (cardWidth + cardGap);
 
-      if (nextScrollLeft >= maxScrollLeft - 8) {
-        scroller.scrollTo({ left: 0, behavior: "smooth" });
-          setTimeout(updateCenterItem, 600);
-        return;
-      }
-
-      scroller.scrollBy({ left: cardWidth + cardGap, behavior: "smooth" });
-      setTimeout(updateCenterItem, 600);
+      scroller.scrollTo({ left: targetLeft, behavior: "smooth" });
+      currentIndexRef.current = next;
+      setCurrentIndex(next);
+      setTimeout(() => setCenterIndex(next), 600);
     };
 
     const intervalId = window.setInterval(step, 3000);
     scroller.addEventListener("scroll", updateCenterItem);
-    updateCenterItem();
+    // start from the very first card
+    currentIndexRef.current = 0;
+    setCurrentIndex(0);
+    setCenterIndex(0);
+    scroller.scrollTo({ left: 0 });
 
     return () => {
       window.clearInterval(intervalId);
