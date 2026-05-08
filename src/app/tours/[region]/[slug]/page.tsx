@@ -25,11 +25,11 @@ function resolveItem(region: string, slug: string) {
 
 function getPackageImage(slug: string) {
   const normalized = slug.toLowerCase();
-  if (normalized.includes("hunza")) return "/images/destinations/hunza.avif";
-  if (normalized.includes("skardu")) return "/images/destinations/skardu.jpg";
-  if (normalized.includes("astor")) return "/images/destinations/hunza.avif";
-  if (normalized.includes("naran") || normalized.includes("kaghan")) return "/images/destinations/naran-saif.jpg";
-  if (normalized.includes("swat")) return "/images/destinations/swat.jpg";
+  if (normalized.includes("hunza")) return "/images/destinations/hunza-custom.jpg";
+  if (normalized.includes("skardu")) return "/images/destinations/skardu-1080x1920.png";
+  if (normalized.includes("astor")) return "/images/destinations/hunza-custom.jpg";
+  if (normalized.includes("naran") || normalized.includes("kaghan")) return "/images/destinations/naran-hd.jpg";
+  if (normalized.includes("swat")) return "/images/destinations/swat-hd.jpg";
   if (
     normalized.includes("kashmir") ||
     normalized.includes("beach") ||

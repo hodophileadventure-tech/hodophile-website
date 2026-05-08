@@ -591,11 +591,25 @@ export function MakeMyTripForm() {
                   className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 >
                   <option value="">Choose a destination...</option>
-                  {routes.map((route) => (
-                    <option key={route.id} value={route.id}>
-                      {route.name} ({route.duration} days)
-                    </option>
-                  ))}
+                  {/* Exclude specific legacy/duplicate routes from the dropdown */}
+                  {(() => {
+                    const excludedRouteIds = [
+                      "skardu-hunza-8days",
+                      "hunza-naltar-6days",
+                      "skardu-basho-6days",
+                      "swat-kalam-4days",
+                      "kashmir-arangkel-5days",
+                      "naran-babusar-4days",
+                    ];
+
+                    return routes
+                      .filter((r) => !excludedRouteIds.includes(r.id))
+                      .map((route) => (
+                        <option key={route.id} value={route.id}>
+                          {route.name} ({route.duration} days)
+                        </option>
+                      ));
+                  })()}
                 </select>
               </label>
 

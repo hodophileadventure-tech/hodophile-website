@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { navigation, tourMenu } from "@/lib/site";
@@ -14,8 +14,10 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [toursOpen, setToursOpen] = useState(false);
+  const [desktopToursOpen, setDesktopToursOpen] = useState(false);
   const [activeTourGroup, setActiveTourGroup] = useState(tourMenu[0]?.href ?? "");
   const [activeMobileTourGroup, setActiveMobileTourGroup] = useState<string | null>(null);
+  const desktopToursCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -30,16 +32,34 @@ export function SiteHeader() {
   const desktopLeftNavigation = navigation.slice(0, splitIndex);
   const desktopRightNavigation = navigation.slice(splitIndex);
 
+  const openDesktopToursMenu = () => {
+    if (desktopToursCloseTimer.current) {
+      clearTimeout(desktopToursCloseTimer.current);
+      desktopToursCloseTimer.current = null;
+    }
+
+    setDesktopToursOpen(true);
+    setActiveTourGroup(tourMenu[0]?.href ?? "");
+  };
+
+  const closeDesktopToursMenu = () => {
+    desktopToursCloseTimer.current = setTimeout(() => {
+      setDesktopToursOpen(false);
+    }, 140);
+  };
+
   const renderDesktopNavItem = (item: NavigationItem) => {
     if (item.href === "/tours") {
       return (
         <div
           key={item.href}
           className="relative group"
-          onMouseEnter={() => setActiveTourGroup(tourMenu[0]?.href ?? "")}
+          onMouseEnter={openDesktopToursMenu}
+          onMouseLeave={closeDesktopToursMenu}
         >
           <Link
             href={item.href}
+            onFocus={openDesktopToursMenu}
             className={`inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1.5 text-[0.9rem] transition ${
               isToursActive
                 ? "text-[#ffc000]"
@@ -52,7 +72,13 @@ export function SiteHeader() {
             </svg>
           </Link>
 
-          <div className="invisible fixed left-1/2 top-[4.5rem] z-[80] w-[min(54rem,calc(100vw-1rem))] -translate-x-1/2 opacity-0 transition duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+          <div
+            className={`fixed left-1/2 top-[4.5rem] z-[80] w-[min(54rem,calc(100vw-1rem))] -translate-x-1/2 transition duration-200 ${
+              desktopToursOpen ? "visible opacity-100" : "invisible opacity-0"
+            }`}
+            onMouseEnter={openDesktopToursMenu}
+            onMouseLeave={closeDesktopToursMenu}
+          >
             <div className="grid h-[26rem] max-h-[calc(100vh-6.5rem)] overflow-hidden rounded-[1.9rem] border border-[#4a3d18] bg-[#111111] shadow-[0_30px_80px_rgba(0,0,0,0.35)] ring-1 ring-black/30 md:grid-cols-[15rem_minmax(0,1fr)]">
               <div className="min-h-0 overflow-y-auto overscroll-contain border-r border-white/10 bg-[#171717] p-4">
                 <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#ffc000]">Tour Groups</p>

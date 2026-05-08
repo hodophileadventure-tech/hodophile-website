@@ -23,6 +23,13 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
+  const destinationPackageLinks: Record<string, string> = {
+    Hunza: "/tours/northern-tours/hunza-valley-tour-packages",
+    Skardu: "/tours/northern-tours/skardu-valley-tour-packages",
+    Naran: "/tours/northern-tours/naran-valley-tour-packages",
+    Swat: "/tours/northern-tours/swat-valley-tour-packages",
+  };
+
   const serviceHighlights = [
     {
       title: "Curated Itineraries",
@@ -175,15 +182,6 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative z-20 -mt-12 w-full px-6 pb-4 lg:px-8">
-            <div className="grid gap-3 rounded-2xl border border-white/20 bg-white/10 p-3 backdrop-blur md:grid-cols-5">
-              {destinations.map((destination) => (
-                <div key={destination.name} className="rounded-xl border border-white/15 bg-black/20 px-3 py-2 text-center text-xs font-medium uppercase tracking-[0.2em] text-white/85">
-                  {destination.name}
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
@@ -206,9 +204,10 @@ export default function Home() {
 
         <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-4">
           {destinations.slice(0, 4).map((destination) => (
-            <article
+            <Link
+              href={destinationPackageLinks[destination.name] ?? "/destinations"}
               key={destination.name}
-              className="group overflow-hidden rounded-[30px] border border-stone-200 bg-white p-3 shadow-[0_14px_30px_rgba(15,23,42,0.06)]"
+              className="group overflow-hidden rounded-[30px] border border-stone-200 bg-white p-3 shadow-[0_14px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:border-[#fcc000]"
             >
               <div className="relative h-64 overflow-hidden rounded-2xl">
                 <Image
@@ -230,7 +229,7 @@ export default function Home() {
                   <span className="text-sm font-medium text-stone-700">{destination.duration}</span>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
           </div>
         </div>

@@ -118,7 +118,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
   {
     slug: "kashmir-taobat",
     title: "9 Days Kashmir, Arangkel & Taobat",
-    homeImage: "/images/featured-tours/9days-kashmir-taobat.jpg.jpeg",
+    homeImage: "/images/featured-tours/kashmir-taobat.jpg.jpeg",
     heroImage: "/images/destinations/kashmir.jpg",
     duration: "9 Days / 8 Nights",
     summary: "A standard group tour from Karachi through Islamabad into Kashmir, Taobat, and Arangkel.",
@@ -542,7 +542,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
   {
     slug: "hunza-skardu",
     title: "12 Days Naran, Hunza, Skardu, Shigar & Deosai",
-    homeImage: "/images/featured-tours/12days-hunza-skardu.jpg.jpeg",
+    homeImage: "/images/featured-tours/hunza-skardu.jpg.jpeg",
     heroImage: "/images/destinations/featured-skardu-hunza-2.jpg",
     duration: "12 Days / 11 Nights",
     summary: "Naran, Hunza, Skardu, Shigar, and Deosai combined into a bold northern journey.",
@@ -745,7 +745,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
   {
     slug: "hunza-naltar",
     title: "10 Days Naran, Hunza & Naltar",
-    homeImage: "/images/featured-tours/10days-hunza-naltar.jpg.jpeg",
+    homeImage: "/images/featured-tours/hunza-naltar.jpg.jpeg",
     heroImage: "/images/destinations/naltar-valley-pakistan.jpg",
     duration: "10 Days / 9 Nights",
     summary: "A refreshing northern route with Naran Valley, Hunza heritage, and alpine Naltar lakes.",

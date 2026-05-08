@@ -333,7 +333,7 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
 
               {tour.servicesExcluded?.length ? (
                 <details className="rounded-[1.75rem] border border-stone-200 bg-white p-5 shadow-sm">
-                  <summary className="cursor-pointer text-lg font-semibold text-[#ffc000]"><span className="text-red-600 mr-2">✕</span>Service Not Included</summary>
+                  <summary className="cursor-pointer text-lg font-semibold text-[#ffc000]">Service Not Included</summary>
                   <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">
                     {tour.servicesExcluded.map((item) => (
                       <li key={item} className="flex items-start gap-3">
