@@ -167,7 +167,7 @@ async function main() {
   console.log('🚗 Creating vehicles...');
   const vehicles = await Promise.all([
     prisma.vehicle.upsert({
-      where: { name: 'Toyota Corolla' },
+      where: { id: generateVehicleId('Toyota Corolla') },
       update: {},
       create: {
         id: generateVehicleId('Toyota Corolla'),
@@ -179,7 +179,7 @@ async function main() {
       },
     }),
     prisma.vehicle.upsert({
-      where: { name: 'Honda BRV' },
+      where: { id: generateVehicleId('Honda BRV') },
       update: {},
       create: {
         id: generateVehicleId('Honda BRV'),
@@ -191,7 +191,7 @@ async function main() {
       },
     }),
     prisma.vehicle.upsert({
-      where: { name: 'Prado' },
+      where: { id: generateVehicleId('Prado') },
       update: {},
       create: {
         id: generateVehicleId('Prado'),
@@ -203,7 +203,7 @@ async function main() {
       },
     }),
     prisma.vehicle.upsert({
-      where: { name: 'Grand Cabin Petrol' },
+      where: { id: generateVehicleId('Grand Cabin Petrol') },
       update: {},
       create: {
         id: generateVehicleId('Grand Cabin Petrol'),
@@ -215,7 +215,7 @@ async function main() {
       },
     }),
     prisma.vehicle.upsert({
-      where: { name: 'Grand Cabin Diesel' },
+      where: { id: generateVehicleId('Grand Cabin Diesel') },
       update: {},
       create: {
         id: generateVehicleId('Grand Cabin Diesel'),
@@ -227,7 +227,7 @@ async function main() {
       },
     }),
     prisma.vehicle.upsert({
-      where: { name: 'Coaster 4C' },
+      where: { id: generateVehicleId('Coaster 4C') },
       update: {},
       create: {
         id: generateVehicleId('Coaster 4C'),
@@ -239,7 +239,7 @@ async function main() {
       },
     }),
     prisma.vehicle.upsert({
-      where: { name: 'Coaster 5C' },
+      where: { id: generateVehicleId('Coaster 5C') },
       update: {},
       create: {
         id: generateVehicleId('Coaster 5C'),
@@ -251,7 +251,7 @@ async function main() {
       },
     }),
     prisma.vehicle.upsert({
-      where: { name: 'Toyota Fortuner' },
+      where: { id: generateVehicleId('Toyota Fortuner') },
       update: {},
       create: {
         id: generateVehicleId('Toyota Fortuner'),
@@ -263,7 +263,7 @@ async function main() {
       },
     }),
     prisma.vehicle.upsert({
-      where: { name: 'Jeep Grand Cherokee' },
+      where: { id: generateVehicleId('Jeep Grand Cherokee') },
       update: {},
       create: {
         id: generateVehicleId('Jeep Grand Cherokee'),
