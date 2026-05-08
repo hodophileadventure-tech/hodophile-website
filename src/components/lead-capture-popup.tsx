@@ -20,14 +20,14 @@ export function LeadCapturePopup() {
   });
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
-  // Show popup after 60 seconds (but only once per session)
+  // Show popup after 30 seconds (but only once per session)
   useEffect(() => {
     const hasShownPopup = sessionStorage.getItem('leadCapturePopupShown');
     if (!hasShownPopup) {
       const timer = setTimeout(() => {
         setIsVisible(true);
         sessionStorage.setItem('leadCapturePopupShown', 'true');
-      }, 60000); // 60 seconds
+      }, 30000); // 30 seconds
 
       return () => clearTimeout(timer);
     }
@@ -80,7 +80,9 @@ export function LeadCapturePopup() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit form');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || errorData.details || `Server error: ${response.status}`;
+        throw new Error(errorMessage);
       }
 
       setShowSuccess(true);
@@ -103,8 +105,9 @@ export function LeadCapturePopup() {
         }, 3500);
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Failed to submit form. Please try again.');
+      console.error('Error submitting lead:', error);
+      const message = error instanceof Error ? error.message : 'Failed to submit form. Please try again.';
+      alert(message);
     } finally {
       setIsLoading(false);
     }

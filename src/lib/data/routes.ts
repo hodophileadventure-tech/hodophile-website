@@ -123,7 +123,7 @@ export const routes: Route[] = [
   },
   {
     id: "naran-hunza-skardu-deosai-12days",
-    name: "Naran, Hunza, Skardu, Shigar & Deosai",
+    name: "Naran, Hunza, Skardu",
     slug: "naran-hunza-skardu-deosai",
     duration: 12,
     vehicleDays: 8,

@@ -54,7 +54,7 @@ export function ContactForm() {
         // Reset message after 5 seconds
         setTimeout(() => setStatus("idle"), 5000);
       } else {
-        throw new Error(result.error || "Failed to submit form");
+        throw new Error(result.error || result.details || "Failed to submit form");
       }
     } catch (error) {
       setStatus("error");

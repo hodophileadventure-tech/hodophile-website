@@ -505,7 +505,7 @@ export function MakeMyTripForm() {
         // Redirect to quotation result page
         router.push(`/quotation-result?data=${encoded}`);
       } else {
-        setSubmitError(data.error || "Failed to submit quotation");
+        setSubmitError(data.error || data.details || "Failed to submit quotation");
       }
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "An error occurred");

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Replace with your Google Apps Script Web App URL
+// Use the configured Google Apps Script URL for all lead submissions
 const GOOGLE_LEADS_SCRIPT_URL =
-  process.env.GOOGLE_APP_SCRIPT_URL ||
+  process.env.GOOGLE_APPS_SCRIPT_URL ||
   process.env.GOOGLE_LEADS_SCRIPT_URL ||
   '';
 
@@ -25,29 +25,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // In development, allow local testing without sheet integration.
+    // Check if URL is configured
     if (!GOOGLE_LEADS_SCRIPT_URL) {
-      if (process.env.NODE_ENV !== 'development') {
-        return NextResponse.json(
-          { error: 'Lead script URL is not configured on the server' },
-          { status: 500 }
-        );
-      }
-
-      console.warn('Lead script URL not configured. Lead data would be:');
-      console.log(body);
-
+      console.error('Lead script URL is not configured on the server');
       return NextResponse.json(
-        {
-          success: true,
-          message: 'Lead captured (Google Sheets integration not configured)',
-          data: body,
-        },
-        { status: 201 }
+        { error: 'Lead script URL is not configured on the server' },
+        { status: 500 }
       );
     }
 
-    // Send to Google Apps Script
+    console.log('Sending lead data to Google Apps Script:', body);
+
+    // Send to Google Apps Script with proper format
     const response = await fetch(GOOGLE_LEADS_SCRIPT_URL, {
       method: 'POST',
       headers: {
@@ -65,11 +54,30 @@ export async function POST(request: NextRequest) {
       }),
     });
 
+    const responseText = await response.text();
+    console.log('Google Apps Script Response Status:', response.status);
+    console.log('Google Apps Script Response:', responseText);
+
     if (!response.ok) {
-      throw new Error(`Google Apps Script returned status ${response.status}`);
+      // Try to parse error details from Google Apps Script
+      let errorDetails = responseText;
+      try {
+        const errorJson = JSON.parse(responseText);
+        errorDetails = errorJson.error || errorJson.message || responseText;
+      } catch {
+        errorDetails = responseText || `HTTP ${response.status}`;
+      }
+      throw new Error(`Google Apps Script error: ${errorDetails}`);
     }
 
-    const result = await response.json();
+    // Parse the successful response (body already read as text)
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch {
+      result = { success: true, message: 'Lead processed' };
+    }
+    console.log('Lead submitted successfully:', result);
 
     return NextResponse.json(
       {

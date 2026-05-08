@@ -188,15 +188,16 @@ export default function Home() {
       <section className="mt-20 space-y-8 w-full">
         <div className="px-6 lg:px-8">
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Destinations</p>
-            <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
-              Discover Pakistan&apos;s Most Loved Escapes
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
-              Scenic valleys, alpine lakes, and heritage routes curated for smooth, memorable journeys.
-            </p>
-          </div>
+              <div>
+              <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Destinations</p>
+              <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
+                <span className="text-black">Discover Pakistan&apos;s</span>{' '}
+                <span className="text-[#fcc000]">Most Loved Escapes</span>
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
+                Scenic valleys, alpine lakes, and heritage routes curated for smooth, memorable journeys.
+              </p>
+            </div>
           <Link href="/destinations" className="text-sm font-medium text-[#0b0b0b] transition hover:text-[#ffc000]">
             View all destinations
           </Link>
@@ -225,8 +226,8 @@ export default function Home() {
                 <h3 className="font-serif text-[2.2rem] font-semibold leading-none">{destination.name}</h3>
                 <p className="text-[1.02rem] leading-8 text-stone-700">{destination.description}</p>
                 <div className="flex items-center justify-between border-t border-stone-200 pt-3">
-                  <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">{destination.season}</p>
-                  <span className="text-sm font-medium text-stone-700">{destination.duration}</span>
+                  <p className="text-[11px] uppercase tracking-[0.24em] text-[#fcc000]">{destination.season}</p>
+                  <span className="text-sm font-medium text-[#fcc000]">{destination.duration}</span>
                 </div>
               </div>
             </Link>
@@ -238,9 +239,10 @@ export default function Home() {
       <section className="mt-20 rounded-3xl border border-stone-300 bg-stone-200 shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
         <div className="px-6 py-5 lg:px-8 md:py-7">
           <div>
-            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Featured Tours</p>
+            <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Featured Tours</p>
             <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
-              Signature Tour Packages, Crafted for Comfort
+              <span className="text-black">Signature Tour Packages,</span>{' '}
+              <span className="text-[#fcc000]">Crafted for Comfort</span>
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
               Compare top routes at a glance and jump directly into the package that matches your travel style.
@@ -260,7 +262,7 @@ export default function Home() {
                   />
                 </div>
                 <div className="p-5 flex flex-col justify-between gap-5 flex-1">
-                  <h3 className="text-center text-lg font-semibold leading-7 text-[#ffc000]">
+                  <h3 className="text-center text-lg font-semibold leading-7 text-black">
                     {tour.titleParts.length > 1 ? (
                       <>
                         <span className="block">{tour.titleParts[0]}</span>
@@ -286,8 +288,11 @@ export default function Home() {
       <section className="mt-20 w-full">
         <div className="px-6 lg:px-8">
           <div className="mb-8">
-            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Why Choose Us</p>
-            <h2 className="mt-3 font-serif text-4xl">Trustworthy planning with premium restraint.</h2>
+            <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Why Choose Us</p>
+            <h2 className="mt-3 font-serif text-4xl">
+              <span className="text-black">Trustworthy planning</span>{' '}
+              <span className="text-[#fcc000]">with premium restraint.</span>
+            </h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {serviceHighlights.map((item) => (
@@ -311,17 +316,20 @@ export default function Home() {
 
       <section className="mt-20 overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
         <div className="px-6 py-8 lg:px-8">
-          <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Testimonials</p>
-          <h2 className="mt-3 font-serif text-4xl">Our clients don&apos;t just like us - they rave about us.</h2>
+          <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Testimonials</p>
+          <h2 className="mt-3 font-serif text-4xl">
+            <span className="text-black">Our clients don&apos;t just like us -</span>{' '}
+            <span className="text-[#fcc000]">they rave about us.</span>
+          </h2>
           <TestimonialsCarousel testimonials={testimonials} />
         </div>
       </section>
 
       <section className="mt-20 w-full">
         <div className="px-6 lg:px-8">
+          <h2 className="text-center font-bold text-2xl sm:text-3xl mb-6 text-black">Hodophile Adventures Provide Free <span className="text-[#fcc000]">Travel Kit</span> to Our Customers</h2>
           <div className="mx-auto max-w-7xl rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-sm">
             <div className="relative bg-black">
-              <p className="absolute top-6 left-6 right-6 z-10 text-xs uppercase tracking-[0.32em] text-white font-semibold drop-shadow-lg">Hodophile Adventures Provide Free Travel Kit to Our Customers</p>
             <video
                 src="/travel-kit.mp4"
                 autoPlay
