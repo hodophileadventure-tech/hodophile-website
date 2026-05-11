@@ -542,7 +542,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
   {
     slug: "hunza-skardu",
     title: "12 Days Naran, Hunza, Skardu",
-    homeImage: "/images/featured-tours/hunza-skardu.jpg.jpeg",
+    homeImage: "/images/featured-tours/hunza-skardu-featured.png",
     heroImage: "/images/destinations/featured-skardu-hunza-2.jpg",
     duration: "12 Days / 11 Nights",
     summary: "Naran, Hunza, Skardu, Shigar, and Deosai combined into a bold northern journey.",

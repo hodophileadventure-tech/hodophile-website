@@ -1,20 +1,16 @@
 "use client";
 
+import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { routes } from "@/lib/data/routes";
-import { getHotelsByCity } from "@/lib/data/hotels";
 import { formatPKR } from "@/lib/currency";
-import { getRouteActivities } from "@/lib/data/routeActivities";
-import { getMandatoryJeepCost } from "@/lib/data/routeActivities";
 
 export function QuotationResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [quotation, setQuotation] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [editingHotels, setEditingHotels] = useState<Record<string, { hotelId: string; roomId: string }>>({});
-  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     try {
@@ -35,7 +31,7 @@ export function QuotationResultContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-stone-50 to-stone-100 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="animate-pulse text-stone-600">Loading quotation...</div>
       </div>
     );
@@ -45,298 +41,222 @@ export function QuotationResultContent() {
     return null;
   }
 
-  const route = routes.find((r) => r.id === quotation.routeId);
-  
-  // Handle multi-city or single-city hotels
-  let hotelDisplay = "";
-  let hotel = null;
-  let roomTypeDisplay = quotation.roomType;
-  let roomDetailsDisplay = "";
-  
-  if (quotation.multiCityHotels && quotation.multiCityNights) {
-    // Multi-city tour
-    const hotelNames = Object.entries(quotation.multiCityHotels)
-      .map(([city, info]: [string, any]) => {
-        const cityHotels = getHotelsByCity(city);
-        const h = cityHotels.find((hotel) => hotel.id === info.hotelId);
-        return h?.name || info.hotelId;
-      })
-      .join(" + ");
-    hotelDisplay = hotelNames;
-    roomTypeDisplay = "Multiple";
-    roomDetailsDisplay = Object.entries(quotation.multiCityHotels)
-      .map(([city, info]: [string, any]) => {
-        const cityHotels = getHotelsByCity(city);
-        const h = cityHotels.find((hotel) => hotel.id === info.hotelId);
-        return `${city}: ${h?.name || info.hotelId} — ${info.roomId || "Room"}`;
-      })
-      .join(" | ");
-  } else {
-    // Single-city tour
-    const hotels = getHotelsByCity(quotation.destination);
-    hotel = hotels.find((h) => h.id === quotation.hotelId);
-    hotelDisplay = hotel?.name || "Unknown";
+  const isCustomItinerary = Array.isArray(quotation.customCities) && quotation.customCities.length > 0;
+  const route = isCustomItinerary ? undefined : routes.find((r) => r.id === quotation.routeId);
+  const routeName = isCustomItinerary
+    ? quotation.customRouteLabel || quotation.customCities.join(" + ") || "Custom Package"
+    : route?.name || quotation.destination || "Unknown";
+
+  const numberOfGuests = quotation.details?.numberOfGuests ?? ((quotation.adults || 0) + (quotation.kids || 0));
+  const transportCost = quotation.transportCost ?? 0;
+  const hotelCost = quotation.hotelCost ?? 0;
+  const jeepCost = quotation.jeepAddonsCost ?? 0;
+  const subtotal = quotation.subtotal ?? 0;
+  const markupAmount = quotation.markupAmount ?? 0;
+  const perPersonPrice = quotation.perPersonCost ?? 0;
+  const totalAmount = quotation.totalCost ?? 0;
+  const travelMode = quotation.travelMode || "road";
+  const packageDescription = quotation.details?.vehicle
+    ? `with ${quotation.details.vehicle}`
+    : quotation.vehicleName
+    ? `with ${quotation.vehicleName}`
+    : "Package includes transport and hotel";
+
+  const items = [
+    {
+      item: "Transport",
+      description: quotation.details?.vehicle
+        ? `Transport by ${quotation.details.vehicle}`
+        : quotation.vehicleName
+        ? `Transport by ${quotation.vehicleName}`
+        : "Vehicle and fuel charges",
+      unitPrice: "",
+      quantity: "",
+      amount: transportCost,
+    },
+    {
+      item: "Hotel",
+      description: quotation.details?.hotel || "Hotel accommodation",
+      unitPrice: "",
+      quantity: quotation.details?.numberOfRooms ?? quotation.numberOfRooms ?? "-",
+      amount: hotelCost,
+    },
+  ];
+
+  if (jeepCost > 0) {
+    items.push({
+      item: "Jeep Add-ons",
+      description: "Mandatory jeep activities and optional add-ons",
+      unitPrice: "",
+      quantity: "",
+      amount: jeepCost,
+    });
   }
 
-  // Generate day-by-day itinerary from route activities if available
-  const generateItinerary = () => {
-    const routeActivityData = getRouteActivities(quotation.routeId);
-    
-    if (routeActivityData) {
-      // Use detailed route activities if available
-      return routeActivityData.activities.map((activity) => ({
-        day: activity.day,
-        title: activity.name,
-        description: activity.description,
-        isJeepRequired: activity.isJeepRequired,
-        location: activity.location,
-        cost: activity.cost,
-      }));
-    }
-    
-    // Fallback to simple itinerary if no route activities found
-    const days = [];
-    const duration = route?.duration || 5;
-
-    days.push({
-      day: 1,
-      title: "Arrival",
-      description: `Arrive at Islamabad. Drive to ${quotation.destination}. Check-in at hotel.`,
-      isJeepRequired: false,
-      location: quotation.destination || "",
-      cost: undefined,
-    });
-
-    for (let i = 2; i < duration; i++) {
-      days.push({
-        day: i,
-        title: `Exploration Day ${i - 1}`,
-        description: `Full day exploration of ${quotation.destination}. Visit local attractions and scenic spots.`,
-        isJeepRequired: false,
-        location: quotation.destination || "",
-        cost: undefined,
-      });
-    }
-
-    days.push({
-      day: duration,
-      title: "Departure",
-      description: `Check-out from hotel. Drive back to Islamabad.`,
-      isJeepRequired: false,
-      location: "Islamabad",
-      cost: undefined,
-    });
-
-    return days;
-  };
-
-  const itinerary = generateItinerary();
+  const quoteNumber = `Q${Date.now().toString().slice(-6)}`;
+  const quoteDate = new Date().toLocaleDateString("en-GB");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-stone-50 to-stone-100 py-12 px-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="font-serif text-4xl text-stone-900 mb-2">
-            Your Travel Quotation
-          </h1>
-          <p className="text-stone-600">
-            {quotation.tripDate}
-          </p>
-        </div>
-
-        {/* Itinerary Section */}
-        <div className="bg-white rounded-[15px] border border-white/20 shadow-[0_30px_90px_rgba(0,0,0,0.28)] p-8 mb-8">
-          <h2 className="font-serif text-2xl text-stone-900 mb-6">📅 Itinerary</h2>
-          <div className="space-y-4">
-            {itinerary.map((dayItem, index) => (
-              <div
-                key={index}
-                className={`border-l-4 pl-6 py-3 rounded-r ${
-                  dayItem.isJeepRequired
-                    ? "border-l-red-500 bg-red-50"
-                    : "border-l-[#fcc000] bg-white"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-stone-900 flex items-center gap-2">
-                      Day {dayItem.day}: {dayItem.title}
-                      {dayItem.isJeepRequired && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-200 text-red-700 text-xs font-bold rounded">
-                          🚙 JEEP REQUIRED
-                        </span>
-                      )}
-                    </h3>
-                    <p className="text-stone-600 text-sm mt-2">{dayItem.description}</p>
-                    {dayItem.location && (
-                      <p className="text-stone-500 text-xs mt-1">📍 {dayItem.location}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Tour Details */}
-        <div className="bg-white rounded-[15px] border border-white/20 shadow-[0_30px_90px_rgba(0,0,0,0.28)] p-8 mb-8">
-          <h2 className="font-serif text-2xl text-stone-900 mb-6">🎒 Tour Details</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm text-stone-600">Route</p>
-                <p className="text-lg font-semibold text-stone-900">
-                  {route?.name || "Unknown"}
-                </p>
+    <div className="min-h-screen bg-[#f4f4f4] py-10 px-4 print:bg-white print:py-0 print:px-0">
+      <div className="mx-auto w-full max-w-[900px] bg-white border border-stone-200 shadow-xl print:shadow-none print:border-black/10 print:m-0 print:max-w-none">
+        <div className="px-8 py-8 print:px-10 print:py-8">
+          <div className="flex flex-wrap items-center justify-between gap-6 border-b border-stone-200 pb-6">
+            <div className="flex items-center gap-4">
+              <div className="h-20 w-20 overflow-hidden rounded-3xl bg-white p-3 shadow-sm">
+                <Image src="/logo-transparent.png" alt="Hodophile Adventures logo" width={80} height={80} className="h-full w-full object-contain" />
               </div>
               <div>
-                <p className="text-sm text-stone-600">Duration</p>
-                <p className="text-lg font-semibold text-stone-900">
-                  {route?.duration || 0} Days
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-stone-600">Vehicle</p>
-                <p className="text-lg font-semibold text-stone-900">
-                  {quotation.vehicleName}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-stone-600">Total Guests</p>
-                <p className="text-lg font-semibold text-stone-900">
-                  {quotation.adults} Adults{quotation.kids > 0 ? ` + ${quotation.kids} Kids` : ""}
-                </p>
+                <h1 className="text-4xl font-black uppercase tracking-[0.12em] text-stone-950">Hodophile Adventures</h1>
+                <p className="mt-1 text-sm uppercase tracking-[0.3em] text-stone-600">The Perfect Experience</p>
+                <p className="mt-2 text-sm text-stone-700">Government License# 5436</p>
               </div>
             </div>
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-stone-600">Hotel</p>
-                  <button
-                    onClick={() => setIsEditing(!isEditing)}
-                    className="text-xs px-3 py-1 rounded bg-[#fcc000] text-black hover:bg-[#fcc000]/90 font-semibold transition"
-                  >
-                    {isEditing ? "Done" : "✏️ Edit"}
-                  </button>
+          <div className="mt-8 grid gap-6 md:grid-cols-[1.25fr_0.75fr] items-start">
+            <div className="rounded-2xl border border-stone-300 bg-stone-100 p-6">
+              <p className="text-2xl font-bold text-stone-900">To, {quotation.customerName ? `Mr. ${quotation.customerName}` : "Customer"}</p>
+              <div className="mt-6 space-y-3 text-sm text-stone-800">
+                <p>{quotation.customerPhone || "Cell#"}</p>
+                <p>{quotation.destination || "Destination not specified"}</p>
+                <p>{routeName}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-4xl font-black uppercase tracking-[0.18em] text-[#fcc000]">Quotation</p>
+              <div className="mt-8 space-y-3 text-sm text-stone-900">
+                <div>
+                  <span className="font-semibold">Quote #</span>
+                  <span className="ml-2">{quoteNumber}</span>
                 </div>
-                {isEditing ? (
-                  <div className="mt-2 space-y-3">
-                    {quotation.multiCityHotels && quotation.multiCityNights ? (
-                      Object.entries(quotation.multiCityNights).map(([city, nights]: [string, any]) => {
-                        const cityHotels = getHotelsByCity(city);
-                        const currentHotelId = editingHotels[city]?.hotelId || quotation.multiCityHotels?.[city]?.hotelId;
-                        const selectedHotel = cityHotels.find(h => h.id === currentHotelId);
-                        const rooms = selectedHotel?.rooms || [];
-                        
-                        return (
-                          <div key={city} className="border border-stone-200 rounded p-3 bg-stone-50">
-                            <p className="text-sm font-medium text-stone-900 mb-2">{city}</p>
-                            <select
-                              value={currentHotelId || ""}
-                              onChange={(e) => {
-                                setEditingHotels({
-                                  ...editingHotels,
-                                  [city]: {
-                                    hotelId: e.target.value,
-                                    roomId: quotation.multiCityHotels?.[city]?.roomId || ""
-                                  }
-                                });
-                                quotation.multiCityHotels[city].hotelId = e.target.value;
-                              }}
-                              className="w-full mb-2 px-2 py-1 border border-stone-200 rounded text-sm"
-                            >
-                              <option value="">Select hotel</option>
-                              {cityHotels.map(h => (
-                                <option key={h.id} value={h.id}>{h.name}</option>
-                              ))}
-                            </select>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <select
-                        value={editingHotels.singleCity?.hotelId || quotation.hotelId || ""}
-                        onChange={(e) => {
-                          setEditingHotels({
-                            ...editingHotels,
-                            singleCity: {
-                              hotelId: e.target.value,
-                              roomId: quotation.hotelId ? quotation.roomId : ""
-                            }
-                          });
-                          quotation.hotelId = e.target.value;
-                        }}
-                        className="w-full px-2 py-1 border border-stone-200 rounded text-sm"
-                      >
-                        <option value="">Select hotel</option>
-                        {getHotelsByCity(quotation.destination).map(h => (
-                          <option key={h.id} value={h.id}>{h.name}</option>
-                        ))}
-                      </select>
-                    )}
+                <div>
+                  <span className="font-semibold">Quote Date</span>
+                  <span className="ml-2">{quoteDate}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 overflow-hidden rounded-3xl border border-stone-300">
+            <div className="grid grid-cols-[1.1fr_1.8fr_0.9fr_0.8fr_0.9fr] bg-stone-100 px-6 py-4 text-sm font-semibold uppercase tracking-[0.12em] text-stone-900">
+              <span>Item</span>
+              <span>Description</span>
+              <span>Price</span>
+              <span>Qty</span>
+              <span className="text-right">Amount</span>
+            </div>
+            <div className="min-h-[280px] bg-white px-6 py-6 text-sm text-stone-900">
+              {items.map((row, index) => (
+                <div key={index} className="grid grid-cols-[1.1fr_1.8fr_0.9fr_0.8fr_0.9fr] gap-4 border-b border-stone-200 py-3">
+                  <span className="font-semibold">{row.item}</span>
+                  <span>{row.description}</span>
+                  <span>{typeof row.unitPrice === "number" ? formatPKR(row.unitPrice) : row.unitPrice}</span>
+                  <span>{row.quantity}</span>
+                  <span className="text-right">{typeof row.amount === "number" ? formatPKR(row.amount) : row.amount}</span>
+                </div>
+              ))}
+              <div className="mt-6 space-y-2 text-sm text-stone-900">
+                <div className="flex items-center justify-between border-b border-stone-200 py-2">
+                  <span className="font-medium">Transport</span>
+                  <span>{formatPKR(transportCost)}</span>
+                </div>
+                <div className="flex items-center justify-between border-b border-stone-200 py-2">
+                  <span className="font-medium">Hotel</span>
+                  <span>{formatPKR(hotelCost)}</span>
+                </div>
+                {jeepCost > 0 && (
+                  <div className="flex items-center justify-between border-b border-stone-200 py-2">
+                    <span className="font-medium">Jeep & Add-ons</span>
+                    <span>{formatPKR(jeepCost)}</span>
                   </div>
-                ) : (
-                  <p className="text-lg font-semibold text-stone-900">
-                    {hotelDisplay}
-                  </p>
                 )}
+                <div className="flex items-center justify-between border-b border-stone-200 py-2">
+                  <span className="font-medium">Subtotal</span>
+                  <span>{formatPKR(subtotal)}</span>
+                </div>
+                <div className="flex items-center justify-between border-b border-stone-200 py-2">
+                  <span className="font-medium">Markup (22%)</span>
+                  <span>{formatPKR(markupAmount)}</span>
+                </div>
+                <div className="flex items-center justify-between py-2">
+                  <span className="font-semibold">Total</span>
+                  <span className="font-semibold">{formatPKR(totalAmount)}</span>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-stone-600">Room Type</p>
-                <p className="text-lg font-semibold text-stone-900">
-                  {roomTypeDisplay}
-                </p>
-                {roomDetailsDisplay ? (
-                  <p className="mt-2 text-sm text-stone-500">
-                    {roomDetailsDisplay}
-                  </p>
-                ) : null}
+              <div className="mt-6">
+                <p className="text-sm font-semibold">NOTES:</p>
+                <div className="mt-3 space-y-2 text-sm text-stone-800">
+                  <p><span className="font-semibold">Accommodation Type:</span> {quotation.details?.roomType || quotation.roomType || "-"}</p>
+                  <p><span className="font-semibold">Transportation Type:</span> {quotation.details?.vehicle || quotation.vehicleName || "-"}</p>
+                  <p><span className="font-semibold">Tour Mode:</span> {travelMode === "air" ? "By Air" : "By Road"}</p>
+                  <p><span className="font-semibold">Departure Location:</span> {quotation.startingPoint || "-"}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-stone-600">Number of Rooms</p>
-                <p className="text-lg font-semibold text-stone-900">
-                  {quotation.numberOfRooms} Room{quotation.numberOfRooms > 1 ? "s" : ""}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-stone-600">Tour Type</p>
-                <p className="text-lg font-semibold text-stone-900 capitalize">
-                  {quotation.tourType}
-                </p>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_0.9fr]">
+            <div className="rounded-3xl border border-stone-300 bg-stone-100 p-6 text-sm text-stone-900">
+              <p className="font-semibold">Package included:</p>
+              <ul className="mt-3 list-disc space-y-2 pl-5">
+                <li>Transport by AC vehicle</li>
+                <li>Hotel accommodation</li>
+                <li>Sightseeing support</li>
+              </ul>
+              <p className="mt-6 font-semibold">Quotation valid only for 3 Days.</p>
+              <p className="mt-3 text-xs text-stone-700">Quotation is exclusive of air tickets.</p>
+            </div>
+
+            <div className="rounded-3xl border border-stone-300 bg-white p-4">
+              <div className="space-y-1 text-sm text-stone-900">
+                <div className="flex items-center justify-between border-b border-stone-200 py-3">
+                  <span>Transport</span>
+                  <span>{formatPKR(transportCost)}</span>
+                </div>
+                <div className="flex items-center justify-between border-b border-stone-200 py-3">
+                  <span>Hotel</span>
+                  <span>{formatPKR(hotelCost)}</span>
+                </div>
+                {jeepCost > 0 && (
+                  <div className="flex items-center justify-between border-b border-stone-200 py-3">
+                    <span>Jeep Add-ons</span>
+                    <span>{formatPKR(jeepCost)}</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between border-b border-stone-200 py-3">
+                  <span>Subtotal</span>
+                  <span>{formatPKR(subtotal)}</span>
+                </div>
+                <div className="flex items-center justify-between border-b border-stone-200 py-3">
+                  <span>Markup (22%)</span>
+                  <span>{formatPKR(markupAmount)}</span>
+                </div>
+                <div className="flex items-center justify-between border-b border-stone-200 py-3">
+                  <span>Total</span>
+                  <span>{formatPKR(totalAmount)}</span>
+                </div>
+                <div className="flex items-center justify-between border-b border-stone-200 py-3">
+                  <span>Amount Paid</span>
+                  <span>{formatPKR(quotation.amountPaid ?? 0)}</span>
+                </div>
+                <div className="rounded-b-2xl bg-stone-100 px-4 py-4 text-sm font-semibold uppercase tracking-[0.06em] text-stone-900">
+                  <div className="flex items-center justify-between">
+                    <span>Quote</span>
+                    <span>{formatPKR(totalAmount)}</span>
+                  </div>
+                </div>
+                <p className="pt-3 text-xs text-stone-700">Quotation is exclusive of air tickets.</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Quotation Summary */}
-        <div className="bg-[#fcc000]/10 rounded-[15px] border-2 border-[#fcc000] p-8 text-center">
-          <p className="text-stone-600 text-sm mb-3">💰 Total Trip Cost</p>
-          <p className="font-serif text-5xl text-[#fcc000] font-bold">
-            {formatPKR(quotation.totalCost)}
-          </p>
-          <p className="text-stone-600 text-sm mt-3">
-            Per Person: {formatPKR(quotation.perPersonCost || 0)}
-          </p>
-          <p className="text-stone-600 text-sm mt-6">
-            ✅ This quotation includes all accommodations, transportation, and services.
-          </p>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-4 mt-12 justify-center">
-          <button
-            onClick={() => router.push("/make-my-trip")}
-            className="px-8 py-3 rounded-[10px] border-2 border-stone-900 text-stone-900 font-semibold hover:bg-stone-100 transition"
-          >
-            ← Back to Booking
-          </button>
+        <div className="print:hidden border-t border-stone-200 bg-white px-8 py-6 text-right">
           <button
             onClick={() => window.print()}
-            className="px-8 py-3 rounded-[10px] bg-[#fcc000] text-black font-semibold hover:bg-[#fcc000]/90 transition"
+            className="inline-flex rounded-full bg-[#fcc000] px-8 py-3 text-sm font-semibold text-black transition hover:bg-[#e4b200]"
           >
-            🖨️ Print Quotation
+            Print Quotation
           </button>
         </div>
       </div>

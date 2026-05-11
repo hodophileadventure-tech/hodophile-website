@@ -2,6 +2,7 @@ import { getRouteById } from "./data/routes";
 import { getHotelById } from "./data/hotels";
 import { calculateJeepCost } from "./data/jeeps";
 import { getRouteDistance } from "./data/distances";
+import { estimateCustomItineraryDistance, estimateCustomVehicleDays } from "./data/custom-itinerary";
 import { getVehicleRate } from "./data/vehicleRates";
 import { currentFuelPrices } from "./data/fuel";
 import type { Room } from "./data/hotels";
@@ -11,8 +12,16 @@ export interface QuotationInput {
   vehicleName: string;
   hotelId?: string;
   roomId?: string; // identifier for the selected room
+  singleCityHotelStays?: Array<{
+    hotelId: string;
+    roomId: string;
+    nights: number;
+  }>;
   multiCityHotels?: Record<string, { hotelId: string; roomId: string }>;
   multiCityNights?: Record<string, number>; // nights for each city
+  customCities?: string[]; // cities for custom itinerary
+  customRouteLabel?: string; // label for custom route
+  travelMode?: "road" | "air";
   numberOfRooms: number;
   adults: number;
   kids: number;
@@ -59,7 +68,9 @@ function getSeasonFromDate(date: string): "peak" | "blossom" | "off" | "fixed" {
 function calculateTransportCost(
   vehicleName: string,
   routeId: string,
-  vehicleDays: number = 8 // Default 8 days for multi-city tours; adjust as needed
+  vehicleDays: number = 8, // Default 8 days for multi-city tours; adjust as needed
+  distanceOverride?: number,
+  travelMode?: "road" | "air"
 ): number | null {
   const vehicleRate = getVehicleRate(vehicleName);
   if (!vehicleRate) {
@@ -67,8 +78,14 @@ function calculateTransportCost(
     return null;
   }
 
-  const distance = getRouteDistance(routeId);
-  if (!distance) {
+  // Base distance (may be overridden for custom itineraries or air travel)
+  let distance = distanceOverride ?? getRouteDistance(routeId);
+  // Special rule: if travelling by air, the only allowed destination is Skardu.
+  // Force distance to 950km for air trips to Skardu.
+  if (travelMode === "air") {
+    distance = 950;
+  }
+  if (distance === undefined || distance === null) {
     console.warn(`Distance not found for route: ${routeId}`);
     return null;
   }
@@ -84,13 +101,21 @@ function calculateTransportCost(
   const fuelCost = Math.round(fuelNeeded * fuelPrice);
 
   // Calculate rental cost
-  const rentalCost = vehicleRate.dailyRate * vehicleDays;
+  // Allow special rental/toll overrides for air travel (Prado rule)
+  let effectiveDailyRate = vehicleRate.dailyRate;
+  let effectiveTollTax = vehicleRate.tollTax;
+  if (travelMode === "air" && vehicleName === "Prado") {
+    effectiveDailyRate = 10000; // per-user rule: Prado rent 10,000 for air trips
+    effectiveTollTax = 0; // no toll tax for air trips
+  }
+
+  const rentalCost = effectiveDailyRate * vehicleDays;
 
   // Total transport cost (fuel + rental + toll/tax)
-  const totalCost = fuelCost + rentalCost + vehicleRate.tollTax;
+  const totalCost = fuelCost + rentalCost + effectiveTollTax;
 
   console.debug(
-    `Transport: ${vehicleName} | Distance: ${distance}km | Consumption: ${vehicleRate.consumption}km/L | Fuel: ${fuelNeeded.toFixed(1)}L × ${fuelPrice}PKR = ${fuelCost}PKR | Rental: ${vehicleRate.dailyRate}PKR × ${vehicleDays}days = ${rentalCost}PKR | Toll/Tax: ${vehicleRate.tollTax}PKR | Total: ${totalCost}PKR`
+    `Transport: ${vehicleName} | Distance: ${distance}km | Consumption: ${vehicleRate.consumption}km/L | Fuel: ${fuelNeeded.toFixed(1)}L × ${fuelPrice}PKR = ${fuelCost}PKR | Rental: ${effectiveDailyRate}PKR × ${vehicleDays}days = ${rentalCost}PKR | Toll/Tax: ${effectiveTollTax}PKR | Total: ${totalCost}PKR`
   );
   return totalCost;
 }
@@ -141,21 +166,76 @@ function getRoomPrice(room: Room, season: string): number {
   return 0;
 }
 
+function calculateSingleCityHotelCost(
+  stays: Array<{ hotelId: string; roomId: string; nights: number }>,
+  tripDate: string,
+  numberOfRooms: number
+): { hotelCost: number; hotelName: string; roomType: string } | null {
+  const season = getSeasonFromDate(tripDate);
+  let totalHotelCost = 0;
+  const hotelNames: string[] = [];
+  const roomNames: string[] = [];
+
+  for (const stay of stays) {
+    if (!stay.hotelId || !stay.roomId || stay.nights <= 0) continue;
+
+    const hotel = getHotelById(stay.hotelId);
+    if (!hotel) {
+      console.warn(`Hotel not found for single-city stay: ${stay.hotelId}`);
+      continue;
+    }
+
+    const selectedRoom = hotel.rooms.find((r) => r.name === stay.roomId);
+    if (!selectedRoom) {
+      console.warn(`Room not found: ${stay.roomId} in hotel ${hotel.name}`);
+      continue;
+    }
+
+    const roomPrice = getRoomPrice(selectedRoom, season);
+    if (roomPrice === 0) {
+      console.warn(`Room price is 0 for: ${selectedRoom.name}, season: ${season}`);
+      continue;
+    }
+
+    const stayCost = roomPrice * numberOfRooms * stay.nights;
+    totalHotelCost += stayCost;
+    hotelNames.push(hotel.name);
+    roomNames.push(`${selectedRoom.name} (${stay.nights} nights)`);
+  }
+
+  if (hotelNames.length === 0) {
+    return null;
+  }
+
+  return {
+    hotelCost: totalHotelCost,
+    hotelName: hotelNames.join(" + "),
+    roomType: roomNames.join(" | "),
+  };
+}
+
 export function calculateQuotation(
   input: QuotationInput
 ): QuotationBreakdown | null {
   try {
-    const route = getRouteById(input.routeId);
-    if (!route) {
+    const isCustomItinerary = Boolean(input.customCities && input.customCities.length > 0);
+    const route = isCustomItinerary ? undefined : getRouteById(input.routeId);
+    
+    if (!isCustomItinerary && !route) {
       console.warn(`Route not found: ${input.routeId}`);
       return null;
     }
+
+    const customDistance = isCustomItinerary ? estimateCustomItineraryDistance(input.customCities || []) : undefined;
+    const customVehicleDays = isCustomItinerary ? estimateCustomVehicleDays(input.multiCityNights || {}) : undefined;
 
     // Use dynamic transport cost calculation with vehicle rental rates
     const transportCost = calculateTransportCost(
       input.vehicleName,
       input.routeId,
-      route.vehicleDays
+      isCustomItinerary ? customVehicleDays : route?.vehicleDays,
+      customDistance,
+      input.travelMode
     );
     if (transportCost === null) {
       console.warn(`Transport cost calculation failed for vehicle: ${input.vehicleName}, route: ${input.routeId}`);
@@ -165,6 +245,7 @@ export function calculateQuotation(
     // Handle multi-city hotels or single hotel
     let hotelCost = 0;
     let hotelName = "Unknown";
+    let roomType = "Unknown";
 
     if (input.multiCityHotels && input.multiCityNights) {
       // Multi-city tour: calculate costs for each city
@@ -203,6 +284,21 @@ export function calculateQuotation(
 
       hotelCost = totalHotelCost;
       hotelName = hotelNames.join(" + ");
+    } else if (input.singleCityHotelStays && input.singleCityHotelStays.length > 0) {
+      const singleCityHotelResult = calculateSingleCityHotelCost(
+        input.singleCityHotelStays,
+        input.tripDate,
+        input.numberOfRooms
+      );
+
+      if (!singleCityHotelResult) {
+        console.warn(`Single-city hotel cost calculation failed`);
+        return null;
+      }
+
+      hotelCost = singleCityHotelResult.hotelCost;
+      hotelName = singleCityHotelResult.hotelName;
+      roomType = singleCityHotelResult.roomType;
     } else if (input.hotelId && input.roomId) {
       // Single-city tour
       const hotel = getHotelById(input.hotelId);
@@ -227,7 +323,10 @@ export function calculateQuotation(
       }
 
       // Calculate nights: for an 8-day trip, that's 7 nights (duration - 1)
-      const numberOfNights = Math.max(1, route.duration - 1);
+      // For custom itineraries, use the provided nights; for routes, use duration - 1
+      const numberOfNights = isCustomItinerary 
+        ? (input.multiCityNights ? Object.values(input.multiCityNights).reduce((a, b) => a + b, 0) : 1)
+        : Math.max(1, (route?.duration || 1) - 1);
       hotelCost = roomPrice * input.numberOfRooms * numberOfNights;
       hotelName = hotel.name;
     } else {
@@ -273,7 +372,7 @@ export function calculateQuotation(
       totalCost,
       perPersonCost,
       details: {
-        route: route.name,
+        route: isCustomItinerary ? (input.customRouteLabel || "Custom Itinerary") : (route?.name || "Unknown"),
         vehicle: input.vehicleName,
         hotel: hotelName,
         roomType: input.roomId || "Multiple",

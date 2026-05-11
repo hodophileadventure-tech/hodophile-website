@@ -44,7 +44,7 @@ export default function Home() {
     {
       title: "Local Expertise",
       description: "Ground insights, route knowledge, and practical planning support across Pakistan.",
-      icon: "/images/icons/expert.png",
+      icon: "/images/icons/local-expertise.png",
     },
     {
       title: "Seamless Support",
@@ -158,7 +158,7 @@ export default function Home() {
           <div className="relative z-10 flex min-h-[82vh] w-full items-end px-6 pb-16 pt-36 lg:px-8">
             <div className="max-w-4xl text-white">
               <h1 className="font-serif text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
-                Experience Pakistan&apos;s Most Cinematic Journeys—Unforgettably Curated.
+                Experience Pakistan&apos;s Most Cinematic Journeys Unforgettably Curated.
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-7 text-white/85 sm:text-lg">
                 Discover cinematic landscapes, refined itineraries, and premium travel planning inspired by
@@ -252,13 +252,13 @@ export default function Home() {
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
               <article key={tour.name} className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
-                <div className="relative h-[240px] overflow-hidden bg-white">
+                <div className="relative h-[240px] overflow-hidden bg-stone-100">
                   <Image
                     src={tour.image}
                     alt={tour.name}
                     fill
                     sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="object-cover object-center transition duration-700 hover:scale-[1.02]"
+                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 hover:scale-[1.02]"
                   />
                 </div>
                 <div className="p-5 flex flex-col justify-between gap-5 flex-1">

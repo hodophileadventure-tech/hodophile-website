@@ -76,13 +76,13 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
       <section className="mt-12 grid gap-8 lg:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)] xl:gap-12">
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="rounded-[2rem] border border-stone-200 bg-white p-3 shadow-[0_12px_36px_rgba(15,23,42,0.08)]">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-[#111111]">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-stone-100">
               <Image
                 src={tour.homeImage}
                 alt={`${tour.title} poster`}
                 fill
                 sizes="(max-width: 1024px) 100vw, 24rem"
-                className="object-contain object-center p-3"
+                className="absolute inset-0 h-full w-full object-cover object-center"
               />
             </div>
           </div>

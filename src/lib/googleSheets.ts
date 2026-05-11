@@ -20,9 +20,11 @@ interface QuotationRecord {
   kids: number;
   kidsAges: string[];
   tourType: string;
+  travelMode?: string;
   isMultiCity: boolean;
   multiCityHotels?: Record<string, { hotelId: string; roomId: string }>;
   multiCityNights?: Record<string, number>;
+  singleCityHotelStays?: Array<{ hotelId: string; roomId: string; nights: number }>;
   transportCost: number;
   hotelCost: number;
   jeepAddonsCost: number;
@@ -75,9 +77,11 @@ export async function saveQuotationToSheet(
         dataWithTimestamp.kids,
         dataWithTimestamp.kidsAges.join(", "),
         dataWithTimestamp.tourType,
+        dataWithTimestamp.travelMode || "road",
         dataWithTimestamp.isMultiCity ? "Yes" : "No",
         JSON.stringify(dataWithTimestamp.multiCityHotels || {}),
         JSON.stringify(dataWithTimestamp.multiCityNights || {}),
+        JSON.stringify(dataWithTimestamp.singleCityHotelStays || []),
         dataWithTimestamp.transportCost,
         dataWithTimestamp.hotelCost,
         dataWithTimestamp.jeepAddonsCost,
@@ -118,9 +122,11 @@ export async function saveQuotationToSheet(
           "Kids",
           "Kids Ages",
           "Tour Type",
+          "Tour Mode",
           "Is Multi-City",
           "Multi-City Hotels",
           "Multi-City Nights",
+          "Single-City Hotel Stays",
           "Transport Cost",
           "Hotel Cost",
           "Jeep Addons Cost",

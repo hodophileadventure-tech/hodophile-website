@@ -1,11 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes, type Route } from "@/lib/data/routes";
 import { getMandatoryJeepCost } from "@/lib/data/routeActivities";
+import { sortedCitiesWithHotels } from "@/lib/data/cities";
+import { featuredTourCards } from "@/lib/data/featured-tour-cards";
+
+const CUSTOM_AVAILABLE_VEHICLES = [
+  { name: "Toyota Corolla", price: 0 },
+  { name: "Honda BRV", price: 0 },
+  { name: "Prado", price: 0 },
+  { name: "Grand Cabin Petrol", price: 0 },
+  { name: "Grand Cabin Diesel", price: 0 },
+  { name: "Coaster 4C", price: 0 },
+  { name: "Coaster 5C", price: 0 },
+];
+
+const phoneRegex13Digit = /^\+92\d{10}$/;
+const phoneRegex11Digit = /^03\d{9}$/;
 
 export function MakeMyTripForm() {
   const router = useRouter();
@@ -13,19 +28,26 @@ export function MakeMyTripForm() {
   // Form state
   const [tripDate, setTripDate] = useState("");
   const [startingPoint, setStartingPoint] = useState("");
+  const [otherStartingPoint, setOtherStartingPoint] = useState("");
+  const [hideAutoIslamabad, setHideAutoIslamabad] = useState(false);
   const [routeId, setRouteId] = useState("");
+  const [selectedCities, setSelectedCities] = useState<string[]>([]); // For individual city selection
+  const [customCityNights, setCustomCityNights] = useState<Record<string, number>>({});
   const [hotelCategory, setHotelCategory] = useState("standard"); // standard, deluxe, executive
   const [hotelId, setHotelId] = useState("");
   const [roomId, setRoomId] = useState("");
+  const [singleCityHotelStays, setSingleCityHotelStays] = useState<Array<{ hotelId: string; roomId: string; nights: number }>>([]);
   const [multiCityHotels, setMultiCityHotels] = useState<Record<string, { hotelId: string; roomId: string }>>({});
   const [vehicleName, setVehicleName] = useState("");
   const [tourType, setTourType] = useState("private");
+  const [travelMode, setTravelMode] = useState("road");
   const [numberOfRooms, setNumberOfRooms] = useState(1);
   const [adults, setAdults] = useState(2);
   const [kids, setKids] = useState(0);
   const [kidsAges, setKidsAges] = useState<string[]>([]);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [selectedPreplannedTrip, setSelectedPreplannedTrip] = useState("");
 
   // UI state
   const [quotation, setQuotation] = useState<QuotationBreakdown | null>(null);
@@ -36,6 +58,8 @@ export function MakeMyTripForm() {
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitError, setSubmitError] = useState("");
   const [mandatoryJeepCost, setMandatoryJeepCost] = useState(0);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const previousQuotationRef = useRef<QuotationBreakdown | null>(null);
 
   // Smart room selection based on price tier (not exact name matching)
   const selectRoomByCategory = (rooms: any[], category: string): string => {
@@ -124,13 +148,21 @@ export function MakeMyTripForm() {
     return Math.ceil(guestCount / 4);
   };
 
+  const getActualStartingPoint = (): string => {
+    return startingPoint === "Other" ? otherStartingPoint.trim() : startingPoint;
+  };
+
   // Check if Islamabad hotel is mandatory
   const isIslamabadHotelMandatory = (): boolean => {
     if (!isMultiCityTour()) return false;
     const config = multiCityConfig[routeId as keyof typeof multiCityConfig];
     if (!config || !config.cities.includes("Islamabad")) return false;
-    const startingPointLower = startingPoint.toLowerCase().trim();
-    return startingPointLower !== "islamabad" && startingPointLower !== "rawalpindi";
+    const startingPointLower = getActualStartingPoint().toLowerCase().trim();
+    return (
+      startingPointLower !== "islamabad" &&
+      startingPointLower !== "lahore" &&
+      startingPointLower !== "rawalpindi"
+    );
   };
 
   // Multi-city itinerary configuration
@@ -242,59 +274,238 @@ export function MakeMyTripForm() {
 
   const totalGuests = adults + kids;
 
-  // Update available vehicles when route changes
+  // Check if user is using custom city selection instead of a package route
+  const isCustomCitySelection = (): boolean => {
+    return selectedCities.length > 0 && !routeId;
+  };
+
+  // Check if user is using a package route
+  const isPackageRoute = (): boolean => {
+    return !!routeId && selectedCities.length === 0;
+  };
+
+  const selectedRoute = useMemo(() => (routeId ? routes.find((route) => route.id === routeId) : undefined), [routeId]);
+  const singleCityNightCount = Math.max(1, (selectedRoute?.duration || 1) - 1);
+  const supportsMultipleHotelsInSingleCity = Boolean(
+    selectedRoute && !isMultiCityTour() && !isCustomCitySelection() && singleCityNightCount > 2
+  );
+  const isSingleCustomCity = isCustomCitySelection() && selectedCities.length === 1;
+  const customSingleCityNightCount = selectedCities.length === 1
+    ? Math.max(1, (customCityNights[selectedCities[0]] ?? 0) - 1)
+    : 0;
+  const supportsMultipleHotelsInCustomSingleCity = Boolean(
+    isCustomCitySelection() &&
+    selectedCities.length === 1 &&
+    customSingleCityNightCount > 2
+  );
+
+  const vehicleOptions = routeId
+    ? availableVehicles
+    : isCustomCitySelection()
+    ? CUSTOM_AVAILABLE_VEHICLES
+    : [];
+
+  const shouldAutoIncludeIslamabad = (): boolean => {
+    if (!isCustomCitySelection()) return false;
+
+    const startingPointLower = getActualStartingPoint().toLowerCase().trim();
+    const needsIslamabad =
+      startingPointLower !== "islamabad" &&
+      startingPointLower !== "lahore" &&
+      startingPointLower !== "rawalpindi" &&
+      startingPointLower !== "";
+
+    return needsIslamabad && !hideAutoIslamabad;
+  };
+
+  const effectiveSelectedCities = useMemo(() => {
+    if (shouldAutoIncludeIslamabad() && !selectedCities.includes("Islamabad")) {
+      return [...selectedCities, "Islamabad"];
+    }
+    return selectedCities;
+  }, [selectedCities, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad]);
+
+  const effectiveCustomCityNights = useMemo(() => {
+    if (shouldAutoIncludeIslamabad() && !customCityNights["Islamabad"]) {
+      return { ...customCityNights, Islamabad: 2 };
+    }
+    return customCityNights;
+  }, [customCityNights, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad]);
+
+  const effectiveMultiCityHotels = useMemo(() => {
+    if (!shouldAutoIncludeIslamabad() || multiCityHotels["Islamabad"]?.hotelId) {
+      return multiCityHotels;
+    }
+
+    const hotelsForIsb = getHotelsByCity("Islamabad");
+    const defaultHotelId = selectHotelByCategory(hotelsForIsb, hotelCategory);
+    const selectedHotel = hotelsForIsb.find((h) => h.id === defaultHotelId);
+    const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "";
+
+    return {
+      ...multiCityHotels,
+      Islamabad: { hotelId: defaultHotelId, roomId: defaultRoom },
+    };
+  }, [multiCityHotels, hotelCategory, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad]);
+
+  const initializeSingleCityHotelStays = (route: Route) => {
+    const hotels = getHotelsByCity(route.city).filter(
+      (hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory(),
+    );
+
+    setAvailableHotels(hotels);
+
+    if (supportsMultipleHotelsInSingleCity) {
+      const defaultHotelId = selectHotelByCategory(hotels, hotelCategory);
+      const selectedHotel = hotels.find((hotel) => hotel.id === defaultHotelId);
+      const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "";
+
+      setSingleCityHotelStays((currentStays) =>
+        currentStays.length > 0
+          ? currentStays
+          : [
+              {
+                hotelId: defaultHotelId,
+                roomId: defaultRoom,
+                nights: singleCityNightCount,
+              },
+            ]
+      );
+      setHotelId("");
+      setRoomId("");
+    } else {
+      setSingleCityHotelStays([]);
+      const defaultHotelId = selectHotelByCategory(hotels, hotelCategory);
+      setHotelId(defaultHotelId);
+      setRoomId("");
+    }
+  };
+
+  const initializeCustomSingleCityHotelStays = (city: string, nights: number) => {
+    const hotels = getHotelsByCity(city).filter((hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory());
+    setAvailableHotels(hotels);
+
+    if (singleCityHotelStays.length === 0) {
+      const defaultHotelId = selectHotelByCategory(hotels, hotelCategory);
+      const selectedHotel = hotels.find((hotel) => hotel.id === defaultHotelId);
+      const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "";
+      setSingleCityHotelStays([
+        {
+          hotelId: defaultHotelId,
+          roomId: defaultRoom,
+          nights,
+        },
+      ]);
+    }
+  };
+
   useEffect(() => {
-    if (routeId) {
-      const selectedRoute = routes.find((r) => r.id === routeId);
-      if (selectedRoute) {
-        setAvailableVehicles(selectedRoute.vehicles);
-        setVehicleName("");
-        
-        // Update mandatory jeep cost and route activities
-        const jeepCost = getMandatoryJeepCost(routeId);
-        setMandatoryJeepCost(jeepCost);
+    if (!supportsMultipleHotelsInCustomSingleCity) return;
+    initializeCustomSingleCityHotelStays(selectedCities[0], customSingleCityNightCount);
+  }, [supportsMultipleHotelsInCustomSingleCity, selectedCities, customSingleCityNightCount, hotelCategory]);
+
+  useEffect(() => {
+    if (!supportsMultipleHotelsInCustomSingleCity) return;
+
+    const totalSelectedNights = singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0);
+    const remainingNights = customSingleCityNightCount - totalSelectedNights;
+    const lastStay = singleCityHotelStays[singleCityHotelStays.length - 1];
+    const hasSelectableLastStay = Boolean(lastStay?.hotelId && lastStay?.roomId);
+
+    if (remainingNights > 0 && hasSelectableLastStay) {
+      const trailingBlankStay = singleCityHotelStays[singleCityHotelStays.length - 1];
+      if (!trailingBlankStay || trailingBlankStay.hotelId || trailingBlankStay.roomId) {
+        setSingleCityHotelStays((current) => [...current, { hotelId: "", roomId: "", nights: remainingNights }]);
       }
     }
-  }, [routeId]);
+  }, [supportsMultipleHotelsInCustomSingleCity, singleCityHotelStays, customSingleCityNightCount]);
+
+  const toggleCitySelection = (city: string) => {
+    setSelectedCities((currentCities) => {
+      if (currentCities.includes(city)) {
+        const updatedCities = currentCities.filter((selectedCity) => selectedCity !== city);
+        setMultiCityHotels((currentHotels) => {
+          const nextHotels = { ...currentHotels };
+          delete nextHotels[city];
+          return nextHotels;
+        });
+        if (city === "Islamabad") {
+          setHideAutoIslamabad(false);
+        }
+        setCustomCityNights((currentNights) => {
+          const nextNights = { ...currentNights };
+          delete nextNights[city];
+          return nextNights;
+        });
+        return updatedCities;
+      }
+
+      if (routeId) {
+        setRouteId("");
+      }
+
+      if (city === "Islamabad") {
+        setHideAutoIslamabad(false);
+      }
+
+      setCustomCityNights((currentNights) => ({
+        ...currentNights,
+        [city]: currentNights[city] ?? 2,
+      }));
+
+      return [...currentCities, city];
+    });
+  };
+
+  // Update available vehicles when route changes or when custom cities are selected
+  useEffect(() => {
+    if (selectedRoute) {
+      setAvailableVehicles(selectedRoute.vehicles);
+      setVehicleName("");
+
+      // Update mandatory jeep cost and route activities
+      const jeepCost = getMandatoryJeepCost(routeId);
+      setMandatoryJeepCost(jeepCost);
+    }
+  }, [selectedRoute, routeId]);
 
   // Update available hotels when route changes
   useEffect(() => {
-    if (routeId) {
-      const selectedRoute = routes.find((r) => r.id === routeId);
-      if (selectedRoute) {
-        // Check if this is a configured multi-city tour
-        if (isMultiCityTour()) {
-          initializeMultiCityHotels(selectedRoute);
-          setHotelId(""); // Clear single-city hotel for multi-city tours
-        } else {
-          const hotels = getHotelsByCity(selectedRoute.city).filter(
-            (hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory(),
-          );
-          setAvailableHotels(hotels);
+    if (selectedRoute) {
+      if (isMultiCityTour()) {
+        initializeMultiCityHotels(selectedRoute);
+        setHotelId(""); // Clear single-city hotel for multi-city tours
+      } else if (supportsMultipleHotelsInSingleCity) {
+        initializeSingleCityHotelStays(selectedRoute);
+      } else {
+        const hotels = getHotelsByCity(selectedRoute.city).filter(
+          (hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory(),
+        );
+        setAvailableHotels(hotels);
 
-          // Auto-select hotel based on category (not just first)
-          const defaultHotelId = selectHotelByCategory(hotels, hotelCategory);
-          setHotelId(defaultHotelId);
-          setRoomId("");
-        }
+        // Auto-select hotel based on category (not just first)
+        const defaultHotelId = selectHotelByCategory(hotels, hotelCategory);
+        setHotelId(defaultHotelId);
+        setRoomId("");
       }
     }
-  }, [routeId, hotelCategory, startingPoint]);
+  }, [selectedRoute, hotelCategory, startingPoint, otherStartingPoint, supportsMultipleHotelsInSingleCity]);
 
   // Update hotel selections when hotel category changes
   useEffect(() => {
+    if (!selectedRoute) return;
+
     if (isMultiCityTour()) {
-      const selectedRoute = routes.find((r) => r.id === routeId);
-      if (selectedRoute) {
-        initializeMultiCityHotels(selectedRoute);
-      }
+      initializeMultiCityHotels(selectedRoute);
+    } else if (supportsMultipleHotelsInSingleCity) {
+      initializeSingleCityHotelStays(selectedRoute);
     } else if (availableHotels.length > 0) {
       // For single-city tours, update hotel selection based on category
       const newHotelId = selectHotelByCategory(availableHotels, hotelCategory);
       setHotelId(newHotelId);
       setRoomId("");
     }
-  }, [hotelCategory, startingPoint]);
+  }, [hotelCategory, selectedRoute, supportsMultipleHotelsInSingleCity]);
 
   // Update available rooms when hotel changes
   useEffect(() => {
@@ -314,7 +525,7 @@ export function MakeMyTripForm() {
   useEffect(() => {
     if (vehicleName && !isVehicleSuitable(vehicleName, totalGuests)) {
       // Find a suitable vehicle for this guest count
-      const suitableVehicle = availableVehicles.find((v) =>
+      const suitableVehicle = vehicleOptions.find((v) =>
         isVehicleSuitable(v.name, totalGuests)
       );
       
@@ -324,7 +535,7 @@ export function MakeMyTripForm() {
         setVehicleName("");
       }
     }
-  }, [adults, kids, totalGuests, vehicleName, availableVehicles]);
+  }, [adults, kids, totalGuests, vehicleName, vehicleOptions]);
 
   // Auto-calculate rooms based on guest count (max 4 per room)
   useEffect(() => {
@@ -334,14 +545,60 @@ export function MakeMyTripForm() {
 
   // Calculate quotation when key fields change
   useEffect(() => {
-    if (tripDate && routeId && vehicleName && numberOfRooms > 0 && adults > 0) {
-      if (routeId) {
-        const selectedRoute = routes.find((r) => r.id === routeId);
-        if (selectedRoute) {
-          // Check if this is a multi-city tour
-          if (isMultiCityTour()) {
+    if (tripDate && vehicleName && numberOfRooms > 0 && adults > 0) {
+      if (isCustomCitySelection()) {
+        if (supportsMultipleHotelsInCustomSingleCity) {
+          const totalSingleCityNights = singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0);
+          const allStaysSelected = singleCityHotelStays.length > 0 && singleCityHotelStays.every((stay) => stay.hotelId && stay.roomId && stay.nights > 0);
+
+          if (allStaysSelected && totalSingleCityNights === customSingleCityNightCount) {
+            const calc = calculateQuotation({
+              routeId: "custom-itinerary",
+              vehicleName,
+              customCities: effectiveSelectedCities,
+              customRouteLabel: effectiveSelectedCities.join(" + "),
+              singleCityHotelStays,
+              numberOfRooms,
+              adults,
+              kids,
+              tripDate,
+              mandatoryJeepCost: 0,
+              travelMode: travelMode as "road" | "air",
+            });
+            setQuotation(calc);
+          } else {
+            setQuotation(null);
+          }
+        } else {
+          // Custom city selection - treat as multi-city
+          const allHotelsSelected = effectiveSelectedCities.every(
+            (city) => effectiveMultiCityHotels[city]?.hotelId && effectiveMultiCityHotels[city]?.roomId
+          );
+          const allNightsSelected = effectiveSelectedCities.every((city) => (effectiveCustomCityNights[city] ?? 0) > 0);
+
+          if (allHotelsSelected && allNightsSelected) {
+            const calc = calculateQuotation({
+              routeId: "custom-itinerary",
+              vehicleName,
+              customCities: effectiveSelectedCities,
+              customRouteLabel: effectiveSelectedCities.join(" + "),
+              multiCityHotels: effectiveMultiCityHotels,
+              multiCityNights: effectiveCustomCityNights,
+              numberOfRooms,
+              adults,
+              kids,
+              tripDate,
+              mandatoryJeepCost: 0,
+            });
+            setQuotation(calc);
+          } else {
+            setQuotation(null);
+          }
+        }
+      } else if (selectedRoute) {
+        if (isMultiCityTour()) {
             // Build multiCityNights from config
-              const config = getVisibleMultiCityConfig(routeId);
+            const config = getVisibleMultiCityConfig(routeId);
             if (config) {
               const multiCityNights: Record<string, number> = {};
               config.cities.forEach((city, index) => {
@@ -370,7 +627,29 @@ export function MakeMyTripForm() {
                 setQuotation(null);
               }
             }
-          } else if (hotelId && roomId) {
+        } else if (supportsMultipleHotelsInSingleCity) {
+          const totalSingleCityNights = singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0);
+          const allStaysSelected = singleCityHotelStays.length > 0 && singleCityHotelStays.every((stay) => stay.hotelId && stay.roomId && stay.nights > 0);
+
+          if (allStaysSelected && totalSingleCityNights === singleCityNightCount) {
+            const calc = calculateQuotation({
+              routeId,
+              vehicleName,
+              hotelId: singleCityHotelStays[0]?.hotelId,
+              roomId: singleCityHotelStays[0]?.roomId,
+              singleCityHotelStays,
+              numberOfRooms,
+              adults,
+              kids,
+              tripDate,
+              mandatoryJeepCost,
+              travelMode: travelMode as "road" | "air",
+            });
+            setQuotation(calc);
+          } else {
+            setQuotation(null);
+          }
+        } else if (hotelId && roomId) {
             // Single-city tour
             const calc = calculateQuotation({
               routeId,
@@ -382,17 +661,17 @@ export function MakeMyTripForm() {
               kids,
               tripDate,
               mandatoryJeepCost,
+              travelMode: travelMode as "road" | "air",
             });
             setQuotation(calc);
           } else {
             setQuotation(null);
           }
-        }
       }
     } else {
       setQuotation(null);
     }
-  }, [tripDate, routeId, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, mandatoryJeepCost]);
+  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode]);
 
   const handleKidsCountChange = (value: number) => {
     setKids(value);
@@ -418,37 +697,58 @@ export function MakeMyTripForm() {
         return;
       }
 
-      // Get route and hotel info for quotation result page
-      const selectedRoute = routes.find((r) => r.id === routeId);
-      const destination = selectedRoute?.city === "Multi-City" 
-        ? selectedRoute?.name || "Multi-City Destination"
-        : selectedRoute?.city || "Destination";
+      // Validate phone number
+      const phoneRegex13Digit = /^\+92\d{10}$/; // +92 followed by 10 digits (13 total)
+      const phoneRegex11Digit = /^03\d{9}$/; // 03 followed by 9 digits (11 total)
+      
+      if (!phoneRegex13Digit.test(customerPhone) && !phoneRegex11Digit.test(customerPhone)) {
+        setSubmitError("Phone number must be either +92XXXXXXXXXX (13 digits) or 03XXXXXXXXX (11 digits)");
+        setIsSubmitting(false);
+        return;
+      }
 
       // For multi-city, collect all hotels
       let primaryHotelId = hotelId;
       let primaryRoomId = roomId;
       
-      const selectedMultiCityNights =
-        isMultiCityTour() && routeId in multiCityConfig
-          ? Object.fromEntries(
-              (getVisibleMultiCityConfig(routeId)?.cities || []).map((city, i) => [
-                city,
-                getVisibleMultiCityConfig(routeId)?.nights[i] ?? 0,
-              ])
-            )
-          : undefined;
-
-      if (isMultiCityTour()) {
+      let selectedMultiCityNights;
+      let selectedCustomCities: string[] | undefined;
+      let selectedSingleCityHotelStays: typeof singleCityHotelStays | undefined;
+      if (supportsMultipleHotelsInCustomSingleCity) {
+        selectedCustomCities = effectiveSelectedCities;
+        selectedSingleCityHotelStays = singleCityHotelStays;
+        primaryHotelId = "";
+        primaryRoomId = "Multiple";
+      } else if (isCustomCitySelection()) {
+        selectedCustomCities = effectiveSelectedCities;
+        selectedMultiCityNights = { ...effectiveCustomCityNights };
+        primaryHotelId = "";
+        primaryRoomId = "Multiple";
+      } else if (supportsMultipleHotelsInSingleCity) {
+        selectedSingleCityHotelStays = singleCityHotelStays;
+        primaryHotelId = "";
+        primaryRoomId = "Multiple";
+      } else if (supportsMultipleHotelsInCustomSingleCity) {
+        selectedSingleCityHotelStays = singleCityHotelStays;
+        primaryHotelId = "";
+        primaryRoomId = "Multiple";
+      } else if (isMultiCityTour() && routeId in multiCityConfig) {
+        selectedMultiCityNights = Object.fromEntries(
+          (getVisibleMultiCityConfig(routeId)?.cities || []).map((city, i) => [
+            city,
+            getVisibleMultiCityConfig(routeId)?.nights[i] ?? 0,
+          ])
+        );
         primaryHotelId = "";
         primaryRoomId = "Multiple";
       }
 
-      // Prepare quotation data for result page
+      // Prepare quotation data for edit page
       const quotationData = {
         tripDate,
-        startingPoint,
-        routeId,
-        destination,
+        startingPoint: getActualStartingPoint(),
+        routeId: isCustomCitySelection() ? "custom-itinerary" : routeId,
+        destination: isCustomCitySelection() ? effectiveSelectedCities.join(" + ") : selectedRoute?.city || routeId,
         hotelId: primaryHotelId,
         roomType: primaryRoomId,
         vehicleName,
@@ -466,12 +766,18 @@ export function MakeMyTripForm() {
         markupAmount: quotation.markupAmount,
         totalCost: quotation.totalCost,
         perPersonCost: quotation.perPersonCost,
+        singleCityHotelStays: selectedSingleCityHotelStays,
+        travelMode,
         // Include multi-city data
-        multiCityHotels: isMultiCityTour() ? multiCityHotels : undefined,
+        multiCityHotels: ((isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity) || isMultiCityTour()) ? effectiveMultiCityHotels : undefined,
         multiCityNights: selectedMultiCityNights,
+        customCities: selectedCustomCities,
+        customRouteLabel: isCustomCitySelection() ? effectiveSelectedCities.join(" + ") : undefined,
+        customerName,
+        customerPhone,
       };
 
-      // Encode data and redirect to result page
+      // Encode data and redirect to edit page
       const encoded = btoa(JSON.stringify(quotationData));
 
       // Also send to API for WhatsApp notification
@@ -481,7 +787,7 @@ export function MakeMyTripForm() {
         body: JSON.stringify({
           tripDate,
           startingPoint,
-          routeId,
+          routeId: isCustomCitySelection() ? "custom-itinerary" : routeId,
           hotelId: primaryHotelId,
           roomId: primaryRoomId,
           vehicleName,
@@ -494,16 +800,20 @@ export function MakeMyTripForm() {
           customerPhone,
           tourType,
           mandatoryJeepCost,
-          multiCityHotels: isMultiCityTour() ? multiCityHotels : undefined,
+          travelMode,
+          singleCityHotelStays: selectedSingleCityHotelStays,
+          multiCityHotels: ((isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity) || isMultiCityTour()) ? effectiveMultiCityHotels : undefined,
           multiCityNights: selectedMultiCityNights,
+          customCities: selectedCustomCities,
+          customRouteLabel: isCustomCitySelection() ? effectiveSelectedCities.join(" + ") : undefined,
         }),
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Redirect to quotation result page
-        router.push(`/quotation-result?data=${encoded}`);
+        // Redirect to quotation edit page
+        router.push(`/quotation-edit?data=${encoded}`);
       } else {
         setSubmitError(data.error || data.details || "Failed to submit quotation");
       }
@@ -514,16 +824,178 @@ export function MakeMyTripForm() {
     }
   };
 
+  // Calculate form completion percentage for progress bar
+  const calculateFormProgress = (): number => {
+    const requiredFields = [customerName, customerPhone, tripDate, startingPoint, vehicleName];
+    const fieldsWithValues = requiredFields.filter(field => field.trim()).length;
+    const hasValidDestination = routeId || effectiveSelectedCities.length > 0;
+    const hasValidHotel = hotelId || (Object.keys(multiCityHotels).length > 0) || (singleCityHotelStays.length > 0 && singleCityHotelStays.some(s => s.hotelId));
+    
+    const totalRequired = 6; // base fields + destination + hotel
+    let validCount = fieldsWithValues + (hasValidDestination ? 1 : 0) + (hasValidHotel ? 1 : 0);
+    
+    return Math.min(100, Math.round((validCount / totalRequired) * 100));
+  };
+
+  const customerNameValid = customerName.trim().length > 1;
+  const customerPhoneValid = phoneRegex13Digit.test(customerPhone.trim()) || phoneRegex11Digit.test(customerPhone.trim());
+  const tripDateValid = Boolean(tripDate);
+  const startingPointValid = startingPoint === "Other" ? otherStartingPoint.trim().length > 0 : Boolean(startingPoint);
+  const destinationValid = isCustomCitySelection() ? effectiveSelectedCities.length > 0 : Boolean(routeId);
+  const vehicleValid = Boolean(vehicleName);
+  const adultsValid = adults > 0;
+
+  const hotelSelectionValid = useMemo(() => {
+    if (supportsMultipleHotelsInCustomSingleCity) {
+      const totalSingleCityNights = singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0);
+      return (
+        singleCityHotelStays.length > 0 &&
+        totalSingleCityNights === customSingleCityNightCount &&
+        singleCityHotelStays.every((stay) => stay.hotelId && stay.roomId && stay.nights > 0)
+      );
+    }
+
+    if (isCustomCitySelection()) {
+      return (
+        effectiveSelectedCities.length > 0 &&
+        effectiveSelectedCities.every((city) => effectiveMultiCityHotels[city]?.hotelId && effectiveMultiCityHotels[city]?.roomId)
+      );
+    }
+
+    if (isMultiCityTour()) {
+      const config = getVisibleMultiCityConfig(routeId);
+      return Boolean(
+        config &&
+          config.cities.every((city) => multiCityHotels[city]?.hotelId && multiCityHotels[city]?.roomId)
+      );
+    }
+
+    if (supportsMultipleHotelsInSingleCity) {
+      const totalSingleCityNights = singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0);
+      return (
+        singleCityHotelStays.length > 0 &&
+        totalSingleCityNights === singleCityNightCount &&
+        singleCityHotelStays.every((stay) => stay.hotelId && stay.roomId && stay.nights > 0)
+      );
+    }
+
+    return Boolean(hotelId && roomId);
+  }, [
+    supportsMultipleHotelsInCustomSingleCity,
+    singleCityHotelStays,
+    customSingleCityNightCount,
+    effectiveSelectedCities,
+    effectiveMultiCityHotels,
+    isMultiCityTour,
+    routeId,
+    multiCityHotels,
+    supportsMultipleHotelsInSingleCity,
+    singleCityNightCount,
+    hotelId,
+    roomId,
+  ]);
+
+  const quotationReady = Boolean(quotation);
+  const progressChecklist = [
+    customerNameValid,
+    customerPhoneValid,
+    tripDateValid,
+    startingPointValid,
+    destinationValid,
+    hotelSelectionValid,
+    vehicleValid,
+    adultsValid,
+    quotationReady,
+  ];
+  const formProgress = Math.round((progressChecklist.filter(Boolean).length / progressChecklist.length) * 100);
+
+  useEffect(() => {
+    const hasJustGeneratedQuotation = !previousQuotationRef.current && quotation;
+    previousQuotationRef.current = quotation;
+
+    if (!hasJustGeneratedQuotation) return;
+
+    setShowCelebration(true);
+    const timeout = setTimeout(() => setShowCelebration(false), 1800);
+    return () => clearTimeout(timeout);
+  }, [quotation]);
+
   return (
-    <div className="flex justify-center items-start min-h-screen">
-      <div className="w-full max-w-7xl px-4">
-        <div className="grid gap-6 grid-cols-1 overflow-visible">
-        {/* Main Form */}
-        <div className="w-full rounded-[15px] border border-white/20 bg-white/94 p-5 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm md:p-6 overflow-visible">
+    <div className="flex justify-center items-center min-h-screen py-8">
+      <div className="w-full max-w-2xl make-my-trip-form">
+        <style>{`
+          .make-my-trip-form input,
+          .make-my-trip-form select,
+          .make-my-trip-form textarea {
+            transition: all 220ms ease;
+          }
+          .make-my-trip-form input:hover,
+          .make-my-trip-form select:hover,
+          .make-my-trip-form textarea:hover,
+          .make-my-trip-form input:focus,
+          .make-my-trip-form select:focus,
+          .make-my-trip-form textarea:focus {
+            transform: translateY(-1px);
+            border-color: #fcc000;
+            box-shadow: 0 0 0 10px rgba(252,192,0,0.08);
+          }
+
+          @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(252, 192, 0, 0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(252, 192, 0, 0); }
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(40px) rotate(360deg); opacity: 0; }
+          }
+          .glow-focus:focus { 
+            animation: glow-pulse 1.5s infinite;
+            border-color: #fcc000;
+          }
+          .spinner { animation: spin 1s linear infinite; }
+          .confetti-piece { animation: confetti 2s ease-in forwards; }
+        `}</style>
+
+        <div className="rounded-[15px] bg-white shadow-lg p-8 transition-all duration-500">
+          {/* Progress Bar */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs font-semibold text-stone-600">Form Progress</p>
+              <p className="text-xs font-bold text-[#fcc000]">{formProgress}%</p>
+            </div>
+            <div className="w-full h-2 bg-stone-200 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-[#fcc000] to-[#ffd247] rounded-full transition-all duration-500"
+                style={{ width: `${formProgress}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Celebration Animation */}
+          {showCelebration && (
+            <div className="fixed inset-0 pointer-events-none overflow-hidden">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="confetti-piece fixed w-2 h-2 bg-[#fcc000] rounded-full"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: '50%',
+                    animationDelay: `${i * 0.1}s`,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
           <div className="mb-6 text-center md:text-left">
-            <p className="text-[11px] uppercase tracking-[0.38em] text-[#8a6a00]">Plan my Journey</p>
+            <p className="text-sm font-bold uppercase tracking-[0.38em] text-[#FCC000]">Craft your own Trip</p>
             <h1 className="mt-3 font-serif text-3xl leading-tight sm:text-[2.6rem]">
-              Design Your Perfect Trip
+              Your Adventure, Your Way
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-600 md:mx-0">
               Select your dates, destination, vehicle, and hotel. Get an instant quotation powered by real-time pricing.
@@ -534,101 +1006,210 @@ export function MakeMyTripForm() {
             {/* Customer Info */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4 border-b border-stone-200">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
-                Your Name *
+                <span className="flex items-center gap-2">
+                  👤 Your Name * {customerNameValid && <span className="text-green-600 text-lg">✓</span>}
+                </span>
                 <input
                   type="text"
                   required
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="Full name"
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 />
               </label>
               <label className="grid gap-2 text-sm font-medium text-stone-900">
-                WhatsApp Number *
+                <span className="flex items-center gap-2">
+                  📱 WhatsApp Number * {customerPhoneValid && <span className="text-green-600 text-lg">✓</span>}
+                </span>
                 <input
                   type="tel"
                   required
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
                   placeholder="+92..."
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 />
+              </label>
+            </div>
+
+            {/* Preplanned Trips */}
+            <div className="pb-4 border-b border-stone-200">
+              <label className="grid gap-2 text-sm font-medium text-stone-900">
+                <span className="flex items-center gap-2">
+                  🗺️ Preplanned Trips
+                </span>
+                <select
+                  value={selectedPreplannedTrip}
+                  onChange={(e) => setSelectedPreplannedTrip(e.target.value)}
+                  className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                >
+                  <option value="">Select a preplanned trip (optional)</option>
+                  {featuredTourCards.map((tour) => (
+                    <option key={tour.slug} value={tour.slug}>
+                      {tour.title}
+                    </option>
+                  ))}
+                </select>
               </label>
             </div>
 
             {/* Trip Details */}
             <label className="grid gap-2 text-sm font-medium text-stone-900">
-              Trip Start Date *
+              <span className="flex items-center gap-2">
+                📅 Trip Start Date * {tripDateValid && <span className="text-green-600 text-lg">✓</span>}
+              </span>
               <input
                 type="date"
                 required
                 value={tripDate}
                 onChange={(e) => setTripDate(e.target.value)}
-                className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
               />
             </label>
 
             <label className="grid gap-2 text-sm font-medium text-stone-900">
-              Starting Point *
-              <input
-                type="text"
+              <span className="flex items-center gap-2">
+                🚩 Starting Point * {startingPointValid && <span className="text-green-600 text-lg">✓</span>}
+              </span>
+              <select
                 required
-                placeholder="e.g., Karachi, Islamabad, Lahore..."
                 value={startingPoint}
-                onChange={(e) => setStartingPoint(e.target.value)}
-                className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-              />
+                onChange={(e) => {
+                  setStartingPoint(e.target.value);
+                  if (e.target.value !== "Other") {
+                    setOtherStartingPoint("");
+                  }
+                }}
+                className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+              >
+                <option value="">Select your starting city...</option>
+                {[
+                  "Karachi",
+                  "Lahore",
+                  "Islamabad",
+                  "Multan",
+                  "Other",
+                ].map((city) => (
+                  <option key={city} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
             </label>
+            {startingPoint === "Other" && (
+              <label className="grid gap-2 text-sm font-medium text-stone-900">
+                Enter Starting City *
+                <input
+                  required
+                  type="text"
+                  value={otherStartingPoint}
+                  onChange={(e) => setOtherStartingPoint(e.target.value)}
+                  placeholder="Type your starting city"
+                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                />
+              </label>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
-                Select Route *
-                <select
-                  required
-                  value={routeId}
-                  onChange={(e) => setRouteId(e.target.value)}
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                >
-                  <option value="">Choose a destination...</option>
-                  {/* Exclude specific legacy/duplicate routes from the dropdown */}
-                  {(() => {
-                    const excludedRouteIds = [
-                      "skardu-hunza-8days",
-                      "hunza-naltar-6days",
-                      "skardu-basho-6days",
-                      "swat-kalam-4days",
-                      "kashmir-arangkel-5days",
-                      "naran-babusar-4days",
-                    ];
-
-                    return routes
-                      .filter((r) => !excludedRouteIds.includes(r.id))
-                      .map((route) => (
-                        <option key={route.id} value={route.id}>
-                          {route.name} ({route.duration} days)
-                        </option>
-                      ));
-                  })()}
-                </select>
-              </label>
-
-              <label className="grid gap-2 text-sm font-medium text-stone-900">
-                Tour Type *
+                🧭 Tour Type *
                 <select
                   value={tourType}
                   onChange={(e) => setTourType(e.target.value)}
                   className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 >
                   <option value="private">Private Tour</option>
-                  <option value="group">Group Tour</option>
                 </select>
               </label>
             </div>
 
+            <label className="grid gap-2 text-sm font-medium text-stone-900">
+              ✈️ Tour Mode *
+              <select
+                value={travelMode}
+                onChange={(e) => setTravelMode(e.target.value)}
+                className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+              >
+                <option value="road">By Road</option>
+                <option value="air">By Air</option>
+              </select>
+            </label>
+
+            {/* Individual City Selection - Always visible for private tours */}
+            <div className="rounded-[15px] border border-blue-200 bg-blue-50 p-4">
+              <p className="text-sm font-semibold text-blue-900 mb-4">
+                Select Destination Cities (Multiple Allowed) *
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                {sortedCitiesWithHotels.map((city) => (
+                  <label
+                    key={city}
+                    className="flex items-center gap-2 p-3 rounded-[10px] border border-blue-200 bg-white cursor-pointer hover:bg-blue-50 transition"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={effectiveSelectedCities.includes(city)}
+                      onChange={() => toggleCitySelection(city)}
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                    <span className="text-sm font-medium text-stone-900">{city}</span>
+                  </label>
+                ))}
+              </div>
+              {effectiveSelectedCities.length > 0 && (
+                <div className="mt-3 space-y-2 text-xs text-blue-800">
+                  <div className="flex items-center justify-between">
+                    <div>Selected: {effectiveSelectedCities.join(", ")}</div>
+                    {shouldAutoIncludeIslamabad() && (
+                      <div className="ml-4 text-sm text-stone-700">Automatically added: <span className="font-semibold">Islamabad (2 nights)</span></div>
+                    )}
+                  </div>
+                  {shouldAutoIncludeIslamabad() && (
+                    <div className="mt-2 rounded-md bg-[#fff7e0] border border-[#ffd28a] p-3 text-sm text-stone-900 flex items-center justify-between">
+                      <div>
+                        <div className="font-medium">Islamabad (2 nights) added automatically</div>
+                        <div className="text-xs text-stone-700">We added Islamabad because your starting city requires an Islamabad stay. You can change nights or select Islamabad hotel below.</div>
+                      </div>
+                      <div className="ml-4">
+                        <button
+                          type="button"
+                          onClick={() => setHideAutoIslamabad(true)}
+                          className="rounded px-3 py-1 text-sm font-semibold text-[#8a4b00] border border-[#8a4b00] bg-white hover:bg-[#fff3db]"
+                        >
+                          Remove Islamabad
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                    {effectiveSelectedCities.map((city) => (
+                      <label key={city} className="grid gap-1 rounded-[10px] border border-blue-200 bg-white p-2 text-stone-900">
+                        <span className="text-[11px] font-semibold uppercase tracking-wide text-blue-800">
+                          {city} {isSingleCustomCity ? "days" : "nights"}
+                        </span>
+                        <input
+                          type="number"
+                          min="1"
+                          value={effectiveCustomCityNights[city] ?? 2}
+                          onChange={(e) =>
+                            setCustomCityNights({
+                              ...customCityNights,
+                              [city]: Math.max(1, parseInt(e.target.value) || 1),
+                            })
+                          }
+                          className="rounded-[8px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                        />
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Hotel Category Selection */}
             <label className="grid gap-2 text-sm font-medium text-stone-900">
-              Hotel Category *
+              🏨 Hotel Category *
               <select
                 value={hotelCategory}
                 onChange={(e) => setHotelCategory(e.target.value)}
@@ -641,7 +1222,7 @@ export function MakeMyTripForm() {
             </label>
 
             {/* Hotel & Vehicle Selection */}
-            {!isMultiCityTour() ? (
+            {isPackageRoute() && !isMultiCityTour() ? (
               <div className="grid gap-4 grid-cols-1 xl:grid-cols-2">
                 <label className="grid gap-2 text-sm font-medium text-stone-900 min-w-0">
                   Select Hotel *
@@ -683,48 +1264,268 @@ export function MakeMyTripForm() {
                   </select>
                 </label>
               </div>
-            ) : (
-              <div className="rounded-[15px] border border-amber-200 bg-amber-50 p-4">
-                <p className="text-sm font-semibold text-amber-900 mb-4">
-                  🏨 Multi-City Tour: Select Hotels for Each Destination
-                </p>
-                
-                {isIslamabadHotelMandatory() && (
-                  <div className="rounded-[10px] bg-red-50 border border-red-200 p-3 mb-4">
-                    <p className="text-xs font-semibold text-red-800">
-                      ⚠️ You're starting from {startingPoint}. Islamabad hotel stay is MANDATORY.
-                    </p>
+            ) : supportsMultipleHotelsInSingleCity ? (
+              <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
+                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-green-900">🏨 Select Hotels for {selectedRoute?.city}</p>
+                    <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
                   </div>
-                )}
+                  <div className="rounded-full border border-green-300 bg-white px-3 py-1 text-xs font-semibold text-green-900">
+                    Total nights: {singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0)} / {singleCityNightCount}
+                  </div>
+                </div>
 
-                {(getVisibleMultiCityConfig(routeId)?.cities || []).map((city) => {
-                  const hotelsForCity = getHotelsForRouteCity(routeId, city);
-                  const currentSelection = multiCityHotels[city];
+                <div className="space-y-4">
+                  {singleCityHotelStays.map((stay, index) => {
+                    const selectedHotel = availableHotels.find((hotel) => hotel.id === stay.hotelId);
+                    return (
+                      <div key={`${stay.hotelId}-${index}`} className="rounded-[10px] border border-green-200 bg-white p-3">
+                        <div className="mb-3 flex items-center justify-between gap-2">
+                          <p className="text-xs uppercase tracking-widest text-green-800 font-semibold">Stay {index + 1}</p>
+                          <div className="flex items-center gap-2">
+                            {singleCityHotelStays.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => setSingleCityHotelStays((current) => current.filter((_, currentIndex) => currentIndex !== index))}
+                                className="rounded-full border border-red-300 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-50"
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="grid gap-3 grid-cols-1 lg:grid-cols-3">
+                          <label className="grid gap-2 text-sm font-medium text-stone-900">
+                            Hotel *
+                            <select
+                              required
+                              value={stay.hotelId}
+                              onChange={(e) => {
+                                const nextHotelId = e.target.value;
+                                const nextHotel = availableHotels.find((hotel) => hotel.id === nextHotelId);
+                                const nextRoom = nextHotel ? selectRoomByCategory(nextHotel.rooms, hotelCategory) : "";
+                                setSingleCityHotelStays((current) =>
+                                  current.map((currentStay, currentIndex) =>
+                                    currentIndex === index
+                                      ? { ...currentStay, hotelId: nextHotelId, roomId: nextRoom }
+                                      : currentStay
+                                  )
+                                );
+                              }}
+                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                            >
+                              <option value="">Select hotel...</option>
+                              {availableHotels.map((hotel) => (
+                                <option key={hotel.id} value={hotel.id}>
+                                  {hotel.name}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+
+                          <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
+                            Room Type *
+                            <select
+                              required
+                              value={stay.roomId}
+                              onChange={(e) =>
+                                setSingleCityHotelStays((current) =>
+                                  current.map((currentStay, currentIndex) =>
+                                    currentIndex === index ? { ...currentStay, roomId: e.target.value } : currentStay
+                                  )
+                                )
+                              }
+                              disabled={!stay.hotelId}
+                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis"
+                            >
+                              <option value="">Select room...</option>
+                              {selectedHotel?.rooms.map((room) => (
+                                <option key={room.name} value={room.name}>
+                                  {room.name}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+
+                          <label className="grid gap-2 text-sm font-medium text-stone-900">
+                            Nights on this hotel *
+                            <input
+                              type="number"
+                              min="1"
+                              value={stay.nights}
+                              onChange={(e) =>
+                                setSingleCityHotelStays((current) =>
+                                  current.map((currentStay, currentIndex) =>
+                                    currentIndex === index
+                                      ? { ...currentStay, nights: Math.max(1, parseInt(e.target.value) || 1) }
+                                      : currentStay
+                                  )
+                                )
+                              }
+                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSingleCityHotelStays((current) => [
+                        ...current,
+                        { hotelId: "", roomId: "", nights: 1 },
+                      ])
+                    }
+                    className="rounded-[10px] border border-green-400 bg-white px-4 py-2 text-sm font-semibold text-green-900 hover:bg-green-50"
+                  >
+                    + Add Another Hotel
+                  </button>
+                  <p className="text-xs text-green-800">Total nights must equal {singleCityNightCount} to generate the quotation.</p>
+                </div>
+              </div>
+            ) : supportsMultipleHotelsInCustomSingleCity ? (
+              <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
+                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-green-900">🏨 Select Hotels for {selectedCities[0]}</p>
+                    <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
+                  </div>
+                  <div className="rounded-full border border-green-300 bg-white px-3 py-1 text-xs font-semibold text-green-900">
+                    Total nights: {singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0)} / {customSingleCityNightCount}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {singleCityHotelStays.map((stay, index) => {
+                    const selectedHotel = availableHotels.find((hotel) => hotel.id === stay.hotelId);
+                    return (
+                      <div key={`${stay.hotelId}-${index}`} className="rounded-[10px] border border-green-200 bg-white p-3">
+                        <div className="mb-3 flex items-center justify-between gap-2">
+                          <p className="text-xs uppercase tracking-widest text-green-800 font-semibold">Stay {index + 1}</p>
+                          <div className="flex items-center gap-2">
+                            {singleCityHotelStays.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => setSingleCityHotelStays((current) => current.filter((_, currentIndex) => currentIndex !== index))}
+                                className="rounded-full border border-red-300 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-50"
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="grid gap-3 grid-cols-1 lg:grid-cols-3">
+                          <label className="grid gap-2 text-sm font-medium text-stone-900">
+                            Hotel *
+                            <select
+                              required
+                              value={stay.hotelId}
+                              onChange={(e) => {
+                                const nextHotelId = e.target.value;
+                                const nextHotel = availableHotels.find((hotel) => hotel.id === nextHotelId);
+                                const nextRoom = nextHotel ? selectRoomByCategory(nextHotel.rooms, hotelCategory) : "";
+                                setSingleCityHotelStays((current) =>
+                                  current.map((currentStay, currentIndex) =>
+                                    currentIndex === index
+                                      ? { ...currentStay, hotelId: nextHotelId, roomId: nextRoom }
+                                      : currentStay
+                                  )
+                                );
+                              }}
+                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                            >
+                              <option value="">Select hotel...</option>
+                              {availableHotels.map((hotel) => (
+                                <option key={hotel.id} value={hotel.id}>
+                                  {hotel.name}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+
+                          <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
+                            Room Type *
+                            <select
+                              required
+                              value={stay.roomId}
+                              onChange={(e) =>
+                                setSingleCityHotelStays((current) =>
+                                  current.map((currentStay, currentIndex) =>
+                                    currentIndex === index ? { ...currentStay, roomId: e.target.value } : currentStay
+                                  )
+                                )
+                              }
+                              disabled={!stay.hotelId}
+                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis"
+                            >
+                              <option value="">Select room...</option>
+                              {selectedHotel?.rooms.map((room) => (
+                                <option key={room.name} value={room.name}>
+                                  {room.name}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+
+                          <label className="grid gap-2 text-sm font-medium text-stone-900">
+                            Nights *
+                            <input
+                              type="number"
+                              min="1"
+                              value={stay.nights}
+                              onChange={(e) =>
+                                setSingleCityHotelStays((current) =>
+                                  current.map((currentStay, currentIndex) =>
+                                    currentIndex === index
+                                      ? { ...currentStay, nights: Math.max(1, parseInt(e.target.value) || 1) }
+                                      : currentStay
+                                  )
+                                )
+                              }
+                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <p className="text-xs text-green-800">If you leave nights remaining after this hotel, another hotel row appears automatically.</p>
+                  <p className="text-xs text-green-800">Total hotel nights must equal {customSingleCityNightCount} to generate the quotation.</p>
+                </div>
+              </div>
+            ) : isCustomCitySelection() ? (
+              <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
+                <p className="text-sm font-semibold text-green-900 mb-4">
+                  🏨 Select Hotels for Each City
+                </p>
+                {effectiveSelectedCities.map((city) => {
+                  const hotelsForCity = getHotelsByCity(city);
+                  const currentSelection = effectiveMultiCityHotels[city];
                   const selectedHotel = hotelsForCity.find(
                     (h) => h.id === currentSelection?.hotelId
                   );
-                  const visibleConfig = getVisibleMultiCityConfig(routeId);
-                  const nights = visibleConfig?.nights[visibleConfig.cities.indexOf(city)];
-                  const isMandatory = city === "Islamabad" && isIslamabadHotelMandatory();
-                  const isOptional = nights === 0 && !isMandatory;
 
                   return (
                     <div
                       key={city}
-                      className={`mb-4 pb-4 border-b border-amber-200 last:border-b-0 ${
-                        isMandatory ? "rounded-[10px] bg-red-50 p-3 border border-red-200" : ""
-                      }`}
+                      className="mb-4 pb-4 border-b border-green-200 last:border-b-0 rounded-[10px] bg-white p-3"
                     >
-                      <p className="text-xs uppercase tracking-widest text-amber-800 mb-3">
+                      <p className="text-xs uppercase tracking-widest text-green-800 mb-3 font-semibold">
                         {city}
-                        {nights && nights > 0 && ` • ${nights} night${nights > 1 ? "s" : ""}`}
-                        {isMandatory && " • REQUIRED"}
-                        {isOptional && " • (Optional)"}
                       </p>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
                         <label className="grid gap-2 text-sm font-medium text-stone-900">
-                          Hotel {isMandatory ? "* REQUIRED" : nights === 0 ? "(Optional)" : "*"}
+                          Hotel *
                           <select
+                            required
                             value={currentSelection?.hotelId || ""}
                             onChange={(e) =>
                               setMultiCityHotels({
@@ -736,10 +1537,7 @@ export function MakeMyTripForm() {
                                 },
                               })
                             }
-                            required={nights !== 0 || isMandatory}
-                            className={`rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 ${
-                              isMandatory ? "border-red-300 focus:ring-red-200" : ""
-                            }`}
+                            className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                           >
                             <option value="">Select hotel...</option>
                             {hotelsForCity.map((hotel) => (
@@ -751,8 +1549,9 @@ export function MakeMyTripForm() {
                         </label>
 
                         <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
-                          Room Type {isMandatory ? "* REQUIRED" : nights === 0 ? "" : "*"}
+                          Room Type *
                           <select
+                            required
                             value={currentSelection?.roomId || ""}
                             onChange={(e) =>
                               setMultiCityHotels({
@@ -764,10 +1563,7 @@ export function MakeMyTripForm() {
                               })
                             }
                             disabled={!currentSelection?.hotelId}
-                            required={nights !== 0 || isMandatory}
-                            className={`rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis ${
-                              isMandatory ? "border-red-300 focus:ring-red-200" : ""
-                            }`}
+                            className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis"
                           >
                             <option value="">Select room...</option>
                             {selectedHotel?.rooms.map((room) => (
@@ -782,21 +1578,23 @@ export function MakeMyTripForm() {
                   );
                 })}
               </div>
-            )}
+            ) : null}
 
             <label className="grid gap-2 text-sm font-medium text-stone-900">
-              Select Vehicle *
+              <span className="flex items-center gap-2">
+                🚗 Select Vehicle * {vehicleValid && <span className="text-green-600 text-lg">✓</span>}
+              </span>
               <select
                 required
                 value={vehicleName}
                 onChange={(e) => setVehicleName(e.target.value)}
-                disabled={!routeId}
-                className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
+                disabled={!routeId && !isCustomCitySelection()}
+                className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
               >
                 <option value="">
-                  {!routeId ? "Select route first" : availableVehicles.length === 0 ? "No vehicles available" : "Choose a vehicle..."}
+                  {!routeId && !isCustomCitySelection() ? "Select destination first" : vehicleOptions.length === 0 ? "No vehicles available" : "Choose a vehicle..."}
                 </option>
-                {availableVehicles.map((vehicle) => {
+                {vehicleOptions.map((vehicle) => {
                   const isSuitable = isVehicleSuitable(vehicle.name, totalGuests);
                   const capacityInfo = getVehicleCapacityInfo(vehicle.name);
                   return (
@@ -831,7 +1629,7 @@ export function MakeMyTripForm() {
             {/* Guest & Room Details */}
             <div className="grid gap-4 grid-cols-1 xl:grid-cols-3">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
-                Number of Rooms (Auto-Calculated)
+                🛌 Number of Rooms (Auto-Calculated)
                 <div className="rounded-[15px] border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-900">
                   <div className="font-semibold">{numberOfRooms} {numberOfRooms === 1 ? "Room" : "Rooms"}</div>
                   <div className="text-xs text-stone-600 mt-1">4 people max/room</div>
@@ -839,7 +1637,7 @@ export function MakeMyTripForm() {
               </label>
 
               <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
-                Adults *
+                🧑‍🤝‍🧑 Adults *
                 <input
                   type="number"
                   min="1"
@@ -851,7 +1649,7 @@ export function MakeMyTripForm() {
               </label>
 
               <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
-                Kids
+                👶 Kids
                 <input
                   type="number"
                   min="0"
@@ -894,7 +1692,7 @@ export function MakeMyTripForm() {
               </div>
             )}
 
-            {!quotation && tripDate && routeId && vehicleName && (
+            {!quotation && tripDate && (routeId || isCustomCitySelection()) && vehicleName && (
               <div className="rounded-[15px] bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
                 ⚠️ Calculating quotation... If this persists, check browser console for details. Make sure all fields are properly selected.
               </div>
@@ -904,13 +1702,19 @@ export function MakeMyTripForm() {
             <button
               type="submit"
               disabled={isSubmitting || !quotation}
-              className="mt-2 inline-flex w-full items-center justify-center rounded-[15px] bg-[#ffc000] px-6 py-3 text-sm font-semibold text-black shadow-[0_16px_30px_rgba(252,192,0,0.28)] transition hover:-translate-y-0.5 hover:bg-[#ffd247] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-[15px] bg-[#ffc000] px-6 py-3 text-sm font-semibold text-black shadow-[0_16px_30px_rgba(252,192,0,0.28)] transition hover:-translate-y-0.5 hover:bg-[#ffd247] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Processing..." : "✨ Get Quotation"}
+              {isSubmitting ? (
+                <>
+                  <div className="spinner w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
+                  Processing...
+                </>
+              ) : (
+                "✨ Get Quotation"
+              )}
             </button>
           </form>
         </div>
-      </div>
       </div>
     </div>
   );

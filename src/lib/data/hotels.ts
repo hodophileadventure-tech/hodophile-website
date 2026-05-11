@@ -203,11 +203,17 @@ export const hotels: Hotel[] = [
     id: "himmel-hotel-skardu",
     name: "Himmel Hotel Skardu",
     city: "Skardu",
+    seasons: {
+      peak: "May 24 - Sep 15",
+      blossom: "Apr 1 - May 23",
+    },
     rooms: [
-      { name: "Standard", price: 18000 },
-      { name: "Deluxe", price: 22000 },
-      { name: "Executive", price: 28000 },
-      { name: "Presidential", price: 55000 },
+      { name: "Standard", peak: 25000, blossom: 20000 },
+      { name: "Deluxe", peak: 38000, blossom: 32000 },
+      { name: "Riverfront Chalet", peak: 49000, blossom: 44000 },
+      { name: "Royal Suite", peak: 43000, blossom: 39000 },
+      { name: "Riverfront Villa", peak: 115000, blossom: 95000 },
+      { name: "Penthouse", peak: 125000, blossom: 110000 },
     ],
   },
   {

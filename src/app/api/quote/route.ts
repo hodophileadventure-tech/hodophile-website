@@ -33,13 +33,44 @@ function buildValidationError(body: QuoteRequestBody) {
     return `Missing required field(s): ${missing.join(", ")}`;
   }
 
-  const route = getRouteById(body.routeId);
-  if (!route) {
-    return `Invalid route selected: ${body.routeId}`;
+  const isCustomItinerary = Boolean(body.customCities && body.customCities.length > 0);
+  const isSingleCityMultiStay = Boolean(body.singleCityHotelStays && body.singleCityHotelStays.length > 0);
+  if (!isCustomItinerary) {
+    const route = getRouteById(body.routeId);
+    if (!route) {
+      return `Invalid route selected: ${body.routeId}`;
+    }
   }
 
   const isMultiCity = Boolean(body.multiCityHotels && body.multiCityNights);
-  if (isMultiCity) {
+  if (isCustomItinerary) {
+    if (!body.customCities || body.customCities.length === 0) {
+      return "Please select at least one city for your custom package.";
+    }
+
+    if (isSingleCityMultiStay) {
+      const missingStaySelections = (body.singleCityHotelStays || [])
+        .filter((stay) => stay.nights > 0)
+        .filter((stay) => !stay.hotelId || !stay.roomId);
+
+      if (missingStaySelections.length > 0) {
+        return "Please select hotel and room for each hotel stay in the single-city package.";
+      }
+    } else if (!body.multiCityHotels || !body.multiCityNights) {
+      return "Custom package requires hotel and night selections.";
+    } else {
+      const missingCitySelections = body.customCities
+        .filter((city) => (body.multiCityNights?.[city] ?? 0) > 0)
+        .filter((city) => {
+          const selection = body.multiCityHotels?.[city];
+          return !selection?.hotelId || !selection?.roomId;
+        });
+
+      if (missingCitySelections.length > 0) {
+        return `Please select hotel and room for: ${missingCitySelections.join(", ")}`;
+      }
+    }
+  } else if (isMultiCity) {
     if (!body.multiCityHotels || !body.multiCityNights) {
       return "Multi-city tour requires hotel and night selections.";
     }
@@ -47,15 +78,22 @@ function buildValidationError(body: QuoteRequestBody) {
     // Ensure required cities have at least one hotel/room selected
     const missingCitySelections = Object.entries(body.multiCityNights)
       .filter(([, nights]) => nights > 0)
-      .map(([city, nights]) => ({ city, nights }))
-      .filter(({ city }) => {
+      .map(([city]) => city)
+      .filter((city) => {
         const selection = body.multiCityHotels?.[city];
         return !selection?.hotelId || !selection?.roomId;
-      })
-      .map(({ city }) => city);
+      });
 
     if (missingCitySelections.length > 0) {
       return `Please select hotel and room for: ${missingCitySelections.join(", ")}`;
+    }
+  } else if (isSingleCityMultiStay) {
+    const missingStaySelections = (body.singleCityHotelStays || [])
+      .filter((stay) => stay.nights > 0)
+      .filter((stay) => !stay.hotelId || !stay.roomId);
+
+    if (missingStaySelections.length > 0) {
+      return "Please select hotel and room for each hotel stay in the single-city package.";
     }
   } else {
     if (!body.hotelId || !body.roomId) {
@@ -83,8 +121,12 @@ export async function POST(request: NextRequest) {
       vehicleName: body.vehicleName,
       hotelId: body.hotelId,
       roomId: body.roomId,
+      singleCityHotelStays: body.singleCityHotelStays,
       multiCityHotels: body.multiCityHotels,
       multiCityNights: body.multiCityNights,
+      customCities: body.customCities,
+      customRouteLabel: body.customRouteLabel,
+      travelMode: body.travelMode,
       numberOfRooms: body.numberOfRooms,
       adults: body.adults,
       kids: body.kids || 0,
@@ -101,20 +143,36 @@ export async function POST(request: NextRequest) {
     }
 
     // Get route and hotel names for the sheet
-    const route = getRouteById(body.routeId);
+    const route = body.customCities?.length ? undefined : getRouteById(body.routeId);
     const isMultiCity = Boolean(body.multiCityHotels && body.multiCityNights);
+    const isCustomItinerary = Boolean(body.customCities && body.customCities.length > 0);
+    const isSingleCityMultiStay = Boolean(body.singleCityHotelStays && body.singleCityHotelStays.length > 0);
     let hotelName = "";
     let roomType = "";
 
-    if (isMultiCity && body.multiCityHotels) {
+    if ((isMultiCity || isCustomItinerary) && body.multiCityHotels) {
       // Build hotel list for multi-city tours
-      const hotelNames = Object.entries(body.multiCityHotels)
-        .map(([city, info]) => {
+      const cityOrder = isCustomItinerary ? body.customCities || [] : Object.keys(body.multiCityHotels);
+      const hotelNames = cityOrder
+        .map((city) => {
+          const info = body.multiCityHotels?.[city];
+          if (!info) return null;
           const hotel = getHotelById(info.hotelId);
           return `${city}: ${hotel?.name || info.hotelId}`;
         })
+        .filter(Boolean)
         .join(" | ");
       hotelName = hotelNames;
+      roomType = "Multiple";
+    } else if (isSingleCityMultiStay && body.singleCityHotelStays) {
+      const stayNames = body.singleCityHotelStays
+        .map((stay) => {
+          const hotel = getHotelById(stay.hotelId);
+          return hotel ? `${hotel.name} (${stay.nights} nights)` : null;
+        })
+        .filter(Boolean)
+        .join(" | ");
+      hotelName = stayNames;
       roomType = "Multiple";
     } else if (body.hotelId) {
       // Single-city tour
@@ -129,13 +187,13 @@ export async function POST(request: NextRequest) {
       customerPhone: body.customerPhone,
       startingPoint: body.startingPoint,
       tripDate: body.tripDate,
-      routeId: body.routeId,
-      route: route?.name || body.routeId,
-      destination: route?.name?.split("&")[0]?.trim() || "",
-      destinationCity: route?.city || "",
-      routeDurationDays: route?.duration || 0,
-      routeDirection: route?.direction || "",
-      routeItinerary: route?.itinerary || "",
+      routeId: body.customCities?.length ? "custom-itinerary" : body.routeId,
+      route: isCustomItinerary ? body.customRouteLabel || body.customCities?.join(" + ") || "Custom Package" : route?.name || body.routeId,
+      destination: isCustomItinerary ? body.customRouteLabel || body.customCities?.join(" + ") || "Custom Package" : route?.name?.split("&")[0]?.trim() || "",
+      destinationCity: isCustomItinerary ? "Custom" : route?.city || "",
+      routeDurationDays: isCustomItinerary ? Object.values(body.multiCityNights || {}).reduce((sum, nights) => sum + nights, 0) : route?.duration || 0,
+      routeDirection: isCustomItinerary ? "Custom itinerary" : route?.direction || "",
+      routeItinerary: isCustomItinerary ? (body.customCities || []).join(" -> ") : route?.itinerary || "",
       vehicle: body.vehicleName,
       hotel: hotelName,
       hotelCategory: body.hotelCategory || "",
@@ -145,9 +203,11 @@ export async function POST(request: NextRequest) {
       kids: body.kids || 0,
       kidsAges: body.kidsAges || [],
       tourType: body.tourType,
-      isMultiCity,
+      travelMode: body.travelMode || "road",
+      isMultiCity: isMultiCity || isCustomItinerary,
       multiCityHotels: body.multiCityHotels,
       multiCityNights: body.multiCityNights,
+      singleCityHotelStays: body.singleCityHotelStays,
       transportCost: quotation.transportCost,
       hotelCost: quotation.hotelCost,
       jeepAddonsCost: quotation.jeepAddonsCost,
