@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 type Testimonial = {
   quote: string;
@@ -16,26 +16,7 @@ type TestimonialsCarouselProps = {
 
 export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const [centerIndex, setCenterIndex] = useState(0);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const currentIndexRef = useRef(0);
-  const intervalRef = useRef<number | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
 
-  const updateCenterItem = () => {
-    const scroller = scrollerRef.current;
-    if (!scroller || testimonials.length < 2) return;
-    const firstCard = scroller.firstElementChild as HTMLElement | null;
-    if (!firstCard) return;
-    const cardWidth = firstCard.getBoundingClientRect().width;
-    const cardGap = Number.parseFloat(getComputedStyle(scroller).columnGap || getComputedStyle(scroller).gap || "0") || 0;
-    const scrollCenter = scroller.scrollLeft + scroller.clientWidth / 2;
-    const index = Math.round((scrollCenter - cardWidth / 2) / (cardWidth + cardGap)) % testimonials.length;
-    const resolved = Math.max(0, index);
-    setCenterIndex(resolved);
-    setCurrentIndex(resolved);
-    currentIndexRef.current = resolved;
-  };
   useEffect(() => {
     const scroller = scrollerRef.current;
 
@@ -45,97 +26,35 @@ export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps
 
     const step = () => {
       const firstCard = scroller.firstElementChild as HTMLElement | null;
-      if (!firstCard) return;
+
+      if (!firstCard) {
+        return;
+      }
 
       const cardWidth = firstCard.getBoundingClientRect().width;
       const cardGap = Number.parseFloat(getComputedStyle(scroller).columnGap || getComputedStyle(scroller).gap || "0") || 0;
-      const next = (currentIndexRef.current + 1) % testimonials.length;
-      const targetLeft = next * (cardWidth + cardGap);
+      const nextScrollLeft = scroller.scrollLeft + cardWidth + cardGap;
+      const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
 
-      scroller.scrollTo({ left: targetLeft, behavior: "smooth" });
-      currentIndexRef.current = next;
-      setCurrentIndex(next);
-      setTimeout(() => setCenterIndex(next), 600);
+      if (nextScrollLeft >= maxScrollLeft - 8) {
+        scroller.scrollTo({ left: 0, behavior: "smooth" });
+        return;
+      }
+
+      scroller.scrollBy({ left: cardWidth + cardGap, behavior: "smooth" });
     };
 
+    const intervalId = window.setInterval(step, 2000);
 
-    scroller.addEventListener("scroll", updateCenterItem);
-    // start from the very first card
-    currentIndexRef.current = 0;
-    setCurrentIndex(0);
-    setCenterIndex(0);
-    scroller.scrollTo({ left: 0 });
-
-    // Pause when the user interacts via pointer/touch/hover/focus
-    const onPointerEnter = () => setIsPaused(true);
-    const onPointerLeave = () => setIsPaused(false);
-    const onPointerDown = () => setIsPaused(true);
-    const onPointerUp = () => setIsPaused(false);
-
-    scroller.addEventListener("mouseenter", onPointerEnter);
-    scroller.addEventListener("mouseleave", onPointerLeave);
-    scroller.addEventListener("pointerdown", onPointerDown);
-    scroller.addEventListener("pointerup", onPointerUp);
-    scroller.addEventListener("touchstart", onPointerDown, { passive: true });
-    scroller.addEventListener("touchend", onPointerUp);
-
-    return () => {
-      scroller.removeEventListener("scroll", updateCenterItem);
-      scroller.removeEventListener("mouseenter", onPointerEnter);
-      scroller.removeEventListener("mouseleave", onPointerLeave);
-      scroller.removeEventListener("pointerdown", onPointerDown);
-      scroller.removeEventListener("pointerup", onPointerUp);
-      scroller.removeEventListener("touchstart", onPointerDown as EventListener);
-      scroller.removeEventListener("touchend", onPointerUp as EventListener);
-    };
+    return () => window.clearInterval(intervalId);
   }, [testimonials.length]);
 
-  // Manage auto-advance interval and respond to pause state reliably
-  useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller || testimonials.length < 2) return;
-
-    const firstCard = scroller.firstElementChild as HTMLElement | null;
-    if (!firstCard) return;
-
-    const step = () => {
-      const cardWidth = firstCard.getBoundingClientRect().width;
-      const cardGap = Number.parseFloat(getComputedStyle(scroller).columnGap || getComputedStyle(scroller).gap || "0") || 0;
-      const next = (currentIndexRef.current + 1) % testimonials.length;
-      const targetLeft = next * (cardWidth + cardGap);
-      scroller.scrollTo({ left: targetLeft, behavior: "smooth" });
-      currentIndexRef.current = next;
-      setCurrentIndex(next);
-      setTimeout(() => setCenterIndex(next), 600);
-    };
-
-    if (!isPaused) {
-      intervalRef.current = window.setInterval(step, 3000) as unknown as number;
-    }
-
-    return () => {
-      if (intervalRef.current != null) {
-        window.clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [testimonials.length, isPaused]);
-
   return (
-    <div
-      ref={scrollerRef}
-      className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-visible px-2 py-6 [scrollbar-width:thin]"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={() => setIsPaused(true)}
-      onTouchEnd={() => setIsPaused(false)}
-    >
+    <div ref={scrollerRef} className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]">
       {testimonials.map((story, index) => (
         <article
           key={`${story.name}-${index}`}
-          className={`relative origin-center w-[20rem] shrink-0 snap-start rounded-2xl border-4 border-[#fcc000] bg-stone-50 p-5 transition-all duration-500 sm:w-[22rem] ${
-            index === centerIndex ? "z-20 scale-105 shadow-2xl" : "z-0 scale-95 opacity-50"
-          }`}
+          className="w-[20rem] shrink-0 snap-start rounded-2xl border-4 border-[#fcc000] bg-stone-50 p-5 sm:w-[22rem]"
         >
           <div className="mb-4 flex items-center gap-3">
             <Image
