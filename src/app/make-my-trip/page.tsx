@@ -25,7 +25,7 @@ export default function MakeMyTripPage() {
       <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden py-12 min-h-[calc(100dvh-6rem)]">
         <div className="absolute inset-0">
           <Image
-            src="/images/editorial/editorial-5.jpg"
+            src="/images/editorial/make-my-trip-bg.jpg"
             alt="Scenic Pakistan travel background"
             fill
             priority

@@ -34,20 +34,19 @@ export const pakistanCities = [
 
 // Cities that have hotels in our database - in the order specified by user
 export const citiesWithHotels = [
-  "Murree",
-  "Nathia Gali",
-  "Naran",
-  "Shogran",
-  "Swat",
-  "Kashmir",
   "Hunza",
   "Skardu",
+  "Naran",
+  "Kashmir",
+  "Swat",
   "Fairy Meadows",
-  "Astore",
+  "Shogran",
+  "Nathia Gali",
+  "Murree",
 ];
 
 // Sort the starting point cities
 export const sortedPakistanCities = [...pakistanCities].sort();
 
-// Sort cities with hotels
-export const sortedCitiesWithHotels = [...citiesWithHotels].sort();
+// Preserve the configured hotel city order for form display
+export const sortedCitiesWithHotels = [...citiesWithHotels];

@@ -5,9 +5,31 @@ import { useRouter } from "next/navigation";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes, type Route } from "@/lib/data/routes";
-import { getMandatoryJeepCost } from "@/lib/data/routeActivities";
+import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "@/lib/data/routeActivities";
 import { sortedCitiesWithHotels } from "@/lib/data/cities";
 import { featuredTourCards } from "@/lib/data/featured-tour-cards";
+
+// Map featured tours to their corresponding route slugs
+const PREPLANNED_TRIP_MAP: Record<string, string> = {
+  "kashmir-taobat": "kashmir-taobat",
+  "skardu-deosai": "skardu-shigar-shangrila",
+  "hunza-skardu": "naran-hunza-skardu-deosai",
+  "hunza-naltar": "naran-hunza-naltar",
+};
+
+// Get cities for a multi-city route
+function getCitiesForRoute(route: Route): string[] {
+  if (route.city === "Multi-City") {
+    // Extract cities from the route name or itinerary
+    if (route.slug.includes("hunza") && route.slug.includes("skardu")) {
+      return ["Naran", "Hunza", "Skardu"];
+    }
+    if (route.slug.includes("hunza") && route.slug.includes("naltar")) {
+      return ["Naran", "Hunza", "Naltar"];
+    }
+  }
+  return [route.city];
+}
 
 const CUSTOM_AVAILABLE_VEHICLES = [
   { name: "Toyota Corolla", price: 0 },
@@ -48,6 +70,7 @@ export function MakeMyTripForm() {
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [selectedPreplannedTrip, setSelectedPreplannedTrip] = useState("");
+  const [preplannedRoute, setPreplannedRoute] = useState<Route | null>(null);
 
   // UI state
   const [quotation, setQuotation] = useState<QuotationBreakdown | null>(null);
@@ -60,6 +83,39 @@ export function MakeMyTripForm() {
   const [mandatoryJeepCost, setMandatoryJeepCost] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const previousQuotationRef = useRef<QuotationBreakdown | null>(null);
+
+  // Handle preplanned trip selection
+  useEffect(() => {
+    if (selectedPreplannedTrip) {
+      const routeSlug = PREPLANNED_TRIP_MAP[selectedPreplannedTrip];
+      const matchedRoute = routes.find((r) => r.slug === routeSlug);
+      if (matchedRoute) {
+        setPreplannedRoute(matchedRoute);
+        setRouteId(matchedRoute.id);
+        setTourType("private"); // Lock to private tours
+        setHideAutoIslamabad(false); // Reset Islamabad toggle
+        
+        // For multi-city routes, cities are defined in multiCityConfig
+        // For single-city routes, use the route's city
+        const cities = matchedRoute.city === "Multi-City" 
+          ? [matchedRoute.city] // Will use multiCityConfig for actual cities
+          : [matchedRoute.city];
+        setSelectedCities(cities);
+        setCustomCityNights({}); // Clear custom nights - they'll be set by hotel selection
+        
+        // Clear hotel selections - they'll be auto-populated when route loads
+        setHotelId("");
+        setRoomId("");
+        setMultiCityHotels({});
+        setVehicleName("");
+      }
+    } else {
+      setPreplannedRoute(null);
+      setRouteId("");
+      setSelectedCities([]);
+      setCustomCityNights({});
+    }
+  }, [selectedPreplannedTrip]);
 
   // Smart room selection based on price tier (not exact name matching)
   const selectRoomByCategory = (rooms: any[], category: string): string => {
@@ -552,6 +608,9 @@ export function MakeMyTripForm() {
           const allStaysSelected = singleCityHotelStays.length > 0 && singleCityHotelStays.every((stay) => stay.hotelId && stay.roomId && stay.nights > 0);
 
           if (allStaysSelected && totalSingleCityNights === customSingleCityNightCount) {
+            const customJeepCost = getMandatoryJeepCostForCities(
+              effectiveSelectedCities.filter((city) => city !== "Islamabad")
+            );
             const calc = calculateQuotation({
               routeId: "custom-itinerary",
               vehicleName,
@@ -562,7 +621,7 @@ export function MakeMyTripForm() {
               adults,
               kids,
               tripDate,
-              mandatoryJeepCost: 0,
+              mandatoryJeepCost: customJeepCost,
               travelMode: travelMode as "road" | "air",
             });
             setQuotation(calc);
@@ -577,6 +636,9 @@ export function MakeMyTripForm() {
           const allNightsSelected = effectiveSelectedCities.every((city) => (effectiveCustomCityNights[city] ?? 0) > 0);
 
           if (allHotelsSelected && allNightsSelected) {
+            const customJeepCost = getMandatoryJeepCostForCities(
+              effectiveSelectedCities.filter((city) => city !== "Islamabad")
+            );
             const calc = calculateQuotation({
               routeId: "custom-itinerary",
               vehicleName,
@@ -588,7 +650,8 @@ export function MakeMyTripForm() {
               adults,
               kids,
               tripDate,
-              mandatoryJeepCost: 0,
+              mandatoryJeepCost: customJeepCost,
+              travelMode: travelMode as "road" | "air",
             });
             setQuotation(calc);
           } else {
@@ -621,6 +684,7 @@ export function MakeMyTripForm() {
                   kids,
                   tripDate,
                   mandatoryJeepCost,
+                  travelMode: travelMode as "road" | "air",
                 });
                 setQuotation(calc);
               } else {
@@ -993,9 +1057,9 @@ export function MakeMyTripForm() {
           )}
 
           <div className="mb-6 text-center md:text-left">
-            <p className="text-sm font-bold uppercase tracking-[0.38em] text-[#FCC000]">Craft your own Trip</p>
-            <h1 className="mt-3 font-serif text-3xl leading-tight sm:text-[2.6rem]">
-              Your Adventure, Your Way
+            <p className="text-sm font-bold uppercase tracking-[0.38em] text-[#D4A500]">Craft your own Trip</p>
+            <h1 className="mt-3 font-serif text-3xl leading-tight sm:text-[2.6rem] font-bold">
+              <span className="text-black">Your Adventure</span>, <span className="text-[#FCC000]">Your Way</span>
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-600 md:mx-0">
               Select your dates, destination, vehicle, and hotel. Get an instant quotation powered by real-time pricing.
@@ -1054,7 +1118,22 @@ export function MakeMyTripForm() {
               </label>
             </div>
 
+            {/* Show preplanned trip details if selected */}
+            {selectedPreplannedTrip && preplannedRoute && (
+              <div className="pb-4 border-b border-stone-200 bg-amber-50 p-4 rounded-lg">
+                <p className="text-sm text-stone-700 font-medium">
+                  📍 <strong>{preplannedRoute.name}</strong>
+                </p>
+                <p className="text-xs text-stone-600 mt-1">Duration: {preplannedRoute.duration} days</p>
+                {preplannedRoute.itinerary && (
+                  <p className="text-xs text-stone-600 mt-2 italic">{preplannedRoute.itinerary}</p>
+                )}
+              </div>
+            )}
+
             {/* Trip Details */}
+            {!selectedPreplannedTrip && (
+            <>
             <label className="grid gap-2 text-sm font-medium text-stone-900">
               <span className="flex items-center gap-2">
                 📅 Trip Start Date * {tripDateValid && <span className="text-green-600 text-lg">✓</span>}
@@ -1206,6 +1285,8 @@ export function MakeMyTripForm() {
                 </div>
               )}
             </div>
+            </>
+            )}
 
             {/* Hotel Category Selection */}
             <label className="grid gap-2 text-sm font-medium text-stone-900">
@@ -1625,6 +1706,13 @@ export function MakeMyTripForm() {
                 </p>
               </div>
             )}
+
+            {/* Review Your Choices Section */}
+            <div className="mb-6 pt-4 border-t border-stone-200">
+              <h2 className="font-serif text-2xl leading-tight font-bold">
+                <span className="text-black">Review your</span> <span className="text-[#FCC000]">choices</span>
+              </h2>
+            </div>
 
             {/* Guest & Room Details */}
             <div className="grid gap-4 grid-cols-1 xl:grid-cols-3">

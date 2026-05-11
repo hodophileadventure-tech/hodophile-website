@@ -5,6 +5,7 @@ import { getRouteDistance } from "./data/distances";
 import { estimateCustomItineraryDistance, estimateCustomVehicleDays } from "./data/custom-itinerary";
 import { getVehicleRate } from "./data/vehicleRates";
 import { currentFuelPrices } from "./data/fuel";
+import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "./data/routeActivities";
 import type { Room } from "./data/hotels";
 
 export interface QuotationInput {
@@ -81,9 +82,9 @@ function calculateTransportCost(
   // Base distance (may be overridden for custom itineraries or air travel)
   let distance = distanceOverride ?? getRouteDistance(routeId);
   // Special rule: if travelling by air, the only allowed destination is Skardu.
-  // Force distance to 950km for air trips to Skardu.
+  // Force distance to 600km for air trips to Skardu.
   if (travelMode === "air") {
-    distance = 950;
+    distance = 600;
   }
   if (distance === undefined || distance === null) {
     console.warn(`Distance not found for route: ${routeId}`);
@@ -227,7 +228,15 @@ export function calculateQuotation(
     }
 
     const customDistance = isCustomItinerary ? estimateCustomItineraryDistance(input.customCities || []) : undefined;
-    const customVehicleDays = isCustomItinerary ? estimateCustomVehicleDays(input.multiCityNights || {}) : undefined;
+    const effectiveCustomNights = input.multiCityNights ??
+      (input.singleCityHotelStays && input.singleCityHotelStays.length > 0
+        ? input.singleCityHotelStays.reduce<Record<string, number>>((acc, stay) => {
+            const city = input.customCities?.[0] || "Unknown";
+            acc[city] = (acc[city] || 0) + Math.max(0, stay.nights);
+            return acc;
+          }, {})
+        : {});
+    const customVehicleDays = isCustomItinerary ? estimateCustomVehicleDays(effectiveCustomNights) : undefined;
 
     // Use dynamic transport cost calculation with vehicle rental rates
     const transportCost = calculateTransportCost(
@@ -334,15 +343,24 @@ export function calculateQuotation(
       return null;
     }
 
+    const routeJeepCost = getMandatoryJeepCost(route?.id || input.routeId);
+    const customCityJeepCost = input.customCities ? getMandatoryJeepCostForCities(input.customCities) : 0;
+    const actualMandatoryJeepCost =
+      input.mandatoryJeepCost && input.mandatoryJeepCost > 0
+        ? input.mandatoryJeepCost
+        : input.customCities
+        ? customCityJeepCost
+        : routeJeepCost;
+
     let jeepAddonsCost = 0;
     const jeepDetails: string[] = [];
-    
+
     // Add mandatory jeep costs
-    if (input.mandatoryJeepCost && input.mandatoryJeepCost > 0) {
-      jeepAddonsCost += input.mandatoryJeepCost;
-      jeepDetails.push(`Mandatory jeep activity: ${input.mandatoryJeepCost}`);
+    if (actualMandatoryJeepCost > 0) {
+      jeepAddonsCost += actualMandatoryJeepCost;
+      jeepDetails.push(`Mandatory jeep activity: ${actualMandatoryJeepCost}`);
     }
-    
+
     // Add optional jeep addons
     if (input.jeepAddons && input.jeepAddons.length > 0) {
       const additionalJeepCost = calculateJeepCost(input.jeepAddons);

@@ -146,8 +146,8 @@ function QuotationEditContent() {
         <div className="rounded-[15px] border border-white/20 bg-white/94 p-6 shadow-[0_30px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm">
           <div className="mb-8 text-center md:text-left">
             <p className="text-[11px] uppercase tracking-[0.38em] text-[#8a6a00]">Review & Edit</p>
-            <h1 className="mt-3 font-serif text-3xl leading-tight sm:text-[2.6rem]">
-              Customize Your Itinerary
+            <h1 className="mt-3 font-serif text-3xl leading-tight sm:text-[2.6rem] font-bold">
+              <span className="text-black">Review your</span> <span className="text-[#FCC000]">choices</span>
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-600 md:mx-0">
               Adjust the number of nights in each city, select your preferred hotels, and choose your vehicle.

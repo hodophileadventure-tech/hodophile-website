@@ -10,7 +10,7 @@ export interface VehicleRate {
 export const vehicleRates: VehicleRate[] = [
   {
     name: "Toyota Corolla",
-    dailyRate: 7000,
+    dailyRate: 6000,
     consumption: 10,
     tollTax: 8000,
     fuelType: "petrol",

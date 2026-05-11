@@ -418,7 +418,35 @@ export function getRouteActivities(routeId: string): RouteActivitiesMap | null {
 }
 
 export function getMandatoryJeepCost(routeId: string): number {
-  return routeActivities[routeId]?.mandatoryJeepCost || 0;
+  const route = routeActivities[routeId];
+  if (!route) return 0;
+
+  if (route.mandatoryJeepCost && route.mandatoryJeepCost > 0) {
+    return route.mandatoryJeepCost;
+  }
+
+  return route.activities.reduce((sum, activity) => {
+    if (activity.isJeepRequired && activity.cost) {
+      return sum + activity.cost;
+    }
+    return sum;
+  }, 0);
+}
+
+const cityMandatoryJeepCosts: Record<string, number> = {
+  Hunza: 10000,
+  Skardu: 15000,
+  Naran: 12000,
+  Kashmir: 20000,
+  Swat: 10000,
+  "Fairy Meadows": 25000,
+  Shogran: 12000,
+};
+
+export function getMandatoryJeepCostForCities(cities: string[]): number {
+  return cities.reduce((sum, city) => {
+    return sum + (cityMandatoryJeepCosts[city] || 0);
+  }, 0);
 }
 
 export function getJeepActivitiesForRoute(routeId: string): RouteActivity[] {

@@ -4,7 +4,7 @@ export interface FuelPricing {
 }
 
 export const currentFuelPrices: FuelPricing = {
-  petrol: 403,
+  petrol: 430,
   diesel: 382,
 };
 
