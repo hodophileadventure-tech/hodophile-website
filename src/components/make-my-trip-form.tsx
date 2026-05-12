@@ -2,6 +2,19 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
+import {
+  CalendarDays,
+  CarFront,
+  Check,
+  Compass,
+  Hotel as HotelIcon,
+  Map,
+  MapPin,
+  Phone,
+  PlaneTakeoff,
+  User,
+  Users,
+} from "lucide-react";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes, type Route } from "@/lib/data/routes";
@@ -43,6 +56,8 @@ const CUSTOM_AVAILABLE_VEHICLES = [
 
 const phoneRegex13Digit = /^\+92\d{10}$/;
 const phoneRegex11Digit = /^03\d{9}$/;
+const LABEL_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
+const VALIDATION_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
 
 export function MakeMyTripForm() {
   const router = useRouter();
@@ -1024,7 +1039,7 @@ export function MakeMyTripForm() {
           .confetti-piece { animation: confetti 2s ease-in forwards; }
         `}</style>
 
-        <div className="rounded-[15px] bg-white shadow-lg p-8 transition-all duration-500">
+        <div className="rounded-[15px] border-4 border-[#fcc000] bg-white shadow-lg p-8 transition-all duration-500">
           {/* Progress Bar */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
@@ -1071,7 +1086,9 @@ export function MakeMyTripForm() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4 border-b border-stone-200">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
                 <span className="flex items-center gap-2">
-                  👤 Your Name * {customerNameValid && <span className="text-green-600 text-lg">✓</span>}
+                  <User className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Your Name *</span>
+                  {customerNameValid && <Check className={VALIDATION_ICON_CLASS} aria-hidden="true" />}
                 </span>
                 <input
                   type="text"
@@ -1084,7 +1101,9 @@ export function MakeMyTripForm() {
               </label>
               <label className="grid gap-2 text-sm font-medium text-stone-900">
                 <span className="flex items-center gap-2">
-                  📱 WhatsApp Number * {customerPhoneValid && <span className="text-green-600 text-lg">✓</span>}
+                  <Phone className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>WhatsApp Number *</span>
+                  {customerPhoneValid && <Check className={VALIDATION_ICON_CLASS} aria-hidden="true" />}
                 </span>
                 <input
                   type="tel"
@@ -1101,7 +1120,8 @@ export function MakeMyTripForm() {
             <div className="pb-4 border-b border-stone-200">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
                 <span className="flex items-center gap-2">
-                  🗺️ Preplanned Trips
+                  <Map className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Preplanned Trips</span>
                 </span>
                 <select
                   value={selectedPreplannedTrip}
@@ -1122,7 +1142,10 @@ export function MakeMyTripForm() {
             {selectedPreplannedTrip && preplannedRoute && (
               <div className="pb-4 border-b border-stone-200 bg-amber-50 p-4 rounded-lg">
                 <p className="text-sm text-stone-700 font-medium">
-                  📍 <strong>{preplannedRoute.name}</strong>
+                  <span className="inline-flex items-center gap-2">
+                    <MapPin className={LABEL_ICON_CLASS} aria-hidden="true" />
+                    <strong>{preplannedRoute.name}</strong>
+                  </span>
                 </p>
                 <p className="text-xs text-stone-600 mt-1">Duration: {preplannedRoute.duration} days</p>
                 {preplannedRoute.itinerary && (
@@ -1136,7 +1159,9 @@ export function MakeMyTripForm() {
             <>
             <label className="grid gap-2 text-sm font-medium text-stone-900">
               <span className="flex items-center gap-2">
-                📅 Trip Start Date * {tripDateValid && <span className="text-green-600 text-lg">✓</span>}
+                <CalendarDays className={LABEL_ICON_CLASS} aria-hidden="true" />
+                <span>Trip Start Date *</span>
+                {tripDateValid && <Check className={VALIDATION_ICON_CLASS} aria-hidden="true" />}
               </span>
               <input
                 type="date"
@@ -1149,7 +1174,9 @@ export function MakeMyTripForm() {
 
             <label className="grid gap-2 text-sm font-medium text-stone-900">
               <span className="flex items-center gap-2">
-                🚩 Starting Point * {startingPointValid && <span className="text-green-600 text-lg">✓</span>}
+                <MapPin className={LABEL_ICON_CLASS} aria-hidden="true" />
+                <span>Starting Point *</span>
+                {startingPointValid && <Check className={VALIDATION_ICON_CLASS} aria-hidden="true" />}
               </span>
               <select
                 required
@@ -1192,7 +1219,10 @@ export function MakeMyTripForm() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
-                🧭 Tour Type *
+                <span className="flex items-center gap-2">
+                  <Compass className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Tour Type *</span>
+                </span>
                 <select
                   value={tourType}
                   onChange={(e) => setTourType(e.target.value)}
@@ -1204,7 +1234,10 @@ export function MakeMyTripForm() {
             </div>
 
             <label className="grid gap-2 text-sm font-medium text-stone-900">
-              ✈️ Tour Mode *
+              <span className="flex items-center gap-2">
+                <PlaneTakeoff className={LABEL_ICON_CLASS} aria-hidden="true" />
+                <span>Tour Mode *</span>
+              </span>
               <select
                 value={travelMode}
                 onChange={(e) => setTravelMode(e.target.value)}
@@ -1290,15 +1323,18 @@ export function MakeMyTripForm() {
 
             {/* Hotel Category Selection */}
             <label className="grid gap-2 text-sm font-medium text-stone-900">
-              🏨 Hotel Category *
+              <span className="flex items-center gap-2">
+                <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
+                <span>Hotel Category *</span>
+              </span>
               <select
                 value={hotelCategory}
                 onChange={(e) => setHotelCategory(e.target.value)}
                 className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
               >
-                <option value="standard">🏨 Standard - Budget-Friendly</option>
-                <option value="deluxe">⭐ Deluxe - Mid-Range (Recommended)</option>
-                <option value="executive">🌟 Executive - Premium</option>
+                <option value="standard">Standard - Budget-Friendly</option>
+                <option value="deluxe">Deluxe - Mid-Range (Recommended)</option>
+                <option value="executive">Executive - Premium</option>
               </select>
             </label>
 
@@ -1337,7 +1373,7 @@ export function MakeMyTripForm() {
                     <option value="">
                       {!hotelId ? "Select hotel first" : availableRooms.length === 0 ? "No rooms available" : "Choose a room..."}
                     </option>
-                    {availableRooms.map((room) => (
+                    {availableRooms.map((room: any) => (
                       <option key={room.name} value={room.name}>
                         {room.name}
                       </option>
@@ -1349,7 +1385,10 @@ export function MakeMyTripForm() {
               <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
                 <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-green-900">🏨 Select Hotels for {selectedRoute?.city}</p>
+                    <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-900">
+                      <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
+                      <span>Select Hotels for {selectedRoute?.city}</span>
+                    </p>
                     <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
                   </div>
                   <div className="rounded-full border border-green-300 bg-white px-3 py-1 text-xs font-semibold text-green-900">
@@ -1421,7 +1460,7 @@ export function MakeMyTripForm() {
                               className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis"
                             >
                               <option value="">Select room...</option>
-                              {selectedHotel?.rooms.map((room) => (
+                              {selectedHotel?.rooms.map((room: any) => (
                                 <option key={room.name} value={room.name}>
                                   {room.name}
                                 </option>
@@ -1473,7 +1512,10 @@ export function MakeMyTripForm() {
               <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
                 <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-green-900">🏨 Select Hotels for {selectedCities[0]}</p>
+                    <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-900">
+                      <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
+                      <span>Select Hotels for {selectedCities[0]}</span>
+                    </p>
                     <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
                   </div>
                   <div className="rounded-full border border-green-300 bg-white px-3 py-1 text-xs font-semibold text-green-900">
@@ -1545,7 +1587,7 @@ export function MakeMyTripForm() {
                               className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis"
                             >
                               <option value="">Select room...</option>
-                              {selectedHotel?.rooms.map((room) => (
+                              {selectedHotel?.rooms.map((room: any) => (
                                 <option key={room.name} value={room.name}>
                                   {room.name}
                                 </option>
@@ -1584,8 +1626,9 @@ export function MakeMyTripForm() {
               </div>
             ) : isCustomCitySelection() ? (
               <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
-                <p className="text-sm font-semibold text-green-900 mb-4">
-                  🏨 Select Hotels for Each City
+                <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-900 mb-4">
+                  <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Select Hotels for Each City</span>
                 </p>
                 {effectiveSelectedCities.map((city) => {
                   const hotelsForCity = getHotelsByCity(city);
@@ -1647,7 +1690,7 @@ export function MakeMyTripForm() {
                             className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis"
                           >
                             <option value="">Select room...</option>
-                            {selectedHotel?.rooms.map((room) => (
+                            {selectedHotel?.rooms.map((room: any) => (
                               <option key={room.name} value={room.name}>
                                 {room.name}
                               </option>
@@ -1663,7 +1706,9 @@ export function MakeMyTripForm() {
 
             <label className="grid gap-2 text-sm font-medium text-stone-900">
               <span className="flex items-center gap-2">
-                🚗 Select Vehicle * {vehicleValid && <span className="text-green-600 text-lg">✓</span>}
+                <CarFront className={LABEL_ICON_CLASS} aria-hidden="true" />
+                <span>Select Vehicle *</span>
+                {vehicleValid && <Check className={VALIDATION_ICON_CLASS} aria-hidden="true" />}
               </span>
               <select
                 required
@@ -1697,7 +1742,10 @@ export function MakeMyTripForm() {
             {/* Vehicle capacity warning */}
             {totalGuests > 4 && (
               <div className="rounded-[15px] bg-blue-50 border border-blue-200 p-4 text-sm text-blue-800">
-                <p className="font-medium">👥 Your group size: {totalGuests} people</p>
+                <p className="inline-flex items-center gap-2 font-medium">
+                  <Users className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Your group size: {totalGuests} people</span>
+                </p>
                 <p className="text-xs mt-1">
                   {totalGuests <= 4 && "Corolla (4 seats) is available."}
                   {totalGuests > 4 && totalGuests <= 6 && "Note: Corolla unavailable. Honda BRV, Prado and larger vehicles recommended."}
