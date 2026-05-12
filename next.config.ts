@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year
+    // Disable built-in image optimization on hosts that block the internal image
+    // optimizer or do not allow the `/_next/image` proxy routes.
+    unoptimized: true,
   },
   
   // Security headers

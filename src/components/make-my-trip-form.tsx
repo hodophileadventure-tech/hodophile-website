@@ -7,13 +7,17 @@ import {
   CarFront,
   Check,
   Compass,
+  Sparkles,
   Hotel as HotelIcon,
+  Baby,
   Map,
   MapPin,
   Phone,
   PlaneTakeoff,
+  BedDouble,
   User,
   Users,
+  TriangleAlert,
 } from "lucide-react";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
@@ -1039,7 +1043,11 @@ export function MakeMyTripForm() {
           .confetti-piece { animation: confetti 2s ease-in forwards; }
         `}</style>
 
-        <div className="rounded-[15px] border-4 border-[#fcc000] bg-white shadow-lg p-8 transition-all duration-500">
+        <div className="relative overflow-hidden rounded-[30px] bg-gradient-to-br from-[#fff6d6] via-white to-[#fff1bd] p-[1.5px] shadow-[0_32px_80px_rgba(0,0,0,0.12)] transition-all duration-500">
+          <div className="pointer-events-none absolute left-[-110px] top-[-110px] h-60 w-60 rounded-full bg-[#fcc000]/18 blur-3xl" />
+          <div className="pointer-events-none absolute right-[-90px] bottom-[-90px] h-72 w-72 rounded-full bg-[#7f5a00]/10 blur-3xl" />
+          <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[#fcc000]/70 to-transparent" />
+          <div className="relative isolate overflow-hidden rounded-[28px] bg-[#FFF8Df] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_12px_30px_rgba(0,0,0,0.05)] ring-1 ring-[#f4d77d]/60 transition-all duration-500 sm:p-10">
           {/* Progress Bar */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
@@ -1079,11 +1087,18 @@ export function MakeMyTripForm() {
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-600 md:mx-0">
               Select your dates, destination, vehicle, and hotel. Get an instant quotation powered by real-time pricing.
             </p>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+              {['Instant quotation', 'Luxury planning'].map((tag) => (
+                <span key={tag} className="rounded-full border border-[#fcc000]/25 bg-[#fff7db] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8d6500] shadow-sm">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="grid gap-4">
             {/* Customer Info */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4 border-b border-stone-200">
+            <div className="grid grid-cols-1 gap-4 rounded-[24px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)] lg:grid-cols-2">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
                 <span className="flex items-center gap-2">
                   <User className={LABEL_ICON_CLASS} aria-hidden="true" />
@@ -1096,7 +1111,7 @@ export function MakeMyTripForm() {
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="Full name"
-                  className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 />
               </label>
               <label className="grid gap-2 text-sm font-medium text-stone-900">
@@ -1111,13 +1126,13 @@ export function MakeMyTripForm() {
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
                   placeholder="+92..."
-                  className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 />
               </label>
             </div>
 
             {/* Preplanned Trips */}
-            <div className="pb-4 border-b border-stone-200">
+            <div className="rounded-[24px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
                 <span className="flex items-center gap-2">
                   <Map className={LABEL_ICON_CLASS} aria-hidden="true" />
@@ -1126,7 +1141,7 @@ export function MakeMyTripForm() {
                 <select
                   value={selectedPreplannedTrip}
                   onChange={(e) => setSelectedPreplannedTrip(e.target.value)}
-                  className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 >
                   <option value="">Select a preplanned trip (optional)</option>
                   {featuredTourCards.map((tour) => (
@@ -1140,7 +1155,7 @@ export function MakeMyTripForm() {
 
             {/* Show preplanned trip details if selected */}
             {selectedPreplannedTrip && preplannedRoute && (
-              <div className="pb-4 border-b border-stone-200 bg-amber-50 p-4 rounded-lg">
+              <div className="rounded-[22px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_22px_rgba(252,192,0,0.06)]">
                 <p className="text-sm text-stone-700 font-medium">
                   <span className="inline-flex items-center gap-2">
                     <MapPin className={LABEL_ICON_CLASS} aria-hidden="true" />
@@ -1156,7 +1171,7 @@ export function MakeMyTripForm() {
 
             {/* Trip Details */}
             {!selectedPreplannedTrip && (
-            <>
+            <div className="grid gap-4 rounded-[24px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
             <label className="grid gap-2 text-sm font-medium text-stone-900">
               <span className="flex items-center gap-2">
                 <CalendarDays className={LABEL_ICON_CLASS} aria-hidden="true" />
@@ -1168,7 +1183,7 @@ export function MakeMyTripForm() {
                 required
                 value={tripDate}
                 onChange={(e) => setTripDate(e.target.value)}
-                className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
               />
             </label>
 
@@ -1187,7 +1202,7 @@ export function MakeMyTripForm() {
                     setOtherStartingPoint("");
                   }
                 }}
-                className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
               >
                 <option value="">Select your starting city...</option>
                 {[
@@ -1212,7 +1227,7 @@ export function MakeMyTripForm() {
                   value={otherStartingPoint}
                   onChange={(e) => setOtherStartingPoint(e.target.value)}
                   placeholder="Type your starting city"
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 />
               </label>
             )}
@@ -1226,7 +1241,7 @@ export function MakeMyTripForm() {
                 <select
                   value={tourType}
                   onChange={(e) => setTourType(e.target.value)}
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 >
                   <option value="private">Private Tour</option>
                 </select>
@@ -1241,7 +1256,7 @@ export function MakeMyTripForm() {
               <select
                 value={travelMode}
                 onChange={(e) => setTravelMode(e.target.value)}
-                className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
               >
                 <option value="road">By Road</option>
                 <option value="air">By Air</option>
@@ -1249,15 +1264,15 @@ export function MakeMyTripForm() {
             </label>
 
             {/* Individual City Selection - Always visible for private tours */}
-            <div className="rounded-[15px] border border-blue-200 bg-blue-50 p-4">
-              <p className="text-sm font-semibold text-blue-900 mb-4">
+            <div className="rounded-[20px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
+              <p className="text-sm font-semibold text-[#6e5200] mb-4">
                 Select Destination Cities (Multiple Allowed) *
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {sortedCitiesWithHotels.map((city) => (
                   <label
                     key={city}
-                    className="flex items-center gap-2 p-3 rounded-[10px] border border-blue-200 bg-white cursor-pointer hover:bg-blue-50 transition"
+                    className="flex items-center gap-2 p-3 rounded-[12px] border border-[#f4d77d] bg-[#FFF8Df] cursor-pointer hover:bg-[#fffdf3] transition"
                   >
                     <input
                       type="checkbox"
@@ -1270,24 +1285,24 @@ export function MakeMyTripForm() {
                 ))}
               </div>
               {effectiveSelectedCities.length > 0 && (
-                <div className="mt-3 space-y-2 text-xs text-blue-800">
-                  <div className="flex items-center justify-between">
-                    <div>Selected: {effectiveSelectedCities.join(", ")}</div>
+                <div className="mt-3 space-y-2 text-xs text-[#6e5200]">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div className="max-w-full break-words">Selected: {effectiveSelectedCities.join(", ")}</div>
                     {shouldAutoIncludeIslamabad() && (
-                      <div className="ml-4 text-sm text-stone-700">Automatically added: <span className="font-semibold">Islamabad (2 nights)</span></div>
+                      <div className="ml-0 max-w-full break-words text-sm text-stone-700 sm:ml-4">Automatically added: <span className="font-semibold">Islamabad (2 nights)</span></div>
                     )}
                   </div>
                   {shouldAutoIncludeIslamabad() && (
-                    <div className="mt-2 rounded-md bg-[#fff7e0] border border-[#ffd28a] p-3 text-sm text-stone-900 flex items-center justify-between">
-                      <div>
+                    <div className="mt-2 rounded-[14px] bg-[#fff2c8] border border-[#f4d77d] p-3 text-sm text-stone-900 flex flex-wrap items-start justify-between gap-3">
+                      <div className="min-w-0 max-w-full">
                         <div className="font-medium">Islamabad (2 nights) added automatically</div>
                         <div className="text-xs text-stone-700">We added Islamabad because your starting city requires an Islamabad stay. You can change nights or select Islamabad hotel below.</div>
                       </div>
-                      <div className="ml-4">
+                      <div className="ml-0 sm:ml-4 shrink-0">
                         <button
                           type="button"
                           onClick={() => setHideAutoIslamabad(true)}
-                          className="rounded px-3 py-1 text-sm font-semibold text-[#8a4b00] border border-[#8a4b00] bg-white hover:bg-[#fff3db]"
+                          className="rounded-full px-3 py-1 text-sm font-semibold text-[#8a4b00] border border-[#8a4b00] bg-[#FFF8Df] hover:bg-[#fff3db]"
                         >
                           Remove Islamabad
                         </button>
@@ -1296,8 +1311,8 @@ export function MakeMyTripForm() {
                   )}
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                     {effectiveSelectedCities.map((city) => (
-                      <label key={city} className="grid gap-1 rounded-[10px] border border-blue-200 bg-white p-2 text-stone-900">
-                        <span className="text-[11px] font-semibold uppercase tracking-wide text-blue-800">
+                      <label key={city} className="grid gap-1 rounded-[12px] border border-[#f4d77d] bg-[#FFF8Df] p-2 text-stone-900 shadow-sm">
+                        <span className="text-[11px] font-semibold uppercase tracking-wide text-[#6e5200]">
                           {city} {isSingleCustomCity ? "days" : "nights"}
                         </span>
                         <input
@@ -1310,7 +1325,7 @@ export function MakeMyTripForm() {
                               [city]: Math.max(1, parseInt(e.target.value) || 1),
                             })
                           }
-                          className="rounded-[8px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                          className="rounded-[8px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                         />
                       </label>
                     ))}
@@ -1318,7 +1333,7 @@ export function MakeMyTripForm() {
                 </div>
               )}
             </div>
-            </>
+            </div>
             )}
 
             {/* Hotel Category Selection */}
@@ -1330,7 +1345,7 @@ export function MakeMyTripForm() {
               <select
                 value={hotelCategory}
                 onChange={(e) => setHotelCategory(e.target.value)}
-                className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
               >
                 <option value="standard">Standard - Budget-Friendly</option>
                 <option value="deluxe">Deluxe - Mid-Range (Recommended)</option>
@@ -1348,7 +1363,7 @@ export function MakeMyTripForm() {
                     value={hotelId}
                     onChange={(e) => setHotelId(e.target.value)}
                     disabled={!routeId}
-                    className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 appearance-none w-full"
+                    className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 appearance-none w-full"
                   >
                     <option value="">
                       {!routeId ? "Select route first" : availableHotels.length === 0 ? "No hotels available" : "Choose a hotel..."}
@@ -1368,7 +1383,7 @@ export function MakeMyTripForm() {
                     value={roomId}
                     onChange={(e) => setRoomId(e.target.value)}
                     disabled={!hotelId}
-                    className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 appearance-none w-full overflow-hidden text-ellipsis"
+                    className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 appearance-none w-full overflow-hidden text-ellipsis"
                   >
                     <option value="">
                       {!hotelId ? "Select hotel first" : availableRooms.length === 0 ? "No rooms available" : "Choose a room..."}
@@ -1391,7 +1406,7 @@ export function MakeMyTripForm() {
                     </p>
                     <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
                   </div>
-                  <div className="rounded-full border border-green-300 bg-white px-3 py-1 text-xs font-semibold text-green-900">
+                  <div className="rounded-full border border-[#f4d77d] bg-[#FFF8Df] px-3 py-1 text-xs font-semibold text-[#6e5200]">
                     Total nights: {singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0)} / {singleCityNightCount}
                   </div>
                 </div>
@@ -1400,7 +1415,7 @@ export function MakeMyTripForm() {
                   {singleCityHotelStays.map((stay, index) => {
                     const selectedHotel = availableHotels.find((hotel) => hotel.id === stay.hotelId);
                     return (
-                      <div key={`${stay.hotelId}-${index}`} className="rounded-[10px] border border-green-200 bg-white p-3">
+                      <div key={`${stay.hotelId}-${index}`} className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] p-3 shadow-sm">
                         <div className="mb-3 flex items-center justify-between gap-2">
                           <p className="text-xs uppercase tracking-widest text-green-800 font-semibold">Stay {index + 1}</p>
                           <div className="flex items-center gap-2">
@@ -1433,7 +1448,7 @@ export function MakeMyTripForm() {
                                   )
                                 );
                               }}
-                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                              className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                             >
                               <option value="">Select hotel...</option>
                               {availableHotels.map((hotel) => (
@@ -1457,7 +1472,7 @@ export function MakeMyTripForm() {
                                 )
                               }
                               disabled={!stay.hotelId}
-                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis"
+                              className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 overflow-hidden text-ellipsis"
                             >
                               <option value="">Select room...</option>
                               {selectedHotel?.rooms.map((room: any) => (
@@ -1483,7 +1498,7 @@ export function MakeMyTripForm() {
                                   )
                                 )
                               }
-                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                              className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                             />
                           </label>
                         </div>
@@ -1501,7 +1516,7 @@ export function MakeMyTripForm() {
                         { hotelId: "", roomId: "", nights: 1 },
                       ])
                     }
-                    className="rounded-[10px] border border-green-400 bg-white px-4 py-2 text-sm font-semibold text-green-900 hover:bg-green-50"
+                    className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-2 text-sm font-semibold text-[#6e5200] hover:bg-[#fffdf3]"
                   >
                     + Add Another Hotel
                   </button>
@@ -1518,7 +1533,7 @@ export function MakeMyTripForm() {
                     </p>
                     <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
                   </div>
-                  <div className="rounded-full border border-green-300 bg-white px-3 py-1 text-xs font-semibold text-green-900">
+                  <div className="rounded-full border border-[#f4d77d] bg-[#FFF8Df] px-3 py-1 text-xs font-semibold text-[#6e5200]">
                     Total nights: {singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0)} / {customSingleCityNightCount}
                   </div>
                 </div>
@@ -1527,7 +1542,7 @@ export function MakeMyTripForm() {
                   {singleCityHotelStays.map((stay, index) => {
                     const selectedHotel = availableHotels.find((hotel) => hotel.id === stay.hotelId);
                     return (
-                      <div key={`${stay.hotelId}-${index}`} className="rounded-[10px] border border-green-200 bg-white p-3">
+                      <div key={`${stay.hotelId}-${index}`} className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] p-3 shadow-sm">
                         <div className="mb-3 flex items-center justify-between gap-2">
                           <p className="text-xs uppercase tracking-widest text-green-800 font-semibold">Stay {index + 1}</p>
                           <div className="flex items-center gap-2">
@@ -1560,7 +1575,7 @@ export function MakeMyTripForm() {
                                   )
                                 );
                               }}
-                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                              className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                             >
                               <option value="">Select hotel...</option>
                               {availableHotels.map((hotel) => (
@@ -1584,7 +1599,7 @@ export function MakeMyTripForm() {
                                 )
                               }
                               disabled={!stay.hotelId}
-                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis"
+                              className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 overflow-hidden text-ellipsis"
                             >
                               <option value="">Select room...</option>
                               {selectedHotel?.rooms.map((room: any) => (
@@ -1610,7 +1625,7 @@ export function MakeMyTripForm() {
                                   )
                                 )
                               }
-                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                              className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                             />
                           </label>
                         </div>
@@ -1640,7 +1655,7 @@ export function MakeMyTripForm() {
                   return (
                     <div
                       key={city}
-                      className="mb-4 pb-4 border-b border-green-200 last:border-b-0 rounded-[10px] bg-white p-3"
+                      className="mb-4 pb-4 border-b border-[#f4d77d] last:border-b-0 rounded-[10px] bg-[#FFF8Df] p-3"
                     >
                       <p className="text-xs uppercase tracking-widest text-green-800 mb-3 font-semibold">
                         {city}
@@ -1661,7 +1676,7 @@ export function MakeMyTripForm() {
                                 },
                               })
                             }
-                            className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                            className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                           >
                             <option value="">Select hotel...</option>
                             {hotelsForCity.map((hotel) => (
@@ -1687,7 +1702,7 @@ export function MakeMyTripForm() {
                               })
                             }
                             disabled={!currentSelection?.hotelId}
-                            className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500 overflow-hidden text-ellipsis"
+                            className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 overflow-hidden text-ellipsis"
                           >
                             <option value="">Select room...</option>
                             {selectedHotel?.rooms.map((room: any) => (
@@ -1715,7 +1730,7 @@ export function MakeMyTripForm() {
                 value={vehicleName}
                 onChange={(e) => setVehicleName(e.target.value)}
                 disabled={!routeId && !isCustomCitySelection()}
-                className="glow-focus rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-stone-100 disabled:text-stone-500"
+                className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500"
               >
                 <option value="">
                   {!routeId && !isCustomCitySelection() ? "Select destination first" : vehicleOptions.length === 0 ? "No vehicles available" : "Choose a vehicle..."}
@@ -1741,7 +1756,7 @@ export function MakeMyTripForm() {
 
             {/* Vehicle capacity warning */}
             {totalGuests > 4 && (
-              <div className="rounded-[15px] bg-blue-50 border border-blue-200 p-4 text-sm text-blue-800">
+              <div className="rounded-[18px] bg-[#FFF8Df] border border-[#f4d77d] p-4 text-sm text-[#6e5200] shadow-[0_8px_18px_rgba(252,192,0,0.06)]">
                 <p className="inline-flex items-center gap-2 font-medium">
                   <Users className={LABEL_ICON_CLASS} aria-hidden="true" />
                   <span>Your group size: {totalGuests} people</span>
@@ -1755,43 +1770,45 @@ export function MakeMyTripForm() {
               </div>
             )}
 
-            {/* Review Your Choices Section */}
-            <div className="mb-6 pt-4 border-t border-stone-200">
-              <h2 className="font-serif text-2xl leading-tight font-bold">
-                <span className="text-black">Review your</span> <span className="text-[#FCC000]">choices</span>
-              </h2>
-            </div>
-
             {/* Guest & Room Details */}
             <div className="grid gap-4 grid-cols-1 xl:grid-cols-3">
               <label className="grid gap-2 text-sm font-medium text-stone-900">
-                🛌 Number of Rooms (Auto-Calculated)
-                <div className="rounded-[15px] border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-900">
+                <span className="flex items-center gap-2">
+                  <BedDouble className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Number of Rooms (Auto-Calculated)</span>
+                </span>
+                <div className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900">
                   <div className="font-semibold">{numberOfRooms} {numberOfRooms === 1 ? "Room" : "Rooms"}</div>
                   <div className="text-xs text-stone-600 mt-1">4 people max/room</div>
                 </div>
               </label>
 
               <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
-                🧑‍🤝‍🧑 Adults *
+                <span className="flex items-center gap-2">
+                  <Users className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Adults *</span>
+                </span>
                 <input
                   type="number"
                   min="1"
                   required
                   value={adults}
                   onChange={(e) => setAdults(parseInt(e.target.value) || 1)}
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 w-full"
+                  className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 w-full"
                 />
               </label>
 
               <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
-                👶 Kids
+                <span className="flex items-center gap-2">
+                  <Baby className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Kids</span>
+                </span>
                 <input
                   type="number"
                   min="0"
                   value={kids}
                   onChange={(e) => handleKidsCountChange(parseInt(e.target.value) || 0)}
-                  className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 w-full"
+                  className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 w-full"
                 />
               </label>
             </div>
@@ -1808,7 +1825,7 @@ export function MakeMyTripForm() {
                       placeholder={`Kid ${index + 1} age`}
                       value={kidsAges[index] || ""}
                       onChange={(e) => handleKidsAgeChange(index, e.target.value)}
-                      className="rounded-[15px] border border-stone-200 bg-white px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                      className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                     />
                   ))}
                 </div>
@@ -1830,7 +1847,10 @@ export function MakeMyTripForm() {
 
             {!quotation && tripDate && (routeId || isCustomCitySelection()) && vehicleName && (
               <div className="rounded-[15px] bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
-                ⚠️ Calculating quotation... If this persists, check browser console for details. Make sure all fields are properly selected.
+                <span className="inline-flex items-center gap-2">
+                  <TriangleAlert className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Calculating quotation... If this persists, check browser console for details. Make sure all fields are properly selected.</span>
+                </span>
               </div>
             )}
 
@@ -1846,10 +1866,14 @@ export function MakeMyTripForm() {
                   Processing...
                 </>
               ) : (
-                "✨ Get Quotation"
+                <span className="inline-flex items-center gap-2">
+                  <Sparkles className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Get Quotation</span>
+                </span>
               )}
             </button>
           </form>
+          </div>
         </div>
       </div>
     </div>

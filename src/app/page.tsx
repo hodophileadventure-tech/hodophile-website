@@ -1,4 +1,4 @@
-import Image from "next/image";
+// Use native <img> on homepage to avoid Next.js image optimizer proxy
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -210,15 +210,11 @@ export default function Home() {
               key={destination.name}
               className="group overflow-hidden rounded-[30px] border border-stone-200 bg-white p-3 shadow-[0_14px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:border-[#fcc000]"
             >
-              <div className="relative h-64 overflow-hidden rounded-2xl">
-                <Image
+                <div className="relative h-64 overflow-hidden rounded-2xl">
+                <img
                   src={destination.image}
                   alt={destination.name}
-                  fill
-                  priority
-                  quality={90}
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover transition duration-700 group-hover:scale-105"
+                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
               </div>
 
@@ -253,10 +249,9 @@ export default function Home() {
             {packageCards.map((tour) => (
               <article key={tour.name} className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
                 <div className="relative h-[240px] overflow-hidden bg-stone-100">
-                  <Image
+                  <img
                     src={tour.image}
                     alt={tour.name}
-                    fill
                     sizes="(max-width: 1280px) 50vw, 25vw"
                     className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 hover:scale-[1.02]"
                   />
@@ -298,13 +293,7 @@ export default function Home() {
             {serviceHighlights.map((item) => (
             <article key={item.title} className="rounded-2xl border-4 border-[#fcc000] bg-white p-6 shadow-sm">
               <div className="h-11 w-11 overflow-hidden rounded-full border border-stone-200 bg-stone-100">
-                <Image
-                  src={item.icon}
-                  alt={item.title}
-                  width={44}
-                  height={44}
-                  className="h-full w-full object-cover"
-                />
+                <img src={item.icon} alt={item.title} width={44} height={44} className="h-full w-full object-cover" />
               </div>
               <h3 className="mt-5 text-xl font-semibold">{item.title}</h3>
               <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>
