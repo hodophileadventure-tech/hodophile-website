@@ -26,10 +26,6 @@ export function PageShell({ children, wide = false }: PageShellProps) {
       <footer className="border-t border-[#d5a700] bg-[#ffc000]">
         <div className="mx-auto max-w-[96rem] grid gap-10 px-4 py-10 md:grid-cols-2 xl:grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] lg:px-10 xl:px-14">
           <div className="max-w-2xl">
-            <div className="mb-5 inline-flex items-center gap-3">
-              <Image src="/logo.png" alt="Hodophile Adventures" width={58} height={58} className="h-9 w-auto" />
-              <h2 className="text-lg font-semibold uppercase tracking-[0.1em] text-black">Hodophile Adventures</h2>
-            </div>
             <h3 className="text-2xl font-semibold text-black">Corporate Head Office</h3>
             <div className="mt-4 grid gap-1 text-sm leading-7 text-black/90">
               <p>Hodophile Adventure, Plot# 111-113C, Dupatta Gali, PECHS, Block2, Tariq Road, Karachi, Pakistan, 75400</p>
@@ -107,8 +103,8 @@ export function PageShell({ children, wide = false }: PageShellProps) {
             </div>
           </div>
 
-          <div className="xl:pl-4">
-            <h3 className="text-2xl font-semibold uppercase text-black">Customer Service</h3>
+          <div className="xl:pl-4 flex flex-col items-center">
+            <h3 className="text-2xl font-semibold uppercase text-black text-center">Customer Service</h3>
             <div className="mt-5 overflow-hidden rounded-2xl bg-[#ffd24d] p-3">
               <Image
                 src="/images/footer/service-24-7.png"
@@ -121,7 +117,7 @@ export function PageShell({ children, wide = false }: PageShellProps) {
           </div>
 
           <div className="xl:pl-4">
-            <h3 className="text-2xl font-semibold uppercase text-black">Quick Links</h3>
+            <h3 className="text-2xl font-semibold uppercase text-black text-left">Quick Links</h3>
             <div className="mt-5 grid gap-2 text-base font-medium text-black">
               <Link href="/about-us" className="inline-flex items-center gap-2 transition hover:translate-x-1">
                 <span aria-hidden="true">▶</span>
@@ -150,8 +146,8 @@ export function PageShell({ children, wide = false }: PageShellProps) {
             </div>
           </div>
 
-          <div className="xl:pl-4">
-            <h3 className="text-2xl font-semibold uppercase text-black">100% Satisfaction</h3>
+          <div className="xl:pl-4 flex flex-col items-center">
+            <h3 className="text-2xl font-semibold uppercase text-black text-center">100% Satisfaction</h3>
             <div className="mt-5 overflow-hidden rounded-2xl bg-[#ffd24d] p-3">
               <Image
                 src="/images/footer/guarantee.png"
@@ -164,7 +160,7 @@ export function PageShell({ children, wide = false }: PageShellProps) {
           </div>
 
           <div className="xl:pl-4">
-            <h3 className="text-xl font-semibold uppercase text-black">Our Affiliations</h3>
+            <h3 className="text-xl font-semibold uppercase text-black text-left">Our Affiliations</h3>
             <div className="mt-5 flex flex-col gap-6">
               <div className="flex flex-row gap-6 items-center">
                 <div className="h-20 w-20 flex-shrink-0">

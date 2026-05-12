@@ -90,6 +90,16 @@ export function MakeMyTripForm() {
   const [customerPhone, setCustomerPhone] = useState("");
   const [selectedPreplannedTrip, setSelectedPreplannedTrip] = useState("");
   const [preplannedRoute, setPreplannedRoute] = useState<Route | null>(null);
+  const [showLuxuryDropdown, setShowLuxuryDropdown] = useState(false);
+  const [selectedLuxuryPackage, setSelectedLuxuryPackage] = useState<string | null>(null);
+  const [showHoneymoonDropdown, setShowHoneymoonDropdown] = useState(false);
+  const [selectedHoneymoonTour, setSelectedHoneymoonTour] = useState<string | null>(null);
+
+  // Luxury planning packages mapping
+  const luxuryPackages: Record<string, { label: string; routeSlug: string; cities: string[] }> = {
+    "skardu-deosai": { label: "5 Days Skardu & Deosai", routeSlug: "skardu-shigar-shangrila", cities: ["Skardu"] },
+    "hunza-skardu": { label: "8 Day Hunza & Skardu", routeSlug: "naran-hunza-skardu-deosai", cities: ["Hunza", "Skardu"] },
+  };
 
   // UI state
   const [quotation, setQuotation] = useState<QuotationBreakdown | null>(null);
@@ -102,6 +112,117 @@ export function MakeMyTripForm() {
   const [mandatoryJeepCost, setMandatoryJeepCost] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const previousQuotationRef = useRef<QuotationBreakdown | null>(null);
+  const luxuryDropdownRef = useRef<HTMLDivElement | null>(null);
+  const honeymoonDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  // Close luxury dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (luxuryDropdownRef.current && !luxuryDropdownRef.current.contains(event.target as Node)) {
+        setShowLuxuryDropdown(false);
+      }
+      if (honeymoonDropdownRef.current && !honeymoonDropdownRef.current.contains(event.target as Node)) {
+        setShowHoneymoonDropdown(false);
+      }
+    };
+    if (showLuxuryDropdown || showHoneymoonDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [showLuxuryDropdown, showHoneymoonDropdown]);
+
+  // Handle luxury package selection
+  const handleLuxuryPackageSelect = (packageKey: string) => {
+    const packageData = luxuryPackages[packageKey];
+    if (!packageData) return;
+
+    setSelectedLuxuryPackage(packageKey);
+    setShowLuxuryDropdown(false);
+    
+    // Select the route
+    const matchedRoute = routes.find((r) => r.slug === packageData.routeSlug);
+    if (matchedRoute) {
+      // Automatically set travel mode to "By Air"
+      setTravelMode("air");
+
+      // Auto-select Prado as vehicle
+      setVehicleName("Prado");
+
+      // Set hotel category to executive
+      setHotelCategory("executive");
+
+      // Set default trip date if not already set (use today's date or next week)
+      if (!tripDate) {
+        const defaultDate = new Date();
+        defaultDate.setDate(defaultDate.getDate() + 7);
+        setTripDate(defaultDate.toISOString().split('T')[0]);
+      }
+
+      // Ensure we have at least 2 adults and 0 kids for calculations
+      if (adults < 2) setAdults(2);
+      if (kids < 0) setKids(0);
+
+      // For luxury packages we treat the form as a custom-city selection so
+      // the UI shows per-city executive hotel lists and we can set exact days.
+      // Clear any routeId so isCustomCitySelection() becomes true.
+      setRouteId("");
+
+      // Use package cities (e.g., ["Skardu"] or ["Hunza","Skardu"]).
+      setSelectedCities(packageData.cities);
+
+      // Set total days based on package and distribute nights across cities.
+      const packageDays = packageKey === "skardu-deosai" ? 5 : packageKey === "hunza-skardu" ? 8 : matchedRoute.duration;
+      const totalNights = Math.max(1, packageDays - 1);
+      const cities = packageData.cities;
+      const base = Math.floor(totalNights / cities.length);
+      let rem = totalNights % cities.length;
+      const daysPerCity: Record<string, number> = {};
+      for (const city of cities) {
+        const nightsForCity = base + (rem > 0 ? 1 : 0);
+        rem = Math.max(0, rem - 1);
+        // Store days (not nights) because other code expects days in customCityNights
+        daysPerCity[city] = nightsForCity + 0; // nights -> add 0 then later convert to days below
+      }
+      // Convert nights to days (days = nights + 1)
+      const daysPerCityAsDays: Record<string, number> = {};
+      for (const city of Object.keys(daysPerCity)) {
+        daysPerCityAsDays[city] = daysPerCity[city] + 1;
+      }
+      setCustomCityNights(daysPerCityAsDays);
+
+      // Auto-initialize multi-city hotels with executive category for each package city
+      const defaults: Record<string, { hotelId: string; roomId: string }> = {};
+      for (const city of cities) {
+        const hotelsForCity = getHotelsByCity(city).filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+        if (hotelsForCity.length > 0) {
+          const defaultHotelId = selectHotelByCategory(hotelsForCity, "executive");
+          const selectedHotel = hotelsForCity.find((h) => h.id === defaultHotelId);
+          const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms.filter((r) => /executive/i.test(r.name)), "executive") : "";
+          defaults[city] = { hotelId: defaultHotelId, roomId: defaultRoom };
+        }
+      }
+      setMultiCityHotels(defaults);
+
+      // Clear error message
+      setSubmitError("");
+    }
+  };
+
+  // Handle honeymoon tour selection from featured tours
+  const handleHoneymoonTourSelect = (tourSlug: string) => {
+    const routeSlug = PREPLANNED_TRIP_MAP[tourSlug];
+    const matchedRoute = routes.find((r) => r.slug === routeSlug);
+    if (matchedRoute) {
+      setSelectedHoneymoonTour(tourSlug);
+      setShowHoneymoonDropdown(false);
+      setRouteId(matchedRoute.id);
+      setSelectedCities(matchedRoute.city === "Multi-City" ? [matchedRoute.city] : [matchedRoute.city]);
+      setHotelCategory("standard");
+      setVehicleName("");
+      setMultiCityHotels({});
+      // User can now select travel mode, vehicle, hotel, etc.
+    }
+  };
 
   // Handle preplanned trip selection
   useEffect(() => {
@@ -412,7 +533,10 @@ export function MakeMyTripForm() {
       return multiCityHotels;
     }
 
-    const hotelsForIsb = getHotelsByCity("Islamabad");
+    let hotelsForIsb = getHotelsByCity("Islamabad");
+    if (selectedLuxuryPackage) {
+      hotelsForIsb = hotelsForIsb.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+    }
     const defaultHotelId = selectHotelByCategory(hotelsForIsb, hotelCategory);
     const selectedHotel = hotelsForIsb.find((h) => h.id === defaultHotelId);
     const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "";
@@ -424,9 +548,12 @@ export function MakeMyTripForm() {
   }, [multiCityHotels, hotelCategory, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad]);
 
   const initializeSingleCityHotelStays = (route: Route) => {
-    const hotels = getHotelsByCity(route.city).filter(
+    let hotels = getHotelsByCity(route.city).filter(
       (hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory(),
     );
+    if (selectedLuxuryPackage) {
+      hotels = hotels.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+    }
 
     setAvailableHotels(hotels);
 
@@ -457,7 +584,10 @@ export function MakeMyTripForm() {
   };
 
   const initializeCustomSingleCityHotelStays = (city: string, nights: number) => {
-    const hotels = getHotelsByCity(city).filter((hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory());
+    let hotels = getHotelsByCity(city).filter((hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory());
+    if (selectedLuxuryPackage) {
+      hotels = hotels.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+    }
     setAvailableHotels(hotels);
 
     if (singleCityHotelStays.length === 0) {
@@ -553,9 +683,12 @@ export function MakeMyTripForm() {
       } else if (supportsMultipleHotelsInSingleCity) {
         initializeSingleCityHotelStays(selectedRoute);
       } else {
-        const hotels = getHotelsByCity(selectedRoute.city).filter(
+        let hotels = getHotelsByCity(selectedRoute.city).filter(
           (hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory(),
         );
+        if (selectedLuxuryPackage) {
+          hotels = hotels.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+        }
         setAvailableHotels(hotels);
 
         // Auto-select hotel based on category (not just first)
@@ -587,10 +720,14 @@ export function MakeMyTripForm() {
     if (hotelId) {
       const selectedHotel = availableHotels.find((h) => h.id === hotelId);
       if (selectedHotel) {
-        setAvailableRooms(selectedHotel.rooms);
-        
-        // Auto-select room based on category using price tier
-        const defaultRoom = selectRoomByCategory(selectedHotel.rooms, hotelCategory);
+        // If luxury package active, only expose rooms that explicitly include 'executive' in the name
+        const roomsToShow = selectedLuxuryPackage
+          ? selectedHotel.rooms.filter((r) => /executive/i.test(r.name))
+          : selectedHotel.rooms;
+        setAvailableRooms(roomsToShow);
+
+        // Auto-select room based on category using price tier (within filtered rooms)
+        const defaultRoom = selectRoomByCategory(roomsToShow, hotelCategory);
         setRoomId(defaultRoom);
       }
     }
@@ -1035,12 +1172,17 @@ export function MakeMyTripForm() {
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(40px) rotate(360deg); opacity: 0; }
           }
+          @keyframes fast-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
           .glow-focus:focus { 
             animation: glow-pulse 1.5s infinite;
             border-color: #fcc000;
           }
           .spinner { animation: spin 1s linear infinite; }
           .confetti-piece { animation: confetti 2s ease-in forwards; }
+          .blink-fast { animation: fast-blink 0.6s ease-in-out infinite; }
         `}</style>
 
         <div className="relative overflow-hidden rounded-[30px] bg-gradient-to-br from-[#fff6d6] via-white to-[#fff1bd] p-[1.5px] shadow-[0_32px_80px_rgba(0,0,0,0.12)] transition-all duration-500">
@@ -1088,11 +1230,63 @@ export function MakeMyTripForm() {
               Select your dates, destination, vehicle, and hotel. Get an instant quotation powered by real-time pricing.
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2 md:justify-start">
-              {['Instant quotation', 'Luxury planning'].map((tag) => (
-                <span key={tag} className="rounded-full border border-[#fcc000]/25 bg-[#fff7db] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#8d6500] shadow-sm">
-                  {tag}
-                </span>
-              ))}
+              {/* Honeymoon Gateway Button with Featured Tours Dropdown */}
+              <div ref={honeymoonDropdownRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowHoneymoonDropdown(!showHoneymoonDropdown)}
+                  className="relative inline-flex items-center rounded-full border-4 border-[#fcc000] bg-[#fff7db] px-3 py-1 text-[9px] font-bold uppercase tracking-[0.22em] text-[#8d6500] shadow-sm transition hover:bg-[#fff2c8] blink-fast"
+                >
+                  💕 Honeymoon Gateway
+                </button>
+                
+                {/* Featured Tours Dropdown */}
+                {showHoneymoonDropdown && (
+                  <div className="absolute top-full left-0 mt-2 w-max max-h-64 overflow-y-auto rounded-[16px] border border-[#fcc000]/40 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.15)] z-50">
+                    <div className="py-2">
+                      {featuredTourCards.map((tour) => (
+                        <button
+                          key={tour.slug}
+                          type="button"
+                          onClick={() => handleHoneymoonTourSelect(tour.slug)}
+                          className="block w-full px-4 py-3 text-left text-sm font-semibold text-stone-900 hover:bg-[#fff8df] transition"
+                        >
+                          {tour.title}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Luxury Planning Button with Dropdown */}
+              <div ref={luxuryDropdownRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowLuxuryDropdown(!showLuxuryDropdown)}
+                  className="relative inline-flex items-center rounded-full border-4 border-[#fcc000] bg-[#fff7db] px-3 py-1 text-[9px] font-bold uppercase tracking-[0.22em] text-[#8d6500] shadow-sm transition hover:bg-[#fff2c8] hover:border-[#fcc000] blink-fast"
+                >
+                  <span>✨ Luxury Planning</span>
+                </button>
+                
+                {/* Dropdown Menu */}
+                {showLuxuryDropdown && (
+                  <div className="absolute top-full left-0 mt-2 w-max rounded-[16px] border-2 border-[#fcc000] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.15)] z-50">
+                    <div className="py-2">
+                      {Object.entries(luxuryPackages).map(([key, pkg]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => handleLuxuryPackageSelect(key)}
+                          className="block w-full px-4 py-3 text-left text-sm font-semibold text-stone-900 hover:bg-[#fff8df] transition"
+                        >
+                          {pkg.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -1439,7 +1633,242 @@ export function MakeMyTripForm() {
                               onChange={(e) => {
                                 const nextHotelId = e.target.value;
                                 const nextHotel = availableHotels.find((hotel) => hotel.id === nextHotelId);
-                                const nextRoom = nextHotel ? selectRoomByCategory(nextHotel.rooms, hotelCategory) : "";
+                                const roomsToUse = nextHotel && selectedLuxuryPackage ? nextHotel.rooms.filter((r) => /executive/i.test(r.name)) : nextHotel?.rooms || [];
+                                const nextRoom = nextHotel ? selectRoomByCategory(roomsToUse, hotelCategory) : "";
+                                setSingleCityHotelStays((current) =>
+                                  current.map((currentStay, currentIndex) =>
+                                    currentIndex === index
+                                      ? { ...currentStay, hotelId: nextHotelId, roomId: nextRoom }
+                                      : currentStay
+                                  )
+                                );
+                              }}
+                              className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                            >
+                              <option value="">Select hotel...</option>
+                              {availableHotels
+                                .filter((h) => !selectedLuxuryPackage || h.rooms?.some((r) => /executive/i.test(r.name)))
+                                .map((hotel) => (
+                                  <option key={hotel.id} value={hotel.id}>
+                                    {hotel.name}
+                                  </option>
+                                ))}
+                            </select>
+                          </label>
+
+                          <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
+                            Room Type *
+                            <select
+                              required
+                              value={stay.roomId}
+                              onChange={(e) =>
+                                setSingleCityHotelStays((current) =>
+                                  current.map((currentStay, currentIndex) =>
+                                    currentIndex === index ? { ...currentStay, roomId: e.target.value } : currentStay
+                                  )
+                                )
+                              }
+                              disabled={!stay.hotelId}
+                              className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 overflow-hidden text-ellipsis"
+                            >
+                              <option value="">Select room...</option>
+                              {selectedHotel?.rooms
+                                .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
+                                .map((room: any) => (
+                                  <option key={room.name} value={room.name}>
+                                    {room.name}
+                                  </option>
+                                ))}
+                            </select>
+                          </label>
+
+                          <label className="grid gap-2 text-sm font-medium text-stone-900">
+                            Nights *
+                            <input
+                              type="number"
+                              min="1"
+                              value={stay.nights}
+                              onChange={(e) =>
+                                setSingleCityHotelStays((current) =>
+                                  current.map((currentStay, currentIndex) =>
+                                    currentIndex === index
+                                      ? { ...currentStay, nights: Math.max(1, parseInt(e.target.value) || 1) }
+                                      : currentStay
+                                  )
+                                )
+                              }
+                              className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSingleCityHotelStays((current) => [
+                        ...current,
+                        { hotelId: "", roomId: "", nights: 1 },
+                      ])
+                    }
+                    className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-2 text-sm font-semibold text-[#6e5200] hover:bg-[#fffdf3]"
+                  >
+                    + Add Another Hotel
+                  </button>
+                  <p className="text-xs text-green-800">Total nights must equal {singleCityNightCount} to generate the quotation.</p>
+                </div>
+              </div>
+            ) : selectedLuxuryPackage ? (
+              <div className="rounded-[15px] border border-[#7f5a00]/30 bg-[#fffef7] p-4 shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+                <p className="inline-flex items-center gap-2 text-sm font-bold text-[#7f5a00] mb-4">
+                  <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Executive Hotels for Each City</span>
+                </p>
+                {selectedCities.map((city) => {
+                  let hotelsForCity = getHotelsByCity(city);
+                  if (selectedLuxuryPackage) {
+                    hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+                  }
+                  const currentSelection = multiCityHotels[city];
+                  const selectedHotel = hotelsForCity.find(
+                    (h) => h.id === currentSelection?.hotelId
+                  );
+
+                  return (
+                    <div
+                      key={city}
+                      className="mb-4 pb-4 border-b border-[#f4d77d] last:border-b-0 rounded-[10px] bg-[#FFF8Df] p-3"
+                    >
+                      <p className="text-xs uppercase tracking-widest text-[#7f5a00] mb-3 font-bold">
+                        {city}
+                      </p>
+                      <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
+                        <label className="grid gap-2 text-sm font-medium text-stone-900">
+                          Hotel (Executive) *
+                          <select
+                            required
+                            value={currentSelection?.hotelId || ""}
+                            onChange={(e) =>
+                              setMultiCityHotels({
+                                ...multiCityHotels,
+                                [city]: {
+                                  ...currentSelection,
+                                  hotelId: e.target.value,
+                                  roomId: "",
+                                },
+                              })
+                            }
+                            className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                          >
+                            <option value="">Select executive hotel...</option>
+                            {hotelsForCity
+                              .sort((a, b) => {
+                                const priceA =
+                                  a.rooms[0]?.price ||
+                                  a.rooms[0]?.peak ||
+                                  (Array.isArray(a.rooms[0]?.high) ? a.rooms[0]?.high?.[0] : a.rooms[0]?.high) ||
+                                  0;
+                                const priceB =
+                                  b.rooms[0]?.price ||
+                                  b.rooms[0]?.peak ||
+                                  (Array.isArray(b.rooms[0]?.high) ? b.rooms[0]?.high?.[0] : b.rooms[0]?.high) ||
+                                  0;
+                                return priceB - priceA;
+                              })
+                              .map((hotel) => (
+                                <option key={hotel.id} value={hotel.id}>
+                                  {hotel.name}
+                                </option>
+                              ))}
+                          </select>
+                        </label>
+
+                        <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
+                          Room Type (Executive) *
+                          <select
+                            required
+                            value={currentSelection?.roomId || ""}
+                            onChange={(e) =>
+                              setMultiCityHotels({
+                                ...multiCityHotels,
+                                [city]: {
+                                  ...currentSelection,
+                                  roomId: e.target.value,
+                                },
+                              })
+                            }
+                            disabled={!currentSelection?.hotelId}
+                            className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 overflow-hidden text-ellipsis"
+                          >
+                            <option value="">Select executive room...</option>
+                            {selectedHotel?.rooms
+                              .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
+                              .sort((a, b) => {
+                                const priceA = a.price || a.peak || (Array.isArray(a.high) ? a.high[0] : a.high) || 0;
+                                const priceB = b.price || b.peak || (Array.isArray(b.high) ? b.high[0] : b.high) || 0;
+                                return priceB - priceA;
+                              })
+                              .map((room: any) => (
+                                <option key={room.name} value={room.name}>
+                                  {room.name}
+                                </option>
+                              ))}
+                          </select>
+                        </label>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : supportsMultipleHotelsInCustomSingleCity ? (
+              <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
+                <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-900">
+                      <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
+                      <span>Select Hotels for {selectedRoute?.city}</span>
+                    </p>
+                    <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
+                  </div>
+                  <div className="rounded-full border border-[#f4d77d] bg-[#FFF8Df] px-3 py-1 text-xs font-semibold text-[#6e5200]">
+                    Total nights: {singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0)} / {singleCityNightCount}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {singleCityHotelStays.map((stay, index) => {
+                    const selectedHotel = availableHotels.find((hotel) => hotel.id === stay.hotelId);
+                    return (
+                      <div key={`${stay.hotelId}-${index}`} className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] p-3 shadow-sm">
+                        <div className="mb-3 flex items-center justify-between gap-2">
+                          <p className="text-xs uppercase tracking-widest text-green-800 font-semibold">Stay {index + 1}</p>
+                          <div className="flex items-center gap-2">
+                            {singleCityHotelStays.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => setSingleCityHotelStays((current) => current.filter((_, currentIndex) => currentIndex !== index))}
+                                className="rounded-full border border-red-300 px-3 py-1 text-xs font-semibold text-red-700 hover:bg-red-50"
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="grid gap-3 grid-cols-1 lg:grid-cols-3">
+                          <label className="grid gap-2 text-sm font-medium text-stone-900">
+                            Hotel *
+                            <select
+                              required
+                              value={stay.hotelId}
+                              onChange={(e) => {
+                                const nextHotelId = e.target.value;
+                                const nextHotel = availableHotels.find((hotel) => hotel.id === nextHotelId);
+                                const roomsToUse = nextHotel && selectedLuxuryPackage ? nextHotel.rooms.filter((r) => /executive/i.test(r.name)) : nextHotel?.rooms || [];
+                                const nextRoom = nextHotel ? selectRoomByCategory(roomsToUse, hotelCategory) : "";
                                 setSingleCityHotelStays((current) =>
                                   current.map((currentStay, currentIndex) =>
                                     currentIndex === index
@@ -1475,11 +1904,13 @@ export function MakeMyTripForm() {
                               className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 overflow-hidden text-ellipsis"
                             >
                               <option value="">Select room...</option>
-                              {selectedHotel?.rooms.map((room: any) => (
-                                <option key={room.name} value={room.name}>
-                                  {room.name}
-                                </option>
-                              ))}
+                              {selectedHotel?.rooms
+                                .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
+                                .map((room: any) => (
+                                  <option key={room.name} value={room.name}>
+                                    {room.name}
+                                  </option>
+                                ))}
                             </select>
                           </label>
 
@@ -1566,7 +1997,8 @@ export function MakeMyTripForm() {
                               onChange={(e) => {
                                 const nextHotelId = e.target.value;
                                 const nextHotel = availableHotels.find((hotel) => hotel.id === nextHotelId);
-                                const nextRoom = nextHotel ? selectRoomByCategory(nextHotel.rooms, hotelCategory) : "";
+                                const roomsToUse = nextHotel && selectedLuxuryPackage ? nextHotel.rooms.filter((r) => /executive/i.test(r.name)) : nextHotel?.rooms || [];
+                                const nextRoom = nextHotel ? selectRoomByCategory(roomsToUse, hotelCategory) : "";
                                 setSingleCityHotelStays((current) =>
                                   current.map((currentStay, currentIndex) =>
                                     currentIndex === index
@@ -1646,7 +2078,10 @@ export function MakeMyTripForm() {
                   <span>Select Hotels for Each City</span>
                 </p>
                 {effectiveSelectedCities.map((city) => {
-                  const hotelsForCity = getHotelsByCity(city);
+                  let hotelsForCity = getHotelsByCity(city);
+                  if (selectedLuxuryPackage) {
+                    hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+                  }
                   const currentSelection = effectiveMultiCityHotels[city];
                   const selectedHotel = hotelsForCity.find(
                     (h) => h.id === currentSelection?.hotelId
@@ -1705,11 +2140,13 @@ export function MakeMyTripForm() {
                             className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 overflow-hidden text-ellipsis"
                           >
                             <option value="">Select room...</option>
-                            {selectedHotel?.rooms.map((room: any) => (
-                              <option key={room.name} value={room.name}>
-                                {room.name}
-                              </option>
-                            ))}
+                            {selectedHotel?.rooms
+                              .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
+                              .map((room: any) => (
+                                <option key={room.name} value={room.name}>
+                                  {room.name}
+                                </option>
+                              ))}
                           </select>
                         </label>
                       </div>

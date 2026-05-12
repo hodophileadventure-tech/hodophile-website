@@ -208,7 +208,7 @@ export default function Home() {
             <Link
               href={destinationPackageLinks[destination.name] ?? "/destinations"}
               key={destination.name}
-              className="group overflow-hidden rounded-[30px] border border-stone-200 bg-white p-3 shadow-[0_14px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:border-[#fcc000]"
+              className="group overflow-hidden rounded-[30px] border-4 border-[#fcc000] bg-white p-3 shadow-[0_14px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1"
             >
                 <div className="relative h-64 overflow-hidden rounded-2xl">
                 <img
@@ -232,7 +232,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 rounded-3xl border border-stone-300 bg-stone-200 shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
+      <section className="mt-20 rounded-3xl border-4 border-[#fcc000] bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
         <div className="px-6 py-5 lg:px-8 md:py-7">
           <div>
             <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Featured Tours</p>
@@ -247,7 +247,7 @@ export default function Home() {
 
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
-              <article key={tour.name} className="overflow-hidden rounded-xl border border-stone-300 bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
+              <article key={tour.name} className="overflow-hidden rounded-xl border-4 border-[#fcc000] bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
                 <div className="relative h-[240px] overflow-hidden bg-stone-100">
                   <img
                     src={tour.image}
@@ -303,7 +303,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
+      <section className="mt-20 overflow-hidden rounded-3xl border-4 border-[#fcc000] bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
         <div className="px-6 py-8 lg:px-8">
           <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Testimonials</p>
           <h2 className="mt-3 font-serif text-4xl">
@@ -317,7 +317,7 @@ export default function Home() {
       <section className="mt-20 w-full">
         <div className="px-6 lg:px-8">
           <h2 className="text-center font-bold text-2xl sm:text-3xl mb-6 text-black">Hodophile Adventures Provide Free <span className="text-[#fcc000]">Travel Kit</span> to Our Customers</h2>
-          <div className="mx-auto max-w-7xl rounded-3xl border border-stone-200 bg-white overflow-hidden shadow-sm">
+          <div className="mx-auto max-w-7xl rounded-3xl border-4 border-[#fcc000] bg-white overflow-hidden shadow-sm">
             <div className="relative bg-black">
             <video
                 src="/travel-kit.mp4"
