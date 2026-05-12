@@ -174,7 +174,6 @@ export function SiteHeader() {
             src="/logo-transparent.png"
             alt="Hodophile Adventures"
             className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition group-hover:scale-[1.02]"
-            priority
           />
         </Link>
 
@@ -200,7 +199,6 @@ export function SiteHeader() {
               src="/logo-transparent.png"
               alt="Hodophile Adventures"
               className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)] transition group-hover:scale-[1.02]"
-              priority
             />
           </Link>
 
