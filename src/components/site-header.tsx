@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -171,12 +170,10 @@ export function SiteHeader() {
           href="/"
           className="group relative hidden h-[4.25rem] w-[13rem] justify-self-center overflow-hidden rounded-full px-1 py-0 lg:block"
         >
-          <Image
+          <img
             src="/logo-transparent.png"
             alt="Hodophile Adventures"
-            fill
-            sizes="208px"
-            className="object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition group-hover:scale-[1.02]"
+            className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition group-hover:scale-[1.02]"
             priority
           />
         </Link>
@@ -199,12 +196,10 @@ export function SiteHeader() {
             href="/"
             className="group relative inline-flex h-[3.5rem] w-[10rem] shrink-0 items-center overflow-hidden rounded-full px-1 py-0"
           >
-            <Image
+            <img
               src="/logo-transparent.png"
               alt="Hodophile Adventures"
-              fill
-              sizes="160px"
-              className="object-contain drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)] transition group-hover:scale-[1.02]"
+              className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)] transition group-hover:scale-[1.02]"
               priority
             />
           </Link>
