@@ -176,19 +176,13 @@ export function MakeMyTripForm() {
       const cities = packageData.cities;
       const base = Math.floor(totalNights / cities.length);
       let rem = totalNights % cities.length;
-      const daysPerCity: Record<string, number> = {};
+      const nightsPerCity: Record<string, number> = {};
       for (const city of cities) {
         const nightsForCity = base + (rem > 0 ? 1 : 0);
         rem = Math.max(0, rem - 1);
-        // Store days (not nights) because other code expects days in customCityNights
-        daysPerCity[city] = nightsForCity + 0; // nights -> add 0 then later convert to days below
+        nightsPerCity[city] = nightsForCity;
       }
-      // Convert nights to days (days = nights + 1)
-      const daysPerCityAsDays: Record<string, number> = {};
-      for (const city of Object.keys(daysPerCity)) {
-        daysPerCityAsDays[city] = daysPerCity[city] + 1;
-      }
-      setCustomCityNights(daysPerCityAsDays);
+      setCustomCityNights(nightsPerCity);
 
       // Auto-initialize multi-city hotels with executive category for each package city
       const defaults: Record<string, { hotelId: string; roomId: string }> = {};
@@ -487,7 +481,7 @@ export function MakeMyTripForm() {
   );
   const isSingleCustomCity = isCustomCitySelection() && selectedCities.length === 1;
   const customSingleCityNightCount = selectedCities.length === 1
-    ? Math.max(1, (customCityNights[selectedCities[0]] ?? 0) - 1)
+    ? Math.max(1, customCityNights[selectedCities[0]] ?? 1)
     : 0;
   const supportsMultipleHotelsInCustomSingleCity = Boolean(
     isCustomCitySelection() &&
@@ -1511,7 +1505,7 @@ export function MakeMyTripForm() {
                     {effectiveSelectedCities.map((city) => (
                       <label key={city} className="grid gap-1 rounded-[12px] border border-[#f4d77d] bg-[#FFF8Df] p-2 text-stone-900 shadow-sm">
                         <span className="text-[11px] font-semibold uppercase tracking-wide text-[#6e5200]">
-                          {city} {isSingleCustomCity ? "days" : "nights"}
+                          {city} nights
                         </span>
                         <input
                           type="number"
