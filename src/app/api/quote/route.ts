@@ -218,13 +218,9 @@ export async function POST(request: NextRequest) {
     });
 
     if (!sheetSaveResult.success) {
-      return NextResponse.json(
-        {
-          error: "Unable to save lead in Google Sheets.",
-          details: sheetSaveResult.error || "Sheet write failed",
-        },
-        { status: 502 }
-      );
+      console.warn("Unable to save lead in Google Sheets.", sheetSaveResult.error);
+      // Continue even if sheet save fails, so quote requests still work.
+      // This is especially important when production env vars are not configured.
     }
 
     // TODO: Save lead to database (once Prisma is set up)

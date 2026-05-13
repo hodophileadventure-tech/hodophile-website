@@ -481,7 +481,7 @@ export function MakeMyTripForm() {
   );
   const isSingleCustomCity = isCustomCitySelection() && selectedCities.length === 1;
   const customSingleCityNightCount = selectedCities.length === 1
-    ? Math.max(1, customCityNights[selectedCities[0]] ?? 1)
+    ? Math.max(1, (customCityNights[selectedCities[0]] ?? 0) - 1)
     : 0;
   const supportsMultipleHotelsInCustomSingleCity = Boolean(
     isCustomCitySelection() &&
@@ -1828,12 +1828,12 @@ export function MakeMyTripForm() {
                   <div>
                     <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-900">
                       <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
-                      <span>Select Hotels for {selectedRoute?.city}</span>
+                      <span>Select Hotels for {selectedCities[0] || "your selected city"}</span>
                     </p>
                     <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
                   </div>
                   <div className="rounded-full border border-[#f4d77d] bg-[#FFF8Df] px-3 py-1 text-xs font-semibold text-[#6e5200]">
-                    Total nights: {singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0)} / {singleCityNightCount}
+                    Total nights: {singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0)} / {customSingleCityNightCount}
                   </div>
                 </div>
 
