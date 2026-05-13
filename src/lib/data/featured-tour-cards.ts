@@ -951,8 +951,8 @@ const featuredTourDisplayOrderIndex = new Map(
 );
 
 export const orderedFeaturedTourCards = [...featuredTourCards].sort((a, b) => {
-  const aIndex = featuredTourDisplayOrderIndex.get(a.slug) ?? Number.MAX_SAFE_INTEGER;
-  const bIndex = featuredTourDisplayOrderIndex.get(b.slug) ?? Number.MAX_SAFE_INTEGER;
+  const aIndex = featuredTourDisplayOrderIndex.get(a.slug as (typeof featuredTourDisplayOrder)[number]) ?? Number.MAX_SAFE_INTEGER;
+  const bIndex = featuredTourDisplayOrderIndex.get(b.slug as (typeof featuredTourDisplayOrder)[number]) ?? Number.MAX_SAFE_INTEGER;
   return aIndex - bIndex;
 });
 
