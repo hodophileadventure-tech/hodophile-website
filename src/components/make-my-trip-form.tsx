@@ -24,7 +24,7 @@ import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes, type Route } from "@/lib/data/routes";
 import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "@/lib/data/routeActivities";
 import { sortedCitiesWithHotels } from "@/lib/data/cities";
-import { featuredTourCards } from "@/lib/data/featured-tour-cards";
+import { orderedFeaturedTourCards } from "@/lib/data/featured-tour-cards";
 
 // Map featured tours to their corresponding route slugs
 const PREPLANNED_TRIP_MAP: Record<string, string> = {
@@ -1244,7 +1244,7 @@ export function MakeMyTripForm() {
                 {showHoneymoonDropdown && (
                   <div className="absolute top-full left-0 mt-2 w-max max-h-64 overflow-y-auto rounded-[16px] border border-[#fcc000]/40 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.15)] z-50">
                     <div className="py-2">
-                      {featuredTourCards.map((tour) => (
+                      {orderedFeaturedTourCards.map((tour) => (
                         <button
                           key={tour.slug}
                           type="button"
@@ -1338,7 +1338,7 @@ export function MakeMyTripForm() {
                   className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 >
                   <option value="">Select a preplanned trip (optional)</option>
-                  {featuredTourCards.map((tour) => (
+                  {orderedFeaturedTourCards.map((tour) => (
                     <option key={tour.slug} value={tour.slug}>
                       {tour.title}
                     </option>

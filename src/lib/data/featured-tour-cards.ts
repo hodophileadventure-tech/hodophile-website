@@ -112,6 +112,7 @@ export type FeaturedTourCard = {
   detailSections?: TourDetailSection[];
   highlights: string[];
   itinerary: FeaturedTourDay[];
+  hoverVideo?: string;
 };
 
 export const featuredTourCards: FeaturedTourCard[] = [
@@ -342,6 +343,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
         description: "Arrive back in Karachi and complete the tour.",
       },
     ],
+    hoverVideo: "/videos/kashmir-taobat.mp4",
   },
   {
     slug: "skardu-deosai",
@@ -538,6 +540,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
         description: "Arrive back in Karachi and conclude the trip.",
       },
     ],
+    hoverVideo: "/videos/skardu-shigar-shangrila.mp4",
   },
   {
     slug: "hunza-skardu",
@@ -741,6 +744,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
         description: "Arrive in Karachi and conclude the tour.",
       },
     ],
+    hoverVideo: "/videos/hunza-skardu.mp4",
   },
   {
     slug: "hunza-naltar",
@@ -931,8 +935,26 @@ export const featuredTourCards: FeaturedTourCard[] = [
         description: "Arrive in Karachi and conclude the tour.",
       },
     ],
+    hoverVideo: "/videos/hunza-naltar.mp4",
   },
 ];
+
+const featuredTourDisplayOrder = [
+  "hunza-skardu",
+  "hunza-naltar",
+  "skardu-deosai",
+  "kashmir-taobat",
+] as const;
+
+const featuredTourDisplayOrderIndex = new Map(
+  featuredTourDisplayOrder.map((slug, index) => [slug, index]),
+);
+
+export const orderedFeaturedTourCards = [...featuredTourCards].sort((a, b) => {
+  const aIndex = featuredTourDisplayOrderIndex.get(a.slug) ?? Number.MAX_SAFE_INTEGER;
+  const bIndex = featuredTourDisplayOrderIndex.get(b.slug) ?? Number.MAX_SAFE_INTEGER;
+  return aIndex - bIndex;
+});
 
 export const featuredTourRoutePaths = featuredTourCards.map((tour) => `/tours/featured/${tour.slug}`);
 

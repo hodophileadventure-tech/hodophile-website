@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 
 import { PageShell } from "@/components/page-shell";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
-import { featuredTourCards } from "@/lib/data/featured-tour-cards";
+import { orderedFeaturedTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, destinations } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -127,7 +127,7 @@ export default function Home() {
   ];
 
   const heroImage = destinations[0]?.image ?? "/images/destinations/hunza.avif";
-  const packageCards = featuredTourCards.map((tour) => {
+  const packageCards = orderedFeaturedTourCards.map((tour) => {
     const [firstPart, rest] = tour.title.split(/,\s+(.+)/);
 
     return {
@@ -135,6 +135,7 @@ export default function Home() {
       name: tour.title,
       image: tour.homeImage,
       href: `/tours/featured/${tour.slug}`,
+      hoverVideo: tour.hoverVideo,
     };
   });
 
@@ -247,14 +248,24 @@ export default function Home() {
 
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
-              <article key={tour.name} className="overflow-hidden rounded-xl border-4 border-[#fcc000] bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
+              <article key={tour.name} className="overflow-hidden rounded-xl border-4 border-[#fcc000] bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full group">
                 <div className="relative h-[240px] overflow-hidden bg-stone-100">
                   <img
                     src={tour.image}
                     alt={tour.name}
                     sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 hover:scale-[1.02]"
+                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-[1.02] group-hover:opacity-0"
                   />
+                  {tour.hoverVideo && (
+                    <video
+                      src={tour.hoverVideo}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="absolute inset-0 h-full w-full object-cover object-center opacity-0 transition duration-700 group-hover:opacity-100"
+                    />
+                  )}
                 </div>
                 <div className="p-5 flex flex-col justify-between gap-5 flex-1">
                   <h3 className="text-center text-lg font-semibold leading-7 text-black">
