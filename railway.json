@@ -10,5 +10,12 @@
     "startCommand": "npm start",
     "healthcheckPath": "/",
     "healthcheckTimeout": 30
+  },
+  "nixpacks": {
+    "buildScript": "npm run build",
+    "environment": {
+      "NODE_VERSION": "20",
+      "NODE_ENV": "production"
+    }
   }
 }
