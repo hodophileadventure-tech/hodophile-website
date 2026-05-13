@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 
 import { PageShell } from "@/components/page-shell";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
+import { LazyBackgroundVideo } from "@/components/lazy-background-video";
+import { HoverVideoCard } from "@/components/hover-video-card";
 import { orderedFeaturedTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, destinations } from "@/lib/site";
 
@@ -143,17 +145,11 @@ export default function Home() {
     <PageShell>
       <section className="-mx-6 -mt-24 -ml-[max(0px,calc((100vw-100%)/2))] -mr-[max(0px,calc((100vw-100%)/2))] overflow-hidden lg:-mx-8 lg:-ml-[max(0px,calc((100vw-100%)/2))] lg:-mr-[max(0px,calc((100vw-100%)/2))]">
         <div className="relative min-h-[82vh] border-b border-stone-200">
-          <video
+          <LazyBackgroundVideo
             src="/hero-video.mp4"
             poster={heroImage}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="none"
-            controls={false}
-            className="absolute inset-0 h-full w-full object-cover"
-            style={{ display: 'block' }}
+            posterAlt="Scenic travel destination"
+            className="absolute inset-0 h-full w-full"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,24,28,0.35)_0%,rgba(18,24,28,0.6)_100%)]" />
 
@@ -251,47 +247,7 @@ export default function Home() {
 
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
-              <article key={tour.name} className="overflow-hidden rounded-xl border-4 border-[#fcc000] bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full group">
-                <div className="relative h-[240px] overflow-hidden bg-stone-100">
-                  <img
-                    src={tour.image}
-                    alt={tour.name}
-                    loading="lazy"
-                    decoding="async"
-                    sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-[1.02] group-hover:opacity-0"
-                  />
-                  {tour.hoverVideo && (
-                    <video
-                      src={tour.hoverVideo}
-                      preload="none"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="absolute inset-0 h-full w-full object-cover object-center opacity-0 transition duration-700 group-hover:opacity-100"
-                    />
-                  )}
-                </div>
-                <div className="p-5 flex flex-col justify-between gap-5 flex-1">
-                  <h3 className="text-center text-lg font-semibold leading-7 text-black">
-                    {tour.titleParts.length > 1 ? (
-                      <>
-                        <span className="block">{tour.titleParts[0]}</span>
-                        <span className="block">{tour.titleParts[1]}</span>
-                      </>
-                    ) : (
-                      tour.name
-                    )}
-                  </h3>
-                  <Link
-                    href={tour.href}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-[#fcc000] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] !text-black transition hover:bg-[#ffd24d]"
-                  >
-                    View Details
-                  </Link>
-                </div>
-              </article>
+              <HoverVideoCard key={tour.name} {...tour} />
             ))}
           </div>
         </div>
@@ -336,18 +292,13 @@ export default function Home() {
           <h2 className="text-center font-bold text-2xl sm:text-3xl mb-6 text-black">Hodophile Adventures Provide Free <span className="text-[#fcc000]">Travel Kit</span> to Our Customers</h2>
           <div className="mx-auto max-w-7xl rounded-3xl border-4 border-[#fcc000] bg-white overflow-hidden shadow-sm">
             <div className="relative bg-black">
-            <video
-                src="/travel-kit.mp4"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="none"
-                controls={false}
-                className="w-full max-h-[26rem] h-auto object-cover block"
-                style={{ display: 'block' }}
-              />
-            </div>
+            <LazyBackgroundVideo
+              src="/travel-kit.mp4"
+              poster="/images/destinations/kashmir.jpg"
+              posterAlt="Travel kit preview"
+              className="w-full max-h-[26rem] h-auto"
+            />
+          </div>
             <div className="p-8 text-center">
               <h2 className="font-serif text-4xl">Begin Your Next Journey</h2>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-600">
