@@ -1000,7 +1000,6 @@ export function MakeMyTripForm() {
       // Encode data and redirect to edit page
       const encoded = btoa(JSON.stringify(quotationData));
 
-      // Also send to API for WhatsApp notification
       const response = await fetch("/api/quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1035,7 +1034,12 @@ export function MakeMyTripForm() {
         // Redirect to quotation edit page
         router.push(`/quotation-edit?data=${encoded}`);
       } else {
-        setSubmitError(data.error || data.details || "Failed to submit quotation");
+        // Handle API errors gracefully
+        if (response.status === 403) {
+          setSubmitError("Request blocked by security filter. Please try again or contact support.");
+        } else {
+          setSubmitError(data.error || data.details || "Failed to submit quotation");
+        }
       }
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "An error occurred");

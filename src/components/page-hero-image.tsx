@@ -12,7 +12,7 @@ export function PageHeroImage({ image, imageAlt, eyebrow, title, description }: 
   return (
     <section className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.08)]">
       <div className="relative min-h-[22rem] sm:min-h-[24rem]">
-        <Image src={image} alt={imageAlt} fill priority sizes="100vw" className="object-cover" />
+        <Image src={image} alt={imageAlt} fill sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,11,11,0.22)_0%,rgba(11,11,11,0.62)_100%)]" />
 
         <div className="relative z-10 flex min-h-[22rem] items-end p-7 sm:min-h-[24rem] sm:p-10 lg:p-12">

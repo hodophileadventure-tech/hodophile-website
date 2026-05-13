@@ -24,7 +24,7 @@ export function TourLanding({
     <section className="overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)]">
       <div className="grid gap-0 lg:grid-cols-[1.08fr_.92fr]">
         <div className="relative min-h-[28rem]">
-          <Image src={image} alt={title} fill priority sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+          <Image src={image} alt={title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,11,11,0.08)_0%,rgba(11,11,11,0.58)_100%)]" />
           <div className="absolute inset-x-0 bottom-0 p-6 text-white lg:p-8">
             <p className="text-xs uppercase tracking-[0.32em] text-white/70">{eyebrow}</p>

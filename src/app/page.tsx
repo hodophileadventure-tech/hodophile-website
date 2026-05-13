@@ -149,7 +149,7 @@ export default function Home() {
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="none"
             controls={false}
             className="absolute inset-0 h-full w-full object-cover"
             style={{ display: 'block' }}
@@ -336,7 +336,7 @@ export default function Home() {
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="none"
                 controls={false}
                 className="w-full max-h-[26rem] h-auto object-cover block"
                 style={{ display: 'block' }}
