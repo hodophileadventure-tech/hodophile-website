@@ -16,6 +16,30 @@ const nextConfig: NextConfig = {
   // Security headers
   async headers() {
     return [
+      // Video caching - aggressive caching for static videos
+      {
+        source: "/videos/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+          {
+            key: "Content-Type",
+            value: "video/:path*",
+          },
+        ],
+      },
+      {
+        source: "/:video(hero-video|travel-kit)\\.:ext(mp4|webm)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      // General security headers
       {
         source: "/:path*",
         headers: [

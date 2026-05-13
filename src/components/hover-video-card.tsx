@@ -14,6 +14,7 @@ type HoverVideoCardProps = {
 export function HoverVideoCard({ titleParts, name, image, href, hoverVideo }: HoverVideoCardProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [hovered, setHovered] = useState(false);
+  const useWebmFallback = Boolean(hoverVideo && hoverVideo.endsWith(".mp4") && !hoverVideo.endsWith("-opt.mp4"));
 
   const handleMouseEnter = () => {
     setHovered(true);
@@ -50,13 +51,15 @@ export function HoverVideoCard({ titleParts, name, image, href, hoverVideo }: Ho
         {hoverVideo ? (
           <video
             ref={videoRef}
-            src={hoverVideo}
             muted
             loop
             playsInline
             preload="none"
             className={`absolute inset-0 h-full w-full object-cover object-center transition duration-700 ${hovered ? "opacity-100" : "opacity-0"}`}
-          />
+          >
+            {useWebmFallback ? <source src={hoverVideo.replace(".mp4", ".webm")} type="video/webm" /> : null}
+            <source src={hoverVideo} type="video/mp4" />
+          </video>
         ) : null}
       </div>
       <div className="p-5 flex flex-col justify-between gap-5 flex-1">
