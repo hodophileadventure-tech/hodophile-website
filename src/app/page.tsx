@@ -145,6 +145,7 @@ export default function Home() {
         <div className="relative min-h-[82vh] border-b border-stone-200">
           <video
             src="/hero-video.mp4"
+            poster={heroImage}
             autoPlay
             muted
             loop
@@ -215,6 +216,8 @@ export default function Home() {
                 <img
                   src={destination.image}
                   alt={destination.name}
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
               </div>
@@ -253,12 +256,15 @@ export default function Home() {
                   <img
                     src={tour.image}
                     alt={tour.name}
+                    loading="lazy"
+                    decoding="async"
                     sizes="(max-width: 1280px) 50vw, 25vw"
                     className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-[1.02] group-hover:opacity-0"
                   />
                   {tour.hoverVideo && (
                     <video
                       src={tour.hoverVideo}
+                      preload="none"
                       autoPlay
                       loop
                       muted
@@ -304,7 +310,7 @@ export default function Home() {
             {serviceHighlights.map((item) => (
             <article key={item.title} className="rounded-2xl border-4 border-[#fcc000] bg-white p-6 shadow-sm">
               <div className="h-11 w-11 overflow-hidden rounded-full border border-stone-200 bg-stone-100">
-                <img src={item.icon} alt={item.title} width={44} height={44} className="h-full w-full object-cover" />
+                <img src={item.icon} alt={item.title} loading="lazy" decoding="async" width={44} height={44} className="h-full w-full object-cover" />
               </div>
               <h3 className="mt-5 text-xl font-semibold">{item.title}</h3>
               <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>

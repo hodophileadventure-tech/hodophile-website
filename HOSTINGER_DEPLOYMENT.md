@@ -48,7 +48,7 @@ NODE_ENV=production
 1. Go to **Advanced** → **Node.js**
 2. Click **Enable Node.js**
 3. Select **Node.js version**: 18.x or higher
-4. Set **Application startup file**: `server.js` or `npm start`
+4. Set **Application startup file**: `server.js`
 
 ### Step 2.3: Create PostgreSQL Database
 1. Go to **Databases** → **PostgreSQL**
@@ -166,8 +166,8 @@ Check that the `.next` folder exists and contains the build files.
 ### Step 7.1: Configure Node.js Startup
 In Hostinger control panel:
 1. **Advanced** → **Node.js**
-2. **Application startup file**: Set to `npm start`
-3. **Application port**: `3000`
+2. **Application startup file**: Set to `server.js`
+3. **Application port**: `3000` or the port Hostinger provides
 4. **Application environment**: `production`
 
 ### Step 7.2: Start/Restart Application
