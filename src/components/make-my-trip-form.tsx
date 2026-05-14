@@ -1389,8 +1389,7 @@ export function MakeMyTripForm() {
               </div>
             )}
 
-            {/* Trip Details - Only hide for preplanned trips */}
-            {!selectedPreplannedTrip && (
+            {/* Trip Details - Always visible */}
             <div className="grid gap-4 rounded-[24px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
             <label className="grid gap-2 text-sm font-medium text-stone-900">
               <span className="flex items-center gap-2">
@@ -1577,7 +1576,6 @@ export function MakeMyTripForm() {
               )}
             </div>
             </div>
-            )}
 
             {/* Hotel Category Selection */}
             <label className="grid gap-2 text-sm font-medium text-stone-900">
