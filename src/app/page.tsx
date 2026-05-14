@@ -144,7 +144,7 @@ export default function Home() {
   return (
     <PageShell>
       <section className="-mx-6 -mt-24 -ml-[max(0px,calc((100vw-100%)/2))] -mr-[max(0px,calc((100vw-100%)/2))] overflow-hidden lg:-mx-8 lg:-ml-[max(0px,calc((100vw-100%)/2))] lg:-mr-[max(0px,calc((100vw-100%)/2))]">
-        <div className="relative w-full h-[82vh] border-b border-stone-200">
+        <div className="relative w-full h-[82vh] border-b border-stone-200 overflow-hidden">
           <LazyBackgroundVideo
             src="/hero-video.mp4"
             poster={heroImage}
@@ -153,7 +153,7 @@ export default function Home() {
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,24,28,0.35)_0%,rgba(18,24,28,0.6)_100%)] z-[5]" />
 
-          <div className="absolute inset-0 z-10 flex w-full items-end px-6 pb-16 pt-36 lg:px-8">
+          <div className="relative z-10 flex h-full w-full flex-col justify-end px-6 pb-16 pt-36 lg:px-8">
             <div className="max-w-4xl text-white">
               <h1 className="font-serif text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
                 Experience Pakistan&apos;s Most Cinematic Journeys Unforgettably Curated.
