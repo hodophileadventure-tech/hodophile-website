@@ -541,6 +541,23 @@ export function MakeMyTripForm() {
     };
   }, [multiCityHotels, hotelCategory, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad]);
 
+  // Detect if a package (luxury / honeymoon / preplanned) is currently chosen
+  const chosenPackage = useMemo(() => {
+    if (selectedLuxuryPackage) {
+      const pkg = luxuryPackages[selectedLuxuryPackage];
+      return { type: "luxury", key: selectedLuxuryPackage, label: pkg?.label ?? selectedLuxuryPackage };
+    }
+    if (selectedHoneymoonTour) {
+      const card = orderedFeaturedTourCards.find((c) => c.slug === selectedHoneymoonTour);
+      return { type: "honeymoon", key: selectedHoneymoonTour, label: card?.title ?? selectedHoneymoonTour };
+    }
+    if (selectedPreplannedTrip) {
+      const card = orderedFeaturedTourCards.find((c) => c.slug === selectedPreplannedTrip);
+      return { type: "preplanned", key: selectedPreplannedTrip, label: card?.title ?? selectedPreplannedTrip };
+    }
+    return null;
+  }, [selectedLuxuryPackage, selectedHoneymoonTour, selectedPreplannedTrip]);
+
   const initializeSingleCityHotelStays = (route: Route) => {
     let hotels = getHotelsByCity(route.city).filter(
       (hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory(),
@@ -1456,7 +1473,27 @@ export function MakeMyTripForm() {
             </label>
 
             {/* Individual City Selection - Always visible for private tours */}
-            <div className="rounded-[20px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
+            {chosenPackage && (
+              <div className="rounded-[14px] bg-[#FFF8Df] border border-[#f4d77d] p-3 mb-4 flex items-center justify-between">
+                <div className="text-sm font-medium text-stone-900">Selected Package: {chosenPackage.label}</div>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedLuxuryPackage(null);
+                      setSelectedHoneymoonTour(null);
+                      setSelectedPreplannedTrip("");
+                      setSelectedCities([]);
+                    }}
+                    className="rounded-full px-3 py-1 text-sm font-semibold text-[#8a4b00] border border-[#8a4b00] bg-[#FFF8Df] hover:bg-[#fff3db]"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className={`rounded-[20px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)] ${chosenPackage ? 'hidden' : ''}`}>
               <p className="text-sm font-semibold text-[#6e5200] mb-4">
                 Select Destination Cities (Multiple Allowed) *
               </p>
