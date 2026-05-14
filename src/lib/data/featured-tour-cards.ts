@@ -540,7 +540,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
         description: "Arrive back in Karachi and conclude the trip.",
       },
     ],
-    hoverVideo: "/videos/skardu-shigar-shangrila-opt.mp4",
+    hoverVideo: "/videos/skardu-shigar-shangrila.mp4",
   },
   {
     slug: "hunza-skardu",
