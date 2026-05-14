@@ -137,51 +137,15 @@ export function QuotationResultContent() {
             </div>
           </div>
 
-          <div className="mt-10 overflow-hidden rounded-3xl border border-stone-300">
-            <div className="grid grid-cols-[1.1fr_1.8fr_0.9fr_0.8fr_0.9fr] bg-stone-100 px-6 py-4 text-sm font-semibold uppercase tracking-[0.12em] text-stone-900">
-              <span>Item</span>
-              <span>Description</span>
-              <span>Price</span>
-              <span>Qty</span>
-              <span className="text-right">Amount</span>
-            </div>
-            <div className="min-h-[280px] bg-white px-6 py-6 text-sm text-stone-900">
-              {items.map((row, index) => (
-                <div key={index} className="grid grid-cols-[1.1fr_1.8fr_0.9fr_0.8fr_0.9fr] gap-4 border-b border-stone-200 py-3">
-                  <span className="font-semibold">{row.item}</span>
-                  <span>{row.description}</span>
-                  <span>{typeof row.unitPrice === "number" ? formatPKR(row.unitPrice) : row.unitPrice}</span>
-                  <span>{row.quantity}</span>
-                  <span className="text-right">{typeof row.amount === "number" ? formatPKR(row.amount) : row.amount}</span>
-                </div>
-              ))}
-              <div className="mt-6 space-y-2 text-sm text-stone-900">
-                <div className="flex items-center justify-between border-b border-stone-200 py-2">
-                  <span className="font-medium">Transport</span>
-                  <span>{formatPKR(transportCost)}</span>
-                </div>
-                <div className="flex items-center justify-between border-b border-stone-200 py-2">
-                  <span className="font-medium">Hotel</span>
-                  <span>{formatPKR(hotelCost)}</span>
-                </div>
-                {jeepCost > 0 && (
-                  <div className="flex items-center justify-between border-b border-stone-200 py-2">
-                    <span className="font-medium">Jeep & Add-ons</span>
-                    <span>{formatPKR(jeepCost)}</span>
-                  </div>
-                )}
-                <div className="flex items-center justify-between border-b border-stone-200 py-2">
-                  <span className="font-medium">Subtotal</span>
-                  <span>{formatPKR(subtotal)}</span>
-                </div>
-                <div className="flex items-center justify-between border-b border-stone-200 py-2">
-                  <span className="font-medium">Markup (22%)</span>
-                  <span>{formatPKR(markupAmount)}</span>
-                </div>
-                <div className="flex items-center justify-between py-2">
-                  <span className="font-semibold">Total</span>
-                  <span className="font-semibold">{formatPKR(totalAmount)}</span>
-                </div>
+          <div className="mt-10 overflow-hidden rounded-3xl border border-stone-300 bg-white p-6">
+            <div className="text-sm text-stone-900">
+              <p className="font-semibold mb-2">Quotation Details</p>
+              <p className="mb-4">This quotation has been prepared for your requested itinerary. Detailed pricing has been withheld in this view for privacy. To view the full pricing breakdown, please contact our sales team at <a className="font-semibold underline" href="tel:+923001234567">+92 300 1234567</a> or reply to the email we sent you.</p>
+              <div className="mt-4 rounded-[10px] border border-stone-200 bg-stone-50 p-4">
+                <p className="text-sm"><span className="font-semibold">Route:</span> {routeName}</p>
+                <p className="text-sm"><span className="font-semibold">Passengers:</span> {numberOfGuests}</p>
+                <p className="text-sm"><span className="font-semibold">Departure:</span> {quotation.startingPoint || "-"}</p>
+                <p className="text-sm"><span className="font-semibold">Trip Mode:</span> {travelMode === "air" ? "By Air" : "By Road"}</p>
               </div>
               <div className="mt-6">
                 <p className="text-sm font-semibold">NOTES:</p>
@@ -208,43 +172,10 @@ export function QuotationResultContent() {
             </div>
 
             <div className="rounded-3xl border border-stone-300 bg-white p-4">
-              <div className="space-y-1 text-sm text-stone-900">
-                <div className="flex items-center justify-between border-b border-stone-200 py-3">
-                  <span>Transport</span>
-                  <span>{formatPKR(transportCost)}</span>
-                </div>
-                <div className="flex items-center justify-between border-b border-stone-200 py-3">
-                  <span>Hotel</span>
-                  <span>{formatPKR(hotelCost)}</span>
-                </div>
-                {jeepCost > 0 && (
-                  <div className="flex items-center justify-between border-b border-stone-200 py-3">
-                    <span>Jeep Add-ons</span>
-                    <span>{formatPKR(jeepCost)}</span>
-                  </div>
-                )}
-                <div className="flex items-center justify-between border-b border-stone-200 py-3">
-                  <span>Subtotal</span>
-                  <span>{formatPKR(subtotal)}</span>
-                </div>
-                <div className="flex items-center justify-between border-b border-stone-200 py-3">
-                  <span>Markup (22%)</span>
-                  <span>{formatPKR(markupAmount)}</span>
-                </div>
-                <div className="flex items-center justify-between border-b border-stone-200 py-3">
-                  <span>Total</span>
-                  <span>{formatPKR(totalAmount)}</span>
-                </div>
-                <div className="flex items-center justify-between border-b border-stone-200 py-3">
-                  <span>Amount Paid</span>
-                  <span>{formatPKR(quotation.amountPaid ?? 0)}</span>
-                </div>
-                <div className="rounded-b-2xl bg-stone-100 px-4 py-4 text-sm font-semibold uppercase tracking-[0.06em] text-stone-900">
-                  <div className="flex items-center justify-between">
-                    <span>Quote</span>
-                    <span>{formatPKR(totalAmount)}</span>
-                  </div>
-                </div>
+              <div className="space-y-2 text-sm text-stone-900">
+                <p className="font-semibold">Pricing Hidden</p>
+                <p className="text-sm">Detailed pricing has been hidden from this view. To receive the full breakdown or to make adjustments, please contact our sales team.</p>
+                <p className="mt-3 font-semibold"><a className="underline" href="tel:+923001234567">Call Sales: +92 300 1234567</a></p>
                 <p className="pt-3 text-xs text-stone-700">Quotation is exclusive of air tickets.</p>
               </div>
             </div>

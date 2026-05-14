@@ -136,6 +136,10 @@ export function MakeMyTripForm() {
     const packageData = luxuryPackages[packageKey];
     if (!packageData) return;
 
+    // Clear other packages when luxury is selected
+    setSelectedHoneymoonTour(null);
+    setSelectedPreplannedTrip("");
+    
     setSelectedLuxuryPackage(packageKey);
     setShowLuxuryDropdown(false);
     
@@ -207,6 +211,10 @@ export function MakeMyTripForm() {
     const routeSlug = PREPLANNED_TRIP_MAP[tourSlug];
     const matchedRoute = routes.find((r) => r.slug === routeSlug);
     if (matchedRoute) {
+      // Clear other packages when honeymoon is selected
+      setSelectedLuxuryPackage(null);
+      setSelectedPreplannedTrip("");
+      
       setSelectedHoneymoonTour(tourSlug);
       setShowHoneymoonDropdown(false);
       setRouteId(matchedRoute.id);
@@ -225,6 +233,10 @@ export function MakeMyTripForm() {
       const routeSlug = PREPLANNED_TRIP_MAP[selectedPreplannedTrip];
       const matchedRoute = routes.find((r) => r.slug === routeSlug);
       if (matchedRoute) {
+        // Clear other packages when preplanned is selected
+        setSelectedLuxuryPackage(null);
+        setSelectedHoneymoonTour(null);
+        
         setPreplannedRoute(matchedRoute);
         setRouteId(matchedRoute.id);
         setTourType("private"); // Lock to private tours
@@ -541,7 +553,7 @@ export function MakeMyTripForm() {
   }, [multiCityHotels, hotelCategory, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad]);
 
   // Detect if a package (luxury / honeymoon / preplanned) is currently chosen
-  const chosenPackage = useMemo(() => {
+  const chosenPackage = useMemo<{ type: "luxury" | "honeymoon" | "preplanned"; key: string; label: string } | null>(() => {
     if (selectedLuxuryPackage) {
       const pkg = luxuryPackages[selectedLuxuryPackage];
       return { type: "luxury", key: selectedLuxuryPackage, label: pkg?.label ?? selectedLuxuryPackage };
@@ -1377,7 +1389,7 @@ export function MakeMyTripForm() {
               </div>
             )}
 
-            {/* Trip Details */}
+            {/* Trip Details - Only hide for preplanned trips */}
             {!selectedPreplannedTrip && (
             <div className="grid gap-4 rounded-[24px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
             <label className="grid gap-2 text-sm font-medium text-stone-900">
@@ -1440,41 +1452,44 @@ export function MakeMyTripForm() {
               </label>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Tour Type & Mode - Always visible */}
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <label className="grid gap-2 text-sm font-medium text-stone-900">
+                  <span className="flex items-center gap-2">
+                    <Compass className={LABEL_ICON_CLASS} aria-hidden="true" />
+                    <span>Tour Type *</span>
+                  </span>
+                  <select
+                    value={tourType}
+                    onChange={(e) => setTourType(e.target.value)}
+                    className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  >
+                    <option value="private">Private Tour</option>
+                  </select>
+                </label>
+              </div>
+
               <label className="grid gap-2 text-sm font-medium text-stone-900">
                 <span className="flex items-center gap-2">
-                  <Compass className={LABEL_ICON_CLASS} aria-hidden="true" />
-                  <span>Tour Type *</span>
+                  <PlaneTakeoff className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Tour Mode *</span>
                 </span>
                 <select
-                  value={tourType}
-                  onChange={(e) => setTourType(e.target.value)}
+                  value={travelMode}
+                  onChange={(e) => setTravelMode(e.target.value)}
                   className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 >
-                  <option value="private">Private Tour</option>
+                  <option value="road">By Road</option>
+                  <option value="air">By Air</option>
                 </select>
               </label>
             </div>
 
-            <label className="grid gap-2 text-sm font-medium text-stone-900">
-              <span className="flex items-center gap-2">
-                <PlaneTakeoff className={LABEL_ICON_CLASS} aria-hidden="true" />
-                <span>Tour Mode *</span>
-              </span>
-              <select
-                value={travelMode}
-                onChange={(e) => setTravelMode(e.target.value)}
-                className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-              >
-                <option value="road">By Road</option>
-                <option value="air">By Air</option>
-              </select>
-            </label>
-
             {/* Individual City Selection - Always visible for private tours */}
             {chosenPackage && (
               <div className="rounded-[14px] bg-[#FFF8Df] border border-[#f4d77d] p-3 mb-4 flex items-center justify-between">
-                <div className="text-sm font-medium text-stone-900">Selected Package: {chosenPackage.label}</div>
+                <div className="text-sm font-medium text-stone-900">Selected Package: {(chosenPackage as any)?.label}</div>
                 <div>
                   <button
                     type="button"
