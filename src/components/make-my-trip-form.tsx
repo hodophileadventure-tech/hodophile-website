@@ -210,7 +210,8 @@ export function MakeMyTripForm() {
       setSelectedHoneymoonTour(tourSlug);
       setShowHoneymoonDropdown(false);
       setRouteId(matchedRoute.id);
-      setSelectedCities(matchedRoute.city === "Multi-City" ? [matchedRoute.city] : [matchedRoute.city]);
+      // For package routes we want the package flow (routeId present, no individual cities selected)
+      setSelectedCities([]);
       setHotelCategory("standard");
       setVehicleName("");
       setMultiCityHotels({});
@@ -231,10 +232,8 @@ export function MakeMyTripForm() {
         
         // For multi-city routes, cities are defined in multiCityConfig
         // For single-city routes, use the route's city
-        const cities = matchedRoute.city === "Multi-City" 
-          ? [matchedRoute.city] // Will use multiCityConfig for actual cities
-          : [matchedRoute.city];
-        setSelectedCities(cities);
+        // Use package flow: clear selectedCities so hotel selection uses route-based options
+        setSelectedCities([]);
         setCustomCityNights({}); // Clear custom nights - they'll be set by hotel selection
         
         // Clear hotel selections - they'll be auto-populated when route loads
