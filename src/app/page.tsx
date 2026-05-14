@@ -290,14 +290,14 @@ export default function Home() {
         <div className="px-6 lg:px-8">
           <h2 className="text-center font-bold text-2xl sm:text-3xl mb-6 text-black">Hodophile Adventures Provide Free <span className="text-[#fcc000]">Travel Kit</span> to Our Customers</h2>
           <div className="mx-auto max-w-7xl rounded-3xl border-4 border-[#fcc000] bg-white overflow-hidden shadow-sm">
-            <div className="relative bg-black">
-            <LazyBackgroundVideo
-              src="/travel-kit.mp4"
-              poster="/images/destinations/kashmir.jpg"
-              posterAlt="Travel kit preview"
-              className="w-full max-h-[26rem] h-auto"
-            />
-          </div>
+            <div className="relative h-[26rem] w-full overflow-hidden bg-black sm:h-[30rem]">
+              <LazyBackgroundVideo
+                src="/travel-kit.mp4"
+                poster="/images/destinations/kashmir.jpg"
+                posterAlt="Travel kit preview"
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
             <div className="p-8 text-center">
               <h2 className="font-serif text-4xl">Begin Your Next Journey</h2>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-600">
