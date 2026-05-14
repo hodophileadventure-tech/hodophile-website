@@ -1624,6 +1624,87 @@ export function MakeMyTripForm() {
                   </select>
                 </label>
               </div>
+            ) : isPackageRoute() && isMultiCityTour() ? (
+              <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
+                <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-900 mb-4">
+                  <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Select Hotels for Each City</span>
+                </p>
+                {getVisibleMultiCityConfig(routeId)?.cities.map((city) => {
+                  let hotelsForCity = getHotelsForRouteCity(routeId, city);
+                  if (selectedLuxuryPackage) {
+                    hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+                  }
+                  const currentSelection = effectiveMultiCityHotels[city];
+                  const selectedHotel = hotelsForCity.find((h) => h.id === currentSelection?.hotelId);
+
+                  return (
+                    <div
+                      key={city}
+                      className="mb-4 pb-4 border-b border-[#f4d77d] last:border-b-0 rounded-[10px] bg-[#FFF8Df] p-3"
+                    >
+                      <p className="text-xs uppercase tracking-widest text-green-800 mb-3 font-semibold">
+                        {city}
+                      </p>
+                      <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
+                        <label className="grid gap-2 text-sm font-medium text-stone-900">
+                          Hotel *
+                          <select
+                            required
+                            value={currentSelection?.hotelId || ""}
+                            onChange={(e) =>
+                              setMultiCityHotels({
+                                ...multiCityHotels,
+                                [city]: {
+                                  ...currentSelection,
+                                  hotelId: e.target.value,
+                                  roomId: "",
+                                },
+                              })
+                            }
+                            className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                          >
+                            <option value="">Select hotel...</option>
+                            {hotelsForCity.map((hotel) => (
+                              <option key={hotel.id} value={hotel.id}>
+                                {hotel.name}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+
+                        <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
+                          Room Type *
+                          <select
+                            required
+                            value={currentSelection?.roomId || ""}
+                            onChange={(e) =>
+                              setMultiCityHotels({
+                                ...multiCityHotels,
+                                [city]: {
+                                  ...currentSelection,
+                                  roomId: e.target.value,
+                                },
+                              })
+                            }
+                            disabled={!currentSelection?.hotelId}
+                            className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 overflow-hidden text-ellipsis"
+                          >
+                            <option value="">Select room...</option>
+                            {selectedHotel?.rooms
+                              .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
+                              .map((room: any) => (
+                                <option key={room.name} value={room.name}>
+                                  {room.name}
+                                </option>
+                              ))}
+                          </select>
+                        </label>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             ) : supportsMultipleHotelsInSingleCity ? (
               <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
                 <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
