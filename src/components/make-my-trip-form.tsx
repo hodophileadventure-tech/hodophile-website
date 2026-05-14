@@ -963,12 +963,12 @@ export function MakeMyTripForm() {
         primaryHotelId = "";
         primaryRoomId = "Multiple";
       } else if (isMultiCityTour() && routeId in multiCityConfig) {
+        const visible = getVisibleMultiCityConfig(routeId) || { cities: [], nights: [] };
         selectedMultiCityNights = Object.fromEntries(
-          (getVisibleMultiCityConfig(routeId)?.cities || []).map((city, i) => [
-            city,
-            getVisibleMultiCityConfig(routeId)?.nights[i] ?? 0,
-          ])
+          visible.cities.map((city, i) => [city, visible.nights[i] ?? 0])
         );
+        // Also include the package cities so the quotation edit page can render hotel selectors
+        selectedCustomCities = visible.cities;
         primaryHotelId = "";
         primaryRoomId = "Multiple";
       }
