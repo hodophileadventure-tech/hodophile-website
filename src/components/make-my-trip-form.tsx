@@ -1019,6 +1019,56 @@ export function MakeMyTripForm() {
         customerPhone,
       };
 
+      // Build a concise description for the receipt: package/route, vehicle, hotels, and prices in PKR
+      const findHotelName = (id: string, city?: string) => {
+        if (!id) return "";
+        try {
+          if (city) {
+            const hotels = getHotelsByCity(city);
+            const found = hotels.find((h) => h.id === id);
+            if (found) return found.name || id;
+          }
+
+          for (const c of sortedCitiesWithHotels) {
+            const hotels = getHotelsByCity(c);
+            const found = hotels.find((h) => h.id === id);
+            if (found) return found.name || id;
+          }
+        } catch (e) {
+          return id;
+        }
+        return id;
+      };
+
+      const packageText = chosenPackage ? chosenPackage.label : (isCustomCitySelection() ? (effectiveSelectedCities.join(' + ') || 'Custom Itinerary') : (selectedRoute?.city || routeId || 'Package'));
+      const vehicleText = vehicleName || 'No vehicle selected';
+
+      let hotelsSummary = '';
+      if (selectedSingleCityHotelStays && selectedSingleCityHotelStays.length > 0) {
+        hotelsSummary = selectedSingleCityHotelStays.map((s) => `${findHotelName(s.hotelId)}${s.nights ? ` (${s.nights} nights)` : ''}`).join(' / ');
+      } else if (selectedMultiCityNights && quotationData.multiCityHotels) {
+        const parts: string[] = [];
+        for (const city of Object.keys(quotationData.multiCityHotels)) {
+          const entry = quotationData.multiCityHotels[city];
+          const nights = (selectedMultiCityNights as Record<string, number>)?.[city] ?? (effectiveCustomCityNights[city] ?? 0);
+          parts.push(`${city}: ${findHotelName(entry.hotelId, city)}${nights ? ` (${nights} nights)` : ''}`);
+        }
+        hotelsSummary = parts.join(' / ');
+      } else if (quotationData.hotelId) {
+        const city = selectedRoute?.city || effectiveSelectedCities[0];
+        hotelsSummary = findHotelName(quotationData.hotelId, city);
+      }
+
+      const fmt = (n: number | undefined) => {
+        if (typeof n !== 'number' || Number.isNaN(n)) return 'PKR 0';
+        return `PKR ${new Intl.NumberFormat('en-US').format(Math.round(n))}`;
+      };
+
+      const pricesText = `Total: ${fmt(quotation.totalCost)} | Per person: ${fmt(quotation.perPersonCost)}`;
+
+      // Attach description to quotationData (used by receipt/quotation pages)
+      (quotationData as any).description = `${packageText} | Vehicle: ${vehicleText}${hotelsSummary ? ` | Hotels: ${hotelsSummary}` : ''} | ${pricesText}`;
+
       // Encode data and redirect to edit page
       const encoded = btoa(JSON.stringify(quotationData));
 
