@@ -21,6 +21,7 @@ export interface Hotel {
     | "Hunza"
     | "Swat"
     | "Kashmir"
+    | "Astore"
     | "Khaplu"
     | "Shogran"
     | "Islamabad"

@@ -51,6 +51,7 @@ export function QuotationResultContent() {
   const transportCost = quotation.transportCost ?? 0;
   const hotelCost = quotation.hotelCost ?? 0;
   const jeepCost = quotation.jeepAddonsCost ?? 0;
+  const offRouteCost = quotation.offRouteChargePKR ?? 0;
   const subtotal = quotation.subtotal ?? 0;
   const markupAmount = quotation.markupAmount ?? 0;
   const perPersonPrice = quotation.perPersonCost ?? 0;
@@ -93,6 +94,16 @@ export function QuotationResultContent() {
     });
   }
 
+  if (offRouteCost > 0) {
+    items.push({
+      item: "Off-Route Surcharge",
+      description: "Additional petrol surcharge for non-standard city combinations",
+      unitPrice: "",
+      quantity: "",
+      amount: offRouteCost,
+    });
+  }
+
   const quoteNumber = `Q${Date.now().toString().slice(-6)}`;
   const quoteDate = new Date().toLocaleDateString("en-GB");
 
@@ -115,7 +126,7 @@ export function QuotationResultContent() {
 
           <div className="mt-8 grid gap-6 md:grid-cols-[1.25fr_0.75fr] items-start">
             <div className="rounded-2xl border border-stone-300 bg-stone-100 p-6">
-              <p className="text-2xl font-bold text-stone-900">To, {quotation.customerName ? `Mr. ${quotation.customerName}` : "Customer"}</p>
+              <p className="text-2xl font-bold text-stone-900">To, {quotation.customerName ? quotation.customerName : "Customer"}</p>
               <div className="mt-6 space-y-3 text-sm text-stone-800">
                 <p>{quotation.customerPhone || "Cell#"}</p>
                 <p>{quotation.destination || "Destination not specified"}</p>
@@ -154,11 +165,46 @@ export function QuotationResultContent() {
                   <p><span className="font-semibold">Transportation Type:</span> {quotation.details?.vehicle || quotation.vehicleName || "-"}</p>
                   <p><span className="font-semibold">Tour Mode:</span> {travelMode === "air" ? "By Air" : "By Road"}</p>
                   <p><span className="font-semibold">Departure Location:</span> {quotation.startingPoint || "-"}</p>
+                  {quotation.isInvalidCombination && offRouteCost > 0 && (
+                    <div className="mt-3 rounded-lg bg-amber-50 border border-amber-200 p-3">
+                      <p className="text-amber-900 font-medium">
+                        ⚠️ Off-Route Surcharge Applied
+                      </p>
+                      <p className="text-amber-800 text-xs mt-1">
+                        Your selected city combination is outside our standard routes. An additional petrol surcharge of {formatPKR(offRouteCost)} has been added to your quotation.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
+          {/* Pricing Breakdown Table */}
+          <div className="mt-10 overflow-x-auto">
+            <table className="w-full border-collapse rounded-lg overflow-hidden">
+              <thead>
+                <tr className="bg-[#fcc000]">
+                  <th className="border border-stone-300 px-4 py-3 text-left text-sm font-bold text-black">Item</th>
+                  <th className="border border-stone-300 px-4 py-3 text-left text-sm font-bold text-black">Description</th>
+                  <th className="border border-stone-300 px-4 py-3 text-center text-sm font-bold text-black">Qty</th>
+                  <th className="border border-stone-300 px-4 py-3 text-right text-sm font-bold text-black">Amount (PKR)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, idx) => (
+                  <tr key={idx} className="border-b border-stone-200 hover:bg-stone-50">
+                    <td className="border border-stone-300 px-4 py-3 text-sm font-medium text-stone-900">{item.item}</td>
+                    <td className="border border-stone-300 px-4 py-3 text-sm text-stone-700">{item.description}</td>
+                    <td className="border border-stone-300 px-4 py-3 text-center text-sm text-stone-700">{item.quantity}</td>
+                    <td className="border border-stone-300 px-4 py-3 text-right text-sm font-semibold text-stone-900">{formatPKR(item.amount)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Totals Summary */}
           <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_0.9fr]">
             <div className="rounded-3xl border border-stone-300 bg-stone-100 p-6 text-sm text-stone-900">
               <p className="font-semibold">Package included:</p>
@@ -171,12 +217,16 @@ export function QuotationResultContent() {
               <p className="mt-3 text-xs text-stone-700">Quotation is exclusive of air tickets.</p>
             </div>
 
-            <div className="rounded-3xl border border-stone-300 bg-white p-4">
-              <div className="space-y-2 text-sm text-stone-900">
-                <p className="font-semibold">Pricing Hidden</p>
-                <p className="text-sm">Detailed pricing has been hidden from this view. To receive the full breakdown or to make adjustments, please contact our sales team.</p>
-                <p className="mt-3 font-semibold"><a className="underline" href="tel:+923001234567">Call Sales: +92 300 1234567</a></p>
-                <p className="pt-3 text-xs text-stone-700">Quotation is exclusive of air tickets.</p>
+            <div className="rounded-3xl border border-stone-300 bg-white p-6">
+              <div className="space-y-4 text-sm text-stone-900">
+                <div className="flex justify-between pt-2 bg-[#fcc000]/10 p-3 rounded-lg">
+                  <span className="font-bold text-lg">Total Trip Cost:</span>
+                  <span className="font-bold text-lg text-[#fcc000]">{formatPKR(totalAmount)}</span>
+                </div>
+                <div className="flex justify-between bg-stone-50 p-3 rounded-lg border border-stone-200">
+                  <span className="font-semibold">Per Person Cost:</span>
+                  <span className="font-bold text-stone-900">{formatPKR(perPersonPrice)}</span>
+                </div>
               </div>
             </div>
           </div>

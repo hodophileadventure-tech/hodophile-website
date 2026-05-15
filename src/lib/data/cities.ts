@@ -37,6 +37,7 @@ export const citiesWithHotels = [
   "Hunza",
   "Skardu",
   "Naran",
+  "Astore",
   "Kashmir",
   "Swat",
   "Fairy Meadows",

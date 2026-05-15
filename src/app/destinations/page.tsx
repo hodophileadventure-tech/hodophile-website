@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
-import { absoluteUrl, destinationHighlights } from "@/lib/site";
+import { absoluteUrl, destinationHighlights, destinations, destinationGallerySlugs } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Pakistan Travel Destinations",
@@ -31,18 +31,30 @@ export default function DestinationsPage() {
       />
 
       <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
-        {destinationHighlights.map((destination) => (
-          <article
-            key={destination.name}
-            className="rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur"
-          >
-            <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/75">
-              {destination.season}
-            </p>
-            <h2 className="mt-4 text-2xl font-semibold">{destination.name}</h2>
-            <p className="mt-3 text-sm leading-6 text-stone-600">{destination.bestFor}</p>
-          </article>
-        ))}
+        {destinations.map((destination, idx) => {
+          const slug = destinationGallerySlugs[idx] || destination.name.toLowerCase().replace(/\s+/g, "-");
+          return (
+            <article
+              key={destination.name}
+              className="rounded-[2rem] border border-black/10 bg-white/80 p-0 overflow-hidden shadow-sm"
+            >
+              <a href={`/destinations/${slug}`} className="block">
+                <div className="h-44 w-full overflow-hidden bg-stone-100">
+                  <img src={destination.image} alt={destination.name} className="h-full w-full object-cover" />
+                </div>
+                <div className="p-6">
+                  <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/75">{destination.season}</p>
+                  <h2 className="mt-3 text-2xl font-semibold">{destination.name}</h2>
+                  <p className="mt-2 text-sm leading-6 text-stone-600">{destination.description}</p>
+                  <div className="mt-4 flex items-center justify-between text-sm text-stone-700">
+                    <span>{destination.duration}</span>
+                    {destination.priceFrom && <span className="font-semibold text-stone-900">{destination.priceFrom}</span>}
+                  </div>
+                </div>
+              </a>
+            </article>
+          );
+        })}
       </section>
     </PageShell>
   );

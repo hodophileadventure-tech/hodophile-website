@@ -62,6 +62,57 @@ const phoneRegex13Digit = /^\+92\d{10}$/;
 const phoneRegex11Digit = /^03\d{9}$/;
 const LABEL_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
 const VALIDATION_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
+const CITY_MINIMUM_DAYS: Record<string, number> = {
+  Skardu: 6,
+  Hunza: 5,
+  Naran: 3,
+  Kashmir: 3,
+  Swat: 3,
+  "Fairy Meadows": 5,
+  Astore: 5,
+  Murree: 2,
+  "Nathia Gali": 2,
+};
+
+function getCityMinimumDays(city: string, startingPointValue: string) {
+  const baseDays = CITY_MINIMUM_DAYS[city] ?? 2;
+  const extraDays = startingPointValue && startingPointValue !== "Islamabad" ? 2 : 0;
+  return baseDays + extraDays;
+}
+
+const ALWAYS_ALLOWED_ROUTE_CITIES = new Set(["Hunza", "Skardu", "Naran", "Astore", "Fairy Meadows"]);
+
+const VALID_COMBINATIONS: Array<{ cities: string[]; days: number }> = [
+  { cities: ["Kashmir", "Shogran"], days: 5 },
+  { cities: ["Swat", "Shogran"], days: 6 },
+  { cities: ["Naran", "Shogran"], days: 4 },
+  { cities: ["Murree", "Nathia Gali"], days: 3 },
+];
+
+const PETROL_SURCHARGE_FOR_INVALID: Record<string, number> = {
+  "Toyota Corolla": 55,
+  "Honda BRV": 55,
+  "Grand Cabin Petrol": 65,
+  "Grand Cabin Diesel": 65,
+  Prado: 75,
+  "Coaster 4C": 75,
+  "Coaster 5C": 75,
+};
+
+function isValidCombination(selectedCities: string[]): boolean {
+  if (selectedCities.length === 0) return true;
+  if (selectedCities.every((city) => ALWAYS_ALLOWED_ROUTE_CITIES.has(city))) {
+    return true;
+  }
+  for (const combo of VALID_COMBINATIONS) {
+    const sortedCombo = [...combo.cities].sort();
+    const sortedSelected = [...selectedCities].sort();
+    if (sortedCombo.length === sortedSelected.length && sortedCombo.every((c, i) => c === sortedSelected[i])) {
+      return true;
+    }
+  }
+  return false;
+}
 
 export function MakeMyTripForm() {
   const router = useRouter();
@@ -111,6 +162,8 @@ export function MakeMyTripForm() {
   const [submitError, setSubmitError] = useState("");
   const [mandatoryJeepCost, setMandatoryJeepCost] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [isInvalidCombination, setIsInvalidCombination] = useState(false);
+  const [offRouteChargePKR, setOffRouteChargePKR] = useState(0);
   const previousQuotationRef = useRef<QuotationBreakdown | null>(null);
   const luxuryDropdownRef = useRef<HTMLDivElement | null>(null);
   const honeymoonDropdownRef = useRef<HTMLDivElement | null>(null);
@@ -569,6 +622,29 @@ export function MakeMyTripForm() {
     return null;
   }, [selectedLuxuryPackage, selectedHoneymoonTour, selectedPreplannedTrip]);
 
+  const isPreplannedTripsLocked = Boolean(selectedLuxuryPackage || selectedHoneymoonTour);
+
+  // Determine available travel modes based on selected preplanned trip
+  const availableTravelModes = useMemo(() => {
+    // If no preplanned trip selected, allow both modes
+    if (!selectedPreplannedTrip) return ["road", "air"];
+
+    // Allow both road and air only for the 10-day Skardu Shigar Shangrila preplanned trip
+    if (preplannedRoute && (preplannedRoute.slug === "skardu-shigar-shangrila" && preplannedRoute.duration === 10)) {
+      return ["road", "air"];
+    }
+
+    // For any other preplanned trip, only allow By Road
+    return ["road"];
+  }, [selectedPreplannedTrip, preplannedRoute]);
+
+  // Ensure current travelMode is within available options
+  useEffect(() => {
+    if (!availableTravelModes.includes(travelMode)) {
+      setTravelMode(availableTravelModes[0]);
+    }
+  }, [availableTravelModes, travelMode]);
+
   const initializeSingleCityHotelStays = (route: Route) => {
     let hotels = getHotelsByCity(route.city).filter(
       (hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory(),
@@ -632,6 +708,59 @@ export function MakeMyTripForm() {
   }, [supportsMultipleHotelsInCustomSingleCity, selectedCities, customSingleCityNightCount, hotelCategory]);
 
   useEffect(() => {
+    if (selectedCities.length === 0) return;
+
+    setCustomCityNights((currentNights) => {
+      let hasChanges = false;
+      const nextNights = { ...currentNights };
+
+      for (const city of selectedCities) {
+        const minimumDays = getCityMinimumDays(city, startingPoint);
+        if ((nextNights[city] ?? 0) < minimumDays) {
+          nextNights[city] = minimumDays;
+          hasChanges = true;
+        }
+      }
+
+      for (const city of Object.keys(nextNights)) {
+        if (!selectedCities.includes(city)) {
+          delete nextNights[city];
+          hasChanges = true;
+        }
+      }
+
+      return hasChanges ? nextNights : currentNights;
+    });
+  }, [selectedCities, startingPoint]);
+
+  // Check if the selected city combination is valid (only for multi-city selections)
+  useEffect(() => {
+    const isValid = isValidCombination(selectedCities);
+    setIsInvalidCombination(!isValid && selectedCities.length > 1);
+  }, [selectedCities]);
+
+  // Calculate petrol surcharge for invalid multi-city combinations
+  useEffect(() => {
+    if (!isInvalidCombination || !vehicleName || selectedCities.length < 2) {
+      setOffRouteChargePKR(0);
+      return;
+    }
+
+    // Get the surcharge liters for this vehicle
+    const surchargeBook = PETROL_SURCHARGE_FOR_INVALID[vehicleName] || 0;
+    if (surchargeBook === 0) {
+      setOffRouteChargePKR(0);
+      return;
+    }
+
+    // Calculate cost: liters * price per liter
+    // Using petrol price of 430 PKR/liter as per currentFuelPrices
+    const PETROL_PRICE_PER_LITER = 430;
+    const chargePKR = surchargeBook * PETROL_PRICE_PER_LITER;
+    setOffRouteChargePKR(chargePKR);
+  }, [isInvalidCombination, vehicleName, selectedCities.length]);
+
+  useEffect(() => {
     if (!supportsMultipleHotelsInCustomSingleCity) return;
 
     const totalSelectedNights = singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0);
@@ -677,7 +806,7 @@ export function MakeMyTripForm() {
 
       setCustomCityNights((currentNights) => ({
         ...currentNights,
-        [city]: currentNights[city] ?? 2,
+        [city]: Math.max(currentNights[city] ?? 0, getCityMinimumDays(city, startingPoint)),
       }));
 
       return [...currentCities, city];
@@ -1006,8 +1135,10 @@ export function MakeMyTripForm() {
         jeepAddonsCost: quotation.jeepAddonsCost,
         subtotal: quotation.subtotal,
         markupAmount: quotation.markupAmount,
-        totalCost: quotation.totalCost,
-        perPersonCost: quotation.perPersonCost,
+        totalCost: quotation.totalCost + offRouteChargePKR,
+        perPersonCost: quotation.perPersonCost + (offRouteChargePKR / (adults + kids)),
+        offRouteChargePKR: offRouteChargePKR,
+        isInvalidCombination,
         singleCityHotelStays: selectedSingleCityHotelStays,
         travelMode,
         // Include multi-city data
@@ -1401,28 +1532,6 @@ export function MakeMyTripForm() {
               </label>
             </div>
 
-            {/* Preplanned Trips */}
-            <div className="rounded-[24px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
-              <label className="grid gap-2 text-sm font-medium text-stone-900">
-                <span className="flex items-center gap-2">
-                  <Map className={LABEL_ICON_CLASS} aria-hidden="true" />
-                  <span>Preplanned Trips</span>
-                </span>
-                <select
-                  value={selectedPreplannedTrip}
-                  onChange={(e) => setSelectedPreplannedTrip(e.target.value)}
-                  className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                >
-                  <option value="">Select a preplanned trip (optional)</option>
-                  {orderedFeaturedTourCards.map((tour) => (
-                    <option key={tour.slug} value={tour.slug}>
-                      {tour.title}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
             {/* Show preplanned trip details if selected */}
             {selectedPreplannedTrip && preplannedRoute && (
               <div className="rounded-[22px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_22px_rgba(252,192,0,0.06)]">
@@ -1441,69 +1550,96 @@ export function MakeMyTripForm() {
 
             {/* Trip Details - Always visible */}
             <div className="grid gap-4 rounded-[24px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
-            <label className="grid gap-2 text-sm font-medium text-stone-900">
-              <span className="flex items-center gap-2">
-                <CalendarDays className={LABEL_ICON_CLASS} aria-hidden="true" />
-                <span>Trip Start Date *</span>
-                {tripDateValid && <Check className={VALIDATION_ICON_CLASS} aria-hidden="true" />}
-              </span>
-              <input
-                type="date"
-                required
-                value={tripDate}
-                onChange={(e) => setTripDate(e.target.value)}
-                className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-              />
-            </label>
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <label className="grid gap-2 text-sm font-medium text-stone-900">
+                  <span className="flex items-center gap-2">
+                    <CalendarDays className={LABEL_ICON_CLASS} aria-hidden="true" />
+                    <span>Trip Start Date *</span>
+                    {tripDateValid && <Check className={VALIDATION_ICON_CLASS} aria-hidden="true" />}
+                  </span>
+                  <input
+                    type="date"
+                    required
+                    value={tripDate}
+                    onChange={(e) => setTripDate(e.target.value)}
+                    className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  />
+                </label>
 
-            <label className="grid gap-2 text-sm font-medium text-stone-900">
-              <span className="flex items-center gap-2">
-                <MapPin className={LABEL_ICON_CLASS} aria-hidden="true" />
-                <span>Starting Point *</span>
-                {startingPointValid && <Check className={VALIDATION_ICON_CLASS} aria-hidden="true" />}
-              </span>
-              <select
-                required
-                value={startingPoint}
-                onChange={(e) => {
-                  setStartingPoint(e.target.value);
-                  if (e.target.value !== "Other") {
-                    setOtherStartingPoint("");
-                  }
-                }}
-                className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-              >
-                <option value="">Select your starting city...</option>
-                {[
-                  "Karachi",
-                  "Lahore",
-                  "Islamabad",
-                  "Multan",
-                  "Other",
-                ].map((city) => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {startingPoint === "Other" && (
-              <label className="grid gap-2 text-sm font-medium text-stone-900">
-                Enter Starting City *
-                <input
-                  required
-                  type="text"
-                  value={otherStartingPoint}
-                  onChange={(e) => setOtherStartingPoint(e.target.value)}
-                  placeholder="Type your starting city"
-                  className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                />
-              </label>
-            )}
+                <label className="grid min-w-0 gap-2 text-sm font-medium text-stone-900">
+                  <span className="flex items-center gap-2">
+                    <Map className={LABEL_ICON_CLASS} aria-hidden="true" />
+                    <span>Preplanned Trips</span>
+                  </span>
+                  <select
+                    value={selectedPreplannedTrip}
+                    disabled={isPreplannedTripsLocked}
+                    onChange={(e) => setSelectedPreplannedTrip(e.target.value)}
+                    className="glow-focus w-full min-w-0 rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:cursor-not-allowed disabled:bg-[#f8efc8] disabled:text-stone-400 disabled:opacity-70"
+                  >
+                    <option value="">Select a preplanned trip (optional)</option>
+                    {orderedFeaturedTourCards.map((tour) => (
+                      <option key={tour.slug} value={tour.slug}>
+                        {tour.title}
+                      </option>
+                    ))}
+                  </select>
+                  {isPreplannedTripsLocked && (
+                    <p className="mt-2 rounded-[14px] border border-red-300 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
+                      Remove the selected luxury or honeymoon package first to choose a preplanned trip.
+                    </p>
+                  )}
+                </label>
+              </div>
 
-            {/* Tour Type & Mode - Always visible */}
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {/* Show preplanned trip details if selected */}
+              {selectedPreplannedTrip && preplannedRoute && (
+                <div className="rounded-[22px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_22px_rgba(252,192,0,0.06)]">
+                  <p className="text-sm text-stone-700 font-medium">
+                    <span className="inline-flex items-center gap-2">
+                      <MapPin className={LABEL_ICON_CLASS} aria-hidden="true" />
+                      <strong>{preplannedRoute.name}</strong>
+                    </span>
+                  </p>
+                  <p className="text-xs text-stone-600 mt-1">Duration: {preplannedRoute.duration} days</p>
+                  {preplannedRoute.itinerary && (
+                    <p className="text-xs text-stone-600 mt-2 italic">{preplannedRoute.itinerary}</p>
+                  )}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <label className="grid gap-2 text-sm font-medium text-stone-900">
+                  <span className="flex items-center gap-2">
+                    <MapPin className={LABEL_ICON_CLASS} aria-hidden="true" />
+                    <span>Starting Point *</span>
+                    {startingPointValid && <Check className={VALIDATION_ICON_CLASS} aria-hidden="true" />}
+                  </span>
+                  <select
+                    required
+                    value={startingPoint}
+                    onChange={(e) => {
+                      setStartingPoint(e.target.value);
+                      if (e.target.value !== "Other") {
+                        setOtherStartingPoint("");
+                      }
+                    }}
+                    className="glow-focus rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  >
+                    <option value="">Select your starting city...</option>
+                    {[
+                      "Karachi",
+                      "Lahore",
+                      "Islamabad",
+                      "Multan",
+                      "Other",
+                    ].map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                </label>
                 <label className="grid gap-2 text-sm font-medium text-stone-900">
                   <span className="flex items-center gap-2">
                     <Compass className={LABEL_ICON_CLASS} aria-hidden="true" />
@@ -1519,6 +1655,21 @@ export function MakeMyTripForm() {
                 </label>
               </div>
 
+              {startingPoint === "Other" && (
+                <label className="grid gap-2 text-sm font-medium text-stone-900 lg:col-span-2">
+                  Enter Starting City *
+                  <input
+                    required
+                    type="text"
+                    value={otherStartingPoint}
+                    onChange={(e) => setOtherStartingPoint(e.target.value)}
+                    placeholder="Type your starting city"
+                    className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                  />
+                </label>
+              )}
+
+              {/* Tour Mode - Always visible */}
               <label className="grid gap-2 text-sm font-medium text-stone-900">
                 <span className="flex items-center gap-2">
                   <PlaneTakeoff className={LABEL_ICON_CLASS} aria-hidden="true" />
@@ -1529,8 +1680,8 @@ export function MakeMyTripForm() {
                   onChange={(e) => setTravelMode(e.target.value)}
                   className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
                 >
-                  <option value="road">By Road</option>
-                  <option value="air">By Air</option>
+                  {availableTravelModes.includes("road") && <option value="road">By Road</option>}
+                  {availableTravelModes.includes("air") && <option value="air">By Air</option>}
                 </select>
               </label>
             </div>
@@ -1559,6 +1710,9 @@ export function MakeMyTripForm() {
             <div className={`rounded-[20px] border border-[#f4d77d] bg-[#FFF8Df] p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)] ${chosenPackage ? 'hidden' : ''}`}>
               <p className="text-sm font-semibold text-[#6e5200] mb-4">
                 Select Destination Cities (Multiple Allowed) *
+              </p>
+              <p className="mb-3 text-xs text-[#8a6a12]">
+                Minimum days are applied automatically. If the starting point is not Islamabad, 2 extra days are added to each selected city.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {sortedCitiesWithHotels.map((city) => (
@@ -1605,16 +1759,17 @@ export function MakeMyTripForm() {
                     {effectiveSelectedCities.map((city) => (
                       <label key={city} className="grid gap-1 rounded-[12px] border border-[#f4d77d] bg-[#FFF8Df] p-2 text-stone-900 shadow-sm">
                         <span className="text-[11px] font-semibold uppercase tracking-wide text-[#6e5200]">
-                          {city} nights
+                          {city} nights {""}
+                          <span className="font-medium normal-case">(min {getCityMinimumDays(city, startingPoint)} days)</span>
                         </span>
                         <input
                           type="number"
-                          min="1"
-                          value={effectiveCustomCityNights[city] ?? 2}
+                          min={getCityMinimumDays(city, startingPoint)}
+                          value={effectiveCustomCityNights[city] ?? getCityMinimumDays(city, startingPoint)}
                           onChange={(e) =>
                             setCustomCityNights({
                               ...customCityNights,
-                              [city]: Math.max(1, parseInt(e.target.value) || 1),
+                              [city]: Math.max(getCityMinimumDays(city, startingPoint), parseInt(e.target.value) || 0),
                             })
                           }
                           className="rounded-[8px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
@@ -1625,7 +1780,26 @@ export function MakeMyTripForm() {
                 </div>
               )}
             </div>
-            </div>
+
+            {/* Invalid Combination Alert (multi-city only) */}
+            {isInvalidCombination && selectedCities.length > 1 && (
+              <div className="rounded-[20px] border-2 border-red-400 bg-red-50 p-4 shadow-[0_8px_20px_rgba(255,59,48,0.1)]">
+                <div className="flex gap-3">
+                  <div className="text-red-600 text-xl font-bold flex-shrink-0">⚠️</div>
+                  <div>
+                    <p className="text-sm font-semibold text-red-800 mb-2">
+                      Off-Route Combination Selected
+                    </p>
+                    <p className="text-sm text-red-700 mb-3">
+                      This is not a standard route combination. Extra charges will apply if you proceed.
+                    </p>
+                    <p className="text-xs text-red-600 font-medium">
+                      ✓ You can still proceed - additional charges will be calculated based on your selection.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Hotel Category Selection */}
             <label className="grid gap-2 text-sm font-medium text-stone-900">
@@ -1688,8 +1862,8 @@ export function MakeMyTripForm() {
                 </label>
               </div>
             ) : isPackageRoute() && isMultiCityTour() ? (
-              <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
-                <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-900 mb-4">
+              <div className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] p-4">
+                <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#6e5200] mb-4">
                   <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
                   <span>Select Hotels for Each City</span>
                 </p>
@@ -1706,7 +1880,7 @@ export function MakeMyTripForm() {
                       key={city}
                       className="mb-4 pb-4 border-b border-[#f4d77d] last:border-b-0 rounded-[10px] bg-[#FFF8Df] p-3"
                     >
-                      <p className="text-xs uppercase tracking-widest text-green-800 mb-3 font-semibold">
+                      <p className="text-xs uppercase tracking-widest text-[#6e5200] mb-3 font-semibold">
                         {city}
                       </p>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
@@ -1769,14 +1943,14 @@ export function MakeMyTripForm() {
                 })}
               </div>
             ) : supportsMultipleHotelsInSingleCity ? (
-              <div className="rounded-[15px] border border-green-200 bg-green-50 p-4">
+              <div className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] p-4">
                 <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-900">
+                    <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#6e5200]">
                       <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
                       <span>Select Hotels for {selectedRoute?.city}</span>
                     </p>
-                    <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
+                    <p className="text-xs text-[#8a6a12] mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
                   </div>
                   <div className="rounded-full border border-[#f4d77d] bg-[#FFF8Df] px-3 py-1 text-xs font-semibold text-[#6e5200]">
                     Total nights: {singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0)} / {singleCityNightCount}
