@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { absoluteUrl, allTourRoutes, destinationGalleryRoutes } from "@/lib/site";
+import { absoluteUrl, allTourRoutes, blogPosts, destinationGalleryRoutes } from "@/lib/site";
 import { featuredTourRoutePaths } from "@/lib/data/featured-tour-cards";
 
 const routes = [
@@ -9,6 +9,7 @@ const routes = [
   "/about-us",
   "/blog",
   "/blogs",
+  ...blogPosts.map((post) => `/blogs/${post.slug}`),
   "/contact",
   "/contact-us",
   "/destinations",
