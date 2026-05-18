@@ -22,6 +22,7 @@ export interface Hotel {
     | "Swat"
     | "Kashmir"
     | "Astore"
+      | "Fairy Meadows"
     | "Khaplu"
     | "Shogran"
     | "Islamabad"
@@ -765,6 +766,30 @@ export const hotels: Hotel[] = [
     city: "Naran",
     rooms: [
       { name: "Standard Room", price: 7000 },
+    ],
+  },
+  {
+    id: "hotel-shambala-fairy-meadows",
+    name: "Hotel Shambala",
+    city: "Fairy Meadows",
+    rooms: [
+      { name: "Standard", price: 5000 },
+    ],
+  },
+  {
+    id: "hotel-gateway-fairy-meadows",
+    name: "Hotel Gateway",
+    city: "Fairy Meadows",
+    rooms: [
+      { name: "Standard", price: 5000 },
+    ],
+  },
+  {
+    id: "hotel-raikot-serai-fairy-meadows",
+    name: "Hotel Raikot Serai",
+    city: "Fairy Meadows",
+    rooms: [
+      { name: "Standard", price: 5000 },
     ],
   },
 ];
