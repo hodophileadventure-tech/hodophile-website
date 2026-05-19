@@ -30,8 +30,10 @@ html, body {
 
 @media (max-width: 640px) {
   input[type="number"], input, select, textarea, button {
-    font-size: 16px;
-    -webkit-text-size-adjust: 100%;
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100% !important;
+    -moz-text-size-adjust: 100% !important;
+    -ms-text-size-adjust: 100% !important;
   }
 }
 
