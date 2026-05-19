@@ -19,6 +19,22 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Prevent mobile browsers from zooming in on focused inputs by ensuring
+   font-size is at least 16px on small screens and disabling text-size
+   adjustment that can trigger zoom. This keeps the layout stable on iOS/Android. */
+html, body {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (max-width: 640px) {
+  input[type="number"], input, select, textarea, button {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
