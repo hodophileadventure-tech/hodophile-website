@@ -64,7 +64,7 @@ const LABEL_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
 const VALIDATION_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
 const CITY_MINIMUM_DAYS: Record<string, number> = {
   Skardu: 6,
-  Hunza: 5,
+  Hunza: 7,
   Naran: 3,
   Kashmir: 3,
   Swat: 3,
@@ -805,6 +805,7 @@ export function MakeMyTripForm() {
       let hasChanges = false;
       const nextNights = { ...currentNights };
 
+      // Ensure per-city minimums
       for (const city of selectedCities) {
         const minimumDays = getCityMinimumDays(city, startingPoint);
         if ((nextNights[city] ?? 0) < minimumDays) {
@@ -813,9 +814,33 @@ export function MakeMyTripForm() {
         }
       }
 
+      // Preserve Chilas arrival/return if present and only remove keys that are neither selected cities nor special Chilas keys
+      const preserveKeys = new Set(selectedCities);
+      preserveKeys.add("Chilas (Arrival)");
+      preserveKeys.add("Chilas (Return)");
+
       for (const city of Object.keys(nextNights)) {
-        if (!selectedCities.includes(city)) {
+        if (!preserveKeys.has(city)) {
           delete nextNights[city];
+          hasChanges = true;
+        }
+      }
+
+      // Special rule: if Hunza is selected, ensure total nights across selected cities
+      // plus Chilas arrival/return is at least 7 (counts towards the Hunza requirement).
+      if (selectedCities.includes("Hunza")) {
+        const MIN_TOTAL_FOR_HUNZA = getCityMinimumDays("Hunza", startingPoint) || 7;
+        // Sum nights for selected cities and any Chilas keys
+        let totalNights = 0;
+        for (const city of Object.keys(nextNights)) {
+          if (selectedCities.includes(city) || city.startsWith("Chilas")) {
+            totalNights += nextNights[city] || 0;
+          }
+        }
+
+        if (totalNights < MIN_TOTAL_FOR_HUNZA) {
+          const deficit = MIN_TOTAL_FOR_HUNZA - totalNights;
+          nextNights["Hunza"] = (nextNights["Hunza"] || 0) + deficit;
           hasChanges = true;
         }
       }
@@ -2296,6 +2321,91 @@ export function MakeMyTripForm() {
                                 const priceB = b.price || b.peak || (Array.isArray(b.high) ? b.high[0] : b.high) || 0;
                                 return priceB - priceA;
                               })
+                              .map((room: any) => (
+                                <option key={room.name} value={room.name}>
+                                  {room.name}
+                                </option>
+                              ))}
+                          </select>
+                        </label>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : isCustomCitySelection() && effectiveSelectedCities.length > 1 && !supportsMultipleHotelsInCustomSingleCity ? (
+              // Custom multi-city selection (e.g., Hunza + Skardu + Chilas arrival/return)
+              <div className="rounded-[15px] border border-[#f4d77d] bg-[#FFF8Df] p-4">
+                <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#6e5200] mb-4">
+                  <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Select Hotels for Each City</span>
+                </p>
+                {effectiveSelectedCities.map((city) => {
+                  let hotelsForCity = getHotelsByCity(city);
+                  if (selectedLuxuryPackage) {
+                    hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+                  }
+                  const currentSelection = effectiveMultiCityHotels[city];
+                  const selectedHotel = hotelsForCity.find((h) => h.id === currentSelection?.hotelId);
+                  const nightsForCity = effectiveCustomCityNights[city] ?? 0;
+
+                  return (
+                    <div
+                      key={city}
+                      className="mb-4 pb-4 border-b border-[#f4d77d] last:border-b-0 rounded-[10px] bg-[#FFF8Df] p-3"
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <p className="text-xs uppercase tracking-widest text-[#6e5200] font-semibold">
+                          {city} {nightsForCity > 0 && `(${nightsForCity} night${nightsForCity !== 1 ? 's' : ''})`}
+                        </p>
+                      </div>
+                      <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
+                        <label className="grid gap-2 text-sm font-medium text-stone-900">
+                          Hotel *
+                          <select
+                            required
+                            value={currentSelection?.hotelId || ""}
+                            onChange={(e) =>
+                              setMultiCityHotels({
+                                ...multiCityHotels,
+                                [city]: {
+                                  ...currentSelection,
+                                  hotelId: e.target.value,
+                                  roomId: "",
+                                },
+                              })
+                            }
+                            className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                          >
+                            <option value="">Select hotel...</option>
+                            {hotelsForCity.map((hotel) => (
+                              <option key={hotel.id} value={hotel.id}>
+                                {hotel.name}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+
+                        <label className="grid gap-2 text-sm font-medium text-stone-900 overflow-hidden">
+                          Room Type *
+                          <select
+                            required
+                            value={currentSelection?.roomId || ""}
+                            onChange={(e) =>
+                              setMultiCityHotels({
+                                ...multiCityHotels,
+                                [city]: {
+                                  ...currentSelection,
+                                  roomId: e.target.value,
+                                },
+                              })
+                            }
+                            disabled={!currentSelection?.hotelId}
+                            className="rounded-[10px] border border-[#f4d77d] bg-[#FFF8Df] px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 overflow-hidden text-ellipsis"
+                          >
+                            <option value="">Select room...</option>
+                            {selectedHotel?.rooms
+                              .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
                               .map((room: any) => (
                                 <option key={room.name} value={room.name}>
                                   {room.name}
