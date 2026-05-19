@@ -2349,7 +2349,9 @@ export function MakeMyTripForm() {
                   <span>Select Hotels for Each City</span>
                 </p>
                 {effectiveSelectedCities.map((city) => {
-                  let hotelsForCity = getHotelsByCity(city);
+                  // Extract base city name (e.g., "Chilas" from "Chilas (Arrival)")
+                  const baseCityName = city.includes("(") ? city.split("(")[0].trim() : city;
+                  let hotelsForCity = getHotelsByCity(baseCityName);
                   if (selectedLuxuryPackage) {
                     hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
                   }
