@@ -33,6 +33,10 @@ const corporateClients = [
     name: "GET LISENCED Software House Karachi",
     logo: "/images/clients/get-lisenced.png",
   },
+  {
+    name: "Tapal Tea (Pvt.) Ltd",
+    logo: "/images/clients/tapal.png",
+  },
 ];
 
 export function CorporateClients() {
