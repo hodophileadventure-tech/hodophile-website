@@ -462,6 +462,59 @@ export function MakeMyTripForm() {
     return preferred.length > 0 ? preferred : baseHotels;
   };
 
+  // Cities that require a Chilas stopover hotel when present in a custom selection
+  const CHILLAS_GROUP = new Set(["Hunza", "Skardu", "Fairy Meadows", "Astore"]);
+
+  // Ensure Chilas hotel and nights are included when any CHILLAS_GROUP city is selected.
+  // This version injects two separate Chilas stays: "Chilas (Arrival)" and "Chilas (Return)",
+  // each for 1 night, to represent one stay while they go and one while they return.
+  // Returns augmented { multiCityHotels, multiCityNights, customCities } without mutating inputs.
+  const ensureChilasInMultiCityData = (
+    hotels: Record<string, { hotelId: string; roomId: string }>,
+    nights: Record<string, number> | undefined,
+    cities: string[],
+  ) => {
+    const hasChillasRelated = cities.some((c) => CHILLAS_GROUP.has(c));
+    if (!hasChillasRelated) {
+      return { multiCityHotels: hotels, multiCityNights: nights, customCities: cities };
+    }
+
+    // Detect any existing Chilas-like keys to avoid duplicating entries
+    const existingChilasKey = Object.keys(hotels || {}).find((k) => k === "Chilas" || k.startsWith("Chilas"))
+      || (nights && Object.keys(nights).find((k) => k === "Chilas" || k.startsWith("Chilas")));
+    if (existingChilasKey) {
+      return { multiCityHotels: hotels, multiCityNights: nights, customCities: cities };
+    }
+
+    // Find a default Chilas hotel
+    const chilasHotels = getHotelsByCity("Chilas");
+    const defaultHotelId = selectHotelByCategory(chilasHotels, hotelCategory) || (chilasHotels[0] && chilasHotels[0].id) || "";
+    const selectedHotel = chilasHotels.find((h) => h.id === defaultHotelId);
+    const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "";
+
+    // Create two separate Chilas entries to represent arrival and return stays
+    const arrivalKey = "Chilas (Arrival)";
+    const returnKey = "Chilas (Return)";
+
+    const nextHotels = {
+      ...hotels,
+      [arrivalKey]: { hotelId: defaultHotelId, roomId: defaultRoom },
+      [returnKey]: { hotelId: defaultHotelId, roomId: defaultRoom },
+    };
+
+    const nextNights = {
+      ...(nights || {}),
+      [arrivalKey]: ((nights && nights[arrivalKey]) || 0) + 1,
+      [returnKey]: ((nights && nights[returnKey]) || 0) + 1,
+    };
+
+    // Insert the Chilas keys into the cities list if not already present. We keep original city entries
+    // and append arrival/return markers so the label includes them.
+    const nextCities = [...cities.filter((c) => c !== "Chilas"), arrivalKey, returnKey];
+
+    return { multiCityHotels: nextHotels, multiCityNights: nextNights, customCities: nextCities };
+  };
+
   const isMultiCityTour = (): boolean => {
     return multiCityConfig[routeId] !== undefined;
   };
@@ -946,13 +999,20 @@ export function MakeMyTripForm() {
             const customJeepCost = getMandatoryJeepCostForCities(
               effectiveSelectedCities.filter((city) => city !== "Islamabad")
             );
+            // Ensure Chilas hotel is added for CHILLAS-related selections
+            const {
+              multiCityHotels: _augHotels,
+              multiCityNights: _augNights,
+              customCities: _augCities,
+            } = ensureChilasInMultiCityData(effectiveMultiCityHotels, effectiveCustomCityNights, effectiveSelectedCities);
+
             const calc = calculateQuotation({
               routeId: "custom-itinerary",
               vehicleName,
-              customCities: effectiveSelectedCities,
-              customRouteLabel: effectiveSelectedCities.join(" + "),
-              multiCityHotels: effectiveMultiCityHotels,
-              multiCityNights: effectiveCustomCityNights,
+              customCities: _augCities,
+              customRouteLabel: _augCities.join(" + "),
+              multiCityHotels: _augHotels,
+              multiCityNights: _augNights,
               numberOfRooms,
               adults,
               kids,
@@ -1114,6 +1174,26 @@ export function MakeMyTripForm() {
         primaryRoomId = "Multiple";
       }
 
+      // Augment multi-city hotels/nights with Chilas when CHILLAS-group cities are selected.
+      const shouldIncludeMultiCityHotels = ((isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity) || isMultiCityTour());
+      let augmentedMultiCityHotels: Record<string, { hotelId: string; roomId: string }> | undefined = undefined;
+      if (shouldIncludeMultiCityHotels) {
+        const hotelsForAug = effectiveMultiCityHotels || {};
+        const nightsForAug = selectedMultiCityNights;
+        const citiesForAug = selectedCustomCities || effectiveSelectedCities;
+
+        const { multiCityHotels: augHotels, multiCityNights: augNights, customCities: augCities } = ensureChilasInMultiCityData(
+          hotelsForAug,
+          nightsForAug,
+          citiesForAug,
+        );
+
+        // Use augmented values in the outgoing payload
+        selectedMultiCityNights = augNights;
+        selectedCustomCities = augCities;
+        augmentedMultiCityHotels = augHotels;
+      }
+
       // Prepare quotation data for edit page
       const quotationData = {
         tripDate,
@@ -1141,8 +1221,8 @@ export function MakeMyTripForm() {
         isInvalidCombination,
         singleCityHotelStays: selectedSingleCityHotelStays,
         travelMode,
-        // Include multi-city data
-        multiCityHotels: ((isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity) || isMultiCityTour()) ? effectiveMultiCityHotels : undefined,
+        // Include multi-city data (use augmented hotels when available)
+        multiCityHotels: ((isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity) || isMultiCityTour()) ? (augmentedMultiCityHotels || effectiveMultiCityHotels) : undefined,
         multiCityNights: selectedMultiCityNights,
         customCities: selectedCustomCities,
         customRouteLabel: isCustomCitySelection() ? effectiveSelectedCities.join(" + ") : undefined,
@@ -1175,15 +1255,29 @@ export function MakeMyTripForm() {
       const vehicleText = vehicleName || 'No vehicle selected';
 
       let hotelsSummary = '';
+      const isOnlyChillasSelection = selectedCities.length > 0 && selectedCities.every((c) => CHILLAS_GROUP.has(c));
+
       if (selectedSingleCityHotelStays && selectedSingleCityHotelStays.length > 0) {
         hotelsSummary = selectedSingleCityHotelStays.map((s) => `${findHotelName(s.hotelId)}${s.nights ? ` (${s.nights} nights)` : ''}`).join(' / ');
       } else if (selectedMultiCityNights && quotationData.multiCityHotels) {
         const parts: string[] = [];
-        for (const city of Object.keys(quotationData.multiCityHotels)) {
-          const entry = quotationData.multiCityHotels[city];
-          const nights = (selectedMultiCityNights as Record<string, number>)?.[city] ?? (effectiveCustomCityNights[city] ?? 0);
-          parts.push(`${city}: ${findHotelName(entry.hotelId, city)}${nights ? ` (${nights} nights)` : ''}`);
+
+        // If the user selected only CHILLAS-group cities, show only Chilas stays (arrival/return)
+        if (isOnlyChillasSelection) {
+          const chilasKeys = Object.keys(quotationData.multiCityHotels).filter((k) => k.toLowerCase().startsWith('chilas'));
+          for (const key of chilasKeys) {
+            const entry = quotationData.multiCityHotels[key];
+            const nights = (selectedMultiCityNights as Record<string, number>)?.[key] ?? (effectiveCustomCityNights[key] ?? 0);
+            parts.push(`${key}: ${findHotelName(entry.hotelId, 'Chilas')}${nights ? ` (${nights} nights)` : ''}`);
+          }
+        } else {
+          for (const city of Object.keys(quotationData.multiCityHotels)) {
+            const entry = quotationData.multiCityHotels[city];
+            const nights = (selectedMultiCityNights as Record<string, number>)?.[city] ?? (effectiveCustomCityNights[city] ?? 0);
+            parts.push(`${city}: ${findHotelName(entry.hotelId, city)}${nights ? ` (${nights} nights)` : ''}`);
+          }
         }
+
         hotelsSummary = parts.join(' / ');
       } else if (quotationData.hotelId) {
         const city = selectedRoute?.city || effectiveSelectedCities[0];
