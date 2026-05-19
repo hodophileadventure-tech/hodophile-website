@@ -40,8 +40,9 @@ export function CorporateClients() {
     <section className="bg-[#f7f6f2] py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-stone-900 mb-2">
-            Our Corporate Clients
+          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+            <span className="text-stone-900">Our Corporate</span>{" "}
+            <span className="text-[#fcc000]">Clients</span>
           </h2>
           <div className="h-1 w-24 bg-[#fcc000] mx-auto"></div>
         </div>
@@ -50,7 +51,7 @@ export function CorporateClients() {
           {corporateClients.map((client, index) => (
             <div
               key={index}
-              className="flex flex-col items-center justify-center gap-4 rounded-lg bg-white p-6 shadow-md transition hover:shadow-lg hover:scale-105"
+              className="flex flex-col items-center justify-center gap-4 rounded-lg border-4 border-[#fcc000] bg-white p-6 shadow-md transition hover:shadow-lg hover:scale-105"
             >
               <div className="h-32 w-32 flex items-center justify-center">
                 <Image
