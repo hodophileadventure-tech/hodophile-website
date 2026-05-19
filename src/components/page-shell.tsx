@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { SiteHeader } from "@/components/site-header";
+import { CorporateClients } from "@/components/corporate-clients";
 
 type PageShellProps = {
   children: ReactNode;
@@ -22,6 +23,8 @@ export function PageShell({ children, wide = false }: PageShellProps) {
       <main className={`mx-auto ${shellWidthClass} pb-12 pt-24 ${mainPaddingClass}`}>
         {children}
       </main>
+
+      <CorporateClients />
 
       <footer className="border-t border-[#d5a700] bg-[#ffc000]">
         <div className="mx-auto max-w-[96rem] grid gap-10 px-4 py-10 md:grid-cols-2 xl:grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] lg:px-10 xl:px-14">
