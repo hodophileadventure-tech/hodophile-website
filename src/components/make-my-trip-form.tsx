@@ -596,13 +596,15 @@ export function MakeMyTripForm() {
   const supportsMultipleHotelsInSingleCity = Boolean(
     selectedRoute && !isMultiCityTour() && !isCustomCitySelection() && singleCityNightCount > 2
   );
-  const isSingleCustomCity = isCustomCitySelection() && selectedCities.length === 1;
-  const customSingleCityNightCount = selectedCities.length === 1
+  // Check if this is truly a single non-CHILLAS-group city (Hunza/Skardu/etc auto-inject Chilas, making it multi-city)
+  const isSingleCustomCity = isCustomCitySelection() && selectedCities.length === 1 && !selectedCities.some(c => CHILLAS_GROUP.has(c));
+  const customSingleCityNightCount = selectedCities.length === 1 && !selectedCities.some(c => CHILLAS_GROUP.has(c))
     ? Math.max(1, (customCityNights[selectedCities[0]] ?? 0) - 1)
     : 0;
   const supportsMultipleHotelsInCustomSingleCity = Boolean(
     isCustomCitySelection() &&
     selectedCities.length === 1 &&
+    !selectedCities.some(c => CHILLAS_GROUP.has(c)) &&
     customSingleCityNightCount > 2
   );
 
@@ -826,28 +828,34 @@ export function MakeMyTripForm() {
         }
       }
 
-      // Special rule: if Hunza is selected, ensure total nights across selected cities
-      // plus Chilas arrival/return is at least 7 (counts towards the Hunza requirement).
-      if (selectedCities.includes("Hunza")) {
-        const MIN_TOTAL_FOR_HUNZA = getCityMinimumDays("Hunza", startingPoint) || 7;
-        // Sum nights for selected cities and any Chilas keys
-        let totalNights = 0;
-        for (const city of Object.keys(nextNights)) {
-          if (selectedCities.includes(city) || city.startsWith("Chilas")) {
-            totalNights += nextNights[city] || 0;
-          }
-        }
+      // Special rule for CHILLAS-group cities: when combined with Islamabad and Chilas stopover,
+      // redistribute nights so the main city gets fewer nights.
+      const hasChillasRelated = selectedCities.some((c) => CHILLAS_GROUP.has(c));
+      if (hasChillasRelated) {
+        // Calculate if Islamabad will be auto-included
+        const willIncludeIslamabad = shouldAutoIncludeIslamabad();
+        const chilasNights = (nextNights["Chilas (Arrival)"] || 0) + (nextNights["Chilas (Return)"] || 0);
+        const islamabadNights = willIncludeIslamabad ? 2 : 0;
 
-        if (totalNights < MIN_TOTAL_FOR_HUNZA) {
-          const deficit = MIN_TOTAL_FOR_HUNZA - totalNights;
-          nextNights["Hunza"] = (nextNights["Hunza"] || 0) + deficit;
-          hasChanges = true;
+        // Find the main CHILLAS city in selection
+        const mainCity = selectedCities.find((c) => CHILLAS_GROUP.has(c));
+        if (mainCity) {
+          // Target total: 8 nights if from non-ISB (9 days), 9 nights if from ISB (10 days)
+          const targetTotalNights = willIncludeIslamabad ? 8 : 9;
+          const allocatedNights = chilasNights + islamabadNights;
+          const mainCityNights = Math.max(4, targetTotalNights - allocatedNights); // at least 4 for main city
+
+          if ((nextNights[mainCity] || 0) !== mainCityNights) {
+            nextNights[mainCity] = mainCityNights;
+            hasChanges = true;
+          }
         }
       }
 
       return hasChanges ? nextNights : currentNights;
     });
   }, [selectedCities, startingPoint]);
+
 
   // Check if the selected city combination is valid (only for multi-city selections)
   useEffect(() => {
