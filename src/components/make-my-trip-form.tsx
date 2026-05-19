@@ -626,36 +626,74 @@ export function MakeMyTripForm() {
   };
 
   const effectiveSelectedCities = useMemo(() => {
-    if (shouldAutoIncludeIslamabad() && !selectedCities.includes("Islamabad")) {
-      return [...selectedCities, "Islamabad"];
+    const chilasArrival = "Chilas (Arrival)";
+    const chilasReturn = "Chilas (Return)";
+    const hasChillasRelated = selectedCities.some((c) => CHILLAS_GROUP.has(c));
+
+    let base = [...selectedCities];
+
+    if (shouldAutoIncludeIslamabad() && !base.includes("Islamabad")) {
+      base = [...base, "Islamabad"];
     }
-    return selectedCities;
+
+    if (hasChillasRelated) {
+      if (!base.includes(chilasArrival)) base.push(chilasArrival);
+      if (!base.includes(chilasReturn)) base.push(chilasReturn);
+    }
+
+    return base;
   }, [selectedCities, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad]);
 
   const effectiveCustomCityNights = useMemo(() => {
-    if (shouldAutoIncludeIslamabad() && !customCityNights["Islamabad"]) {
-      return { ...customCityNights, Islamabad: 2 };
+    let next = { ...customCityNights };
+    if (shouldAutoIncludeIslamabad() && !next["Islamabad"]) {
+      next["Islamabad"] = 2;
     }
-    return customCityNights;
+
+    // Ensure Chilas arrival/return nights are present when CHILLAS-related cities selected
+    const hasChillasRelated = selectedCities.some((c) => CHILLAS_GROUP.has(c));
+    if (hasChillasRelated) {
+      if (!next["Chilas (Arrival)"]) next["Chilas (Arrival)"] = 1;
+      if (!next["Chilas (Return)"]) next["Chilas (Return)"] = 1;
+    }
+
+    return next;
   }, [customCityNights, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad]);
 
   const effectiveMultiCityHotels = useMemo(() => {
-    if (!shouldAutoIncludeIslamabad() || multiCityHotels["Islamabad"]?.hotelId) {
-      return multiCityHotels;
+    let next = { ...multiCityHotels };
+
+    // Ensure Islamabad default when needed
+    if (shouldAutoIncludeIslamabad() && !next["Islamabad"]) {
+      let hotelsForIsb = getHotelsByCity("Islamabad");
+      if (selectedLuxuryPackage) {
+        hotelsForIsb = hotelsForIsb.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+      }
+      const defaultHotelId = selectHotelByCategory(hotelsForIsb, hotelCategory);
+      const selectedHotel = hotelsForIsb.find((h) => h.id === defaultHotelId);
+      const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "";
+      next["Islamabad"] = { hotelId: defaultHotelId, roomId: defaultRoom };
     }
 
-    let hotelsForIsb = getHotelsByCity("Islamabad");
-    if (selectedLuxuryPackage) {
-      hotelsForIsb = hotelsForIsb.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+    // Ensure Chilas arrival/return defaults when CHILLAS-group cities are present
+    const hasChillasRelated = selectedCities.some((c) => CHILLAS_GROUP.has(c));
+    if (hasChillasRelated) {
+      const chilasArrival = "Chilas (Arrival)";
+      const chilasReturn = "Chilas (Return)";
+      if (!next[chilasArrival] || !next[chilasReturn]) {
+        let chilasHotels = getHotelsByCity("Chilas");
+        if (selectedLuxuryPackage) {
+          chilasHotels = chilasHotels.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+        }
+        const defaultHotelId = selectHotelByCategory(chilasHotels, hotelCategory) || (chilasHotels[0] && chilasHotels[0].id) || "";
+        const selectedHotel = chilasHotels.find((h) => h.id === defaultHotelId);
+        const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "";
+        next[chilasArrival] = { hotelId: defaultHotelId, roomId: defaultRoom };
+        next[chilasReturn] = { hotelId: defaultHotelId, roomId: defaultRoom };
+      }
     }
-    const defaultHotelId = selectHotelByCategory(hotelsForIsb, hotelCategory);
-    const selectedHotel = hotelsForIsb.find((h) => h.id === defaultHotelId);
-    const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "";
 
-    return {
-      ...multiCityHotels,
-      Islamabad: { hotelId: defaultHotelId, roomId: defaultRoom },
-    };
+    return next;
   }, [multiCityHotels, hotelCategory, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad]);
 
   // Detect if a package (luxury / honeymoon / preplanned) is currently chosen
