@@ -160,7 +160,7 @@ export function SiteHeader() {
     >
       <div className="mx-auto max-w-[96rem]">
         <div
-          className="relative min-w-0 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-1 lg:gap-6 lg:px-8 xl:px-12"
+          className="relative min-w-0 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-2 lg:gap-6 lg:px-8 xl:px-12"
         >
         <nav className="hidden w-full min-w-0 items-center justify-start gap-1 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
           {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
@@ -168,12 +168,12 @@ export function SiteHeader() {
 
         <Link
           href="/"
-          className="group relative hidden h-[4.25rem] w-[13rem] justify-self-center overflow-hidden rounded-full px-1 py-0 lg:block"
+          className="group relative hidden h-[3.5rem] w-[12rem] justify-self-center lg:block"
         >
           <img
             src="/logo-transparent.png"
             alt="Hodophile Adventures"
-            className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition group-hover:scale-[1.02]"
+            className="mx-auto h-[2.8rem] w-auto max-h-[2.8rem] object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.16)] transition group-hover:scale-[1.02]"
           />
         </Link>
 
@@ -193,12 +193,12 @@ export function SiteHeader() {
         <div className="col-span-4 flex items-center justify-between lg:hidden">
           <Link
             href="/"
-            className="group relative inline-flex h-[3.5rem] w-[10rem] shrink-0 items-center overflow-hidden rounded-full px-1 py-0"
+            className="group relative inline-flex h-[2.5rem] w-[10rem] shrink-0 items-center lg:inline-flex"
           >
             <img
               src="/logo-transparent.png"
               alt="Hodophile Adventures"
-              className="absolute inset-0 h-full w-full object-contain drop-shadow-[0_3px_8px_rgba(0,0,0,0.25)] transition group-hover:scale-[1.02]"
+              className="mx-auto h-[1.9rem] w-auto max-h-[1.9rem] object-contain drop-shadow-[0_1px_4px_rgba(0,0,0,0.12)] transition group-hover:scale-[1.02]"
             />
           </Link>
 

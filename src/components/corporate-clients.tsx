@@ -51,26 +51,28 @@ export function CorporateClients() {
           <div className="h-1 w-24 bg-[#fcc000] mx-auto"></div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-          {corporateClients.map((client, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center justify-center gap-4 rounded-lg border-4 border-[#fcc000] bg-white p-6 shadow-md transition hover:shadow-lg hover:scale-105"
-            >
-              <div className="h-32 w-32 flex items-center justify-center">
-                <Image
-                  src={client.logo}
-                  alt={client.name}
-                  width={128}
-                  height={128}
-                  className="h-full w-full object-contain"
-                />
+        <div className="overflow-x-auto -mx-4 px-4">
+          <div className="flex gap-6 md:gap-8 items-stretch py-4">
+            {corporateClients.map((client, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 w-56 md:w-64 flex flex-col items-center justify-center gap-4 rounded-lg border-4 border-[#fcc000] bg-white p-6 shadow-md transition hover:shadow-lg hover:scale-105"
+              >
+                <div className="h-32 w-32 flex items-center justify-center">
+                  <Image
+                    src={client.logo}
+                    alt={client.name}
+                    width={128}
+                    height={128}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <p className="text-center text-sm md:text-base font-semibold text-stone-900">
+                  {client.name}
+                </p>
               </div>
-              <p className="text-center text-sm md:text-base font-semibold text-stone-900">
-                {client.name}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

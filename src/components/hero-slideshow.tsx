@@ -64,7 +64,7 @@ export function HeroSlideshow() {
   const activeSlide = slides[activeIndex];
 
   return (
-    <div className="relative flex min-h-[520px] items-center justify-center overflow-hidden py-16 sm:min-h-[560px]">
+    <div className="relative flex min-h-[420px] items-center justify-center overflow-hidden py-8 sm:min-h-[480px]">
       {slides.map((slide, index) => (
         <div
           key={slide.src}
