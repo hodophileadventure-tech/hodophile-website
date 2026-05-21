@@ -1531,23 +1531,29 @@ export function MakeMyTripForm() {
   }, [quotation]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen py-8">
-      <div className="w-full max-w-2xl make-my-trip-form">
+    <div className="flex justify-center items-center min-h-screen py-8 px-6 sm:px-8 lg:px-10 overflow-x-hidden">
+      <div className="w-full make-my-trip-form mx-auto mx-4 sm:mx-0 max-w-full sm:max-w-md md:max-w-2xl lg:max-w-3xl">
         <style>{`
           .make-my-trip-form input,
           .make-my-trip-form select,
           .make-my-trip-form textarea {
             transition: all 220ms ease;
+            box-sizing: border-box;
+            min-width: 0;
           }
           .make-my-trip-form input:hover,
           .make-my-trip-form select:hover,
-          .make-my-trip-form textarea:hover,
+          .make-my-trip-form textarea:hover {
+            transform: translateY(-1px);
+            border-color: #fcc000;
+            box-shadow: 0 0 0 6px rgba(252,192,0,0.06);
+          }
           .make-my-trip-form input:focus,
           .make-my-trip-form select:focus,
           .make-my-trip-form textarea:focus {
-            transform: translateY(-1px);
+            transform: none;
             border-color: #fcc000;
-            box-shadow: 0 0 0 10px rgba(252,192,0,0.08);
+            box-shadow: 0 0 0 6px rgba(252,192,0,0.08);
           }
 
           @keyframes glow-pulse {
@@ -1579,7 +1585,7 @@ export function MakeMyTripForm() {
           <div className="pointer-events-none absolute left-[-110px] top-[-110px] h-60 w-60 rounded-full bg-[#fcc000]/18 blur-3xl" />
           <div className="pointer-events-none absolute right-[-90px] bottom-[-90px] h-72 w-72 rounded-full bg-[#7f5a00]/10 blur-3xl" />
           <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[#fcc000]/70 to-transparent" />
-          <div className="relative isolate overflow-hidden rounded-[28px] bg-[#FFF8Df] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_12px_30px_rgba(0,0,0,0.05)] ring-1 ring-[#f4d77d]/60 transition-all duration-500 sm:p-10">
+          <div className="relative isolate overflow-hidden rounded-[28px] bg-[#FFF8Df] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_12px_30px_rgba(0,0,0,0.05)] ring-1 ring-[#f4d77d]/60 transition-all duration-500 sm:p-10">
           {/* Progress Bar */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
