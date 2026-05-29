@@ -1661,12 +1661,12 @@ export function MakeMyTripForm() {
             </div>
           )}
 
-          <div className="mb-8 text-center md:text-left">
-            <p className="text-base font-black uppercase tracking-[0.45em] text-black drop-shadow-[0_2px_4px_rgba(255,255,255,0.5)]">Craft your own Trip</p>
-            <h1 className="mt-4 font-serif text-5xl leading-tight sm:text-6xl lg:text-7xl font-black drop-shadow-[0_3px_8px_rgba(255,255,255,0.6)]">
-              <span className="text-black">Your Adventure</span>, <span className="text-black drop-shadow-[0_2px_6px_rgba(252,192,0,0.3)]">Your Way</span>
+          <div className="mb-6 text-center md:text-left">
+            <p className="text-sm font-bold uppercase tracking-[0.38em] text-black">Craft your own Trip</p>
+            <h1 className="mt-2 font-serif text-3xl leading-snug sm:text-4xl lg:text-5xl font-bold drop-shadow-[0_2px_4px_rgba(255,255,255,0.4)]">
+              <span className="text-black">Your Adventure</span>, <span className="text-[#FCC000]">Your Way</span>
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-black font-semibold md:mx-0 drop-shadow-[0_1px_3px_rgba(255,255,255,0.4)]">
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-black font-medium md:mx-0 drop-shadow-[0_1px_2px_rgba(255,255,255,0.3)]">
               Select your dates, destination, vehicle, and hotel. Get an instant quotation powered by real-time pricing.
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2 md:justify-start">
