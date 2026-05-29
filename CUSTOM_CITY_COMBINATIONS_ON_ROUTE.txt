@@ -1,0 +1,39 @@
+Cities (10): Hunza, Skardu, Naran, Astore, Kashmir, Swat, Fairy Meadows, Shogran, Nathia Gali, Murree
+Total on-route combinations: 36
+
+1. Astore
+2. Fairy Meadows
+3. Hunza
+4. Naran
+5. Skardu
+6. Astore + Fairy Meadows
+7. Astore + Hunza
+8. Astore + Naran
+9. Astore + Skardu
+10. Fairy Meadows + Hunza
+11. Fairy Meadows + Naran
+12. Fairy Meadows + Skardu
+13. Hunza + Naran
+14. Hunza + Skardu
+15. Kashmir + Shogran
+16. Murree + Nathia Gali
+17. Naran + Shogran
+18. Naran + Skardu
+19. Shogran + Swat
+20. Kashmir + Shogran + Swat
+21. Astore + Fairy Meadows + Hunza
+22. Astore + Fairy Meadows + Naran
+23. Astore + Fairy Meadows + Skardu
+24. Astore + Hunza + Naran
+25. Astore + Hunza + Skardu
+26. Astore + Naran + Skardu
+27. Fairy Meadows + Hunza + Naran
+28. Fairy Meadows + Hunza + Skardu
+29. Fairy Meadows + Naran + Skardu
+30. Hunza + Naran + Skardu
+31. Astore + Fairy Meadows + Hunza + Naran
+32. Astore + Fairy Meadows + Hunza + Skardu
+33. Astore + Fairy Meadows + Naran + Skardu
+34. Astore + Hunza + Naran + Skardu
+35. Fairy Meadows + Hunza + Naran + Skardu
+36. Astore + Fairy Meadows + Hunza + Naran + Skardu

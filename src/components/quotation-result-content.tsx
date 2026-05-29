@@ -84,6 +84,16 @@ export function QuotationResultContent() {
     },
   ];
 
+  // If detailed transport breakdown is present, add sub-rows for clarity
+  if (quotation.transportBreakdown) {
+    const tb = quotation.transportBreakdown;
+    items.push(
+      { item: "- Fuel", description: `Estimated fuel (${Math.round(tb.fuelNeeded)}L @ per L)`, unitPrice: "", quantity: "", amount: tb.fuelCost },
+      { item: "- Rental", description: `${tb.vehicleDays} days × ${formatPKR(tb.dailyRate)}`, unitPrice: "", quantity: "", amount: tb.rentalCost },
+      { item: "- Toll/Tax", description: "Fixed toll and taxes", unitPrice: "", quantity: "", amount: tb.tollTax }
+    );
+  }
+
   if (jeepCost > 0) {
     items.push({
       item: "Jeep Add-ons",

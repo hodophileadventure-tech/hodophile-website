@@ -48,6 +48,15 @@ export interface QuotationBreakdown {
     numberOfGuests: number;
     jeepAddonsDetails: string[];
   };
+  transportBreakdown?: {
+    fuelCost: number;
+    rentalCost: number;
+    tollTax: number;
+    distance: number;
+    fuelNeeded: number;
+    dailyRate: number;
+    vehicleDays: number;
+  };
 }
 
 function getSeasonFromDate(date: string): "peak" | "blossom" | "off" | "fixed" {
@@ -72,7 +81,18 @@ function calculateTransportCost(
   vehicleDays: number = 8, // Default 8 days for multi-city tours; adjust as needed
   distanceOverride?: number,
   travelMode?: "road" | "air"
-): number | null {
+):
+  | {
+      totalCost: number;
+      fuelCost: number;
+      rentalCost: number;
+      tollTax: number;
+      distance: number;
+      fuelNeeded: number;
+      dailyRate: number;
+      vehicleDays: number;
+    }
+  | null {
   const vehicleRate = getVehicleRate(vehicleName);
   if (!vehicleRate) {
     console.warn(`Vehicle rate not found for: ${vehicleName}`);
@@ -118,7 +138,16 @@ function calculateTransportCost(
   console.debug(
     `Transport: ${vehicleName} | Distance: ${distance}km | Consumption: ${vehicleRate.consumption}km/L | Fuel: ${fuelNeeded.toFixed(1)}L × ${fuelPrice}PKR = ${fuelCost}PKR | Rental: ${effectiveDailyRate}PKR × ${vehicleDays}days = ${rentalCost}PKR | Toll/Tax: ${effectiveTollTax}PKR | Total: ${totalCost}PKR`
   );
-  return totalCost;
+  return {
+    totalCost,
+    fuelCost,
+    rentalCost,
+    tollTax: effectiveTollTax,
+    distance,
+    fuelNeeded,
+    dailyRate: effectiveDailyRate,
+    vehicleDays,
+  };
 }
 
 function getRoomPrice(room: Room, season: string): number {
@@ -239,17 +268,18 @@ export function calculateQuotation(
     const customVehicleDays = isCustomItinerary ? estimateCustomVehicleDays(effectiveCustomNights) : undefined;
 
     // Use dynamic transport cost calculation with vehicle rental rates
-    const transportCost = calculateTransportCost(
+    const transportResult = calculateTransportCost(
       input.vehicleName,
       input.routeId,
       isCustomItinerary ? customVehicleDays : route?.vehicleDays,
       customDistance,
       input.travelMode
     );
-    if (transportCost === null) {
+    if (transportResult === null) {
       console.warn(`Transport cost calculation failed for vehicle: ${input.vehicleName}, route: ${input.routeId}`);
       return null;
     }
+    const transportCost = transportResult.totalCost;
 
     // Handle multi-city hotels or single hotel
     let hotelCost = 0;
@@ -398,6 +428,15 @@ export function calculateQuotation(
         numberOfGuests,
         jeepAddonsDetails: jeepDetails,
       },
+        transportBreakdown: transportResult && {
+          fuelCost: transportResult.fuelCost,
+          rentalCost: transportResult.rentalCost,
+          tollTax: transportResult.tollTax,
+          distance: transportResult.distance,
+          fuelNeeded: transportResult.fuelNeeded,
+          dailyRate: transportResult.dailyRate,
+          vehicleDays: transportResult.vehicleDays,
+        },
     };
   } catch (error) {
     console.error(`Error calculating quotation:`, error);

@@ -74,7 +74,16 @@ const cityLegDistance: Record<string, Record<string, number>> = {
 };
 
 function normalizeCity(city: string): string {
-  return city.trim();
+  // Normalize by trimming and removing any parenthetical suffixes like " (Arrival)" or " (Return)"
+  // Also collapse known aliases (e.g., "Arangkel" -> "Arang Kel") if needed.
+  let s = city.trim();
+  // Remove parenthetical notes
+  const parenIndex = s.indexOf("(");
+  if (parenIndex !== -1) {
+    s = s.slice(0, parenIndex).trim();
+  }
+  // Normalize common spacing variants
+  return s;
 }
 
 function getLegDistance(fromCity: string, toCity: string): number {
@@ -106,6 +115,8 @@ export function estimateCustomItineraryDistance(cities: string[]): number {
 
 export function estimateCustomVehicleDays(nightsByCity: Record<string, number>): number {
   const totalNights = Object.values(nightsByCity).reduce((sum, nights) => sum + Math.max(0, nights), 0);
-  const cityCount = Object.keys(nightsByCity).length;
-  return Math.max(1, totalNights + cityCount);
+  // Vehicle days should reflect the number of nights the vehicle is required.
+  // Previously we added one day per city which inflated rental days for multi-city itineraries.
+  // Use total nights as a closer approximation to vehicle usage days.
+  return Math.max(1, totalNights);
 }
