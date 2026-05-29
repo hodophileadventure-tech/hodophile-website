@@ -1693,7 +1693,7 @@ export function MakeMyTripForm() {
           <div className="mb-6 text-center md:text-left">
             <p className="text-sm font-bold uppercase tracking-[0.38em] text-black">Craft your own Trip</p>
             <h1 className="mt-2 font-serif text-3xl leading-snug sm:text-4xl lg:text-5xl font-bold drop-shadow-[0_2px_4px_rgba(255,255,255,0.4)]">
-              <span className="text-black">Your Adventure</span>, <span className="text-[#FCC000]">Your Way</span>
+              <span className="text-black">Your Adventure</span>, <span className="text-black">Your Way</span>
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-black font-medium md:mx-0 drop-shadow-[0_1px_2px_rgba(255,255,255,0.3)]">
               Select your dates, destination, vehicle, and hotel. Get an instant quotation powered by real-time pricing.
@@ -2998,17 +2998,17 @@ export function MakeMyTripForm() {
             <button
               type="submit"
               disabled={isSubmitting || !quotation || isInvalidCombination}
-              className="mt-6 sticky bottom-6 inline-flex w-full items-center justify-center gap-3 rounded-[18px] bg-gradient-to-r from-[#FCC000] to-[#FFD247] px-8 py-5 text-lg font-black text-black shadow-[0_20px_40px_rgba(252,192,0,0.4),0_0_20px_rgba(252,192,0,0.3)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_25px_50px_rgba(252,192,0,0.5)] active:translate-y-0 active:shadow-[0_15px_30px_rgba(252,192,0,0.3)] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+              className="mt-6 sticky bottom-6 inline-flex w-full items-center justify-center gap-3 rounded-[18px] bg-black px-8 py-5 text-lg font-black text-[#FCC000] shadow-[0_12px_30px_rgba(0,0,0,0.4)] transition duration-300 hover:brightness-110 active:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
             >
               {isSubmitting ? (
                 <>
-                  <div className="spinner w-5 h-5 border-3 border-black border-t-transparent rounded-full" />
-                  <span className="text-lg font-black">Processing...</span>
+                  <div className="spinner w-5 h-5 border-3 border-[#FCC000] border-t-transparent rounded-full" />
+                  <span className="text-lg font-black text-[#FCC000]">Processing...</span>
                 </>
               ) : (
                 <span className="inline-flex items-center gap-3">
-                  <Sparkles className="w-6 h-6" aria-hidden="true" />
-                  <span className="text-lg">Get Quotation</span>
+                  <Sparkles className="w-6 h-6 text-[#FCC000]" aria-hidden="true" />
+                  <span className="text-lg text-[#FCC000]">Get Quotation</span>
                 </span>
               )}
             </button>
