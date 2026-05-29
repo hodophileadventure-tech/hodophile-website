@@ -1631,14 +1631,14 @@ export function MakeMyTripForm() {
           <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[#fcc000]/70 to-transparent" />
           <div className="relative isolate overflow-hidden rounded-[28px] bg-[#FCC000] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_12px_30px_rgba(0,0,0,0.05)] ring-1 ring-[#f4d77d]/60 transition-all duration-500 sm:p-10">
           {/* Progress Bar */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-semibold text-stone-600">Form Progress</p>
-              <p className="text-xs font-bold text-[#fcc000]">{formProgress}%</p>
+          <div className="mb-8 rounded-[20px] bg-white/80 backdrop-blur-sm p-6 shadow-[0_8px_24px_rgba(0,0,0,0.1)]">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-base font-bold text-black">Form Progress</p>
+              <p className="text-2xl font-black text-[#FCC000]">{formProgress}%</p>
             </div>
-            <div className="w-full h-2 bg-stone-200 rounded-full overflow-hidden">
+            <div className="w-full h-3 bg-stone-300 rounded-full overflow-hidden border-2 border-[#FCC000]/30">
               <div 
-                className="h-full bg-gradient-to-r from-[#fcc000] to-[#ffd247] rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-[#FCC000] via-[#FFD247] to-[#FCC000] rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(252,192,0,0.6)]"
                 style={{ width: `${formProgress}%` }}
               />
             </div>
@@ -2969,17 +2969,17 @@ export function MakeMyTripForm() {
             <button
               type="submit"
               disabled={isSubmitting || !quotation || isInvalidCombination}
-              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-[15px] bg-[#ffc000] px-6 py-3 text-sm font-semibold text-black shadow-[0_16px_30px_rgba(252,192,0,0.28)] transition hover:-translate-y-0.5 hover:bg-[#ffd247] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-6 sticky bottom-6 inline-flex w-full items-center justify-center gap-3 rounded-[18px] bg-gradient-to-r from-[#FCC000] to-[#FFD247] px-8 py-5 text-lg font-black text-black shadow-[0_20px_40px_rgba(252,192,0,0.4),0_0_20px_rgba(252,192,0,0.3)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_25px_50px_rgba(252,192,0,0.5)] active:translate-y-0 active:shadow-[0_15px_30px_rgba(252,192,0,0.3)] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
             >
               {isSubmitting ? (
                 <>
-                  <div className="spinner w-4 h-4 border-2 border-black border-t-transparent rounded-full" />
-                  Processing...
+                  <div className="spinner w-5 h-5 border-3 border-black border-t-transparent rounded-full" />
+                  <span className="text-lg font-black">Processing...</span>
                 </>
               ) : (
-                <span className="inline-flex items-center gap-2">
-                  <Sparkles className={LABEL_ICON_CLASS} aria-hidden="true" />
-                  <span>Get Quotation</span>
+                <span className="inline-flex items-center gap-3">
+                  <Sparkles className="w-6 h-6" aria-hidden="true" />
+                  <span className="text-lg">Get Quotation</span>
                 </span>
               )}
             </button>
