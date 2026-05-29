@@ -196,7 +196,7 @@ export function MakeMyTripForm() {
   const [tourType, setTourType] = useState("private");
   const [travelMode, setTravelMode] = useState("road");
   const [numberOfRooms, setNumberOfRooms] = useState(1);
-  const [adults, setAdults] = useState(2);
+  const [adults, setAdults] = useState(0);
   const [kids, setKids] = useState(0);
   const [kidsAges, setKidsAges] = useState<string[]>([]);
   const [customerName, setCustomerName] = useState("");
