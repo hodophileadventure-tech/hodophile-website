@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { calculateQuotation, type QuotationInput } from "@/lib/pricingEngine";
+import { getVehicleRate } from "@/lib/data/vehicleRates";
 import { sendWhatsAppNotification, logQuotationNotification } from "@/lib/whatsapp";
 import { saveQuotationToSheet } from "@/lib/googleSheets";
 import { getRouteById } from "@/lib/data/routes";
@@ -115,10 +116,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Normalize vehicle name (accept aliases from frontend)
+    const canonicalVehicle = getVehicleRate(body.vehicleName)?.name || body.vehicleName;
+
     // Calculate quotation (now async)
     const quotation = await calculateQuotation({
       routeId: body.routeId,
-      vehicleName: body.vehicleName,
+      vehicleName: canonicalVehicle,
       hotelId: body.hotelId,
       roomId: body.roomId,
       singleCityHotelStays: body.singleCityHotelStays,
@@ -133,6 +137,8 @@ export async function POST(request: NextRequest) {
       tripDate: body.tripDate,
       jeepAddons: body.jeepAddons,
       mandatoryJeepCost: body.mandatoryJeepCost,
+      // allow frontend to provide jeepCount; pricingEngine will multiply by per-jeep cost when appropriate
+      ...(typeof (body as any).jeepCount !== 'undefined' ? { jeepCount: Number((body as any).jeepCount) } : {}),
     });
 
     if (!quotation) {

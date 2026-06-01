@@ -28,6 +28,7 @@ export interface QuotationInput {
   kids: number;
   jeepAddons?: { id: string; quantity: number }[];
   mandatoryJeepCost?: number; // Mandatory jeep cost for this route (e.g., Deosai for 12-day tour)
+  jeepCount?: number; // optional number of jeeps requested for mandatory jeep activities
   tripDate: string; // ISO date string
 }
 
@@ -75,7 +76,7 @@ function getSeasonFromDate(date: string): "peak" | "blossom" | "off" | "fixed" {
 }
 
 // Calculate transport cost using dynamic pricing: fuel cost + daily rental rate + toll/tax
-function calculateTransportCost(
+export function calculateTransportCost(
   vehicleName: string,
   routeId: string,
   vehicleDays: number = 8, // Default 8 days for multi-city tours; adjust as needed
@@ -98,6 +99,9 @@ function calculateTransportCost(
     console.warn(`Vehicle rate not found for: ${vehicleName}`);
     return null;
   }
+
+  // Normalize vehicle name to the canonical name
+  const effectiveVehicleName = vehicleRate.name;
 
   // Base distance (may be overridden for custom itineraries or air travel)
   let distance = distanceOverride ?? getRouteDistance(routeId);
@@ -136,7 +140,7 @@ function calculateTransportCost(
   const totalCost = fuelCost + rentalCost + effectiveTollTax;
 
   console.debug(
-    `Transport: ${vehicleName} | Distance: ${distance}km | Consumption: ${vehicleRate.consumption}km/L | Fuel: ${fuelNeeded.toFixed(1)}L × ${fuelPrice}PKR = ${fuelCost}PKR | Rental: ${effectiveDailyRate}PKR × ${vehicleDays}days = ${rentalCost}PKR | Toll/Tax: ${effectiveTollTax}PKR | Total: ${totalCost}PKR`
+    `Transport: ${effectiveVehicleName} | Distance: ${distance}km | Consumption: ${vehicleRate.consumption}km/L | Fuel: ${fuelNeeded.toFixed(1)}L × ${fuelPrice}PKR = ${fuelCost}PKR | Rental: ${effectiveDailyRate}PKR × ${vehicleDays}days = ${rentalCost}PKR | Toll/Tax: ${effectiveTollTax}PKR | Total: ${totalCost}PKR`
   );
   return {
     totalCost,
@@ -373,14 +377,26 @@ export function calculateQuotation(
       return null;
     }
 
-    const routeJeepCost = getMandatoryJeepCost(route?.id || input.routeId);
-    const customCityJeepCost = input.customCities ? getMandatoryJeepCostForCities(input.customCities) : 0;
-    const actualMandatoryJeepCost =
-      input.mandatoryJeepCost && input.mandatoryJeepCost > 0
-        ? input.mandatoryJeepCost
-        : input.customCities
-        ? customCityJeepCost
-        : routeJeepCost;
+    const routeJeepCostPerJeep = getMandatoryJeepCost(route?.id || input.routeId);
+    const customCityJeepCostPerJeep = input.customCities ? getMandatoryJeepCostForCities(input.customCities) : 0;
+
+    // Determine mandatory jeep cost. Priority:
+    // 1. If caller provided exact mandatoryJeepCost (total), use it.
+    // 2. If caller provided jeepCount and we have a per-jeep amount (route or city), multiply.
+    // 3. Fallback to route/city per-jeep amount (assume 1 jeep) if present.
+    let actualMandatoryJeepCost = 0;
+    if (input.mandatoryJeepCost && input.mandatoryJeepCost > 0) {
+      actualMandatoryJeepCost = input.mandatoryJeepCost;
+    } else {
+      const perJeep = input.customCities ? customCityJeepCostPerJeep : routeJeepCostPerJeep;
+      if (perJeep && perJeep > 0) {
+        if ((input as any).jeepCount && Number((input as any).jeepCount) > 0) {
+          actualMandatoryJeepCost = perJeep * Number((input as any).jeepCount);
+        } else {
+          actualMandatoryJeepCost = perJeep; // assume one jeep if not specified
+        }
+      }
+    }
 
     let jeepAddonsCost = 0;
     const jeepDetails: string[] = [];

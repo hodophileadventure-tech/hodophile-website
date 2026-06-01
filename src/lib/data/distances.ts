@@ -29,12 +29,12 @@ export const routeDistances: RouteDistance[] = [
   },
   {
     routeId: "kashmir-arangkel-5days",
-    distance: 1800, // Kashmir valley, Arangkel and local exploration
+    distance: 850, // Kashmir valley, Arangkel and local exploration (updated from 1800 to 850 per request)
     description: "Islamabad to Kashmir, Arangkel, Taobat and back",
   },
   {
     routeId: "kashmir-taobat-9days",
-    distance: 650, // Round trip distance for Kashmir & Taobat package (user-provided)
+    distance: 850, // Round trip distance for Kashmir & Taobat package (updated from 650 to 850 per request)
     description: "Islamabad to Sharda/Taobat/Arangkel round trip (Kashmir & Taobat package)",
   },
   {

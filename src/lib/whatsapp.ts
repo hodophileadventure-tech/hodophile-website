@@ -28,12 +28,14 @@ export function formatQuotationForWhatsApp(msg: WhatsAppMessage): string {
 
 *Cost Breakdown:*
 🚗 Transport: ${formatPKR(quotation.transportCost)}
-🏨 Hotel (${details.numberOfRooms} rooms): ${formatPKR(quotation.hotelCost)}
+   - Distance: ${quotation.transportBreakdown?.distance ?? "N/A"} km
+   - Fuel: ${formatPKR(quotation.transportBreakdown?.fuelCost ?? 0)}
+   - Rental: ${formatPKR(quotation.transportBreakdown?.rentalCost ?? 0)}
+   - Toll/Tax: ${formatPKR(quotation.transportBreakdown?.tollTax ?? 0)}
 ${quotation.jeepAddonsCost > 0 ? `🏔️ Jeep Add-ons: ${formatPKR(quotation.jeepAddonsCost)}\n` : ""}
 *Total: ${formatPKR(quotation.totalCost)}*
 💰 Per Person: ${formatPKR(quotation.perPersonCost)}
 
----
 Message from Hodophile Website
   `.trim();
 
