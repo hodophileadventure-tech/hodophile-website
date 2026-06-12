@@ -52,6 +52,7 @@ const cityLegDistance: Record<string, Record<string, number>> = {
     Naran: 90,
     Hunza: 360,
     Skardu: 420,
+    Chilas: 90,
   },
   Astore: {
     "Fairy Meadows": 140,
