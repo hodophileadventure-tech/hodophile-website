@@ -616,12 +616,23 @@ export function MakeMyTripForm() {
   );
   // Check if this is truly a single non-CHILLAS-group city (Hunza/Skardu/etc auto-inject Chilas, making it multi-city)
   const isSingleCustomCity = isCustomCitySelection() && selectedCities.length === 1 && !usesChilasItinerary;
+  const startingPointLower = getActualStartingPoint().toLowerCase().trim();
+  const autoAddsIslamabad =
+    isCustomCitySelection() &&
+    travelMode !== "air" &&
+    startingPointLower !== "islamabad" &&
+    startingPointLower !== "lahore" &&
+    startingPointLower !== "rawalpindi" &&
+    startingPointLower !== "" &&
+    !hideAutoIslamabad &&
+    !selectedCities.includes("Islamabad");
+  const customCityEffectiveCount = selectedCities.length + (autoAddsIslamabad ? 1 : 0);
   const customSingleCityNightCount = selectedCities.length === 1 && !usesChilasItinerary
     ? Math.max(1, (customCityNights[selectedCities[0]] ?? 0) - 1)
     : 0;
   const supportsMultipleHotelsInCustomSingleCity = Boolean(
     isCustomCitySelection() &&
-    selectedCities.length === 1 &&
+    customCityEffectiveCount === 1 &&
     !usesChilasItinerary &&
     customSingleCityNightCount > 2
   );
