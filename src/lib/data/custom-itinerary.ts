@@ -1,162 +1,164 @@
-const cityLegDistance: Record<string, Record<string, number>> = {
-  Islamabad: {
-    Rawalpindi: 20,
-    "Nathia Gali": 90,
-    Swat: 280,
-    Shogran: 190,
-    Naran: 230,
-    Kashmir: 180,
-    Chilas: 500,
-    Hunza: 820,
-    Skardu: 950,
-    Khaplu: 1050,
-  },
-  Swat: {
-    "Nathia Gali": 300,
-    Shogran: 260,
-    Naran: 340,
-    Kashmir: 500,
-    Chilas: 750,
-    Hunza: 1020,
-    Skardu: 1180,
-    Khaplu: 1280,
-  },
-  Shogran: {
-    "Nathia Gali": 200,
-    Naran: 180,
-    Kashmir: 260,
-    Chilas: 650,
-    Hunza: 920,
-    Skardu: 1080,
-    Khaplu: 1180,
-  },
-  Naran: {
-    "Nathia Gali": 240,
-    Kashmir: 220,
-    Chilas: 280,
-    Hunza: 360,
-    Skardu: 420,
-    "Fairy Meadows": 90,
-    Astore: 500,
-    Khaplu: 520,
-  },
-  Kashmir: {
-    "Nathia Gali": 180,
-    Chilas: 820,
-    Hunza: 920,
-    Skardu: 1050,
-    Khaplu: 1150,
-  },
-  "Fairy Meadows": {
-    Astore: 140,
-    Naran: 90,
-    Hunza: 360,
-    Skardu: 420,
-    "Raikot Bridge": 17,
-  },
-  "Raikot Bridge": {
-    "Fairy Meadows": 17,
-    Chilas: 90,
-  },
-  Astore: {
-    "Fairy Meadows": 140,
-    Hunza: 230,
-    Skardu: 320,
-    Naran: 500,
-  },
-  Chilas: {
-    Hunza: 250,
-    Skardu: 420,
-    Khaplu: 520,
-  },
-  Hunza: {
-    Skardu: 250,
-    Khaplu: 350,
-  },
-  Skardu: {
-    Khaplu: 120,
-  },
-};
+export type NodeType = "TOURIST" | "TRANSIT";
+
+export interface Node {
+  name: string;
+  type: NodeType;
+}
+
+export interface Edge {
+  from: string;
+  to: string;
+  distanceKm: number;
+}
+
+export type AdjacencyGraph = Record<string, Record<string, number>>;
+
+export const NODES: Node[] = [
+  { name: "Islamabad", type: "TRANSIT" },
+  { name: "Rawalpindi", type: "TRANSIT" },
+  { name: "Nathia Gali", type: "TOURIST" },
+  { name: "Swat", type: "TOURIST" },
+  { name: "Shogran", type: "TOURIST" },
+  { name: "Naran", type: "TOURIST" },
+  { name: "Kashmir", type: "TOURIST" },
+  { name: "Fairy Meadows", type: "TOURIST" },
+  { name: "Astore", type: "TOURIST" },
+  { name: "Chilas", type: "TRANSIT" },
+  { name: "Raikot Bridge", type: "TRANSIT" },
+  { name: "Hunza", type: "TOURIST" },
+  { name: "Skardu", type: "TOURIST" },
+  { name: "Khaplu", type: "TRANSIT" },
+];
+
+export const EDGES: Edge[] = [
+  { from: "Islamabad", to: "Rawalpindi", distanceKm: 20 },
+  { from: "Islamabad", to: "Nathia Gali", distanceKm: 90 },
+  { from: "Islamabad", to: "Swat", distanceKm: 280 },
+  { from: "Islamabad", to: "Shogran", distanceKm: 190 },
+  { from: "Islamabad", to: "Naran", distanceKm: 230 },
+  { from: "Islamabad", to: "Kashmir", distanceKm: 180 },
+  { from: "Islamabad", to: "Chilas", distanceKm: 500 },
+  { from: "Islamabad", to: "Hunza", distanceKm: 820 },
+  { from: "Islamabad", to: "Skardu", distanceKm: 950 },
+  { from: "Islamabad", to: "Khaplu", distanceKm: 1050 },
+
+  { from: "Swat", to: "Nathia Gali", distanceKm: 300 },
+  { from: "Swat", to: "Shogran", distanceKm: 260 },
+  { from: "Swat", to: "Naran", distanceKm: 340 },
+  { from: "Swat", to: "Kashmir", distanceKm: 500 },
+  { from: "Swat", to: "Chilas", distanceKm: 750 },
+  { from: "Swat", to: "Hunza", distanceKm: 1020 },
+  { from: "Swat", to: "Skardu", distanceKm: 1180 },
+  { from: "Swat", to: "Khaplu", distanceKm: 1280 },
+
+  { from: "Shogran", to: "Nathia Gali", distanceKm: 200 },
+  { from: "Shogran", to: "Naran", distanceKm: 180 },
+  { from: "Shogran", to: "Kashmir", distanceKm: 260 },
+  { from: "Shogran", to: "Chilas", distanceKm: 650 },
+  { from: "Shogran", to: "Hunza", distanceKm: 920 },
+  { from: "Shogran", to: "Skardu", distanceKm: 1080 },
+  { from: "Shogran", to: "Khaplu", distanceKm: 1180 },
+
+  { from: "Naran", to: "Nathia Gali", distanceKm: 240 },
+  { from: "Naran", to: "Kashmir", distanceKm: 220 },
+  { from: "Naran", to: "Chilas", distanceKm: 280 },
+  { from: "Naran", to: "Hunza", distanceKm: 360 },
+  { from: "Naran", to: "Skardu", distanceKm: 420 },
+  { from: "Naran", to: "Fairy Meadows", distanceKm: 90 },
+  { from: "Naran", to: "Astore", distanceKm: 500 },
+  { from: "Naran", to: "Khaplu", distanceKm: 520 },
+
+  { from: "Kashmir", to: "Nathia Gali", distanceKm: 180 },
+  { from: "Kashmir", to: "Chilas", distanceKm: 820 },
+  { from: "Kashmir", to: "Hunza", distanceKm: 920 },
+  { from: "Kashmir", to: "Skardu", distanceKm: 1050 },
+  { from: "Kashmir", to: "Khaplu", distanceKm: 1150 },
+
+  { from: "Fairy Meadows", to: "Astore", distanceKm: 140 },
+  { from: "Fairy Meadows", to: "Naran", distanceKm: 90 },
+  { from: "Fairy Meadows", to: "Hunza", distanceKm: 360 },
+  { from: "Fairy Meadows", to: "Skardu", distanceKm: 420 },
+  { from: "Fairy Meadows", to: "Raikot Bridge", distanceKm: 17 },
+
+  { from: "Raikot Bridge", to: "Chilas", distanceKm: 90 },
+
+  { from: "Astore", to: "Hunza", distanceKm: 230 },
+  { from: "Astore", to: "Skardu", distanceKm: 320 },
+
+  { from: "Chilas", to: "Hunza", distanceKm: 250 },
+  { from: "Chilas", to: "Skardu", distanceKm: 420 },
+  { from: "Chilas", to: "Khaplu", distanceKm: 520 },
+
+  { from: "Hunza", to: "Skardu", distanceKm: 250 },
+  { from: "Hunza", to: "Khaplu", distanceKm: 350 },
+
+  { from: "Skardu", to: "Khaplu", distanceKm: 120 },
+];
+
+export function buildGraph(edges: Edge[]): AdjacencyGraph {
+  const graph: AdjacencyGraph = {};
+
+  for (const edge of edges) {
+    if (!graph[edge.from]) graph[edge.from] = {};
+    if (!graph[edge.to]) graph[edge.to] = {};
+
+    graph[edge.from][edge.to] = edge.distanceKm;
+    graph[edge.to][edge.from] = edge.distanceKm;
+  }
+
+  return graph;
+}
 
 function normalizeCity(city: string): string {
-  // Normalize by trimming and removing any parenthetical suffixes like " (Arrival)" or " (Return)"
-  // Also collapse known aliases (e.g., "Arangkel" -> "Arang Kel") if needed.
   let s = city.trim();
-  // Remove parenthetical notes
   const parenIndex = s.indexOf("(");
   if (parenIndex !== -1) {
     s = s.slice(0, parenIndex).trim();
   }
-  // Normalize common spacing variants
   return s;
 }
 
-function getDirectDistance(fromCity: string, toCity: string): number | undefined {
+function findShortestPathDistance(
+  fromCity: string,
+  toCity: string,
+  graph: AdjacencyGraph
+): number {
   const from = normalizeCity(fromCity);
   const to = normalizeCity(toCity);
   if (from === to) return 0;
-  return cityLegDistance[from]?.[to] ?? cityLegDistance[to]?.[from];
-}
 
-function getGraphNeighbors(city: string): Record<string, number> {
-  const normalizedCity = normalizeCity(city);
-  const neighbors: Record<string, number> = {};
-
-  for (const [source, targets] of Object.entries(cityLegDistance)) {
-    const normalizedSource = normalizeCity(source);
-    for (const [target, distance] of Object.entries(targets)) {
-      const normalizedTarget = normalizeCity(target);
-      if (normalizedSource === normalizedCity) {
-        neighbors[normalizedTarget] = Math.min(neighbors[normalizedTarget] ?? Infinity, distance);
-      }
-      if (normalizedTarget === normalizedCity) {
-        neighbors[normalizedSource] = Math.min(neighbors[normalizedSource] ?? Infinity, distance);
-      }
-    }
+  if (!graph[from]) {
+    throw new Error(`Unknown node in route graph: ${from}`);
   }
-
-  return neighbors;
-}
-
-function findShortestRouteDistance(fromCity: string, toCity: string): number {
-  const from = normalizeCity(fromCity);
-  const to = normalizeCity(toCity);
-  if (from === to) return 0;
-
-  const direct = getDirectDistance(from, to);
-  if (typeof direct === "number") return direct;
-
-  const allCities = new Set<string>();
-  for (const [source, targets] of Object.entries(cityLegDistance)) {
-    allCities.add(normalizeCity(source));
-    for (const target of Object.keys(targets)) {
-      allCities.add(normalizeCity(target));
-    }
+  if (!graph[to]) {
+    throw new Error(`Unknown node in route graph: ${to}`);
   }
 
   const distances: Record<string, number> = {};
   const visited = new Set<string>();
-  for (const city of allCities) {
-    distances[city] = Infinity;
+  const nodes = Object.keys(graph);
+
+  for (const node of nodes) {
+    distances[node] = Infinity;
   }
   distances[from] = 0;
 
-  while (visited.size < allCities.size) {
-    let currentCity: string | undefined;
+  while (visited.size < nodes.length) {
+    let current: string | undefined;
     let currentDistance = Infinity;
 
-    for (const city of allCities) {
-      if (!visited.has(city) && distances[city] < currentDistance) {
-        currentDistance = distances[city];
-        currentCity = city;
+    for (const node of nodes) {
+      if (!visited.has(node) && distances[node] < currentDistance) {
+        currentDistance = distances[node];
+        current = node;
       }
     }
 
-    if (!currentCity || currentDistance === Infinity) break;
-    if (currentCity === to) break;
+    if (!current || currentDistance === Infinity) break;
+    if (current === to) break;
 
-    visited.add(currentCity);
-    const neighbors = getGraphNeighbors(currentCity);
+    visited.add(current);
+    const neighbors = graph[current];
     for (const [neighbor, weight] of Object.entries(neighbors)) {
       if (visited.has(neighbor)) continue;
       const newDistance = currentDistance + weight;
@@ -168,45 +170,54 @@ function findShortestRouteDistance(fromCity: string, toCity: string): number {
 
   const result = distances[to];
   if (result === Infinity) {
-    throw new Error(`Missing route path: ${from} ↔ ${to}. Add this connection to ROUTE_GRAPH for deterministic pricing.`);
+    throw new Error(`Missing route path: ${from} ↔ ${to}. Add a valid path to ROUTE_GRAPH for deterministic pricing.`);
   }
 
   return result;
 }
 
-export function validateCustomItineraryRoute(cities: string[]): void {
-  if (cities.length === 0) return;
+export function getRouteDistance(route: string[], graph: AdjacencyGraph): number {
+  if (route.length === 0) return 0;
 
-  const cleanedCities = cities.map(normalizeCity);
-  findShortestRouteDistance("Islamabad", cleanedCities[0]);
+  const cleanedRoute = route.map(normalizeCity);
+  let totalDistance = 0;
 
-  for (let index = 1; index < cleanedCities.length; index += 1) {
-    findShortestRouteDistance(cleanedCities[index - 1], cleanedCities[index]);
+  for (let index = 1; index < cleanedRoute.length; index += 1) {
+    totalDistance += findShortestPathDistance(cleanedRoute[index - 1], cleanedRoute[index], graph);
   }
 
-  findShortestRouteDistance(cleanedCities[cleanedCities.length - 1], "Islamabad");
+  return totalDistance;
 }
+
+export function validateRoute(route: string[], graph: AdjacencyGraph): string[] {
+  const errors: string[] = [];
+  const cleanedRoute = route.map(normalizeCity);
+
+  for (let index = 1; index < cleanedRoute.length; index += 1) {
+    try {
+      findShortestPathDistance(cleanedRoute[index - 1], cleanedRoute[index], graph);
+    } catch (error) {
+      if (error instanceof Error) {
+        errors.push(error.message);
+      } else {
+        errors.push(`Unknown route validation failure between ${cleanedRoute[index - 1]} and ${cleanedRoute[index]}`);
+      }
+    }
+  }
+
+  return errors;
+}
+
+export const ROUTE_GRAPH = buildGraph(EDGES);
 
 export function estimateCustomItineraryDistance(cities: string[]): number {
   if (cities.length === 0) return 0;
 
   const cleanedCities = cities.map(normalizeCity);
-  let totalDistance = findShortestRouteDistance("Islamabad", cleanedCities[0]);
-
-  for (let index = 1; index < cleanedCities.length; index += 1) {
-    totalDistance += findShortestRouteDistance(cleanedCities[index - 1], cleanedCities[index]);
-  }
-
-  totalDistance += findShortestRouteDistance(cleanedCities[cleanedCities.length - 1], "Islamabad");
-  return totalDistance;
+  return getRouteDistance(["Islamabad", ...cleanedCities, "Islamabad"], ROUTE_GRAPH);
 }
 
 export function estimateCustomVehicleDays(nightsByCity: Record<string, number>): number {
   const totalNights = Object.values(nightsByCity).reduce((sum, nights) => sum + Math.max(0, nights), 0);
-  // Vehicle days should reflect the number of nights the vehicle is required.
-  // Previously we added one day per city which inflated rental days for multi-city itineraries.
-  // Use total nights as a closer approximation to vehicle usage days.
   return Math.max(1, totalNights);
 }
-
-export const ROUTE_GRAPH = cityLegDistance;
