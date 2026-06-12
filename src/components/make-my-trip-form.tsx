@@ -25,8 +25,9 @@ import { routes, type Route } from "@/lib/data/routes";
 import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "@/lib/data/routeActivities";
 import { sortedCitiesWithHotels } from "@/lib/data/cities";
 import COMBO_ITINERARIES from "@/lib/data/combo-itineraries";
-import { isValidCombination, normalizeComboKey as toCombinationKey } from "@/lib/data/combo-keys";
+import { normalizeComboKey as toCombinationKey } from "@/lib/data/combo-keys";
 import { orderedFeaturedTourCards } from "@/lib/data/featured-tour-cards";
+import { ROUTE_GRAPH, validateRoute } from "@/lib/data/custom-itinerary";
 
 // Map featured tours to their corresponding route slugs
 const PREPLANNED_TRIP_MAP: Record<string, string> = {
@@ -98,6 +99,17 @@ function getCustomChilasMinimumDays(city: string, startingPointValue: string) {
   return getCityMinimumDays(city, startingPointValue);
 }
 
+function getCustomRouteValidationRoute(startingPointValue: string, cities: string[]) {
+  const start = startingPointValue.trim() || "Islamabad";
+  const cleanedCities = cities.map((city) => city.trim()).filter(Boolean);
+  return [start, ...cleanedCities, start];
+}
+
+function isValidCustomRoute(startingPointValue: string, cities: string[]) {
+  if (!cities || cities.length === 0) return true;
+  const route = getCustomRouteValidationRoute(startingPointValue, cities);
+  return validateRoute(route, ROUTE_GRAPH).length === 0;
+}
 
 export function MakeMyTripForm() {
   const router = useRouter();
@@ -848,11 +860,11 @@ export function MakeMyTripForm() {
   }, [selectedCities, startingPoint]);
 
 
-  // Check if the selected city combination is valid
+  // Check if the selected city combination is valid using the itinerary graph.
   useEffect(() => {
-    const isValid = isValidCombination(selectedCities);
+    const isValid = isValidCustomRoute(getActualStartingPoint(), selectedCities);
     setIsInvalidCombination(!isValid && selectedCities.length > 0);
-  }, [selectedCities]);
+  }, [selectedCities, startingPoint, otherStartingPoint]);
 
   // If the selected combination matches a pre-defined itinerary, auto-fill nights and show itinerary
   useEffect(() => {
@@ -922,7 +934,7 @@ export function MakeMyTripForm() {
       }
 
       const proposed = [...currentCities, city];
-      if (!isValidCombination(proposed)) {
+      if (!isValidCustomRoute(getActualStartingPoint(), proposed)) {
         // Reject off-route combination silently
         return currentCities;
       }
@@ -1901,7 +1913,7 @@ export function MakeMyTripForm() {
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {sortedCitiesWithHotels.map((city) => {
-                  const willAllow = selectedCities.includes(city) || isValidCombination([...selectedCities, city]);
+                  const willAllow = selectedCities.includes(city) || isValidCustomRoute(getActualStartingPoint(), [...selectedCities, city]);
                   return (
                     <label
                       key={city}
