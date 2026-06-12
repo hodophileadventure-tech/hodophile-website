@@ -52,6 +52,10 @@ const cityLegDistance: Record<string, Record<string, number>> = {
     Naran: 90,
     Hunza: 360,
     Skardu: 420,
+    "Raikot Bridge": 17,
+  },
+  "Raikot Bridge": {
+    "Fairy Meadows": 17,
     Chilas: 90,
   },
   Astore: {
@@ -87,46 +91,113 @@ function normalizeCity(city: string): string {
   return s;
 }
 
-function getEdgeDistance(fromCity: string, toCity: string): number {
+function getDirectDistance(fromCity: string, toCity: string): number | undefined {
   const from = normalizeCity(fromCity);
   const to = normalizeCity(toCity);
-
   if (from === to) return 0;
+  return cityLegDistance[from]?.[to] ?? cityLegDistance[to]?.[from];
+}
 
-  const directDistance = cityLegDistance[from]?.[to] ?? cityLegDistance[to]?.[from];
-  if (typeof directDistance !== "number") {
-    throw new Error(`Missing route edge: ${from} ↔ ${to}. Add this connection to ROUTE_GRAPH for deterministic pricing.`);
+function getGraphNeighbors(city: string): Record<string, number> {
+  const normalizedCity = normalizeCity(city);
+  const neighbors: Record<string, number> = {};
+
+  for (const [source, targets] of Object.entries(cityLegDistance)) {
+    const normalizedSource = normalizeCity(source);
+    for (const [target, distance] of Object.entries(targets)) {
+      const normalizedTarget = normalizeCity(target);
+      if (normalizedSource === normalizedCity) {
+        neighbors[normalizedTarget] = Math.min(neighbors[normalizedTarget] ?? Infinity, distance);
+      }
+      if (normalizedTarget === normalizedCity) {
+        neighbors[normalizedSource] = Math.min(neighbors[normalizedSource] ?? Infinity, distance);
+      }
+    }
   }
 
-  return directDistance;
+  return neighbors;
+}
+
+function findShortestRouteDistance(fromCity: string, toCity: string): number {
+  const from = normalizeCity(fromCity);
+  const to = normalizeCity(toCity);
+  if (from === to) return 0;
+
+  const direct = getDirectDistance(from, to);
+  if (typeof direct === "number") return direct;
+
+  const allCities = new Set<string>();
+  for (const [source, targets] of Object.entries(cityLegDistance)) {
+    allCities.add(normalizeCity(source));
+    for (const target of Object.keys(targets)) {
+      allCities.add(normalizeCity(target));
+    }
+  }
+
+  const distances: Record<string, number> = {};
+  const visited = new Set<string>();
+  for (const city of allCities) {
+    distances[city] = Infinity;
+  }
+  distances[from] = 0;
+
+  while (visited.size < allCities.size) {
+    let currentCity: string | undefined;
+    let currentDistance = Infinity;
+
+    for (const city of allCities) {
+      if (!visited.has(city) && distances[city] < currentDistance) {
+        currentDistance = distances[city];
+        currentCity = city;
+      }
+    }
+
+    if (!currentCity || currentDistance === Infinity) break;
+    if (currentCity === to) break;
+
+    visited.add(currentCity);
+    const neighbors = getGraphNeighbors(currentCity);
+    for (const [neighbor, weight] of Object.entries(neighbors)) {
+      if (visited.has(neighbor)) continue;
+      const newDistance = currentDistance + weight;
+      if (newDistance < distances[neighbor]) {
+        distances[neighbor] = newDistance;
+      }
+    }
+  }
+
+  const result = distances[to];
+  if (result === Infinity) {
+    throw new Error(`Missing route path: ${from} ↔ ${to}. Add this connection to ROUTE_GRAPH for deterministic pricing.`);
+  }
+
+  return result;
 }
 
 export function validateCustomItineraryRoute(cities: string[]): void {
   if (cities.length === 0) return;
 
   const cleanedCities = cities.map(normalizeCity);
-  getEdgeDistance("Islamabad", cleanedCities[0]);
+  findShortestRouteDistance("Islamabad", cleanedCities[0]);
 
   for (let index = 1; index < cleanedCities.length; index += 1) {
-    getEdgeDistance(cleanedCities[index - 1], cleanedCities[index]);
+    findShortestRouteDistance(cleanedCities[index - 1], cleanedCities[index]);
   }
 
-  getEdgeDistance(cleanedCities[cleanedCities.length - 1], "Islamabad");
+  findShortestRouteDistance(cleanedCities[cleanedCities.length - 1], "Islamabad");
 }
 
 export function estimateCustomItineraryDistance(cities: string[]): number {
   if (cities.length === 0) return 0;
 
-  validateCustomItineraryRoute(cities);
-
   const cleanedCities = cities.map(normalizeCity);
-  let totalDistance = getEdgeDistance("Islamabad", cleanedCities[0]);
+  let totalDistance = findShortestRouteDistance("Islamabad", cleanedCities[0]);
 
   for (let index = 1; index < cleanedCities.length; index += 1) {
-    totalDistance += getEdgeDistance(cleanedCities[index - 1], cleanedCities[index]);
+    totalDistance += findShortestRouteDistance(cleanedCities[index - 1], cleanedCities[index]);
   }
 
-  totalDistance += getEdgeDistance(cleanedCities[cleanedCities.length - 1], "Islamabad");
+  totalDistance += findShortestRouteDistance(cleanedCities[cleanedCities.length - 1], "Islamabad");
   return totalDistance;
 }
 
