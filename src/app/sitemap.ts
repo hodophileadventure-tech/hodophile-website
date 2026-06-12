@@ -14,6 +14,7 @@ const routes = [
   "/contact-us",
   "/destinations",
   "/gallery",
+  "/hotels",
   "/honeymoon-packages",
   "/inquiry",
   "/make-my-trip",

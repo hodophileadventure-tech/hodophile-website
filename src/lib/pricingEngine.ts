@@ -252,15 +252,17 @@ export function calculateQuotation(
   input: QuotationInput
 ): QuotationBreakdown | null {
   try {
-    const isCustomItinerary = Boolean(input.customCities && input.customCities.length > 0);
-    const route = isCustomItinerary ? undefined : getRouteById(input.routeId);
-    
+    const route = getRouteById(input.routeId);
+    const isCustomItinerary = !route && Boolean(input.customCities && input.customCities.length > 0);
+
     if (!isCustomItinerary && !route) {
       console.warn(`Route not found: ${input.routeId}`);
       return null;
     }
 
-    const customDistance = isCustomItinerary ? estimateCustomItineraryDistance(input.customCities || []) : undefined;
+    const customDistance = isCustomItinerary
+      ? estimateCustomItineraryDistance(input.customCities || [])
+      : undefined;
     const effectiveCustomNights = input.multiCityNights ??
       (input.singleCityHotelStays && input.singleCityHotelStays.length > 0
         ? input.singleCityHotelStays.reduce<Record<string, number>>((acc, stay) => {

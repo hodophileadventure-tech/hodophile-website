@@ -1,0 +1,300 @@
+Skardu Dera Lamsa
+  - Lamsa Executive Room
+  - Dera Deluxe Room
+  - Dera Family Suite
+  - Heritage Villa
+
+Hispar Hotel Skardu
+  - Standard
+  - Deluxe
+  - Deluxe Family
+  - Deluxe Plus
+  - Deluxe Family Plus
+
+Khoj Hotel Skardu
+  - River Edge King Hammock Villa
+  - River View Loft Villa
+  - River View Family Villa
+  - River Edge Loft Hammock Villa
+
+Khar Hotel Skardu
+  - Twin Master
+  - Master
+
+IFQ Premier Skardu
+  - Standard
+  - Deluxe
+
+Qayam Hotels Skardu
+  - Deluxe
+  - Executive
+  - Fort Rooms
+
+Maple Resort Skardu
+  - Executive Hut
+  - Premium Chalet
+  - Deluxe Rooms
+
+Himmel Hotel Skardu
+  - Standard
+  - Deluxe
+  - Riverfront Chalet
+  - Royal Suite
+  - Riverfront Villa
+  - Penthouse
+
+Shangrila Resort Skardu
+  - Mountain View Room
+  - Lake Side Junior Room
+  - Shangrila View Room
+  - Lake Side Room
+  - Lake Side Deluxe Room
+  - Family Room
+  - Executive Suite
+  - Swiss Cottage
+  - Swiss Villa
+  - 2 Bedroom Suite
+  - 3 Bedroom Suite
+  - Shangrila Chalet
+
+Gumaan Resort Skardu
+  - Deluxe Hut
+  - Executive Hut
+  - Presidential Suite
+  - Family Suite
+
+Rockview Hotel Skardu
+  - Standard
+
+Mountain View Hotel Skardu
+  - Standard
+
+Dream Land Hotel Skardu
+  - Standard
+
+Abbashah Hotel Skardu
+  - Standard
+
+Mulberry Hotel Hunza
+  - Deluxe
+  - Executive
+  - Family Hut
+
+Hermes Hotel Hunza
+  - Standard
+  - Deluxe
+
+Offto Resort Hunza
+  - 1 Chalet Bedroom
+  - 2 Chalet Bedroom
+  - 3 Chalet Villa
+  - Orchard Hut 1 Bed
+  - Orchard Hut 2 Bed
+
+Farme Resort Hunza
+  - Standard Room (Double)
+  - Standard Room (Triple)
+  - Deluxe Balcony Room (Double)
+  - Deluxe Balcony Room (Triple)
+  - Deluxe Terrace Room (Double)
+  - Deluxe Terrace Room (Triple)
+  - Panoramic Room (Double)
+  - Panoramic Room (Triple)
+  - Junior Suite (Double)
+  - Junior Suite (Triple)
+  - Junior Suite (Quad)
+  - Penthouse Suite (Double)
+  - Penthouse Suite (Quad)
+  - Presidential Suite (Double)
+  - Presidential Suite (Quad)
+
+Qayam Hotels Hunza
+  - Standard (Double)
+  - Standard (Triple)
+  - Deluxe
+  - Executive (Double)
+  - Executive (Triple)
+
+The Consorts Resort Hunza
+  - Deluxe
+  - Contemporary With Balcony
+  - Exclusive With Infinity View & Balcony
+
+Al-Barakaat Hotel Hunza
+  - Single Bed (1 Person, Breakfast, WiFi)
+  - Double Room (1 Master, Breakfast, WiFi)
+  - Twin Bed (2 Singles, Breakfast, WiFi)
+  - Deluxe Room (1 Master + 1 Single, Breakfast, WiFi)
+
+Hunza Bliss
+  - Standard Room (1 Master + 1 Sofa Bed)
+  - Standard Triple (1 Master + 1 Single Bed)
+  - Standard Family (2 Master + 1 Single Bed)
+  - Deluxe Room (1 Master + 1 Sofa Bed)
+  - Deluxe Triple (1 Master + 1 Single Bed)
+  - Deluxe Family (2 Master + 1 Single Bed)
+  - Deluxe Family Suite (2 Splendid Large Size Rooms, upto 7-9 persons)
+  - Executive Family Room (2 King-Sized Master Beds + 1 Sofa Bed, Mountain View)
+  - Executive Family Suite (2 Splendid Large Rooms, 2 Private Washrooms, Upto 9-10 persons)
+
+Sun Rise Hotel Chilas
+  - Standard Room
+
+Eagle Nest Swat
+  - Standard
+  - Deluxe
+
+Blue Ocean Kalam
+  - Couple
+  - Standard
+  - Executive
+  - Suite
+
+Swat Palace Hotel
+  - Deluxe Twin
+  - Executive King
+  - Presidential Suite
+
+Kuwait Continental Swat
+  - Budget Room
+  - Standard
+  - Deluxe
+  - Family Deluxe
+  - Presidential
+
+Bulj Al Swat Hotel
+  - Standard Room
+  - Deluxe Room
+  - Superior Deluxe with Jacuzzi
+
+North Palace Khaplu
+  - Budget Suite
+  - Deluxe Suite
+  - Premium Suite
+
+Semari Resort Kashmir
+  - Camps
+  - Huts
+  - Cottages
+
+Spruce Resort Shogran
+  - Standard
+  - Deluxe
+  - Luxury Suite
+
+Spruce Resort Khanian
+  - Standard
+  - Luxury Family
+  - Presidential Suite
+
+Hotel Index Islamabad
+  - Master
+  - Triple
+  - Quad
+  - Penta
+
+Grand Hotel Islamabad
+  - Standard Room (+tax)
+  - Deluxe Room (+tax)
+  - Executive Room (+tax)
+  - Family Room (+tax)
+
+Hotel Redline Islamabad
+  - Single
+  - Double
+  - Triple
+
+Sharda Lodge
+  - River Facing Room
+  - Standard View Room
+
+Corner View Cottage Taobat
+  - Standard Room
+  - Deluxe Room
+
+Shangrila Taobat
+  - Standard Cottage
+  - Deluxe Cottage
+
+Nathia Lodge
+  - Ground Floor
+  - First Floor Family Deluxe
+  - Second Floor Family Premium
+  - Full Lodge
+
+Snowline Residence
+  - Deluxe Suite (3 persons)
+  - Luxury Suite (3 persons)
+  - Executive Suite (5 persons)
+  - Deluxe Suite Plus (5 persons)
+
+Hotel Corner Cottage Arangkel
+  - Standard
+  - Deluxe
+  - Executive
+
+Timber Resort Keran Kashmir
+  - Standard Room (Building, max 2 persons)
+  - Deluxe Room (Building)
+  - Resort 1-B/2-B/3-B
+  - Resort 1-A/2-A/3-A/4-A/5-A
+
+Ibex Cottage Keran
+  - Standard Room
+  - Deluxe Room
+
+Keran Resort Kashmir
+  - Standard Room
+  - Executive Room
+
+Arangkel Wanderlust Resort
+  - Rustic Cottage Room
+  - Standard Room
+  - Deluxe Room (Heating +2500)
+  - Family Room (Heating +2500)
+  - Executive Room (Heating +2500)
+
+Arangkel Wanderlust Resort (Second Hotel)
+  - Cozy Room
+  - Cozy View Room
+  - Deluxe Room (Heating +2500)
+  - Executive Room (Heating +2500)
+
+Swiss Wood Cottages Naran
+  - Master Bed (2 persons, Breakfast included)
+  - Triple Bed (3 persons, Breakfast included)
+  - Four Bed (4 persons, Breakfast included)
+  - Suite Room (7 persons, Breakfast included)
+
+Hotel Mount Feast Naran
+  - Deluxe w/o balcony
+  - Deluxe with balcony
+  - Executive room
+  - Executive addon
+  - Triplet room
+  - Quad room
+  - Family room
+  - Presidential Suite
+  - Executive Suite
+
+Riviera Resort Naran
+  - Standard Room (1 Master Bed, Breakfast)
+  - Master Suite (1 Bed, Living Room, Terrace, Breakfast)
+  - Family Deluxe Room River View (1 Master + 1 Single, Terrace, Breakfast)
+  - Family Deluxe Room Mountain View (1 Master + 1 Single, Terrace, Breakfast)
+  - VIP Deluxe Room River View (1 Master + 1 Single + 4 Person Sitting, Spacious, Terrace, Breakfast)
+  - Royal Suite/Apartment River View (2 Bed Rooms, Lounge with 12 Sofa Seats, 10 Seater Dining Table, Terrace, Breakfast)
+  - VIP Suite/Apartment Mountain View (3 Bed Rooms, Lounge with 12 Sofa Seats, 10 Seater Dining Table, Terrace, Breakfast)
+  - Executive Suite/Apartment River View (3 Bed Rooms, Lounge with 14 Sofa Seats, 12 Seater Dining Table, Terrace, Breakfast)
+
+Kings Inn Naran
+  - Standard Room
+
+Hotel Shambala
+  - Standard
+
+Hotel Gateway
+  - Standard
+
+Hotel Raikot Serai
+  - Standard

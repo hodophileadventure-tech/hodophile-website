@@ -138,6 +138,10 @@ export function PageShell({ children, wide = false }: PageShellProps) {
                 <span aria-hidden="true">▶</span>
                 <span>Gallery</span>
               </Link>
+              <Link href="/hotels" className="inline-flex items-center gap-2 transition hover:translate-x-1">
+                <span aria-hidden="true">▶</span>
+                <span>Hotel Gallery</span>
+              </Link>
               <Link href="/make-my-trip" className="inline-flex items-center gap-2 transition hover:translate-x-1">
                 <span aria-hidden="true">▶</span>
                 <span>Make My Trip</span>

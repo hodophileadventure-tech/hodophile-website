@@ -1,17 +1,3 @@
-const cityBaseDistanceFromIslamabad: Record<string, number> = {
-  Islamabad: 0,
-  Rawalpindi: 20,
-  "Nathia Gali": 180,
-  Swat: 700,
-  Shogran: 520,
-  Naran: 600,
-  Kashmir: 650,
-  Chilas: 1400,
-  Hunza: 1800,
-  Skardu: 2200,
-  Khaplu: 2300,
-};
-
 const cityLegDistance: Record<string, Record<string, number>> = {
   Islamabad: {
     Rawalpindi: 20,
@@ -50,6 +36,8 @@ const cityLegDistance: Record<string, Record<string, number>> = {
     Chilas: 280,
     Hunza: 360,
     Skardu: 420,
+    "Fairy Meadows": 90,
+    Astore: 500,
     Khaplu: 520,
   },
   Kashmir: {
@@ -58,6 +46,18 @@ const cityLegDistance: Record<string, Record<string, number>> = {
     Hunza: 920,
     Skardu: 1050,
     Khaplu: 1150,
+  },
+  "Fairy Meadows": {
+    Astore: 140,
+    Naran: 90,
+    Hunza: 360,
+    Skardu: 420,
+  },
+  Astore: {
+    "Fairy Meadows": 140,
+    Hunza: 230,
+    Skardu: 320,
+    Naran: 500,
   },
   Chilas: {
     Hunza: 250,
@@ -86,30 +86,46 @@ function normalizeCity(city: string): string {
   return s;
 }
 
-function getLegDistance(fromCity: string, toCity: string): number {
+function getEdgeDistance(fromCity: string, toCity: string): number {
   const from = normalizeCity(fromCity);
   const to = normalizeCity(toCity);
 
   if (from === to) return 0;
 
-  return (
-    cityLegDistance[from]?.[to] ??
-    cityLegDistance[to]?.[from] ??
-    Math.round(((cityBaseDistanceFromIslamabad[from] ?? 350) + (cityBaseDistanceFromIslamabad[to] ?? 350)) * 0.55)
-  );
+  const directDistance = cityLegDistance[from]?.[to] ?? cityLegDistance[to]?.[from];
+  if (typeof directDistance !== "number") {
+    throw new Error(`Missing route edge: ${from} ↔ ${to}. Add this connection to ROUTE_GRAPH for deterministic pricing.`);
+  }
+
+  return directDistance;
+}
+
+export function validateCustomItineraryRoute(cities: string[]): void {
+  if (cities.length === 0) return;
+
+  const cleanedCities = cities.map(normalizeCity);
+  getEdgeDistance("Islamabad", cleanedCities[0]);
+
+  for (let index = 1; index < cleanedCities.length; index += 1) {
+    getEdgeDistance(cleanedCities[index - 1], cleanedCities[index]);
+  }
+
+  getEdgeDistance(cleanedCities[cleanedCities.length - 1], "Islamabad");
 }
 
 export function estimateCustomItineraryDistance(cities: string[]): number {
   if (cities.length === 0) return 0;
 
+  validateCustomItineraryRoute(cities);
+
   const cleanedCities = cities.map(normalizeCity);
-  let totalDistance = getLegDistance("Islamabad", cleanedCities[0]);
+  let totalDistance = getEdgeDistance("Islamabad", cleanedCities[0]);
 
   for (let index = 1; index < cleanedCities.length; index += 1) {
-    totalDistance += getLegDistance(cleanedCities[index - 1], cleanedCities[index]);
+    totalDistance += getEdgeDistance(cleanedCities[index - 1], cleanedCities[index]);
   }
 
-  totalDistance += getLegDistance(cleanedCities[cleanedCities.length - 1], "Islamabad");
+  totalDistance += getEdgeDistance(cleanedCities[cleanedCities.length - 1], "Islamabad");
   return totalDistance;
 }
 
@@ -120,3 +136,5 @@ export function estimateCustomVehicleDays(nightsByCity: Record<string, number>):
   // Use total nights as a closer approximation to vehicle usage days.
   return Math.max(1, totalNights);
 }
+
+export const ROUTE_GRAPH = cityLegDistance;

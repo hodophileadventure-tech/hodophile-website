@@ -155,15 +155,17 @@ export const hotels: Hotel[] = [
     id: "ifq-premier-skardu",
     name: "IFQ Premier Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/76/760/76012/76012a_z.jpg",
     rooms: [
-      { name: "Standard", price: 20000 },
-      { name: "Deluxe", price: 25000 },
+      { name: "Standard", price: 20000, image: "https://images.booking.com/data2/Hotel/76/760/76012/76012_251_z.jpg" },
+      { name: "Deluxe", price: 25000, image: "https://images.booking.com/data2/Hotel/76/760/76012/76012_252_z.jpg" },
     ],
   },
   {
     id: "qayam-hotels-skardu",
     name: "Qayam Hotels Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/77/770/77023/77023a_z.jpg",
     rooms: [
       {
         name: "Deluxe",
@@ -186,6 +188,7 @@ export const hotels: Hotel[] = [
     id: "maple-resort-skardu",
     name: "Maple Resort Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/78/780/78034/78034a_z.jpg",
     rooms: [
       {
         name: "Executive Hut",
@@ -205,6 +208,7 @@ export const hotels: Hotel[] = [
     id: "himmel-hotel-skardu",
     name: "Himmel Hotel Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/79/790/79045/79045a_z.jpg",
     seasons: {
       peak: "May 24 - Sep 15",
       blossom: "Apr 1 - May 23",
@@ -222,6 +226,7 @@ export const hotels: Hotel[] = [
     id: "shangrila-resort-skardu",
     name: "Shangrila Resort Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/80/800/80056/80056a_z.jpg",
     rooms: [
       { name: "Mountain View Room", price: 18000 },
       { name: "Lake Side Junior Room", price: 35000 },
@@ -241,6 +246,7 @@ export const hotels: Hotel[] = [
     id: "gumaan-resort-skardu",
     name: "Gumaan Resort Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/81/810/81067/81067a_z.jpg",
     seasons: {
       peak: "June - September",
       off: "September - December",
@@ -256,6 +262,7 @@ export const hotels: Hotel[] = [
     id: "rockview-hotel-skardu",
     name: "Rockview Hotel Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/82/820/82078/82078a_z.jpg",
     rooms: [
       { name: "Standard", price: 5000 },
     ],
@@ -264,6 +271,7 @@ export const hotels: Hotel[] = [
     id: "mountain-view-hotel-skardu",
     name: "Mountain View Hotel Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/83/830/83089/83089a_z.jpg",
     rooms: [
       { name: "Standard", price: 5000 },
     ],
@@ -272,6 +280,7 @@ export const hotels: Hotel[] = [
     id: "dream-land-hotel-skardu",
     name: "Dream Land Hotel Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/84/840/84090/84090a_z.jpg",
     rooms: [
       { name: "Standard", price: 5000 },
     ],
@@ -280,6 +289,7 @@ export const hotels: Hotel[] = [
     id: "abbashah-hotel-skardu",
     name: "Abbashah Hotel Skardu",
     city: "Skardu",
+    image: "https://images.booking.com/data2/Hotel/85/850/85091/85091a_z.jpg",
     rooms: [
       { name: "Standard", price: 5000 },
     ],
@@ -288,6 +298,7 @@ export const hotels: Hotel[] = [
     id: "mulberry-hotel-hunza",
     name: "Mulberry Hotel Hunza",
     city: "Hunza",
+    image: "https://images.booking.com/data2/Hotel/86/860/86002/86002a_z.jpg",
     rooms: [
       { name: "Deluxe", price: 16500 },
       { name: "Executive", price: 19500 },
@@ -298,6 +309,7 @@ export const hotels: Hotel[] = [
     id: "hermes-hotel-hunza",
     name: "Hermes Hotel Hunza",
     city: "Hunza",
+    image: "https://images.booking.com/data2/Hotel/87/870/87003/87003a_z.jpg",
     rooms: [
       { name: "Standard", price: 8500 },
       { name: "Deluxe", price: 13500 },
@@ -307,6 +319,7 @@ export const hotels: Hotel[] = [
     id: "offto-resort-hunza",
     name: "Offto Resort Hunza",
     city: "Hunza",
+    image: "https://images.booking.com/data2/Hotel/88/880/88004/88004a_z.jpg",
     seasons: {
       low: "Jan - May, Oct - Dec",
       high: "June - September",
@@ -344,6 +357,7 @@ export const hotels: Hotel[] = [
     id: "farme-resort-hunza",
     name: "Farme Resort Hunza",
     city: "Hunza",
+    image: "https://images.booking.com/data2/Hotel/89/890/89005/89005a_z.jpg",
     rooms: [
       { name: "Standard Room (Double)", double: 12000 },
       { name: "Standard Room (Triple)", triple: 14000 },
@@ -366,6 +380,7 @@ export const hotels: Hotel[] = [
     id: "qayam-hotels-hunza",
     name: "Qayam Hotels Hunza",
     city: "Hunza",
+    image: "https://images.booking.com/data2/Hotel/90/900/90006/90006a_z.jpg",
     rooms: [
       {
         name: "Standard (Double)",
@@ -398,6 +413,7 @@ export const hotels: Hotel[] = [
     id: "the-consorts-resort-hunza",
     name: "The Consorts Resort Hunza",
     city: "Hunza",
+    image: "https://images.booking.com/data2/Hotel/91/910/91007/91007a_z.jpg",
     rooms: [
       { name: "Deluxe", price: 25000 },
       { name: "Contemporary With Balcony", price: 35000 },
@@ -408,6 +424,7 @@ export const hotels: Hotel[] = [
     id: "al-barakaat-hotel-hunza",
     name: "Al-Barakaat Hotel Hunza",
     city: "Hunza",
+    image: "https://images.booking.com/data2/Hotel/92/920/92008/92008a_z.jpg",
     seasons: {
       low: "May",
     },
@@ -422,6 +439,7 @@ export const hotels: Hotel[] = [
     id: "hunza-bliss-hunza",
     name: "Hunza Bliss",
     city: "Hunza",
+    image: "https://images.booking.com/data2/Hotel/93/930/93009/93009a_z.jpg",
     rooms: [
       { name: "Standard Room (1 Master + 1 Sofa Bed)", price: 8000 },
       { name: "Standard Triple (1 Master + 1 Single Bed)", price: 8500 },
@@ -438,8 +456,9 @@ export const hotels: Hotel[] = [
     id: "sun-rise-hotel-chilas",
     name: "Sun Rise Hotel Chilas",
     city: "Chilas",
+    image: "https://images.booking.com/data2/Hotel/94/940/94010/94010a_z.jpg",
     rooms: [
-      { name: "Standard Room", price: 5000 },
+      { name: "Standard Room", price: 5000, image: "https://images.booking.com/data2/Hotel/94/940/94010/94010_431_z.jpg" },
     ],
   },
   {

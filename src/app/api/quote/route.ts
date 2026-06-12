@@ -116,6 +116,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const route = getRouteById(body.routeId);
+    const isCustomItinerary = !route && Boolean(body.customCities && body.customCities.length > 0);
+
     // Normalize vehicle name (accept aliases from frontend)
     const canonicalVehicle = getVehicleRate(body.vehicleName)?.name || body.vehicleName;
 
@@ -149,9 +152,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get route and hotel names for the sheet
-    const route = body.customCities?.length ? undefined : getRouteById(body.routeId);
     const isMultiCity = Boolean(body.multiCityHotels && body.multiCityNights);
-    const isCustomItinerary = Boolean(body.customCities && body.customCities.length > 0);
     const isSingleCityMultiStay = Boolean(body.singleCityHotelStays && body.singleCityHotelStays.length > 0);
     let hotelName = "";
     let roomType = "";
@@ -193,7 +194,7 @@ export async function POST(request: NextRequest) {
       customerPhone: body.customerPhone,
       startingPoint: body.startingPoint,
       tripDate: body.tripDate,
-      routeId: body.customCities?.length ? "custom-itinerary" : body.routeId,
+      routeId: isCustomItinerary ? "custom-itinerary" : body.routeId,
       route: isCustomItinerary ? body.customRouteLabel || body.customCities?.join(" + ") || "Custom Package" : route?.name || body.routeId,
       destination: isCustomItinerary ? body.customRouteLabel || body.customCities?.join(" + ") || "Custom Package" : route?.name?.split("&")[0]?.trim() || "",
       destinationCity: isCustomItinerary ? "Custom" : route?.city || "",
