@@ -28,6 +28,7 @@ export const NODES: Node[] = [
   { name: "Hunza", type: "TOURIST" },
   { name: "Skardu", type: "TOURIST" },
   { name: "Khaplu", type: "TRANSIT" },
+  { name: "Murree", type: "TOURIST" },
 ];
 
 export const EDGES: Edge[] = [
@@ -41,6 +42,11 @@ export const EDGES: Edge[] = [
   { from: "Islamabad", to: "Hunza", distanceKm: 820 },
   { from: "Islamabad", to: "Skardu", distanceKm: 950 },
   { from: "Islamabad", to: "Khaplu", distanceKm: 1050 },
+  { from: "Islamabad", to: "Murree", distanceKm: 60 },
+  { from: "Murree", to: "Nathia Gali", distanceKm: 90 },
+  { from: "Murree", to: "Shogran", distanceKm: 170 },
+  { from: "Murree", to: "Swat", distanceKm: 220 },
+  { from: "Murree", to: "Kashmir", distanceKm: 160 },
 
   { from: "Swat", to: "Nathia Gali", distanceKm: 300 },
   { from: "Swat", to: "Shogran", distanceKm: 260 },
