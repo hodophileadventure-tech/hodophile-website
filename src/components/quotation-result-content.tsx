@@ -171,7 +171,7 @@ export function QuotationResultContent() {
               <div className="mt-6">
                 <p className="text-sm font-semibold">NOTES:</p>
                 <div className="mt-3 space-y-2 text-sm text-stone-800">
-                  <p><span className="font-semibold">Accommodation Type:</span> {quotation.details?.roomType || quotation.roomType || "-"}</p>
+                  <p><span className="font-semibold">Accommodation Type:</span> {quotation.details?.accommodationType || quotation.details?.roomType || quotation.roomType || "-"}</p>
                   <p><span className="font-semibold">Transportation Type:</span> {quotation.details?.vehicle || quotation.vehicleName || "-"}</p>
                   <p><span className="font-semibold">Tour Mode:</span> {travelMode === "air" ? "By Air" : "By Road"}</p>
                   <p><span className="font-semibold">Departure Location:</span> {quotation.startingPoint || "-"}</p>
@@ -242,12 +242,18 @@ export function QuotationResultContent() {
           </div>
         </div>
 
-        <div className="print:hidden border-t border-stone-200 bg-white px-8 py-6 text-right">
+        <div className="print:hidden border-t border-stone-200 bg-white px-8 py-6 text-right space-x-3">
           <button
             onClick={() => window.print()}
             className="inline-flex rounded-full bg-[#fcc000] px-8 py-3 text-sm font-semibold text-black transition hover:bg-[#e4b200]"
           >
             Print Quotation
+          </button>
+          <button
+            onClick={() => window.print()}
+            className="inline-flex rounded-full border border-stone-300 bg-white px-8 py-3 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
+          >
+            Download PDF
           </button>
         </div>
       </div>

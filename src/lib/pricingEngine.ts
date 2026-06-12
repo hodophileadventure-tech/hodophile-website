@@ -13,6 +13,7 @@ export interface QuotationInput {
   vehicleName: string;
   hotelId?: string;
   roomId?: string; // identifier for the selected room
+  hotelCategory?: string;
   singleCityHotelStays?: Array<{
     hotelId: string;
     roomId: string;
@@ -45,6 +46,7 @@ export interface QuotationBreakdown {
     vehicle: string;
     hotel: string;
     roomType: string;
+    accommodationType?: string;
     numberOfRooms: number;
     numberOfGuests: number;
     jeepAddonsDetails: string[];
@@ -198,6 +200,15 @@ function getRoomPrice(room: Room, season: string): number {
   }
 
   return 0;
+}
+
+function getAccommodationType(category?: string): string {
+  if (!category) return "Standard";
+  const normalized = category.toLowerCase();
+  if (normalized.includes("executive")) return "Executive";
+  if (normalized.includes("deluxe")) return "Deluxe";
+  if (normalized.includes("standard")) return "Standard";
+  return category;
 }
 
 function calculateSingleCityHotelCost(
@@ -442,6 +453,7 @@ export function calculateQuotation(
         vehicle: input.vehicleName,
         hotel: hotelName,
         roomType: input.roomId || "Multiple",
+        accommodationType: getAccommodationType(input.hotelCategory),
         numberOfRooms: input.numberOfRooms,
         numberOfGuests,
         jeepAddonsDetails: jeepDetails,

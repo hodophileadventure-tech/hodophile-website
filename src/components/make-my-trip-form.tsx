@@ -399,6 +399,23 @@ export function MakeMyTripForm() {
     return Math.ceil(guestCount / 4);
   };
 
+  const formatRoomOptionLabel = (room: any): string => {
+    const price =
+      room.price ??
+      room.peak ??
+      (Array.isArray(room.high) ? room.high[0] : room.high) ??
+      (Array.isArray(room.low) ? room.low[0] : room.low) ??
+      room.double ??
+      room.triple ??
+      room.quad;
+
+    if (typeof price === "number" && !Number.isNaN(price) && price > 0) {
+      return `${room.name} — PKR ${price.toLocaleString()} / night`;
+    }
+
+    return room.name;
+  };
+
   const getActualStartingPoint = (): string => {
     return startingPoint === "Other" ? otherStartingPoint.trim() : startingPoint;
   };
@@ -1064,6 +1081,7 @@ export function MakeMyTripForm() {
             const calc = calculateQuotation({
               routeId: "custom-itinerary",
               vehicleName,
+              hotelCategory,
               customCities: effectiveSelectedCities,
               customRouteLabel: effectiveSelectedCities.join(" + "),
               singleCityHotelStays,
@@ -1099,6 +1117,7 @@ export function MakeMyTripForm() {
             const calc = calculateQuotation({
               routeId: "custom-itinerary",
               vehicleName,
+              hotelCategory,
               customCities: _augCities,
               customRouteLabel: _augCities.join(" + "),
               multiCityHotels: _augHotels,
@@ -1134,6 +1153,7 @@ export function MakeMyTripForm() {
                 const calc = calculateQuotation({
                   routeId,
                   vehicleName,
+                  hotelCategory,
                   multiCityHotels,
                   multiCityNights,
                   numberOfRooms,
@@ -1156,6 +1176,7 @@ export function MakeMyTripForm() {
             const calc = calculateQuotation({
               routeId,
               vehicleName,
+              hotelCategory,
               hotelId: singleCityHotelStays[0]?.hotelId,
               roomId: singleCityHotelStays[0]?.roomId,
               singleCityHotelStays,
@@ -1175,6 +1196,7 @@ export function MakeMyTripForm() {
             const calc = calculateQuotation({
               routeId,
               vehicleName,
+              hotelCategory,
               hotelId,
               roomId,
               numberOfRooms,
@@ -2054,7 +2076,7 @@ export function MakeMyTripForm() {
                     </option>
                     {availableRooms.map((room: any) => (
                       <option key={room.name} value={room.name}>
-                        {room.name}
+                        {formatRoomOptionLabel(room)}
                       </option>
                     ))}
                   </select>
@@ -2131,7 +2153,7 @@ export function MakeMyTripForm() {
                               .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
                               .map((room: any) => (
                                 <option key={room.name} value={room.name}>
-                                  {room.name}
+                                  {formatRoomOptionLabel(room)}
                                 </option>
                               ))}
                           </select>
@@ -2227,7 +2249,7 @@ export function MakeMyTripForm() {
                                 .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
                                 .map((room: any) => (
                                   <option key={room.name} value={room.name}>
-                                    {room.name}
+                                    {formatRoomOptionLabel(room)}
                                   </option>
                                 ))}
                             </select>
@@ -2365,7 +2387,7 @@ export function MakeMyTripForm() {
                               })
                               .map((room: any) => (
                                 <option key={room.name} value={room.name}>
-                                  {room.name}
+                                  {formatRoomOptionLabel(room)}
                                 </option>
                               ))}
                           </select>
@@ -2452,7 +2474,7 @@ export function MakeMyTripForm() {
                               .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
                               .map((room: any) => (
                                 <option key={room.name} value={room.name}>
-                                  {room.name}
+                                  {formatRoomOptionLabel(room)}
                                 </option>
                               ))}
                           </select>
@@ -2546,7 +2568,7 @@ export function MakeMyTripForm() {
                                 .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
                                 .map((room: any) => (
                                   <option key={room.name} value={room.name}>
-                                    {room.name}
+                                    {formatRoomOptionLabel(room)}
                                   </option>
                                 ))}
                             </select>
@@ -2674,7 +2696,7 @@ export function MakeMyTripForm() {
                               <option value="">Select room...</option>
                               {selectedHotel?.rooms.map((room: any) => (
                                 <option key={room.name} value={room.name}>
-                                  {room.name}
+                                  {formatRoomOptionLabel(room)}
                                 </option>
                               ))}
                             </select>
@@ -2782,7 +2804,7 @@ export function MakeMyTripForm() {
                               .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
                               .map((room: any) => (
                                 <option key={room.name} value={room.name}>
-                                  {room.name}
+                                  {formatRoomOptionLabel(room)}
                                 </option>
                               ))}
                           </select>
@@ -2954,3 +2976,5 @@ export function MakeMyTripForm() {
     </div>
   );
 }
+
+
