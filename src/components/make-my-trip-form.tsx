@@ -354,6 +354,14 @@ export function MakeMyTripForm() {
     return hotels.length > 0 ? hotels[0].id : "";
   };
 
+  // Filter hotels to show only those with rooms matching the selected category
+  const filterHotelsByCategory = (hotels: Hotel[], category: string): Hotel[] => {
+    const categoryLower = category.toLowerCase();
+    return hotels.filter((hotel) =>
+      hotel.rooms.some((room) => room.name.toLowerCase().includes(categoryLower))
+    );
+  };
+
   // Get cheapest hotel for a category
   const selectHotelByCategory = (hotels: Hotel[], category: string): string => {
     if (!hotels || hotels.length === 0) return "";
@@ -549,7 +557,9 @@ export function MakeMyTripForm() {
     if (config) {
       const defaults: Record<string, { hotelId: string; roomId: string }> = {};
       for (const city of config.cities) {
-        const hotelsForCity = getHotelsForRouteCity(route.id, city);
+        let hotelsForCity = getHotelsForRouteCity(route.id, city);
+        // Filter by selected category
+        hotelsForCity = filterHotelsByCategory(hotelsForCity, hotelCategory);
         if (hotelsForCity.length > 0) {
           // Use category-based hotel selection
           const defaultHotelId = selectHotelByCategory(hotelsForCity, hotelCategory);
@@ -776,6 +786,9 @@ export function MakeMyTripForm() {
       hotels = hotels.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
     }
 
+    // Filter hotels by selected category
+    hotels = filterHotelsByCategory(hotels, hotelCategory);
+
     setAvailableHotels(hotels);
 
     if (supportsMultipleHotelsInSingleCity) {
@@ -809,6 +822,10 @@ export function MakeMyTripForm() {
     if (selectedLuxuryPackage) {
       hotels = hotels.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
     }
+
+    // Filter hotels by selected category
+    hotels = filterHotelsByCategory(hotels, hotelCategory);
+
     setAvailableHotels(hotels);
 
     if (singleCityHotelStays.length === 0) {
@@ -1011,6 +1028,10 @@ export function MakeMyTripForm() {
         if (selectedLuxuryPackage) {
           hotels = hotels.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
         }
+
+        // Filter hotels by selected category
+        hotels = filterHotelsByCategory(hotels, hotelCategory);
+
         setAvailableHotels(hotels);
 
         // Auto-select hotel based on category (not just first)
@@ -1036,6 +1057,32 @@ export function MakeMyTripForm() {
       setRoomId("");
     }
   }, [hotelCategory, selectedRoute, supportsMultipleHotelsInSingleCity]);
+
+  // Re-filter hotels when hotel category changes
+  useEffect(() => {
+    if (!selectedRoute || isMultiCityTour() || supportsMultipleHotelsInSingleCity) return;
+
+    // Get fresh hotels without category filter and re-apply category filter
+    let hotels = getHotelsByCity(selectedRoute.city).filter(
+      (hotel) => hotel.city !== "Islamabad" || isIslamabadHotelMandatory(),
+    );
+    if (selectedLuxuryPackage) {
+      hotels = hotels.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
+    }
+
+    // Apply the new category filter
+    hotels = filterHotelsByCategory(hotels, hotelCategory);
+    setAvailableHotels(hotels);
+
+    // Reset hotel selection since available hotels changed
+    if (hotels.length > 0) {
+      const defaultHotelId = selectHotelByCategory(hotels, hotelCategory);
+      setHotelId(defaultHotelId);
+    } else {
+      setHotelId("");
+    }
+    setRoomId("");
+  }, [hotelCategory, selectedRoute, selectedLuxuryPackage, isIslamabadHotelMandatory(), isMultiCityTour, supportsMultipleHotelsInSingleCity]);
 
   // Update available rooms when hotel changes
   useEffect(() => {
@@ -2104,6 +2151,8 @@ export function MakeMyTripForm() {
                   if (selectedLuxuryPackage) {
                     hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
                   }
+                  // Filter by selected category
+                  hotelsForCity = filterHotelsByCategory(hotelsForCity, hotelCategory);
                   const currentSelection = effectiveMultiCityHotels[city];
                   const selectedHotel = hotelsForCity.find((h) => h.id === currentSelection?.hotelId);
 
@@ -2422,6 +2471,8 @@ export function MakeMyTripForm() {
                   if (selectedLuxuryPackage) {
                     hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
                   }
+                  // Filter by selected category
+                  hotelsForCity = filterHotelsByCategory(hotelsForCity, hotelCategory);
                   const currentSelection = effectiveMultiCityHotels[city];
                   const selectedHotel = hotelsForCity.find((h) => h.id === currentSelection?.hotelId);
                   const nightsForCity = effectiveCustomCityNights[city] ?? 0;
@@ -2753,6 +2804,8 @@ export function MakeMyTripForm() {
                   if (selectedLuxuryPackage) {
                     hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
                   }
+                  // Filter by selected category
+                  hotelsForCity = filterHotelsByCategory(hotelsForCity, hotelCategory);
                   const currentSelection = effectiveMultiCityHotels[city];
                   const selectedHotel = hotelsForCity.find(
                     (h) => h.id === currentSelection?.hotelId
