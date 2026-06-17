@@ -362,6 +362,12 @@ export function MakeMyTripForm() {
     );
   };
 
+  // Filter rooms to show only those matching the selected category
+  const filterRoomsByCategory = (rooms: any[], category: string): any[] => {
+    const categoryLower = category.toLowerCase();
+    return rooms.filter((room) => room.name.toLowerCase().includes(categoryLower));
+  };
+
   // Get cheapest hotel for a category
   const selectHotelByCategory = (hotels: Hotel[], category: string): string => {
     if (!hotels || hotels.length === 0) return "";
@@ -405,6 +411,13 @@ export function MakeMyTripForm() {
   // Calculate rooms needed (max 4 people per room)
   const calculateRoomsNeeded = (guestCount: number): number => {
     return Math.ceil(guestCount / 4);
+  };
+
+  // Get maximum rooms allowed based on guest count
+  const getMaxRoomsAllowed = (guestCount: number): number => {
+    // Maximum 4 people per room, so max rooms = ceil(guests/4)
+    // But also cap at 10 rooms maximum
+    return Math.min(Math.ceil(guestCount / 4), 10);
   };
 
   const formatRoomOptionLabel = (room: any): string => {
@@ -1090,9 +1103,13 @@ export function MakeMyTripForm() {
       const selectedHotel = availableHotels.find((h) => h.id === hotelId);
       if (selectedHotel) {
         // If luxury package active, only expose rooms that explicitly include 'executive' in the name
-        const roomsToShow = selectedLuxuryPackage
+        let roomsToShow = selectedLuxuryPackage
           ? selectedHotel.rooms.filter((r) => /executive/i.test(r.name))
           : selectedHotel.rooms;
+        
+        // Filter by selected category
+        roomsToShow = filterRoomsByCategory(roomsToShow, hotelCategory);
+        
         setAvailableRooms(roomsToShow);
 
         // Auto-select room based on category using price tier (within filtered rooms)
@@ -1100,7 +1117,7 @@ export function MakeMyTripForm() {
         setRoomId(defaultRoom);
       }
     }
-  }, [hotelId, availableHotels, hotelCategory]);
+  }, [hotelId, availableHotels, hotelCategory, selectedLuxuryPackage]);
 
   // Validate vehicle based on guest count
   useEffect(() => {
@@ -1118,11 +1135,14 @@ export function MakeMyTripForm() {
     }
   }, [adults, kids, totalGuests, vehicleName, vehicleOptions]);
 
-  // Auto-calculate rooms based on guest count (max 4 per room)
+  // Validate room count when guest count changes
   useEffect(() => {
-    const roomsNeeded = calculateRoomsNeeded(totalGuests);
-    setNumberOfRooms(roomsNeeded);
-  }, [adults, kids, totalGuests]);
+    const maxRoomsAllowed = getMaxRoomsAllowed(totalGuests);
+    // If current room count exceeds the maximum allowed, reduce it
+    if (numberOfRooms > maxRoomsAllowed) {
+      setNumberOfRooms(Math.max(1, maxRoomsAllowed));
+    }
+  }, [totalGuests, numberOfRooms]);
 
   // Calculate quotation when key fields change
   useEffect(() => {
@@ -2211,6 +2231,7 @@ export function MakeMyTripForm() {
                             <option value="">Select room...</option>
                             {selectedHotel?.rooms
                               .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
+                              .filter((r) => r.name.toLowerCase().includes(hotelCategory.toLowerCase()))
                               .map((room: any) => (
                                 <option key={room.name} value={room.name}>
                                   {formatRoomOptionLabel(room)}
@@ -2307,6 +2328,7 @@ export function MakeMyTripForm() {
                               <option value="">Select room...</option>
                               {selectedHotel?.rooms
                                 .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
+                                .filter((r) => r.name.toLowerCase().includes(hotelCategory.toLowerCase()))
                                 .map((room: any) => (
                                   <option key={room.name} value={room.name}>
                                     {formatRoomOptionLabel(room)}
@@ -2440,6 +2462,7 @@ export function MakeMyTripForm() {
                             <option value="">Select executive room...</option>
                             {selectedHotel?.rooms
                               .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
+                              .filter((r) => r.name.toLowerCase().includes(hotelCategory.toLowerCase()))
                               .sort((a, b) => {
                                 const priceA = a.price || a.peak || (Array.isArray(a.high) ? a.high[0] : a.high) || 0;
                                 const priceB = b.price || b.peak || (Array.isArray(b.high) ? b.high[0] : b.high) || 0;
@@ -2628,6 +2651,7 @@ export function MakeMyTripForm() {
                               <option value="">Select room...</option>
                               {selectedHotel?.rooms
                                 .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
+                                .filter((r) => r.name.toLowerCase().includes(hotelCategory.toLowerCase()))
                                 .map((room: any) => (
                                   <option key={room.name} value={room.name}>
                                     {formatRoomOptionLabel(room)}
@@ -2756,11 +2780,13 @@ export function MakeMyTripForm() {
                               className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 overflow-hidden text-ellipsis"
                             >
                               <option value="">Select room...</option>
-                              {selectedHotel?.rooms.map((room: any) => (
-                                <option key={room.name} value={room.name}>
-                                  {formatRoomOptionLabel(room)}
-                                </option>
-                              ))}
+                              {selectedHotel?.rooms
+                                .filter((r) => r.name.toLowerCase().includes(hotelCategory.toLowerCase()))
+                                .map((room: any) => (
+                                  <option key={room.name} value={room.name}>
+                                    {formatRoomOptionLabel(room)}
+                                  </option>
+                                ))}
                             </select>
                           </label>
 
@@ -2866,6 +2892,7 @@ export function MakeMyTripForm() {
                             <option value="">Select room...</option>
                             {selectedHotel?.rooms
                               .filter((r) => !selectedLuxuryPackage || /executive/i.test(r.name))
+                              .filter((r) => r.name.toLowerCase().includes(hotelCategory.toLowerCase()))
                               .map((room: any) => (
                                 <option key={room.name} value={room.name}>
                                   {formatRoomOptionLabel(room)}
@@ -2933,15 +2960,24 @@ export function MakeMyTripForm() {
 
             {/* Guest & Room Details */}
             <div className="grid gap-4 grid-cols-1 xl:grid-cols-3">
-              <label className="grid gap-2 text-sm font-medium text-black">
+              <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
                 <span className="flex items-center gap-2">
                   <BedDouble className={LABEL_ICON_CLASS} aria-hidden="true" />
-                  <span>Number of Rooms (Auto-Calculated)</span>
+                  <span>Number of Rooms *</span>
                 </span>
-                <div className="rounded-[15px] border border-[#f4d77d] bg-white px-4 py-3 text-sm text-black">
-                  <div className="font-semibold">{numberOfRooms} {numberOfRooms === 1 ? "Room" : "Rooms"}</div>
-                  <div className="text-xs text-stone-600 mt-1">4 people max/room</div>
-                </div>
+                <select
+                  required
+                  value={numberOfRooms}
+                  onChange={(e) => setNumberOfRooms(parseInt(e.target.value) || 1)}
+                  className="rounded-[15px] border border-[#f4d77d] bg-white px-4 py-3 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 w-full appearance-none"
+                >
+                  {Array.from({ length: getMaxRoomsAllowed(totalGuests) }, (_, i) => i + 1).map((room) => (
+                    <option key={room} value={room}>
+                      {room} {room === 1 ? "Room" : "Rooms"}
+                    </option>
+                  ))}
+                </select>
+                <div className="text-xs text-stone-600">Max {getMaxRoomsAllowed(totalGuests)} room{getMaxRoomsAllowed(totalGuests) !== 1 ? 's' : ''} for {totalGuests} guest{totalGuests !== 1 ? 's' : ''} (4 people/room)</div>
               </label>
 
               <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
