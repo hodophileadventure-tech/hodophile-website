@@ -413,13 +413,6 @@ export function MakeMyTripForm() {
     return Math.ceil(guestCount / 4);
   };
 
-  // Get maximum rooms allowed based on guest count
-  const getMaxRoomsAllowed = (guestCount: number): number => {
-    // Maximum 4 people per room, so max rooms = ceil(guests/4)
-    // But also cap at 10 rooms maximum
-    return Math.min(Math.ceil(guestCount / 4), 10);
-  };
-
   const formatRoomOptionLabel = (room: any): string => {
     const price =
       room.price ??
@@ -1134,15 +1127,6 @@ export function MakeMyTripForm() {
       }
     }
   }, [adults, kids, totalGuests, vehicleName, vehicleOptions]);
-
-  // Validate room count when guest count changes
-  useEffect(() => {
-    const maxRoomsAllowed = getMaxRoomsAllowed(totalGuests);
-    // If current room count exceeds the maximum allowed, reduce it
-    if (numberOfRooms > maxRoomsAllowed) {
-      setNumberOfRooms(Math.max(1, maxRoomsAllowed));
-    }
-  }, [totalGuests, numberOfRooms]);
 
   // Calculate quotation when key fields change
   useEffect(() => {
@@ -2965,19 +2949,15 @@ export function MakeMyTripForm() {
                   <BedDouble className={LABEL_ICON_CLASS} aria-hidden="true" />
                   <span>Number of Rooms *</span>
                 </span>
-                <select
+                <input
+                  type="number"
                   required
+                  min="1"
+                  max="20"
                   value={numberOfRooms}
                   onChange={(e) => setNumberOfRooms(parseInt(e.target.value) || 1)}
-                  className="rounded-[15px] border border-[#f4d77d] bg-white px-4 py-3 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 w-full appearance-none"
-                >
-                  {Array.from({ length: getMaxRoomsAllowed(totalGuests) }, (_, i) => i + 1).map((room) => (
-                    <option key={room} value={room}>
-                      {room} {room === 1 ? "Room" : "Rooms"}
-                    </option>
-                  ))}
-                </select>
-                <div className="text-xs text-stone-600">Max {getMaxRoomsAllowed(totalGuests)} room{getMaxRoomsAllowed(totalGuests) !== 1 ? 's' : ''} for {totalGuests} guest{totalGuests !== 1 ? 's' : ''} (4 people/room)</div>
+                  className="rounded-[15px] border border-[#f4d77d] bg-white px-4 py-3 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 w-full"
+                />
               </label>
 
               <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
