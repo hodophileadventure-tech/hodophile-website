@@ -562,10 +562,10 @@ export const hotels: Hotel[] = [
     name: "Hotel Index Islamabad",
     city: "Islamabad",
     rooms: [
-      { name: "Master", price: 6500 },
-      { name: "Triple", price: 7000 },
-      { name: "Quad", price: 7500 },
-      { name: "Penta", price: 8500 },
+      { name: "Standard Master", price: 6500 },
+      { name: "Standard Triple", price: 7000 },
+      { name: "Standard Quad", price: 7500 },
+      { name: "Standard Penta", price: 8500 },
     ],
   },
   {
@@ -584,9 +584,9 @@ export const hotels: Hotel[] = [
     name: "Hotel Redline Islamabad",
     city: "Islamabad",
     rooms: [
-      { name: "Single", price: 7000 },
-      { name: "Double", price: 9360 },
-      { name: "Triple", price: 11700 },
+      { name: "Standard Single", price: 7000 },
+      { name: "Standard Double", price: 9360 },
+      { name: "Standard Triple", price: 11700 },
     ],
   },
   {
