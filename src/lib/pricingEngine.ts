@@ -38,7 +38,7 @@ export interface QuotationBreakdown {
   hotelCost: number;
   jeepAddonsCost: number;
   subtotal: number;
-  markupAmount: number; // 22% markup
+  markupAmount: number; // applied profit margin based on subtotal tier
   totalCost: number;
   perPersonCost: number;
   details: {
@@ -425,9 +425,13 @@ export function calculateQuotation(
 
     const subtotal = transportCost + hotelCost + jeepAddonsCost;
     
-    // Add 22% markup
-    const MARKUP_PERCENTAGE = 0.22;
-    const markupAmount = Math.round(subtotal * MARKUP_PERCENTAGE);
+    const profitPercentage = subtotal < 500_000
+      ? 0.25
+      : subtotal < 1_000_000
+      ? 0.15
+      : 0.10;
+
+    const markupAmount = Math.round(subtotal * profitPercentage);
     const totalCost = subtotal + markupAmount;
     
     const numberOfGuests = input.adults + input.kids;
