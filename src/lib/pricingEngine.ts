@@ -401,7 +401,7 @@ export function calculateQuotation(
       actualMandatoryJeepCost = input.mandatoryJeepCost;
     } else {
       const perJeep = input.customCities ? customCityJeepCostPerJeep : routeJeepCostPerJeep;
-      const estimatedJeepCount = input.jeepCount ?? Math.ceil((input.adults + input.kids) / 6) || 1;
+      const estimatedJeepCount = (input.jeepCount ?? Math.ceil((input.adults + input.kids) / 6)) || 1;
       if (perJeep && perJeep > 0) {
         actualMandatoryJeepCost = perJeep * Math.max(1, estimatedJeepCount);
       }
