@@ -24,7 +24,7 @@ Transport Cost = Fuel Cost + Daily Rental Cost + Toll & Tax
 - Daily Rental Rate: **Rs 7,000/day**
 - Fuel Consumption: **10 km/liter**
 - Toll & Tax: **Rs 8,000** (fixed per trip)
-- Fuel Type: **Petrol @ Rs 403/liter**
+- Fuel Type: **Petrol @ Rs 310/liter**
 
 **Distance Calculation:**
 - Route: Islamabad to Skardu (typical multi-city routes like 12-day Naran, Hunza, Skardu)
@@ -35,7 +35,7 @@ Transport Cost = Fuel Cost + Daily Rental Cost + Toll & Tax
 
 | Component | Calculation | Amount |
 |-----------|------------|--------|
-| **Fuel Cost** | (1,600 km ÷ 10 km/L) × Rs 403/L | (160L × 403) = **Rs 64,480** |
+| **Fuel Cost** | (1,600 km ÷ 10 km/L) × Rs 310/L | (160L × 310) = **Rs 49,600** |
 | **Daily Rental** | Rs 7,000/day × 8 days | **Rs 56,000** |
 | **Toll & Tax** | Fixed | **Rs 8,000** |
 | | | |
@@ -47,7 +47,7 @@ Transport Cost = Fuel Cost + Daily Rental Cost + Toll & Tax
 - Daily Rate: Rs 9,000/day
 - Consumption: 10 km/L
 - Toll & Tax: Rs 8,000
-- Total (8 days): (160L × 403) + (9,000 × 8) + 8,000 = **Rs 144,480**
+- Total (8 days): (160L × 310) + (9,000 × 8) + 8,000 = **Rs 129,600**
 
 **Prado (4x4):**
 - Daily Rate: Rs 20,000/day
@@ -124,11 +124,11 @@ For a 12-day Naran, Hunza, Skardu tour:
 TRANSPORT COST
 ─────────────────────────────────────────────────────────────
 Vehicle: Toyota Corolla (Petrol)
-  • Fuel: 160L @ Rs 403/L = Rs 64,480
+  • Fuel: 160L @ Rs 310/L = Rs 49,600
   • Rental: Rs 7,000/day × 8 days = Rs 56,000
   • Toll & Tax: = Rs 8,000
 ─────────────────────────────────────────────────────────────
-Subtotal Transport:                         Rs 128,480
+Subtotal Transport:                         Rs 113,600
 
 
 HOTEL COST
@@ -178,12 +178,12 @@ COST PER PERSON (÷ 2):                      Rs 91,183
 ```
 Fuel Cost = (Distance ÷ Consumption Rate) × Fuel Price
 
-Example: (1,600 km ÷ 10 km/L) × Rs 403/L = Rs 64,480
+Example: (1,600 km ÷ 10 km/L) × Rs 310/L = Rs 49,600
 ```
 
 - **Distance:** Varies by route (see routes.ts for each route's distance)
 - **Consumption Rate:** Fixed per vehicle type (see vehicle rates table)
-- **Fuel Price:** Updated based on market prices (currently: Petrol Rs 403, Diesel Rs 382)
+- **Fuel Price:** Updated based on market prices (currently: Petrol Rs 310, Diesel Rs 382)
 
 **2. Daily Rental Cost:**
 ```
@@ -332,7 +332,7 @@ To see detailed calculation logs:
 3. Example output:
 ```
 Transport: Toyota Corolla | Distance: 1600km | Consumption: 10km/L 
-| Fuel: 160.0L × 403PKR = 64480PKR | Rental: 7000PKR × 8days 
+| Fuel: 160.0L × 310PKR = 49600PKR | Rental: 7000PKR × 8days 
 = 56000PKR | Toll/Tax: 8000PKR | Total: 128480PKR
 ```
 
@@ -341,7 +341,7 @@ Transport: Toyota Corolla | Distance: 1600km | Consumption: 10km/L
 ## 9. CURRENT PRICING DATA (May 2026)
 
 **Fuel Prices:**
-- Petrol: Rs 403/liter
+- Petrol: Rs 310/liter
 - Diesel: Rs 382/liter
 
 **Vehicle Daily Rates:**

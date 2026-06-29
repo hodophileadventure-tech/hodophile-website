@@ -134,6 +134,7 @@ export function MakeMyTripForm() {
   const [adults, setAdults] = useState(0);
   const [kids, setKids] = useState(0);
   const [kidsAges, setKidsAges] = useState<string[]>([]);
+  const computedJeepCount = adults + kids > 0 ? Math.ceil((adults + kids) / 6) : 0;
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [selectedPreplannedTrip, setSelectedPreplannedTrip] = useState("");
@@ -1221,6 +1222,7 @@ export function MakeMyTripForm() {
                   numberOfRooms,
                   adults,
                   kids,
+                  jeepCount: computedJeepCount,
                   tripDate,
                   mandatoryJeepCost,
                   travelMode: travelMode as "road" | "air",
@@ -1245,6 +1247,7 @@ export function MakeMyTripForm() {
               numberOfRooms,
               adults,
               kids,
+              jeepCount: computedJeepCount,
               tripDate,
               mandatoryJeepCost,
               travelMode: travelMode as "road" | "air",
@@ -1264,6 +1267,7 @@ export function MakeMyTripForm() {
               numberOfRooms,
               adults,
               kids,
+              jeepCount: computedJeepCount,
               tripDate,
               mandatoryJeepCost,
               travelMode: travelMode as "road" | "air",
@@ -1497,6 +1501,7 @@ export function MakeMyTripForm() {
           customerPhone,
           tourType,
           mandatoryJeepCost,
+          jeepCount: computedJeepCount,
           travelMode,
           singleCityHotelStays: selectedSingleCityHotelStays,
           multiCityHotels: ((isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity) || isMultiCityTour()) ? effectiveMultiCityHotels : undefined,

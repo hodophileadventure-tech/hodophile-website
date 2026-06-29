@@ -395,19 +395,15 @@ export function calculateQuotation(
 
     // Determine mandatory jeep cost. Priority:
     // 1. If caller provided exact mandatoryJeepCost (total), use it.
-    // 2. If caller provided jeepCount and we have a per-jeep amount (route or city), multiply.
-    // 3. Fallback to route/city per-jeep amount (assume 1 jeep) if present.
+    // 2. Otherwise determine per-jeep mandatory cost and scale by required jeep count.
     let actualMandatoryJeepCost = 0;
     if (input.mandatoryJeepCost && input.mandatoryJeepCost > 0) {
       actualMandatoryJeepCost = input.mandatoryJeepCost;
     } else {
       const perJeep = input.customCities ? customCityJeepCostPerJeep : routeJeepCostPerJeep;
+      const estimatedJeepCount = input.jeepCount ?? Math.ceil((input.adults + input.kids) / 6) || 1;
       if (perJeep && perJeep > 0) {
-        if ((input as any).jeepCount && Number((input as any).jeepCount) > 0) {
-          actualMandatoryJeepCost = perJeep * Number((input as any).jeepCount);
-        } else {
-          actualMandatoryJeepCost = perJeep; // assume one jeep if not specified
-        }
+        actualMandatoryJeepCost = perJeep * Math.max(1, estimatedJeepCount);
       }
     }
 
