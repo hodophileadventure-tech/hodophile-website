@@ -5,6 +5,7 @@ export interface VehicleRate {
   consumption: number; // km per liter
   tollTax: number; // Fixed toll + tax per trip
   fuelType: "petrol" | "diesel";
+  fuelPrice?: number; // Optional override for fuel price per liter
 }
 
 export const vehicleRates: VehicleRate[] = [
@@ -49,6 +50,7 @@ export const vehicleRates: VehicleRate[] = [
     consumption: 5,
     tollTax: 13000,
     fuelType: "diesel",
+    fuelPrice: 322,
   },
   {
     name: "Coaster 5C",
@@ -56,6 +58,7 @@ export const vehicleRates: VehicleRate[] = [
     consumption: 5,
     tollTax: 13000,
     fuelType: "diesel",
+    fuelPrice: 322,
   },
 ];
 

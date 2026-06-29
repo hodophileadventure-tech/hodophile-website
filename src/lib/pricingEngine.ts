@@ -117,10 +117,10 @@ export function calculateTransportCost(
     return null;
   }
 
-  // Get fuel price based on vehicle fuel type
+  // Get fuel price based on vehicle fuel type, allowing per-vehicle overrides.
   const fuelPrice =
     vehicleRate.fuelType === "diesel"
-      ? currentFuelPrices.diesel
+      ? vehicleRate.fuelPrice ?? currentFuelPrices.diesel
       : currentFuelPrices.petrol;
 
   // Calculate fuel cost
