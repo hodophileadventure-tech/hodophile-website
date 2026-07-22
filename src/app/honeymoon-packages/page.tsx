@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Honeymoon Packages",
@@ -21,19 +22,25 @@ export const metadata: Metadata = {
 
 const honeymoonPackages = [
   {
-    name: "Hunza Honeymoon Escape",
-    duration: "5 Days / 4 Nights",
-    detail: "Private scenic stays, sunset viewpoints, and curated mountain experiences.",
-  },
-  {
-    name: "Skardu Couple Retreat",
-    duration: "6 Days / 5 Nights",
-    detail: "Alpine lakes, boutique accommodation, and smooth route planning for couples.",
-  },
-  {
-    name: "Kashmir Romantic Getaway",
+    slug: "swat-kalam-4days",
+    name: "Swat & Kalam — 4 Days",
     duration: "4 Days / 3 Nights",
-    detail: "Calm valley landscapes, relaxed pacing, and premium couple-friendly experiences.",
+    detail: "Ushu forests, Mahodand Lake excursion, and relaxed valley pacing.",
+    image: "/images/honeymoon/swat-kalam.jpg",
+  },
+  {
+    slug: "naran-babusar-4days",
+    name: "Naran & Babusar — 4 Days",
+    duration: "4 Days / 3 Nights",
+    detail: "Kaghan Valley highlights: Saif-ul-Malook, Lulusar, and Babusar Top.",
+    image: "/images/honeymoon/naran-babusar.jpg",
+  },
+  {
+    slug: "kashmir-arangkel-5days",
+    name: "Kashmir Arang Kel — 5 Days",
+    duration: "5 Days / 4 Nights",
+    detail: "Neelum Valley route to Kel and the hill-meadow of Arang Kel.",
+    image: "/images/honeymoon/kashmir-arangkel.jpg",
   },
 ];
 
@@ -41,8 +48,8 @@ export default function HoneymoonPackagesPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-2.jpg"
-        imageAlt="Romantic valley getaway"
+        image="/images/honeymoon/hero.png"
+        imageAlt="Honeymoon header"
         eyebrow="Honeymoon Packages"
         title="Curated honeymoon journeys for scenic, private, and memorable travel."
         description="Choose from premium domestic routes in Pakistan and let us craft an elegant honeymoon itinerary around your preferred pace."
@@ -50,14 +57,24 @@ export default function HoneymoonPackagesPage() {
 
       <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {honeymoonPackages.map((item) => (
-          <article
-            key={item.name}
-            className="rounded-[2rem] border border-black/10 bg-white/85 p-6 shadow-sm backdrop-blur"
+          <Link
+            key={item.slug}
+            href={`/honeymoon-packages/${item.slug}`}
+            className="group block rounded-[2rem] border border-black/10 bg-white/85 p-0 shadow-sm backdrop-blur overflow-hidden"
           >
-            <p className="text-xs uppercase tracking-[0.3em] text-[#fcc000]">{item.duration}</p>
-            <h2 className="mt-3 text-2xl font-semibold">{item.name}</h2>
-            <p className="mt-3 text-sm leading-7 text-stone-600">{item.detail}</p>
-          </article>
+            <div className="h-48 w-full overflow-hidden bg-stone-100">
+              <img
+                src={item.image}
+                alt={item.name}
+                className="h-full w-full object-cover transition-transform group-hover:scale-105"
+              />
+            </div>
+            <div className="p-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-[#fcc000]">{item.duration}</p>
+              <h2 className="mt-3 text-2xl font-semibold">{item.name}</h2>
+              <p className="mt-3 text-sm leading-7 text-stone-600">{item.detail}</p>
+            </div>
+          </Link>
         ))}
       </section>
     </PageShell>
