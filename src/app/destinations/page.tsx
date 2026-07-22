@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
@@ -39,8 +40,14 @@ export default function DestinationsPage() {
               className="group overflow-hidden rounded-[2rem] border border-black/10 bg-white/90 shadow-[0_24px_45px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_30px_70px_rgba(15,23,42,0.12)]"
             >
               <a href={`/destinations/${slug}`} className="block">
-                <div className="h-52 w-full overflow-hidden bg-stone-100 sm:h-60">
-                  <img src={destination.image} alt={destination.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">
+                  <Image
+                    src={destination.image}
+                    alt={destination.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                    className="object-cover object-center transition duration-700 group-hover:scale-105"
+                  />
                 </div>
                 <div className="p-6">
                   <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/80">{destination.season}</p>
