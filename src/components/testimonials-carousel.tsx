@@ -44,17 +44,17 @@ export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps
       scroller.scrollBy({ left: cardWidth + cardGap, behavior: "smooth" });
     };
 
-    const intervalId = window.setInterval(step, 2000);
+    const intervalId = window.setInterval(step, 3000);
 
     return () => window.clearInterval(intervalId);
   }, [testimonials.length]);
 
   return (
-    <div ref={scrollerRef} className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]">
+    <div ref={scrollerRef} role="region" aria-label="Testimonials" className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]">
       {testimonials.map((story, index) => (
         <article
           key={`${story.name}-${index}`}
-          className="w-[20rem] shrink-0 snap-start rounded-[1.75rem] border-4 border-[#fcc000] bg-white p-6 shadow-[0_22px_40px_rgba(15,23,42,0.08)] sm:w-[22rem]"
+          className="w-[22rem] shrink-0 snap-start rounded-[1.75rem] border border-stone-200 bg-white p-6 shadow-[0_18px_40px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_30px_70px_rgba(15,23,42,0.12)] sm:w-[24rem]"
         >
           <div className="mb-4 flex items-center gap-3">
             <Image
