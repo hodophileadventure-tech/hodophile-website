@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
 
 import { PageShell } from "@/components/page-shell";
 import { TourLanding } from "@/components/tour-landing";
@@ -9,13 +10,14 @@ type Props = { params: { slug: string } };
 
 const packages: Record<
   string,
-  { title: string; duration: string; image: string; description: string; content: JSX.Element }
+  { title: string; duration: string; image: string; description: string; content: ReactNode; price?: string }
 > = {
   "swat-kalam-4days": {
     title: "Swat & Kalam — 4 Days",
     duration: "4 Days / 3 Nights",
     image: "/images/honeymoon/swat-kalam.jpg",
     description: "Experience Swat Valley and Kalam with Mahodand Lake and Ushu Forest excursions.",
+    price: "PKR 120,000",
     content: (
       <>
         <h2 className="mt-6 text-xl font-semibold">Tour Overview</h2>
@@ -62,6 +64,7 @@ const packages: Record<
     duration: "4 Days / 3 Nights",
     image: "/images/honeymoon/naran-babusar.jpg",
     description: "A romantic route through Kaghan Valley with Saif-ul-Malook and Babusar Top highlights.",
+    price: "PKR 120,000",
     content: (
       <>
         <h2 className="mt-6 text-xl font-semibold">Tour Overview</h2>
@@ -105,6 +108,7 @@ const packages: Record<
     duration: "5 Days / 4 Nights",
     image: "/images/honeymoon/kashmir-arangkel.jpg",
     description: "Neelum Valley journey to Kel and Arang Kel with hill-meadow stays and riverside views.",
+    price: "PKR 150,000",
     content: (
       <>
         <h2 className="mt-6 text-xl font-semibold">Tour Overview</h2>
@@ -177,8 +181,12 @@ export default function PackagePage({ params }: Props) {
         ctaLabel="Request This Package"
       />
 
-      <article className="mt-8 rounded-[1.5rem] border border-stone-200 bg-white p-8">
+      <div className="mt-6 flex items-center gap-4">
+        <p className="rounded-full bg-[#fff8df] px-4 py-2 text-sm font-semibold text-[#8d6500]">Starting from {pkg.price}</p>
         <p className="text-sm text-stone-500">{pkg.duration}</p>
+      </div>
+
+      <article className="mt-8 rounded-[1.5rem] border border-stone-200 bg-white p-8">
         <div className="prose max-w-none mt-4 text-stone-700">{pkg.content}</div>
       </article>
     </PageShell>

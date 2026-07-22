@@ -26,6 +26,7 @@ const honeymoonPackages = [
     name: "Swat & Kalam — 4 Days",
     duration: "4 Days / 3 Nights",
     detail: "Ushu forests, Mahodand Lake excursion, and relaxed valley pacing.",
+    price: "PKR 120,000",
     image: "/images/honeymoon/swat-kalam.jpg",
   },
   {
@@ -33,6 +34,7 @@ const honeymoonPackages = [
     name: "Naran & Babusar — 4 Days",
     duration: "4 Days / 3 Nights",
     detail: "Kaghan Valley highlights: Saif-ul-Malook, Lulusar, and Babusar Top.",
+    price: "PKR 120,000",
     image: "/images/honeymoon/naran-babusar.jpg",
   },
   {
@@ -40,6 +42,7 @@ const honeymoonPackages = [
     name: "Kashmir Arang Kel — 5 Days",
     duration: "5 Days / 4 Nights",
     detail: "Neelum Valley route to Kel and the hill-meadow of Arang Kel.",
+    price: "PKR 150,000",
     image: "/images/honeymoon/kashmir-arangkel.jpg",
   },
 ];
@@ -70,7 +73,10 @@ export default function HoneymoonPackagesPage() {
               />
             </div>
             <div className="p-6">
-              <p className="text-xs uppercase tracking-[0.3em] text-[#fcc000]">{item.duration}</p>
+              <div className="flex items-baseline justify-between">
+                <p className="text-xs uppercase tracking-[0.3em] text-[#fcc000]">{item.duration}</p>
+                <p className="text-sm font-semibold text-stone-900">{item.price}</p>
+              </div>
               <h2 className="mt-3 text-2xl font-semibold">{item.name}</h2>
               <p className="mt-3 text-sm leading-7 text-stone-600">{item.detail}</p>
             </div>
