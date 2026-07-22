@@ -5,7 +5,7 @@ import { PageShell } from "@/components/page-shell";
 import { TourLanding } from "@/components/tour-landing";
 import { absoluteUrl } from "@/lib/site";
 
-type Props = { params: { slug: string } };
+type Props = { params: Promise<{ slug: string }> };
 
 const packages: Record<
   string,
@@ -163,17 +163,19 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const pkg = packages[params.slug];
+  const { slug } = await params;
+  const pkg = packages[slug];
   if (!pkg) return {};
   return {
     title: pkg.title,
     description: pkg.description,
-    alternates: { canonical: `/honeymoon-packages/${params.slug}` },
-    openGraph: { title: pkg.title, description: pkg.description, url: absoluteUrl(`/honeymoon-packages/${params.slug}`) },
+    alternates: { canonical: `/honeymoon-packages/${slug}` },
+    openGraph: { title: pkg.title, description: pkg.description, url: absoluteUrl(`/honeymoon-packages/${slug}`) },
   };
 }
 
-function getContent(slug: string) {
+// Render content inline to avoid component complexity during build
+const renderContent = (slug: string) => {
   switch (slug) {
     case "swat-kalam-4days":
       return <SwatKalamContent />;
@@ -184,11 +186,14 @@ function getContent(slug: string) {
     default:
       return null;
   }
-}
+};
 
-export default function PackagePage({ params }: Props) {
-  const pkg = packages[params.slug];
-  if (!pkg) notFound();
+export default async function PackagePage({ params }: Props) {
+  const { slug } = await params;
+  const pkg = packages[slug];
+  if (!pkg) {
+    notFound();
+  }
 
   return (
     <PageShell wide>
@@ -208,7 +213,7 @@ export default function PackagePage({ params }: Props) {
       </div>
 
       <article className="mt-8 rounded-[1.5rem] border border-stone-200 bg-white p-8">
-        <div className="prose max-w-none mt-4 text-stone-700">{getContent(params.slug)}</div>
+        <div className="prose max-w-none mt-4 text-stone-700">{renderContent(slug)}</div>
       </article>
     </PageShell>
   );
