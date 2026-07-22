@@ -89,7 +89,7 @@ export function HeroSlideshow() {
         <span className="inline-flex rounded-full border border-[#fcc000]/40 bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-[#8a6400] shadow-lg shadow-black/10 backdrop-blur">
           {activeSlide.label}
         </span>
-        <h1 className="mt-8 max-w-4xl font-display text-5xl font-semibold italic tracking-tight text-[#fcc000] drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)] sm:text-6xl lg:text-7xl">
+        <h1 className="mt-8 max-w-4xl font-serif text-5xl font-semibold italic tracking-tight text-[#fcc000] drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)] sm:text-6xl lg:text-7xl">
           {activeSlide.headline}
         </h1>
         <p className="mt-6 max-w-2xl text-base leading-7 text-white/90 sm:text-lg">

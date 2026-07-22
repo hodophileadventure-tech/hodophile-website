@@ -54,7 +54,7 @@ export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps
       {testimonials.map((story, index) => (
         <article
           key={`${story.name}-${index}`}
-          className="w-[20rem] shrink-0 snap-start rounded-2xl border-4 border-[#fcc000] bg-stone-50 p-5 sm:w-[22rem]"
+          className="w-[20rem] shrink-0 snap-start rounded-[1.75rem] border-4 border-[#fcc000] bg-white p-6 shadow-[0_22px_40px_rgba(15,23,42,0.08)] sm:w-[22rem]"
         >
           <div className="mb-4 flex items-center gap-3">
             <Image

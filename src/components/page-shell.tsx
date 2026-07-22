@@ -14,17 +14,17 @@ export function PageShell({ children, wide = false }: PageShellProps) {
   const mainPaddingClass = wide ? "px-4 md:px-6 lg:px-10 xl:px-14" : "px-4 md:px-6 lg:px-8";
 
   return (
-    <div className="min-h-screen bg-[#f7f6f2] text-stone-900">
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(252,192,0,0.08),transparent_18%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.06),transparent_16%),#f7f6f2] text-stone-900">
+      <div className="mx-auto max-w-[96rem]">
         <SiteHeader />
       </div>
 
-      <main className={`mx-auto ${shellWidthClass} pb-12 pt-24 ${mainPaddingClass}`}>
+      <main className={`mx-auto ${shellWidthClass} pb-20 pt-28 ${mainPaddingClass}`}>
         {children}
       </main>
 
-      <footer className="border-t border-[#d5a700] bg-[#ffc000]">
-        <div className="mx-auto max-w-[96rem] grid gap-10 px-4 py-10 md:grid-cols-2 xl:grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] lg:px-10 xl:px-14">
+      <footer className="border-t border-black/10 bg-[#fff8df]">
+        <div className="mx-auto max-w-[96rem] grid gap-10 px-4 py-12 md:grid-cols-2 xl:grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] lg:px-10 xl:px-14">
           <div className="max-w-2xl">
             <h3 className="text-2xl font-semibold text-black">Corporate Head Office</h3>
             <div className="mt-4 grid gap-1 text-sm leading-7 text-black/90">
@@ -105,7 +105,7 @@ export function PageShell({ children, wide = false }: PageShellProps) {
 
           <div className="xl:pl-4 flex flex-col items-center">
             <h3 className="text-2xl font-semibold uppercase text-black text-center">Customer Service</h3>
-            <div className="mt-5 overflow-hidden rounded-2xl bg-[#ffd24d] p-3">
+            <div className="mt-5 overflow-hidden rounded-3xl bg-[#fff5c2] p-4">
               <Image
                 src="/images/footer/service-24-7.png"
                 alt="24/7 customer service"

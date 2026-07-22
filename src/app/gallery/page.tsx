@@ -43,14 +43,15 @@ export default function GalleryPage() {
 
       <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {galleryImages.map((image) => (
-          <article key={image.src} className="overflow-hidden rounded-[2rem] border border-black/10 bg-white/80 backdrop-blur">
-            <div className="relative aspect-[4/3]">
-              <Image src={image.src} alt={image.alt} fill sizes="(max-width: 1280px) 50vw, 33vw" className="object-cover" />
+          <article key={image.src} className="group overflow-hidden rounded-[2rem] border border-black/10 bg-white/95 shadow-[0_22px_50px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_28px_60px_rgba(15,23,42,0.12)]">
+            <div className="relative aspect-[4/3] overflow-hidden">
+              <Image src={image.src} alt={image.alt} fill sizes="(max-width: 1280px) 50vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
             </div>
-            <div className="p-5">
+            <div className="p-6">
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#fcc000]/75">
                 {image.caption}
               </p>
+              <div className="mt-3 h-1.5 w-20 rounded-full bg-[#fcc000]/40" />
             </div>
           </article>
         ))}

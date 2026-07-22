@@ -156,7 +156,9 @@ export function SiteHeader() {
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 border-b-4 border-[#fcc000] bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)]"
+      className={`fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-white/95 backdrop-blur-xl transition duration-300 ${
+        scrolled ? "shadow-[0_20px_55px_rgba(15,23,42,0.16)]" : "shadow-[0_12px_36px_rgba(15,23,42,0.08)]"
+      }`}
     >
       <div className="mx-auto max-w-[96rem]">
         <div
@@ -220,7 +222,7 @@ export function SiteHeader() {
       </div>
 
       {mobileOpen ? (
-        <div className="border-t border-stone-200 bg-[#fbfaf7] px-6 pb-6 pt-4 shadow-[0_18px_40px_rgba(15,23,42,0.08)] lg:hidden">
+        <div className="border-t border-stone-200 bg-white/95 px-6 pb-6 pt-4 shadow-[0_18px_40px_rgba(15,23,42,0.08)] lg:hidden">
           <nav className="grid gap-3">
             {navigation.map((item) => (
               item.href === "/tours" ? (

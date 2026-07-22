@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { formatPKR } from "@/lib/currency";
+import { PageShell } from "@/components/page-shell";
 
 function QuotationEditContent() {
   const searchParams = useSearchParams();
@@ -379,8 +380,10 @@ function QuotationEditContent() {
 
 export default function QuotationEditPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>}>
-      <QuotationEditContent />
-    </Suspense>
+    <PageShell wide>
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>}>
+        <QuotationEditContent />
+      </Suspense>
+    </PageShell>
   );
 }

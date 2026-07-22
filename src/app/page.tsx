@@ -291,9 +291,9 @@ export default function Home() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {serviceHighlights.map((item) => (
-            <article key={item.title} className="rounded-2xl border-4 border-[#fcc000] bg-white p-6 shadow-sm">
-              <div className="h-11 w-11 overflow-hidden rounded-full border border-stone-200 bg-stone-100">
-                <img src={item.icon} alt={item.title} width={44} height={44} className="h-full w-full object-cover" />
+            <article key={item.title} className="rounded-[1.75rem] border-4 border-[#fcc000] bg-white p-6 shadow-[0_18px_35px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5">
+              <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-stone-200 bg-stone-100">
+                <img src={item.icon} alt={item.title} width={48} height={48} className="h-full w-full object-cover" />
               </div>
               <h3 className="mt-5 text-xl font-semibold">{item.title}</h3>
               <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>

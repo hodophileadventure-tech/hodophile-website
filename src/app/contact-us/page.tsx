@@ -30,15 +30,30 @@ export default function ContactUsPage() {
         description="Connect with our planning team for domestic Pakistan departures, route suggestions, and tailored itinerary support."
       />
 
-      <section className="mt-12 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
-        <div className="space-y-6">
-          <h2 className="max-w-2xl font-serif text-3xl font-semibold tracking-tight sm:text-4xl">
+      <section className="mt-12 grid gap-8 lg:grid-cols-[0.95fr_1.05fr] mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
+        <div className="space-y-6 rounded-[2rem] border border-black/10 bg-white/95 p-8 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+          <span className="inline-flex rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-4 py-2 text-sm font-medium text-[#8a6a12] uppercase tracking-[0.3em]">
+            Get in touch
+          </span>
+          <h2 className="max-w-2xl font-serif text-3xl font-semibold tracking-tight text-stone-950 sm:text-4xl">
             Speak with a travel advisor.
           </h2>
-          <div className="space-y-4 text-sm text-stone-600">
-            <p>{siteConfig.email}</p>
-            <p>{siteConfig.phone}</p>
-            <p>{siteConfig.location}</p>
+          <p className="max-w-2xl text-base leading-8 text-stone-600">
+            Our planning team is ready to answer your route questions, suggest the best seasons, and tailor a domestic Pakistan itinerary for your group.
+          </p>
+          <div className="grid gap-4 text-sm text-stone-600 sm:grid-cols-2">
+            <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
+              <p className="text-sm font-semibold text-stone-900">Email</p>
+              <p className="mt-2">{siteConfig.email}</p>
+            </div>
+            <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
+              <p className="text-sm font-semibold text-stone-900">Call</p>
+              <p className="mt-2">{siteConfig.phone}</p>
+            </div>
+          </div>
+          <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5 text-sm text-stone-600">
+            <p className="font-semibold text-stone-900">Office</p>
+            <p className="mt-2">{siteConfig.location}</p>
           </div>
         </div>
 

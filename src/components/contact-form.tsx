@@ -115,7 +115,7 @@ export function ContactForm() {
           value={formData.message}
           onChange={handleChange}
           placeholder="Tell us your destination, travel dates, and number of travelers."
-          className="min-h-40 rounded-2xl border border-black/10 bg-white px-4 py-3 text-stone-900 outline-none ring-0 placeholder:text-stone-500 focus:border-[#fcc000]/50"
+          className="min-h-[12rem] rounded-2xl border border-black/10 bg-white px-4 py-3 text-stone-900 outline-none ring-0 placeholder:text-stone-500 focus:border-[#fcc000]/50"
         />
       </label>
 
@@ -134,7 +134,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={loading}
-        className="mt-6 inline-flex rounded-full border border-[#fcc000]/40 bg-[#fcc000] px-6 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="mt-6 inline-flex rounded-full border border-[#fcc000]/40 bg-[#fcc000] px-6 py-3 text-sm font-semibold text-black shadow-sm transition hover:-translate-y-0.5 hover:bg-[#ffd24d] disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? "Sending..." : "Send inquiry"}
       </button>

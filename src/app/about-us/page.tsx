@@ -43,16 +43,16 @@ export default function AboutUsPage() {
           </p>
         </div>
 
-        <div className="rounded-[2rem] border-4 border-[#fcc000] bg-white/80 p-6 shadow-sm backdrop-blur">
-          <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/80">What we handle</p>
-          <div className="mt-4 grid gap-4 text-sm text-stone-600">
-            <div className="rounded-2xl border-4 border-[#fcc000] bg-white p-4">
+        <div className="rounded-[2.25rem] border border-black/10 bg-white/95 p-8 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
+          <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/90">What we handle</p>
+          <div className="mt-5 grid gap-4 text-sm text-stone-600">
+            <div className="rounded-[1.75rem] border border-stone-200 bg-[#fff9e5] p-5">
               <span className="font-semibold text-stone-900">Route planning:</span> Pakistan tour combinations, trip lengths, and destination order.
             </div>
-            <div className="rounded-2xl border-4 border-[#fcc000] bg-white p-4">
+            <div className="rounded-[1.75rem] border border-stone-200 bg-[#fff9e5] p-5">
               <span className="font-semibold text-stone-900">Transport:</span> private cars, SUVs, cabins, and coaster options based on group size.
             </div>
-            <div className="rounded-2xl border-4 border-[#fcc000] bg-white p-4">
+            <div className="rounded-[1.75rem] border border-stone-200 bg-[#fff9e5] p-5">
               <span className="font-semibold text-stone-900">Hotels and stays:</span> city-wise hotel selection and room planning for each stop.
             </div>
           </div>

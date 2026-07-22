@@ -18,7 +18,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+  viewport: 'width=device-width, initial-scale=1',
   metadataBase: new URL(siteConfig.siteUrl),
   title: {
     default: siteConfig.name,
@@ -85,7 +85,7 @@ export default function RootLayout({
       lang="en"
       className={`${poppins.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#f6f1e1] text-stone-900">
+      <body className="min-h-full flex flex-col bg-[#f7f6f2] text-stone-900">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

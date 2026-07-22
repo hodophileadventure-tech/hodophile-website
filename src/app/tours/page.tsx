@@ -35,16 +35,16 @@ export default function ToursPage() {
         {featuredPackages.map((trip) => (
           <article
             key={trip.name}
-            className="flex h-full flex-col rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur"
+            className="flex h-full flex-col rounded-[2rem] border border-black/10 bg-white/90 p-6 shadow-[0_24px_45px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_30px_70px_rgba(15,23,42,0.12)]"
           >
             <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/75">{trip.duration}</p>
-            <h2 className="mt-4 text-2xl font-semibold">{trip.name}</h2>
-            <p className="mt-3 text-sm leading-6 text-stone-600">{trip.description}</p>
+            <h2 className="mt-4 text-2xl font-semibold tracking-tight text-stone-950">{trip.name}</h2>
+            <p className="mt-3 text-sm leading-7 text-stone-600">{trip.description}</p>
             <div className="mt-6 flex flex-wrap gap-2">
               {trip.highlights.map((item) => (
                 <span
                   key={item}
-                  className="rounded-full border border-[#fcc000]/20 bg-[#fcc000]/10 px-3 py-1 text-xs text-[#fcc000]"
+                  className="rounded-full border border-[#fcc000]/30 bg-[#fff6d2] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#8a6800]"
                 >
                   {item}
                 </span>
@@ -67,16 +67,16 @@ export default function ToursPage() {
 
         <div className="mt-7 grid gap-5 lg:grid-cols-2">
           {tourMenu.map((group) => (
-            <article key={group.href} className="rounded-2xl border border-stone-200 bg-stone-50 p-5">
-              <Link href={group.href} className="text-lg font-semibold text-stone-900 transition hover:text-[#0b0b0b]">
+            <article key={group.href} className="rounded-[1.75rem] border border-stone-200 bg-white/90 p-6 shadow-[0_18px_40px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_24px_55px_rgba(15,23,42,0.1)]">
+              <Link href={group.href} className="text-lg font-semibold text-stone-950 transition hover:text-[#0b0b0b]">
                 {group.label}
               </Link>
-              <div className="mt-4 grid gap-2">
+              <div className="mt-5 grid gap-3">
                 {group.items.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-[#ffc000] hover:bg-[#fff9e8]"
+                    className="rounded-[1.5rem] border border-stone-200 bg-[#fffdf7] px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-[#ffc000]/60 hover:bg-[#fff8e5]"
                   >
                     {item.label}
                   </Link>

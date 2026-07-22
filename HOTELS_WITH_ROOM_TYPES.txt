@@ -1,53 +1,970 @@
-Skardu Dera Lamsa
-  - Lamsa Executive Room
-  - Dera Deluxe Room
-  - Dera Family Suite
-  - Heritage Villa
+HODOPHILE - HOTELS WITH ROOM TYPES AND PRICES
+Generated: June 24, 2026
+================================================================================
 
-Hispar Hotel Skardu
-  - Standard
-  - Deluxe
-  - Deluxe Family
-  - Deluxe Plus
-  - Deluxe Family Plus
+================================================================================
+ASTORE
+================================================================================
 
-Khoj Hotel Skardu
-  - River Edge King Hammock Villa
-  - River View Loft Villa
-  - River View Family Villa
-  - River Edge Loft Hammock Villa
 
-Khar Hotel Skardu
-  - Twin Master
-  - Master
+================================================================================
+CHILAS
+================================================================================
 
-IFQ Premier Skardu
-  - Standard
-  - Deluxe
+Sun Rise Hotel Chilas
+-----------------------
+Room Types:
 
-Qayam Hotels Skardu
-  - Deluxe
-  - Executive
-  - Fort Rooms
+  Standard Room
+    Price: PKR 5,000
 
-Maple Resort Skardu
-  - Executive Hut
-  - Premium Chalet
-  - Deluxe Rooms
+
+================================================================================
+FAIRY MEADOWS
+================================================================================
+
+Hotel Gateway
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 5,000
+
+Hotel Raikot Serai
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 5,000
+
+Hotel Shambala
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 5,000
+
+
+================================================================================
+HUNZA
+================================================================================
+
+Al-Barakaat Hotel Hunza
+-----------------------
+Room Types:
+
+  Single Bed (1 Person, Breakfast, WiFi)
+    Price: PKR 5,000
+
+  Double Room (1 Master, Breakfast, WiFi)
+    Price: PKR 6,000
+
+  Twin Bed (2 Singles, Breakfast, WiFi)
+    Price: PKR 6,000
+
+  Deluxe Room (1 Master + 1 Single, Breakfast, WiFi)
+    Price: PKR 8,000
+
+Farme Resort Hunza
+-----------------------
+Room Types:
+
+  Standard Room (Double)
+    Occupancy-Based Prices:
+      • Double: PKR 12,000
+
+  Standard Room (Triple)
+    Occupancy-Based Prices:
+      • Triple: PKR 14,000
+
+  Deluxe Balcony Room (Double)
+    Occupancy-Based Prices:
+      • Double: PKR 20,000
+
+  Deluxe Balcony Room (Triple)
+    Occupancy-Based Prices:
+      • Triple: PKR 23,000
+
+  Deluxe Terrace Room (Double)
+    Occupancy-Based Prices:
+      • Double: PKR 25,000
+
+  Deluxe Terrace Room (Triple)
+    Occupancy-Based Prices:
+      • Triple: PKR 28,000
+
+  Panoramic Room (Double)
+    Occupancy-Based Prices:
+      • Double: PKR 30,000
+
+  Panoramic Room (Triple)
+    Occupancy-Based Prices:
+      • Triple: PKR 35,000
+
+  Junior Suite (Double)
+    Occupancy-Based Prices:
+      • Double: PKR 35,000
+
+  Junior Suite (Triple)
+    Occupancy-Based Prices:
+      • Triple: PKR 38,000
+
+  Junior Suite (Quad)
+    Occupancy-Based Prices:
+      • Quad: PKR 41,000
+
+  Penthouse Suite (Double)
+    Occupancy-Based Prices:
+      • Double: PKR 50,000
+
+  Penthouse Suite (Quad)
+    Occupancy-Based Prices:
+      • Quad: PKR 60,000
+
+  Presidential Suite (Double)
+    Occupancy-Based Prices:
+      • Double: PKR 55,000
+
+  Presidential Suite (Quad)
+    Occupancy-Based Prices:
+      • Quad: PKR 65,000
+
+Hermes Hotel Hunza
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 8,500
+
+  Deluxe
+    Price: PKR 13,500
+
+Hunza Bliss
+-----------------------
+Room Types:
+
+  Standard Room (1 Master + 1 Sofa Bed)
+    Price: PKR 8,000
+
+  Standard Triple (1 Master + 1 Single Bed)
+    Price: PKR 8,500
+
+  Standard Family (2 Master + 1 Single Bed)
+    Price: PKR 10,500
+
+  Deluxe Room (1 Master + 1 Sofa Bed)
+    Price: PKR 11,500
+
+  Deluxe Triple (1 Master + 1 Single Bed)
+    Price: PKR 12,000
+
+  Deluxe Family (2 Master + 1 Single Bed)
+    Price: PKR 14,000
+
+  Deluxe Family Suite (2 Splendid Large Size Rooms, upto 7-9 persons)
+    Price: PKR 20,000
+
+  Executive Family Room (2 King-Sized Master Beds + 1 Sofa Bed, Mountain View)
+    Price: PKR 18,500
+
+  Executive Family Suite (2 Splendid Large Rooms, 2 Private Washrooms, Upto 9-10 persons)
+    Price: PKR 35,500
+
+Mulberry Hotel Hunza
+-----------------------
+Room Types:
+
+  Deluxe
+    Price: PKR 16,500
+
+  Executive
+    Price: PKR 19,500
+
+  Family Hut
+    Price: PKR 38,500
+
+Offto Resort Hunza
+-----------------------
+Seasons:
+  • low: Jan - May, Oct - Dec
+  • high: Jun - September
+
+Room Types:
+
+  1 Chalet Bedroom
+    Price Range: PKR 22,000 - 27,000
+
+  2 Chalet Bedroom
+    Price Range: PKR 43,000 - 53,000
+
+  3 Chalet Villa
+    Price Range: PKR 81,000 - 86,000
+    Extra Mattress: PKR 3,000
+
+  Orchard Hut 1 Bed
+    Price Range: PKR 19,000 - 23,000
+
+  Orchard Hut 2 Bed
+    Price Range: PKR 33,000 - 45,000
+
+Qayam Hotels Hunza
+-----------------------
+Room Types:
+
+  Standard (Double)
+    Price Range: PKR 8,000 - 9,500
+
+  Standard (Triple)
+    Price Range: PKR 10,500 - 11,000
+
+  Deluxe
+    Price Range: PKR 10,500 - 12,500
+
+  Executive (Double)
+    Price Range: PKR 12,000 - 14,500
+
+  Executive (Triple)
+    Price Range: PKR 15,000 - 16,500
+
+The Consorts Resort Hunza
+-----------------------
+Room Types:
+
+  Deluxe
+    Price: PKR 25,000
+
+  Contemporary With Balcony
+    Price: PKR 35,000
+
+  Exclusive With Infinity View & Balcony
+    Price: PKR 45,000
+
+
+================================================================================
+ISLAMABAD
+================================================================================
+
+Grand Hotel Islamabad
+-----------------------
+Room Types:
+
+  Standard Room (+tax)
+    Price: PKR 18,000
+
+  Deluxe Room (+tax)
+    Price: PKR 20,000
+
+  Executive Room (+tax)
+    Price: PKR 22,000
+
+  Family Room (+tax)
+    Price: PKR 24,000
+
+Hotel Index Islamabad
+-----------------------
+Room Types:
+
+  Standard Master
+    Price: PKR 6,500
+
+  Standard Triple
+    Price: PKR 7,000
+
+  Standard Quad
+    Price: PKR 7,500
+
+  Standard Penta
+    Price: PKR 8,500
+
+Hotel Redline Islamabad
+-----------------------
+Room Types:
+
+  Standard Single
+    Price: PKR 7,000
+
+  Standard Double
+    Price: PKR 9,360
+
+  Standard Triple
+    Price: PKR 11,700
+
+
+================================================================================
+KASHMIR
+================================================================================
+
+Arangkel Wanderlust Resort
+-----------------------
+Seasons:
+  • low: Mar - May, Sep - Dec
+  • high: Jun - Aug
+
+Room Types:
+
+  Rustic Cottage Room
+    Price Range: PKR 5,999 - 8,999
+
+  Standard Room
+    Price Range: PKR 7,999 - 12,999
+
+  Deluxe Room (Heating +2500)
+    Price Range: PKR 8,999 - 13,999
+
+  Family Room (Heating +2500)
+    Price Range: PKR 10,999 - 15,999
+
+  Executive Room (Heating +2500)
+    Price Range: PKR 12,999 - 19,999
+
+Arangkel Wanderlust Resort (Second Hotel)
+-----------------------
+Seasons:
+  • low: Mar - May, Sep - Dec
+  • high: Jun - Aug
+
+Room Types:
+
+  Cozy Room
+    Price Range: PKR 7,999 - 10,999
+
+  Cozy View Room
+    Price Range: PKR 8,999 - 13,999
+
+  Deluxe Room (Heating +2500)
+    Price Range: PKR 10,999 - 14,999
+
+  Executive Room (Heating +2500)
+    Price Range: PKR 12,999 - 19,999
+
+Corner Cottage Arangkel
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 7,000
+
+  Deluxe
+    Price: PKR 8,500
+
+  Executive
+    Price: PKR 9,500
+
+Corner View Cottage Taobat
+-----------------------
+Room Types:
+
+  Standard Room
+    Price: PKR 8,500
+
+  Deluxe Room
+    Price: PKR 10,500
+
+Ibex Cottage Keran
+-----------------------
+Room Types:
+
+  Standard Room
+    Price: PKR 8,000
+
+  Deluxe Room
+    Price: PKR 9,800
+
+Keran Resort Kashmir
+-----------------------
+Room Types:
+
+  Standard Room
+    Price: PKR 8,500
+
+  Executive Room
+    Price: PKR 11,000
+
+Semari Resort Kashmir
+-----------------------
+Room Types:
+
+  Camps
+    Price: PKR 15,000
+
+  Huts
+    Price: PKR 27,000
+
+  Cottages
+    Price: PKR 34,000
+
+Sharda Lodge
+-----------------------
+Room Types:
+
+  River Facing Room
+    Price: PKR 7,500
+
+  Standard View Room
+    Price: PKR 6,500
+
+Shangrila Taobat
+-----------------------
+Room Types:
+
+  Standard Cottage
+    Price: PKR 9,000
+
+  Deluxe Cottage
+    Price: PKR 12,000
+
+Timber Resort Keran Kashmir
+-----------------------
+Room Types:
+
+  Standard Room (Building, max 2 persons)
+    Price: PKR 5,000
+
+  Deluxe Room (Building)
+    Price: PKR 12,000
+
+  Resort 1-B/2-B/3-B
+    Price: PKR 20,000
+
+  Resort 1-A/2-A/3-A/4-A/5-A
+    Price Range: PKR 30,000 - 35,000
+
+
+================================================================================
+KHAPLU
+================================================================================
+
+North Palace Khaplu
+-----------------------
+Room Types:
+
+  Budget Suite
+    Price: PKR 5,999
+
+  Deluxe Suite
+    Price: PKR 15,000
+
+  Premium Suite
+    Price: PKR 29,999
+
+
+================================================================================
+NARAN
+================================================================================
+
+Hotel Mount Feast Naran
+-----------------------
+Room Types:
+
+  Deluxe w/o balcony
+    Price: PKR 13,000
+
+  Deluxe with balcony
+    Price: PKR 14,500
+
+  Executive room
+    Price: PKR 18,500
+
+  Executive addon
+    Price: PKR 20,000
+
+  Triplet room
+    Price: PKR 20,000
+
+  Quad room
+    Price: PKR 24,000
+
+  Family room
+    Price: PKR 26,000
+
+  Presidential Suite
+    Price: PKR 44,000
+
+  Executive Suite
+    Price: PKR 35,000
+
+Kings Inn Naran
+-----------------------
+Room Types:
+
+  Standard Room
+    Price: PKR 7,000
+
+Riviera Resort Naran
+-----------------------
+Seasons:
+  • low: May, Aug - Nov
+  • high: Jun - Aug
+
+Room Types:
+
+  Standard Room (1 Master Bed, Breakfast)
+    Price Range: PKR 10,000 - 15,000
+
+  Master Suite (1 Bed, Living Room, Terrace, Breakfast)
+    Price Range: PKR 25,000 - 30,000
+
+  Family Deluxe Room River View (1 Master + 1 Single, Terrace, Breakfast)
+    Price Range: PKR 18,000 - 22,000
+
+  Family Deluxe Room Mountain View (1 Master + 1 Single, Terrace, Breakfast)
+    Price Range: PKR 15,000 - 20,000
+
+  VIP Deluxe Room River View (1 Master + 1 Single + 4 Person Sitting, Spacious, Terrace, Breakfast)
+    Price Range: PKR 22,000 - 27,000
+
+  Royal Suite/Apartment River View (2 Bed Rooms, Lounge with 12 Sofa Seats, 10 Seater Dining Table, Terrace, Breakfast)
+    Price Range: PKR 40,000 - 55,000
+
+  VIP Suite/Apartment Mountain View (3 Bed Rooms, Lounge with 12 Sofa Seats, 10 Seater Dining Table, Terrace, Breakfast)
+    Price Range: PKR 45,000 - 60,000
+
+  Executive Suite/Apartment River View (3 Bed Rooms, Lounge with 14 Sofa Seats, 12 Seater Dining Table, Terrace, Breakfast)
+    Price Range: PKR 55,000 - 70,000
+
+Swiss Wood Cottages Naran
+-----------------------
+Seasons:
+  • low: May, Sep - Oct
+  • high: Jun - Aug
+
+Room Types:
+
+  Master Bed (2 persons, Breakfast included)
+    Price Range: PKR 10,500 - 21,000
+
+  Triple Bed (3 persons, Breakfast included)
+    Price Range: PKR 11,500 - 22,000
+
+  Four Bed (4 persons, Breakfast included)
+    Price Range: PKR 12,500 - 24,000
+
+  Suite Room (7 persons, Breakfast included)
+    Price Range: PKR 17,500 - 32,000
+
+
+================================================================================
+NATHIA GALI
+================================================================================
+
+Nathia Lodge
+-----------------------
+Room Types:
+
+  Ground Floor
+    Price: PKR 15,000
+
+  First Floor Family Deluxe
+    Price: PKR 18,500
+
+  Second Floor Family Premium
+    Price: PKR 30,000
+
+  Full Lodge
+    Price: PKR 45,000
+
+Snowline Residence
+-----------------------
+Room Types:
+
+  Deluxe Suite (3 persons)
+    Price: PKR 15,000
+    Extra Mattress: PKR 1,500
+
+  Luxury Suite (3 persons)
+    Price: PKR 22,000
+    Extra Mattress: PKR 1,500
+
+  Executive Suite (5 persons)
+    Price: PKR 35,000
+    Extra Mattress: PKR 1,500
+
+  Deluxe Suite Plus (5 persons)
+    Price: PKR 20,000
+    Extra Mattress: PKR 1,500
+
+
+================================================================================
+SHOGRAN
+================================================================================
+
+Spruce Resort Khanian
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 13,500
+
+  Luxury Family
+    Price: PKR 39,500
+
+  Presidential Suite
+    Price: PKR 65,500
+
+Spruce Resort Shogran
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 13,000
+
+  Deluxe
+    Price: PKR 17,000
+
+  Luxury Suite
+    Price: PKR 52,000
+
+
+================================================================================
+SKARDU
+================================================================================
+
+Abbashah Hotel Skardu
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 5,000
+
+Dream Land Hotel Skardu
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 5,000
+
+Gumaan Resort Skardu
+-----------------------
+Seasons:
+  • peak: June - September
+  • off: September - December
+
+Room Types:
+
+  Deluxe Hut
+    Price: PKR 26,000
+
+  Executive Hut
+    Price: PKR 30,000
+
+  Presidential Suite
+    Price: PKR 39,000
+
+  Family Suite
+    Price: PKR 45,000
 
 Himmel Hotel Skardu
-  - Standard
-  - Deluxe
-  - Riverfront Chalet
-  - Royal Suite
-  - Riverfront Villa
-  - Penthouse
+-----------------------
+Seasons:
+  • peak: May 24 - Sep 15
+  • blossom: Apr 1 - May 23
+
+Room Types:
+
+  Standard
+    Seasonal Prices:
+      • Peak: PKR 25,000
+      • Blossom: PKR 20,000
+
+  Deluxe
+    Seasonal Prices:
+      • Peak: PKR 38,000
+      • Blossom: PKR 32,000
+
+  Riverfront Chalet
+    Seasonal Prices:
+      • Peak: PKR 49,000
+      • Blossom: PKR 44,000
+
+  Royal Suite
+    Seasonal Prices:
+      • Peak: PKR 43,000
+      • Blossom: PKR 39,000
+
+  Riverfront Villa
+    Seasonal Prices:
+      • Peak: PKR 115,000
+      • Blossom: PKR 95,000
+
+  Penthouse
+    Seasonal Prices:
+      • Peak: PKR 125,000
+      • Blossom: PKR 110,000
+
+Hispar Hotel Skardu
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 12,000
+
+  Deluxe
+    Price: PKR 16,000
+
+  Deluxe Family
+    Price: PKR 16,000
+
+  Deluxe Plus
+    Price: PKR 18,000
+
+  Deluxe Family Plus
+    Price: PKR 18,000
+
+IFQ Premier Skardu
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 20,000
+
+  Deluxe
+    Price: PKR 25,000
+
+Khar Hotel Skardu
+-----------------------
+Room Types:
+
+  Twin Master
+    Seasonal Prices:
+      • Peak: PKR 35,000
+      • Off-season: PKR 35,000
+
+  Master
+    Seasonal Prices:
+      • Peak: PKR 32,500
+      • Off-season: PKR 32,500
+
+Khoj Hotel Skardu
+-----------------------
+Seasons:
+  • peak: May - September
+  • off: September - February
+
+Room Types:
+
+  River Edge King Hammock Villa
+    Price Range: PKR 42,000 - 52,000
+
+  River View Loft Villa
+    Price Range: PKR 38,000 - 48,000
+
+  River View Family Villa
+    Price Range: PKR 38,000 - 48,000
+
+  River Edge Loft Hammock Villa
+    Price Range: PKR 47,000 - 57,000
+
+Maple Resort Skardu
+-----------------------
+Room Types:
+
+  Executive Hut
+    Price: PKR 24,999
+
+  Premium Chalet
+    Price: PKR 34,999
+
+  Deluxe Rooms
+    Price: PKR 26,500
+
+Mountain View Hotel Skardu
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 5,000
+
+Qayam Hotels Skardu
+-----------------------
+Room Types:
+
+  Deluxe
+    Price Range: PKR 16,000 - 27,000
+
+  Executive
+    Price Range: PKR 20,000 - 30,000
+
+  Fort Rooms
+    Price Range: PKR 21,000 - 34,500
+
+Rockview Hotel Skardu
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 5,000
 
 Shangrila Resort Skardu
-  - Mountain View Room
-  - Lake Side Junior Room
-  - Shangrila View Room
-  - Lake Side Room
+-----------------------
+Room Types:
+
+  Mountain View Room
+    Price: PKR 18,000
+
+  Lake Side Junior Room
+    Price: PKR 35,000
+
+  Shangrila View Room
+    Price: PKR 40,000
+
+  Lake Side Room
+    Price: PKR 50,000
+
+  Lake Side Deluxe Room
+    Price: PKR 55,000
+
+  Family Room
+    Price: PKR 60,000
+
+  Executive Suite
+    Price: PKR 65,000
+
+  Swiss Cottage
+    Price: PKR 75,000
+
+  Swiss Villa
+    Price: PKR 110,000
+
+  2 Bedroom Suite
+    Price: PKR 125,000
+
+  3 Bedroom Suite
+    Price: PKR 155,000
+
+  Shangrila Chalet
+    Price: PKR 210,000
+
+Skardu Dera Lamsa
+-----------------------
+Seasons:
+  • peak: June - September
+  • blossom: March - May
+  • off: August - February
+
+Room Types:
+
+  Lamsa Executive Room
+    Seasonal Prices:
+      • Peak: PKR 35,000
+      • Blossom: PKR 26,999
+      • Off-season: PKR 21,850
+
+  Dera Deluxe Room
+    Seasonal Prices:
+      • Peak: PKR 30,000
+      • Blossom: PKR 22,500
+      • Off-season: PKR 19,500
+
+  Dera Family Suite
+    Seasonal Prices:
+      • Peak: PKR 55,000
+      • Blossom: PKR 35,999
+      • Off-season: PKR 31,999
+
+  Heritage Villa
+    Seasonal Prices:
+      • Peak: PKR 79,900
+      • Blossom: PKR 60,999
+      • Off-season: PKR 45,999
+
+
+================================================================================
+SWAT
+================================================================================
+
+Blue Ocean Kalam
+-----------------------
+Room Types:
+
+  Couple
+    Price: PKR 6,000
+
+  Standard
+    Price: PKR 7,500
+
+  Executive
+    Price: PKR 10,500
+
+  Suite
+    Price: PKR 18,000
+
+Bulj Al Swat Hotel
+-----------------------
+Room Types:
+
+  Standard Room
+    Price: PKR 15,500
+
+  Deluxe Room
+    Price: PKR 22,000
+
+  Superior Deluxe with Jacuzzi
+    Price: PKR 32,000
+
+Eagle Nest Swat
+-----------------------
+Room Types:
+
+  Standard
+    Price: PKR 5,000
+
+  Deluxe
+    Price: PKR 7,000
+
+Kuwait Continental Swat
+-----------------------
+Room Types:
+
+  Budget Room
+    Price: PKR 5,999
+
+  Standard
+    Price: PKR 11,999
+
+  Deluxe
+    Price: PKR 13,999
+
+  Family Deluxe
+    Price: PKR 14,999
+
+  Presidential
+    Price: PKR 17,999
+
+Swat Palace Hotel
+-----------------------
+Room Types:
+
+  Deluxe Twin
+    Price: PKR 14,500
+
+  Executive King
+    Price: PKR 16,500
+
+  Presidential Suite
+    Price: PKR 30,000
+
+
+================================================================================
+SUMMARY STATISTICS
+================================================================================
+
+Total Cities: 13
+Total Hotels: 67
+Total Room Types: 352
+
+Cities:
+  • Astore: 0 hotels
+  • Chilas: 1 hotel
+  • Fairy Meadows: 3 hotels
+  • Hunza: 7 hotels
+  • Islamabad: 3 hotels
+  • Kashmir: 10 hotels
+  • Khaplu: 1 hotel
+  • Naran: 4 hotels
+  • Nathia Gali: 2 hotels
+  • Shogran: 2 hotels
+  • Skardu: 12 hotels
+  • Swat: 5 hotels
   - Lake Side Deluxe Room
   - Family Room
   - Executive Suite

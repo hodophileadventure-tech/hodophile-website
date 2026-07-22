@@ -23,15 +23,14 @@ export default function BlogPage() {
   return (
     <PageShell wide>
       <section className="space-y-6">
-        <span className="inline-flex rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-4 py-2 text-sm font-medium text-[#fcc000]">
+        <span className="inline-flex rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-4 py-2 text-sm font-medium text-[#8a6a12] uppercase tracking-[0.28em]">
           Travel blog
         </span>
-        <h1 className="max-w-3xl font-serif text-4xl font-semibold tracking-tight sm:text-5xl">
+        <h1 className="max-w-3xl font-serif text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
           SEO-friendly articles that support destination pages and answer real traveler questions.
         </h1>
         <p className="max-w-2xl text-lg leading-8 text-stone-600">
-          These starter articles can be turned into full posts later. For now, they give the site
-          authority, fresh indexable content, and a route for long-tail search traffic.
+          These starter articles can be turned into full posts later. For now, they give the site authority, fresh indexable content, and a route for long-tail search traffic.
         </p>
       </section>
 
@@ -40,14 +39,14 @@ export default function BlogPage() {
           <Link
             key={post.title}
             href={`/blogs/${post.slug}`}
-            className="rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur"
+            className="group rounded-[2rem] border border-black/10 bg-white/95 p-6 shadow-[0_22px_50px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_28px_60px_rgba(15,23,42,0.12)]"
           >
             <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/75">{post.category}</p>
-            <h2 className="mt-4 text-2xl font-semibold">{post.title}</h2>
-            <p className="mt-3 text-sm leading-6 text-stone-600">{post.excerpt}</p>
+            <h2 className="mt-4 text-2xl font-semibold tracking-tight text-stone-950">{post.title}</h2>
+            <p className="mt-3 text-sm leading-7 text-stone-600">{post.excerpt}</p>
             <div className="mt-5 flex flex-wrap gap-2">
               {post.destinations.map((destination) => (
-                <span key={destination} className="rounded-full border border-[#fcc000]/30 bg-[#fcc000]/10 px-3 py-1 text-xs font-medium text-[#8a6a12]">
+                <span key={destination} className="rounded-full border border-[#fcc000]/30 bg-[#fff4cc] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#8a6a12]">
                   {destination}
                 </span>
               ))}

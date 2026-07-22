@@ -47,12 +47,12 @@ export default function HotelsGalleryPage() {
       <section className="mt-12 space-y-20">
         {hotelCities.map((city) => (
           <section key={city} className="space-y-8">
-            <div className="flex items-center justify-between gap-4 border-b border-stone-200 pb-4">
+            <div className="flex flex-col gap-4 border-b border-stone-200 pb-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <span className="text-sm font-semibold uppercase tracking-[0.3em] text-[#fcc000]/90">{city}</span>
                 <h2 className="mt-3 text-3xl font-semibold tracking-tight text-stone-900">{city} hotels</h2>
               </div>
-              <span className="rounded-full border border-stone-300 bg-stone-100 px-3 py-1 text-sm font-medium text-stone-700">
+              <span className="inline-flex rounded-full border border-stone-300 bg-stone-100 px-4 py-2 text-sm font-semibold text-stone-700">
                 {hotels.filter((hotel) => hotel.city === city).length} hotels
               </span>
             </div>
@@ -64,7 +64,7 @@ export default function HotelsGalleryPage() {
                   const hotelImage = hotel.image || hotel.rooms.find((room) => room.image)?.image || fallbackImage;
 
                   return (
-                    <article key={hotel.id} className="overflow-hidden rounded-[2rem] border border-black/10 bg-white/80 shadow-sm">
+                    <article key={hotel.id} className="overflow-hidden rounded-[2rem] border border-black/10 bg-white/95 shadow-[0_22px_50px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_28px_60px_rgba(15,23,42,0.12)]">
                       <div className="grid gap-6 p-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)] lg:items-start">
                         <div className="space-y-4">
                           <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] bg-stone-100">
@@ -79,7 +79,7 @@ export default function HotelsGalleryPage() {
                           </div>
                           <div className="space-y-2">
                             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#fcc000]/85">{hotel.city}</p>
-                            <h3 className="text-2xl font-semibold text-stone-900">{hotel.name}</h3>
+                            <h3 className="text-2xl font-semibold text-stone-950">{hotel.name}</h3>
                             {hotel.seasons ? (
                               <p className="max-w-2xl text-sm leading-7 text-stone-600">
                                 {Object.entries(hotel.seasons)
@@ -98,7 +98,7 @@ export default function HotelsGalleryPage() {
                               const priceLabel = formatPrice(room);
 
                               return (
-                                <div key={room.name} className="overflow-hidden rounded-[1.75rem] border border-stone-200 bg-stone-50 shadow-sm transition-shadow duration-200 hover:shadow-lg">
+                                <div key={room.name} className="overflow-hidden rounded-[1.75rem] border border-stone-200 bg-stone-50 shadow-sm transition duration-200 hover:shadow-[0_25px_60px_rgba(15,23,42,0.12)]">
                                   <div className="relative aspect-[4/3] overflow-hidden bg-stone-100">
                                     <Image
                                       src={roomImage}
@@ -110,7 +110,7 @@ export default function HotelsGalleryPage() {
                                     />
                                   </div>
                                   <div className="p-4">
-                                    <h4 className="text-base font-semibold text-stone-900">{room.name}</h4>
+                                    <h4 className="text-base font-semibold text-stone-950">{room.name}</h4>
                                     {priceLabel ? (
                                       <p className="mt-2 text-sm text-stone-600">{priceLabel}</p>
                                     ) : (
