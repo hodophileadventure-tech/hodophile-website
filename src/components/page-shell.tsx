@@ -107,7 +107,7 @@ export function PageShell({ children, wide = false }: PageShellProps) {
             <h3 className="text-2xl font-semibold uppercase text-black text-center">Customer Service</h3>
             <div className="mt-5 overflow-hidden rounded-3xl bg-[#fff5c2] p-4">
               <Image
-                src="/images/footer/service-24-7.png"
+                src="/images/footer/service-24-7-new.png"
                 alt="24/7 customer service"
                 width={520}
                 height={400}
@@ -150,7 +150,7 @@ export function PageShell({ children, wide = false }: PageShellProps) {
             <h3 className="text-2xl font-semibold uppercase text-black text-center">100% Satisfaction</h3>
             <div className="mt-5 overflow-hidden rounded-2xl bg-[#ffd24d] p-3">
               <Image
-                src="/images/footer/guarantee.png"
+                src="/images/footer/guarantee-new.png"
                 alt="100 percent satisfaction guaranteed"
                 width={520}
                 height={460}
