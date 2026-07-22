@@ -9,7 +9,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const require = createRequire(import.meta.url);
 
-let hotels: any = [];
+type Hotel = {
+  city: string;
+  name: string;
+  seasons?: Record<string, string>;
+  rooms: Array<Record<string, any>>;
+};
+
+let hotels: Hotel[] = [];
 
 try {
   const hotelsPath = path.join(__dirname, '../src/lib/data/hotels.ts');
