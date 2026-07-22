@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 
 import { PageShell } from "@/components/page-shell";
-import { TourLanding } from "@/components/tour-landing";
 import { absoluteUrl } from "@/lib/site";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -197,24 +198,95 @@ export default async function PackagePage({ params }: Props) {
 
   return (
     <PageShell wide>
-      <TourLanding
-        eyebrow="Honeymoon Package"
-        title={pkg.title}
-        description={pkg.description}
-        image={pkg.image}
-        highlights={["Romantic pacing", "Private options", "Route support"]}
-        ctaHref="/make-my-trip"
-        ctaLabel="Request This Package"
-      />
+      {/* Hero Section */}
+      <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+        <div className="relative min-h-[62vh] md:min-h-[68vh]">
+          <Image
+            src={pkg.image}
+            alt={pkg.title}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,11,11,0.22)_0%,rgba(11,11,11,0.72)_100%)]" />
 
-      <div className="mt-6 flex items-center gap-4">
-        <p className="rounded-full bg-[#fff8df] px-4 py-2 text-sm font-semibold text-[#8d6500]">Starting from {pkg.price}</p>
-        <p className="text-sm text-stone-500">{pkg.duration}</p>
-      </div>
+          <div className="relative z-10 mx-auto flex min-h-[62vh] max-w-[96rem] flex-col justify-end px-4 pb-12 pt-24 text-white md:min-h-[68vh] md:px-6 lg:px-10 xl:px-14">
+            <p className="text-xs uppercase tracking-[0.34em] text-white/75">Honeymoon Package</p>
+            <h1 className="mt-3 max-w-4xl font-serif text-4xl leading-tight sm:text-5xl lg:text-6xl">
+              {pkg.title}
+            </h1>
+            <p className="mt-5 max-w-3xl text-sm leading-7 text-white/85 sm:text-base">
+              {pkg.description}
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <article className="mt-8 rounded-[1.5rem] border border-stone-200 bg-white p-8">
-        <div className="prose max-w-none mt-4 text-stone-700">{renderContent(slug)}</div>
-      </article>
+      {/* Two Column Layout */}
+      <section className="mt-12 grid gap-8 lg:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)] xl:gap-12">
+        {/* Sidebar */}
+        <aside className="lg:sticky lg:top-28 lg:self-start">
+          <div className="rounded-[2rem] border border-stone-200 bg-white p-3 shadow-[0_12px_36px_rgba(15,23,42,0.08)]">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-stone-100">
+              <Image
+                src={pkg.image}
+                alt={`${pkg.title} poster`}
+                fill
+                sizes="(max-width: 1024px) 100vw, 24rem"
+                className="absolute inset-0 h-full w-full object-cover object-center"
+              />
+            </div>
+          </div>
+
+          <div className="mt-5 rounded-[1.5rem] border border-stone-200 bg-white p-5 shadow-sm">
+            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Package Details</p>
+            <p className="mt-3 font-serif text-3xl text-stone-900">{pkg.duration}</p>
+            <p className="mt-3 text-2xl font-bold text-[#9c7600]">{pkg.price}</p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {["Romantic pacing", "Private options", "Route support"].map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-[#fcc000]/20 bg-[#fcc000]/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.16em] text-[#9c7600]"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/make-my-trip"
+                className="inline-flex rounded-full bg-[#0b0b0b] px-5 py-3 text-sm font-semibold !text-white transition hover:bg-black"
+              >
+                Request This Package
+              </Link>
+              <Link
+                href="/honeymoon-packages"
+                className="inline-flex rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-800 transition hover:border-stone-400 hover:text-stone-900"
+              >
+                Back to Packages
+              </Link>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <div>
+          <div className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8">
+            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Itinerary</p>
+            <h2 className="mt-3 font-serif text-3xl text-stone-900">Day Wise Plan For This Route</h2>
+
+            <div className="mt-8">
+              <details className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5 shadow-sm" open>
+                <summary className="cursor-pointer text-lg font-semibold text-stone-900">Tour Details</summary>
+                <div className="prose max-w-none mt-5 text-stone-700">
+                  {renderContent(slug)}
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
     </PageShell>
   );
 }
