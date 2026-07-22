@@ -16,6 +16,8 @@ const packages: Record<
     image: string;
     description: string;
     price?: string;
+    overview?: string;
+    attractions?: string[];
     includes?: string[];
     excluded?: string[];
     bookingPolicy?: string[];
@@ -30,6 +32,15 @@ const packages: Record<
     image: "/images/honeymoon/swat-kalam.jpg",
     description: "Experience Swat Valley and Kalam with Mahodand Lake and Ushu Forest excursions.",
     price: "PKR 120,000",
+    overview: "Experience the breathtaking beauty of Swat Valley and Kalam: alpine forests, clear rivers, and relaxed valley rhythms. This 4-day route is paced for couples wanting scenic drives, short hikes, and intimate mountain moments. Stay in comfortable hotels, explore meadows and lakes by 4x4, and witness sunsets from elevated vantage points.",
+    attractions: [
+      "Mahodand Lake",
+      "Ushu Forest",
+      "Kalam Valley",
+      "Fizagat Park",
+      "Madyan",
+      "River walks",
+    ],
     includes: [
       "Hotel accommodations on sharing basis",
       "Luxury transport",
@@ -97,6 +108,15 @@ const packages: Record<
     image: "/images/honeymoon/naran-babusar.jpg",
     description: "A romantic route through Kaghan Valley with Saif-ul-Malook and Babusar Top highlights.",
     price: "PKR 120,000",
+    overview: "Escape to Kaghan Valley's dramatic alpine landscape: sweeping mountain passes, high-altitude lakes, and breathtaking viewpoints. This journey balances scenic drives with gentle hiking, perfect for couples seeking adventure without excessive exertion. Experience changing elevations, diverse vegetation, and mountain culture in four transformative days.",
+    attractions: [
+      "Saif-ul-Malook Lake",
+      "Babusar Top",
+      "Lulusar Lake",
+      "Kunhar River",
+      "Batakundi",
+      "Alpine meadows",
+    ],
     includes: [
       "Hotel accommodations on sharing basis",
       "Luxury transport",
@@ -164,6 +184,15 @@ const packages: Record<
     image: "/images/honeymoon/kashmir-arangkel.jpg",
     description: "Neelum Valley journey to Kel and Arang Kel with hill-meadow stays and riverside views.",
     price: "PKR 150,000",
+    overview: "Discover Azad Kashmir's hidden gem: Neelum Valley's terraced meadows, pine forests, and the enchanting cliff-hugging village of Arang Kel. This five-day journey combines scenic drives with a rewarding hike to pristine highland meadows. Experience local hospitality, riverside camps, and the raw beauty of the Himalayas at the border's edge.",
+    attractions: [
+      "Arang Kel meadows",
+      "Neelum Valley",
+      "Kel village",
+      "Sharda ruins",
+      "Kohala Bridge",
+      "Cable car crossing",
+    ],
     includes: [
       "Hotel accommodations on sharing basis",
       "Luxury transport",
@@ -477,6 +506,30 @@ export default async function PackagePage({ params }: Props) {
         {/* Main Content */}
         <div>
           <div className="grid gap-6">
+            <div className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8">
+              <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Overview</p>
+              <h2 className="mt-3 font-serif text-3xl text-stone-900">What to expect</h2>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-600">
+                {pkg.overview ?? pkg.description}
+              </p>
+
+              {pkg.attractions?.length ? (
+                <div className="mt-8">
+                  <p className="text-sm font-semibold text-stone-900">Tour Attractions</p>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    {pkg.attractions.map((item) => (
+                      <span
+                        key={item}
+                        className="inline-flex items-center gap-2 rounded-full border border-[#fcc000]/30 bg-[#fff8df] px-3 py-2 text-sm text-stone-800"
+                      >
+                        <span className="flex h-2.5 w-2.5 rounded-full bg-[#fcc000]" />
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </div>
             <div className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8">
               <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Itinerary</p>
               <h2 className="mt-3 font-serif text-3xl text-stone-900">Day Wise Plan For This Route</h2>
