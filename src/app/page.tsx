@@ -136,7 +136,7 @@ export default function Home() {
     },
   ];
 
-  const heroImage = destinations[0]?.image ?? "/images/destinations/hunza.avif";
+  const heroImage = "/hero-images/zain-raza-unsplash.jpg.jpeg";
   const packageCards = featuredTourCards.map((tour) => {
     const [firstPart, rest] = tour.title.split(/,\s+(.+)/);
 
