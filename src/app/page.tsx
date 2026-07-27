@@ -373,11 +373,11 @@ export default function Home() {
       </section>
 
       <section className="mt-[6rem] relative overflow-hidden bg-[#111111]">
-        <div className="absolute inset-0 opacity-80">
+        <div className="absolute inset-0 opacity-80 overflow-hidden">
           <img
             src="/hero-images/hussain-ahmed-unsplash.jpg.jpeg"
             alt="Cinematic travel scene"
-            className="h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-black/35" />
         </div>
@@ -438,11 +438,11 @@ export default function Home() {
           <div className="absolute right-8 bottom-12 h-64 w-64 rounded-full bg-[#1a1a1a] opacity-10 blur-3xl" />
         </div>
         <div className="relative overflow-hidden rounded-[2rem] bg-[#111111] px-6 py-16 text-white sm:px-10 lg:px-16">
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 overflow-hidden">
             <img
-              src="/hero-images/obaid-awan-unsplash.jpg.jpeg"
+              src="/hero-images/zain-raza-unsplash.jpg.jpeg"
               alt="Cinematic journey background"
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_45%),linear-gradient(180deg,rgba(0,0,0,0.28),rgba(0,0,0,0.72))]" />
           </div>
