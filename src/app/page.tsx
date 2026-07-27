@@ -375,7 +375,7 @@ export default function Home() {
       <section className="mt-[6rem] relative overflow-hidden bg-[#111111]">
         <div className="absolute inset-0 opacity-80">
           <img
-            src={heroImage}
+            src="/hero-images/hussain-ahmed-unsplash.jpg.jpeg"
             alt="Cinematic travel scene"
             className="h-full w-full object-cover"
           />
