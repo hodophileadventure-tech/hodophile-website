@@ -145,12 +145,12 @@ export default function AboutUsPage() {
 
           <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] border-2 border-[#fcc000] rounded-[2rem]">
             <div className="rounded-[2rem] border border-[#fcc000]/20 bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
-              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-2xl">
-                🌍
+              <div className="flex items-center gap-4 mb-6">
+                <img src="/images/icons/about-us.png" alt="About us icon" className="h-12 w-12 object-contain" />
+                <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900">
+                  About Us
+                </h3>
               </div>
-              <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900 mb-6">
-                About Us
-              </h3>
               <div className="space-y-4 text-stone-700">
                 <p>
                   Founded in 2021 in Karachi, Hodophile Adventures is a government-licensed travel company driven by a passion for creating unforgettable journeys.
@@ -166,19 +166,19 @@ export default function AboutUsPage() {
             </div>
             <div className="space-y-6">
               <div className="rounded-[2rem] border border-[#fcc000]/20 bg-[#fff8e3] p-6 shadow-sm">
-                <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-2xl">
-                  👁️
+                <div className="flex items-center gap-3 mb-3">
+                  <img src="/images/icons/vision.png" alt="Vision icon" className="h-10 w-10 object-contain" />
+                  <h4 className="font-semibold text-stone-900">Vision</h4>
                 </div>
-                <h4 className="font-semibold text-stone-900 mb-3">Vision</h4>
                 <p className="text-stone-700">
                   To become the region's most trusted travel brand by delivering innovative, affordable, and responsible travel experiences that inspire lasting customer satisfaction.
                 </p>
               </div>
               <div className="rounded-[2rem] border border-[#fcc000]/20 bg-[#fff8e3] p-6 shadow-sm">
-                <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-2xl">
-                  🎯
+                <div className="flex items-center gap-3 mb-3">
+                  <img src="/images/icons/mission.png" alt="Mission icon" className="h-10 w-10 object-contain" />
+                  <h4 className="font-semibold text-stone-900">Mission</h4>
                 </div>
-                <h4 className="font-semibold text-stone-900 mb-3">Mission</h4>
                 <p className="text-stone-700">
                   To create unforgettable travel experiences by exceeding expectations through exceptional service, personalized journeys, and lasting relationships with every traveler.
                 </p>
@@ -187,63 +187,60 @@ export default function AboutUsPage() {
           </section>
 
           <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
-            <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-2xl">
-              ⭐
-            </div>
             <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900 mb-6">
               Why Choose Us
             </h3>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-xl">
-                  ✅
+                <div className="flex items-center gap-3 mb-2">
+                  <img src="/images/icons/quality-service.png" alt="Quality service icon" className="h-10 w-10 object-contain" />
+                  <h4 className="font-semibold text-stone-900">Quality Service</h4>
                 </div>
-                <h4 className="font-semibold text-stone-900 mb-2">Quality Service</h4>
                 <p className="text-stone-700">
                   We create personalized, hassle-free journeys tailored to your preferences, ensuring exceptional value, comfort, and memorable experiences.
                 </p>
               </div>
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-xl">
-                  🌎
+                <div className="flex items-center gap-3 mb-2">
+                  <img src="/images/icons/diverse-experiences.png" alt="Diverse experiences icon" className="h-10 w-10 object-contain" />
+                  <h4 className="font-semibold text-stone-900">Diverse Experiences</h4>
                 </div>
-                <h4 className="font-semibold text-stone-900 mb-2">Diverse Experiences</h4>
                 <p className="text-stone-700">
                   From the majestic mountains of Hunza and Skardu to the serene beaches of Balochistan, we offer unique tours, camping adventures, and authentic cultural experiences across Pakistan.
                 </p>
               </div>
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-xl">
-                  💰
+                <div className="flex items-center gap-3 mb-2">
+                  <img src="/images/icons/transparent-pricing.png" alt="Transparent pricing icon" className="h-10 w-10 object-contain" />
+                  <h4 className="font-semibold text-stone-900">Transparent Pricing</h4>
                 </div>
-                <h4 className="font-semibold text-stone-900 mb-2">Transparent Pricing</h4>
                 <p className="text-stone-700">
                   Enjoy competitive prices with no hidden charges. Every inclusion and cost is clearly communicated before you book.
                 </p>
               </div>
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-xl">
-                  🍃
+                <div className="flex items-center gap-3 mb-2">
+                  <img src="/images/icons/sustainable-tourism.png" alt="Sustainable tourism icon" className="h-10 w-10 object-contain" />
+                  <h4 className="font-semibold text-stone-900">Sustainable Tourism</h4>
                 </div>
-                <h4 className="font-semibold text-stone-900 mb-2">Sustainable Tourism</h4>
                 <p className="text-stone-700">
                   We promote responsible travel by supporting local communities, preserving cultural heritage, protecting nature, and encouraging sustainable tourism practices.
                 </p>
               </div>
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-xl">
-                  📋
+                <div className="flex items-center gap-3 mb-2">
+                  <img src="/images/icons/attention-to-detail.png" alt="Attention to detail icon" className="h-10 w-10 object-contain" />
+                  <h4 className="font-semibold text-stone-900">Attention to Detail</h4>
                 </div>
-                <h4 className="font-semibold text-stone-900 mb-2">Attention to Detail</h4>
                 <p className="text-stone-700">
                   From carefully planned itineraries and timely schedules to weather monitoring and budget management, every detail is thoughtfully handled.
                 </p>
               </div>
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-xl">
-                  🧭
+                <div className="flex items-center gap-3 mb-2">
+                  <img src="/images/icons/professional-tour-guide.png" alt="Professional tour guides icon" className="h-10 w-10 object-contain" />
+                  <h4 className="font-semibold text-stone-900">Professional Tour Guides</h4>
                 </div>
-                <h4 className="font-semibold text-stone-900 mb-2">Professional Tour Guides</h4>
                 <p className="text-stone-700">
                   Our experienced bilingual guides combine local expertise, historical knowledge, and professional service to make every journey informative, safe, and enjoyable.
                 </p>
@@ -257,10 +254,10 @@ export default function AboutUsPage() {
             </h3>
             <div className="space-y-8 text-stone-700">
               <div>
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-xl">
-                  🎫
+                <div className="flex items-center gap-3 mb-3">
+                  <img src="/images/icons/loyalty-card.png" alt="Loyalty card icon" className="h-10 w-10 object-contain" />
+                  <h4 className="font-semibold text-stone-900">Pakistan's First Travel Loyalty Card</h4>
                 </div>
-                <h4 className="font-semibold text-stone-900 mb-3">Pakistan's First Travel Loyalty Card</h4>
                 <p className="mb-3">
                   We are proud to introduce Pakistan's first-ever travel Loyalty Card, designed to reward our valued travelers with exclusive benefits, exciting gifts, and special discounts on future adventures.
                 </p>
@@ -270,10 +267,10 @@ export default function AboutUsPage() {
               </div>
 
               <div className="rounded-3xl bg-stone-50 p-6 border border-stone-200">
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-xl">
-                  🏆
+                <div className="flex items-center gap-3 mb-4">
+                  <img src="/images/icons/exclusive-rewards.png" alt="Exclusive loyalty rewards icon" className="h-10 w-10 object-contain" />
+                  <h5 className="font-semibold text-stone-900">Exclusive Loyalty Rewards</h5>
                 </div>
-                <h5 className="font-semibold text-stone-900 mb-4">Exclusive Loyalty Rewards</h5>
                 <p className="text-sm text-stone-700 mb-4">
                   Our Loyalty Program rewards your continued trust with exciting discounts and benefits on every adventure.
                 </p>
@@ -298,10 +295,10 @@ export default function AboutUsPage() {
               </div>
 
               <div>
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000] text-white text-xl">
-                  🎒
+                <div className="flex items-center gap-3 mb-3">
+                  <img src="/images/icons/travel-kit.png" alt="Travel kit icon" className="h-10 w-10 object-contain" />
+                  <h4 className="font-semibold text-stone-900">Complimentary Travel Kit</h4>
                 </div>
-                <h4 className="font-semibold text-stone-900 mb-3">Complimentary Travel Kit</h4>
                 <p>
                   We take care of the little details that make your journey comfortable. Our specially designed Travel Kit includes essential items to help you travel with ease so you can spend more time enjoying your destination.
                 </p>
@@ -382,12 +379,12 @@ export default function AboutUsPage() {
               </div>
             </div>
 
-            <div className="mt-10 overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-white shadow-[0_40px_80px_-40px_rgba(252,192,0,0.45)] h-screen max-h-screen">
-              <div className="relative h-full overflow-hidden">
+            <div className="mt-10 overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-white shadow-[0_40px_80px_-40px_rgba(252,192,0,0.45)]">
+              <div className="relative overflow-hidden">
                 <img
                   src="/images/editorial/about-us-hierarchy.png"
                   alt="Team hierarchy chart"
-                  className="w-full h-full object-contain transition-transform duration-500 ease-out hover:scale-[1.02]"
+                  className="w-full h-auto object-cover transition-transform duration-500 ease-out hover:scale-[1.02]"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
               </div>
