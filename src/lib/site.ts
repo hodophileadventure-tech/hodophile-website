@@ -137,7 +137,7 @@ export type Destination = {
 export const destinations: Destination[] = [
   {
     name: "Hunza",
-    image: "/images/destinations/hunza-custom.jpg",
+    image: "/images/destinations/hunza-whatsapp.jpg.jpeg",
     description: "Terraced valleys, dramatic peaks, and heritage villages for scenic slow travel.",
     season: "May to October",
     duration: "6 Days",
