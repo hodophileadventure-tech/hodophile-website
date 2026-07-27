@@ -438,7 +438,14 @@ export default function Home() {
           <div className="absolute right-8 bottom-12 h-64 w-64 rounded-full bg-[#1a1a1a] opacity-10 blur-3xl" />
         </div>
         <div className="relative overflow-hidden rounded-[2rem] bg-[#111111] px-6 py-16 text-white sm:px-10 lg:px-16">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_45%),linear-gradient(180deg,rgba(0,0,0,0.28),rgba(0,0,0,0.72))]" />
+          <div className="absolute inset-0">
+            <img
+              src="/hero-images/obaid-awan-unsplash.jpg.jpeg"
+              alt="Cinematic journey background"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_45%),linear-gradient(180deg,rgba(0,0,0,0.28),rgba(0,0,0,0.72))]" />
+          </div>
           <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-10 text-center">
             <p className="text-xs uppercase tracking-[0.3em] text-[#f7e4a3]">Cinematic Journeys</p>
             <h2 className="max-w-3xl text-4xl font-serif leading-tight text-white sm:text-5xl">
