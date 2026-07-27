@@ -118,88 +118,6 @@ export default function AboutUsPage() {
           </p>
         </div>
 
-        <section className="mb-12 rounded-[2rem] border border-[#fcc000]/20 bg-[#fff8e3] p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.55)]">
-          <div className="mb-8">
-            <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900">
-              Our Team
-            </h3>
-            <p className="mt-4 max-w-3xl text-stone-700">
-              Our leadership and specialist teams work together to make every journey smooth, safe, and unforgettable.
-            </p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">CEO</p>
-              <p className="mt-3 text-2xl font-semibold text-stone-900">Sana Masood</p>
-              <p className="mt-3 text-stone-700">Leading our vision for safe and inspiring travel across Pakistan.</p>
-            </div>
-            <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Managing Director</p>
-              <p className="mt-3 text-2xl font-semibold text-stone-900">Masood Ahmed</p>
-              <p className="mt-3 text-stone-700">Driving operational excellence and ensuring our service delivery runs smoothly.</p>
-            </div>
-            <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Director Corporate</p>
-              <p className="mt-3 text-2xl font-semibold text-stone-900">Israr Ahmed Siddiqui</p>
-              <p className="mt-3 text-stone-700">Strengthening corporate relationships and planning better business travel.</p>
-            </div>
-            <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">HR & Admin</p>
-              <p className="mt-3 text-2xl font-semibold text-stone-900">Yashar Ahmed Siddiqui</p>
-              <p className="mt-3 text-stone-700">Supporting our people and coordinating the team behind every tour.</p>
-            </div>
-            <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Floor Manager</p>
-              <p className="mt-3 text-2xl font-semibold text-stone-900">Mamoon</p>
-              <p className="mt-3 text-stone-700">Coordinating ground operations so every tour stays organized.</p>
-            </div>
-            <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Manager Operations</p>
-              <p className="mt-3 text-2xl font-semibold text-stone-900">Maaz Ahmed Siddiqui</p>
-              <p className="mt-3 text-stone-700">Overseeing logistics and ensuring every itinerary is delivered effectively.</p>
-            </div>
-            <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Software Engineer</p>
-              <p className="mt-3 text-2xl font-semibold text-stone-900">Qasim Ateeque</p>
-              <p className="mt-3 text-stone-700">Building systems that keep our services reliable and responsive.</p>
-            </div>
-            <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Social Media Marketing Executive</p>
-              <p className="mt-3 text-2xl font-semibold text-stone-900">Areeba Siddique</p>
-              <p className="mt-3 text-stone-700">Sharing our travel stories and inspiring more people to explore Pakistan.</p>
-            </div>
-            <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-              <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Video Editor</p>
-              <p className="mt-3 text-2xl font-semibold text-stone-900">Sameer Khan</p>
-              <p className="mt-3 text-stone-700">Transforming our tours into visuals that reflect the true spirit of travel.</p>
-            </div>
-            <div className="lg:col-span-2 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Sales Executive</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Syed Altamash Ali</p>
-                <p className="mt-3 text-stone-700">Connecting travelers to the right tour and answering every booking question.</p>
-              </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Sales Executive</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Abdullah Ahmed</p>
-                <p className="mt-3 text-stone-700">Helping travelers choose the best itinerary and supporting smooth bookings.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-10 overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-white shadow-[0_40px_80px_-40px_rgba(252,192,0,0.45)]">
-            <div className="relative overflow-hidden">
-              <img
-                src="/images/editorial/about-us-hierarchy.png"
-                alt="Team hierarchy chart"
-                className="w-full h-auto object-cover transition-transform duration-500 ease-out hover:scale-[1.02]"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-            </div>
-          </div>
-        </section>
-
         <section className="space-y-12">
           <section className="rounded-[2rem] border border-[#fcc000]/20 bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
             <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900 mb-6">
@@ -354,8 +272,89 @@ export default function AboutUsPage() {
               </div>
             </div>
           </section>
-        </section>
 
+          <section className="mb-12 rounded-[2rem] border border-[#fcc000]/20 bg-[#fff8e3] p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.55)]">
+            <div className="mb-8">
+              <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900">
+                Our Team
+              </h3>
+              <p className="mt-4 max-w-3xl text-stone-700">
+                Our leadership and specialist teams work together to make every journey smooth, safe, and unforgettable.
+              </p>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">CEO</p>
+                <p className="mt-3 text-2xl font-semibold text-stone-900">Sana Masood</p>
+                <p className="mt-3 text-stone-700">Leading our vision for safe and inspiring travel across Pakistan.</p>
+              </div>
+              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Managing Director</p>
+                <p className="mt-3 text-2xl font-semibold text-stone-900">Masood Ahmed</p>
+                <p className="mt-3 text-stone-700">Driving operational excellence and ensuring our service delivery runs smoothly.</p>
+              </div>
+              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Director Corporate</p>
+                <p className="mt-3 text-2xl font-semibold text-stone-900">Israr Ahmed Siddiqui</p>
+                <p className="mt-3 text-stone-700">Strengthening corporate relationships and planning better business travel.</p>
+              </div>
+              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">HR & Admin</p>
+                <p className="mt-3 text-2xl font-semibold text-stone-900">Yashar Ahmed Siddiqui</p>
+                <p className="mt-3 text-stone-700">Supporting our people and coordinating the team behind every tour.</p>
+              </div>
+              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Floor Manager</p>
+                <p className="mt-3 text-2xl font-semibold text-stone-900">Mamoon</p>
+                <p className="mt-3 text-stone-700">Coordinating ground operations so every tour stays organized.</p>
+              </div>
+              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Manager Operations</p>
+                <p className="mt-3 text-2xl font-semibold text-stone-900">Maaz Ahmed Siddiqui</p>
+                <p className="mt-3 text-stone-700">Overseeing logistics and ensuring every itinerary is delivered effectively.</p>
+              </div>
+              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Software Engineer</p>
+                <p className="mt-3 text-2xl font-semibold text-stone-900">Qasim Ateeque</p>
+                <p className="mt-3 text-stone-700">Building systems that keep our services reliable and responsive.</p>
+              </div>
+              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Social Media Marketing Executive</p>
+                <p className="mt-3 text-2xl font-semibold text-stone-900">Areeba Siddique</p>
+                <p className="mt-3 text-stone-700">Sharing our travel stories and inspiring more people to explore Pakistan.</p>
+              </div>
+              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Video Editor</p>
+                <p className="mt-3 text-2xl font-semibold text-stone-900">Sameer Khan</p>
+                <p className="mt-3 text-stone-700">Transforming our tours into visuals that reflect the true spirit of travel.</p>
+              </div>
+              <div className="lg:col-span-2 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Sales Executive</p>
+                  <p className="mt-3 text-2xl font-semibold text-stone-900">Syed Altamash Ali</p>
+                  <p className="mt-3 text-stone-700">Connecting travelers to the right tour and answering every booking question.</p>
+                </div>
+                <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Sales Executive</p>
+                  <p className="mt-3 text-2xl font-semibold text-stone-900">Abdullah Ahmed</p>
+                  <p className="mt-3 text-stone-700">Helping travelers choose the best itinerary and supporting smooth bookings.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-white shadow-[0_40px_80px_-40px_rgba(252,192,0,0.45)]">
+              <div className="relative overflow-hidden">
+                <img
+                  src="/images/editorial/about-us-hierarchy.png"
+                  alt="Team hierarchy chart"
+                  className="w-full h-auto object-cover transition-transform duration-500 ease-out hover:scale-[1.02]"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+              </div>
+            </div>
+          </section>
+        </section>
       </section>
     </PageShell>
   );
