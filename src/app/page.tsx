@@ -35,22 +35,32 @@ export default function Home() {
       title: "Curated Itineraries",
       description: "Thoughtfully paced routes designed for comfort, scenery, and memorable travel flow.",
       icon: "/images/icons/travel-icon.png",
+      stat: "3000+ Travellers",
     },
     {
       title: "Private Comfort",
       description: "Dedicated transport and selective stay options tailored to your travel style.",
       icon: "/images/icons/comfort.jpg",
+      stat: "98% Satisfaction",
     },
     {
       title: "Local Expertise",
       description: "Ground insights, route knowledge, and practical planning support across Pakistan.",
       icon: "/images/icons/local-expertise.png",
+      stat: "24/7 Support",
     },
     {
       title: "Seamless Support",
       description: "Responsive travel guidance before departure and throughout your journey.",
       icon: "/images/icons/support.jpg",
+      stat: "10+ Years",
     },
+  ];
+
+  const showcaseStats = [
+    { label: "3000+", caption: "Happy Travellers" },
+    { label: "120+", caption: "Tours Completed" },
+    { label: "98%", caption: "Satisfaction" },
   ];
 
   const testimonials = [
@@ -188,7 +198,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 space-y-8 w-full overflow-hidden bg-[#fbf8f2]">
+      <section className="mt-[6rem] space-y-8 w-full overflow-hidden bg-[#fbf8f2]">
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
           <div className="absolute left-[-3rem] top-10 h-72 w-72 rounded-full bg-[#f4ddb2] blur-3xl" />
           <div className="absolute right-0 top-36 h-56 w-56 rounded-full bg-[#e9dec8] blur-3xl" />
@@ -262,24 +272,46 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 rounded-3xl border-4 border-[#fcc000] bg-[#fdf8f2] shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full overflow-hidden relative">
+      <section className="mt-[6rem] overflow-hidden rounded-[2rem] bg-[#fffdfa] shadow-[0_20px_45px_rgba(15,23,42,0.06)] w-full relative">
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
           <div className="absolute left-8 top-8 h-60 w-60 rounded-full bg-[#f6e2c3] blur-3xl" />
           <div className="absolute right-8 bottom-8 h-48 w-48 rounded-full bg-[#ece2d4] blur-3xl" />
         </div>
         <div className="px-6 py-5 lg:px-8 md:py-7">
-          <div>
-            <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Featured Tours</p>
-            <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
-              <span className="text-black">Signature Tour Packages,</span>{' '}
-              <span className="text-[#fcc000]">Crafted for Comfort</span>
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
-              Compare top routes at a glance and jump directly into the package that matches your travel style.
-            </p>
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <div>
+              <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Featured Tours</p>
+              <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
+                <span className="text-black">Signature Tour Packages,</span>{' '}
+                <span className="text-[#fcc000]">Crafted for Comfort</span>
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
+                Compare top routes at a glance and jump directly into the package that matches your travel style.
+              </p>
+            </div>
+            <div className="relative overflow-hidden rounded-[2rem] bg-[#f7f3eb] shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+              <img
+                src={heroImage}
+                alt="Featured tour preview"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              <div className="absolute left-6 bottom-6 right-6 rounded-3xl border border-white/20 bg-black/25 p-6 backdrop-blur-sm">
+                <p className="text-xs uppercase tracking-[0.32em] text-white/80">Curated journeys</p>
+                <h3 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-4xl">
+                  Discover premium mountain routes with cinematic pace.
+                </h3>
+                <Link
+                  href="/tours"
+                  className="mt-6 inline-flex items-center rounded-full bg-[#fcc000] px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#0b0b0b] shadow-[0_10px_24px_rgba(255,192,0,0.18)] transition duration-200 ease-in-out hover:-translate-y-0.5"
+                >
+                  Explore tours
+                </Link>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-8 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
               <Link
                 key={tour.name}
@@ -340,7 +372,33 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 w-full overflow-hidden bg-[#f9f9f8]">
+      <section className="mt-[6rem] relative overflow-hidden bg-[#111111]">
+        <div className="absolute inset-0 opacity-80">
+          <img
+            src={heroImage}
+            alt="Cinematic travel scene"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/35" />
+        </div>
+        <div className="relative mx-auto max-w-6xl px-6 py-20 text-center lg:px-8">
+          <p className="text-xs uppercase tracking-[0.32em] font-bold text-white/75">A journey that lingers</p>
+          <h2 className="mt-4 text-4xl font-serif leading-tight text-white sm:text-5xl">
+            Travel with depth, calm, and a sense of true discovery.
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/80 sm:text-base">
+            A single cinematic moment can shape the feeling of an entire itinerary. Explore routes crafted to feel effortless and unforgettable.
+          </p>
+          <Link
+            href="/make-my-trip"
+            className="mt-10 inline-flex items-center justify-center rounded-full bg-[#fcc000] px-8 py-4 text-sm font-semibold uppercase tracking-[0.14em] text-[#0b0b0b] shadow-[0_14px_40px_rgba(255,192,0,0.2)] transition duration-200 ease-in-out hover:-translate-y-0.5"
+          >
+            Plan My Journey
+          </Link>
+        </div>
+      </section>
+
+      <section className="mt-[6rem] w-full overflow-hidden bg-[#f9f9f8]">
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
           <div className="absolute left-6 top-10 h-56 w-56 rounded-full bg-[#e8e2d8] blur-3xl" />
           <div className="absolute right-8 bottom-10 h-48 w-48 rounded-full bg-[#e7dcbf] blur-3xl" />
@@ -353,21 +411,63 @@ export default function Home() {
               <span className="text-[#fcc000]">with premium restraint.</span>
             </h2>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {serviceHighlights.map((item) => (
-            <article key={item.title} className="rounded-[1.75rem] border-4 border-[#fcc000] bg-white p-6 shadow-[0_18px_35px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5">
-              <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-stone-200 bg-stone-100">
-                <img src={item.icon} alt={item.title} width={48} height={48} className="h-full w-full object-cover" />
+            <article key={item.title} className="group overflow-hidden rounded-[2rem] border border-[#ece2d0] bg-white/95 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.09)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_28px_65px_rgba(15,23,42,0.16)]">
+              <div className="relative overflow-hidden rounded-[2rem] bg-[#fff8e6] p-6 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top_left,rgba(255,208,70,0.14),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(17,17,17,0.06),transparent_30%)] before:opacity-80">
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#fff5d2] via-[#fff0b5] to-[#fff7e2] shadow-[0_10px_25px_rgba(255,198,0,0.18)]">
+                  <img src={item.icon} alt={item.title} width={40} height={40} className="h-10 w-10 object-contain" />
+                </div>
               </div>
-              <h3 className="mt-5 text-xl font-semibold">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>
+              <div className="mt-6 flex flex-col gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.32em] text-[#9c7a00]">{item.stat}</p>
+                  <h3 className="mt-3 text-2xl font-semibold leading-tight text-black">{item.title}</h3>
+                </div>
+                <p className="text-sm leading-7 text-stone-600">{item.description}</p>
+              </div>
             </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mt-20 overflow-hidden rounded-3xl border-4 border-[#fcc000] bg-[#f7f6f4] shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full relative">
+      <section className="mt-[6rem] overflow-hidden rounded-[2rem] bg-[#f7f6f4] shadow-[0_20px_45px_rgba(15,23,42,0.06)] w-full relative">
+        <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
+          <div className="absolute left-6 top-8 h-48 w-48 rounded-full bg-[#f4e1ad] blur-3xl" />
+          <div className="absolute right-8 bottom-12 h-64 w-64 rounded-full bg-[#1a1a1a] opacity-10 blur-3xl" />
+        </div>
+        <div className="relative overflow-hidden rounded-[2rem] bg-[#111111] px-6 py-16 text-white sm:px-10 lg:px-16">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_45%),linear-gradient(180deg,rgba(0,0,0,0.28),rgba(0,0,0,0.72))]" />
+          <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-10 text-center">
+            <p className="text-xs uppercase tracking-[0.3em] text-[#f7e4a3]">Cinematic Journeys</p>
+            <h2 className="max-w-3xl text-4xl font-serif leading-tight text-white sm:text-5xl">
+              Every route becomes a moving story — made for people who travel with heart.
+            </h2>
+            <p className="max-w-2xl text-sm leading-7 text-white/75 sm:text-base">
+              A full-width showcase of the places, moments, and quiet details that turn your trip into a memory.
+            </p>
+            <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3">
+              {showcaseStats.map((stat) => (
+                <div key={stat.label} className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 shadow-[0_20px_40px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300 hover:-translate-y-1">
+                  <p className="text-4xl font-semibold uppercase tracking-[0.12em] text-white">{stat.label}</p>
+                  <p className="mt-3 text-sm uppercase tracking-[0.26em] text-[#f8e7b9]">
+                    {stat.caption}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <Link
+              href="/make-my-trip"
+              className="inline-flex items-center justify-center rounded-full bg-[#fcc000] px-10 py-4 text-sm font-semibold uppercase tracking-[0.14em] text-[#0b0b0b] shadow-[0_16px_40px_rgba(255,192,0,0.2)] transition duration-200 ease-in-out hover:-translate-y-0.5"
+            >
+              Start Your Journey
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-[6rem] overflow-hidden rounded-[2rem] bg-[#f7f6f4] shadow-[0_20px_45px_rgba(15,23,42,0.06)] w-full relative">
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
           <div className="absolute left-10 top-12 h-52 w-52 rounded-full bg-[#e5dcc8] blur-3xl" />
           <div className="absolute right-10 bottom-12 h-48 w-48 rounded-full bg-[#ede6d0] blur-3xl" />
@@ -382,7 +482,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 w-full overflow-hidden bg-[#fbf7f1]">
+      <section className="mt-[6rem] w-full overflow-hidden bg-[#fbf7f1]">
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
           <div className="absolute left-10 top-14 h-60 w-60 rounded-full bg-[#f2e3b8] blur-3xl" />
           <div className="absolute right-10 bottom-14 h-48 w-48 rounded-full bg-[#e9d8b0] blur-3xl" />

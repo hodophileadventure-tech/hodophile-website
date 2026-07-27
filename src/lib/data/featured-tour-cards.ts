@@ -123,6 +123,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
     homeImage: "/images/featured-tours/kashmir-taobat.jpg.jpeg",
     heroImage: "/images/destinations/kashmir.jpg",
     duration: "9 Days / 8 Nights",
+    priceFrom: "Rs. 37,500",
     summary: "A standard group tour from Karachi through Islamabad into Kashmir, Taobat, and Arangkel.",
     description:
       "Travel from Karachi to Kashmir on a value-focused group tour with Sharda Valley, Taobat, Arangkel, and high-altitude views along the way.",
@@ -352,6 +353,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
     homeImage: "/images/featured-tours/skardu-deosai.jpg.jpeg",
     heroImage: "/images/destinations/skardu.jpg",
     duration: "10 Days / 7 Nights",
+    priceFrom: "Rs. 39,000",
     summary: "A rugged Skardu route with Shangrila, Shigar Fort, Sarfranga Cold Desert, and Deosai.",
     description:
       "This circuit delivers the best of Skardu's dramatic landscapes, historic heritage, and the surreal Deosai plateau in one compact trip.",
@@ -549,6 +551,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
     homeImage: "/images/featured-tours/hunza-skardu-featured.png",
     heroImage: "/images/destinations/featured-skardu-hunza-2.jpg",
     duration: "12 Days / 11 Nights",
+    priceFrom: "Rs. 46,700",
     summary: "Naran, Hunza, Skardu, Shigar, and Deosai combined into a bold northern journey.",
     description:
       "Naran is the Kaghan Valley's lively heart with pine-scented air and the glacial Kunhar River. Hunza is a crown jewel of mountains and lakes. Skardu brings raw high-altitude landscapes, while Deosai delivers the legendary 'Land of Giants'.",
@@ -753,6 +756,7 @@ export const featuredTourCards: FeaturedTourCard[] = [
     homeImage: "/images/featured-tours/hunza-naltar.jpg.jpeg",
     heroImage: "/images/destinations/naltar-valley-pakistan.jpg",
     duration: "10 Days / 9 Nights",
+    priceFrom: "Rs. 39,000",
     summary: "A refreshing northern route with Naran Valley, Hunza heritage, and alpine Naltar lakes.",
     description:
       "This tour pairs Naran's highland meadows with Hunza's mountains and the blue lakes of Naltar for a balanced, scenic northern escape.",
