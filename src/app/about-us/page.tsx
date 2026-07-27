@@ -22,7 +22,7 @@ export default function AboutUsPage() {
   return (
     <PageShell wide>
       {/* Hero Section with Image */}
-      <section className="relative mt-0 mx-auto max-w-full overflow-hidden">
+      <section className="relative mt-0 mx-auto max-w-full overflow-hidden border-2 border-[#fcc000] rounded-[2rem]">
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
@@ -53,7 +53,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 py-12 lg:py-16">
+      <section className="mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 py-12 lg:py-16 border-2 border-[#fcc000] rounded-[2rem]">
         <div className="flex flex-wrap gap-8 lg:gap-12">
           <div>
             <p className="text-4xl font-bold text-[#fcc000]">1000+</p>
@@ -75,7 +75,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* Why We're Different Section */}
-      <section className="mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 py-16">
+      <section className="mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 py-16 border-2 border-[#fcc000] rounded-[2rem]">
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="rounded-2xl border-2 border-[#fcc000] bg-gradient-to-br from-[#fffbf0] to-white p-8 hover:shadow-lg transition-shadow">
             <div className="w-12 h-12 rounded-lg bg-[#fcc000] flex items-center justify-center mb-4">
@@ -104,7 +104,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* Company Profile Section */}
-      <section className="mt-8 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 pb-12">
+      <section className="mt-8 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 pb-12 border-2 border-[#fcc000] rounded-[2rem]">
         <div className="mb-12">
           <div className="inline-block mb-4 px-4 py-2 bg-[#fcc000]/10 border border-[#fcc000] rounded-full">
             <span className="text-[#fcc000] font-semibold text-sm tracking-wide uppercase">Learn More</span>
@@ -118,8 +118,8 @@ export default function AboutUsPage() {
           </p>
         </div>
 
-        <section className="space-y-12">
-          <section className="rounded-[2rem] border border-[#fcc000]/20 bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
+        <section className="space-y-12 border-2 border-[#fcc000] rounded-[2rem]">
+          <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
             <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900 mb-6">
               CEO's Message
             </h3>
@@ -143,7 +143,7 @@ export default function AboutUsPage() {
             </div>
           </section>
 
-          <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+          <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] border-2 border-[#fcc000] rounded-[2rem]">
             <div className="rounded-[2rem] border border-[#fcc000]/20 bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
               <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900 mb-6">
                 About Us
@@ -177,7 +177,7 @@ export default function AboutUsPage() {
             </div>
           </section>
 
-          <section className="rounded-[2rem] border border-[#fcc000]/20 bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
+          <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
             <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900 mb-6">
               Why Choose Us
             </h3>
@@ -221,7 +221,7 @@ export default function AboutUsPage() {
             </div>
           </section>
 
-          <section className="rounded-[2rem] border border-[#fcc000]/20 bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
+          <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
             <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900 mb-6">
               What Makes Us Unique
             </h3>
@@ -273,7 +273,7 @@ export default function AboutUsPage() {
             </div>
           </section>
 
-          <section className="mb-12 rounded-[2rem] border border-[#fcc000]/20 bg-[#fff8e3] p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.55)]">
+          <section className="mb-12 rounded-[2rem] border-2 border-[#fcc000] bg-[#fff8e3] p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.55)]">
             <div className="mb-8">
               <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900">
                 Our Team
