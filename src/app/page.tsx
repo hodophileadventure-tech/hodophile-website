@@ -168,13 +168,13 @@ export default function Home() {
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link
                   href="/make-my-trip"
-                  className="inline-flex items-center rounded-full border border-[#E67E22] bg-[#E67E22] px-6 py-3 text-sm font-semibold !text-[#0b0b0b] shadow-[0_10px_22px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-[#f19243]"
+                  className="inline-flex items-center rounded-[12px] border border-[#ffc000] bg-gradient-to-r from-[#ffd14b] via-[#ffc000] to-[#f4b700] px-8 py-3.5 text-sm font-semibold !text-[#0b0b0b] shadow-[0_14px_35px_rgba(255,192,0,0.22)] transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(255,192,0,0.28)] hover:from-[#ffe45b] hover:via-[#ffd24d] hover:to-[#f8b700]"
                 >
                   Plan My Journey
                 </Link>
                 <Link
                   href="/destinations"
-                  className="inline-flex items-center rounded-full border border-white/65 bg-black/45 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-black/60"
+                  className="inline-flex items-center rounded-[12px] border border-white/65 bg-gradient-to-r from-black/95 via-[#111111] to-[#1b1b1b] px-8 py-3.5 text-sm font-semibold text-white backdrop-blur transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(0,0,0,0.22)] hover:from-[#151515] hover:via-[#1a1a1a] hover:to-[#252525]"
                 >
                   Explore Destinations
                 </Link>
@@ -192,13 +192,13 @@ export default function Home() {
               <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Destinations</p>
               <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
                 <span className="text-black">Discover Pakistan&apos;s</span>{' '}
-                <span className="text-[#E67E22]">Most Loved Escapes</span>
+                <span className="text-[#fcc000]">Most Loved Escapes</span>
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
                 Scenic valleys, alpine lakes, and heritage routes curated for smooth, memorable journeys.
               </p>
             </div>
-          <Link href="/destinations" className="text-sm font-medium text-[#0b0b0b] transition hover:text-[#E67E22]">
+          <Link href="/destinations" className="text-sm font-medium text-[#0b0b0b] transition hover:text-[#ffc000]">
             View all destinations
           </Link>
         </div>
@@ -208,7 +208,7 @@ export default function Home() {
             <Link
               href={destinationPackageLinks[destination.name] ?? "/destinations"}
               key={destination.name}
-              className="group overflow-hidden rounded-[30px] border-4 border-[#E67E22] bg-white p-3 shadow-[0_14px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1"
+              className="group overflow-hidden rounded-[30px] border-4 border-[#fcc000] bg-white p-3 shadow-[0_14px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1"
             >
                 <div className="relative h-64 overflow-hidden rounded-2xl">
                 <img
@@ -222,8 +222,8 @@ export default function Home() {
                 <h3 className="font-serif text-[2.2rem] font-semibold leading-none">{destination.name}</h3>
                 <p className="text-[1.02rem] leading-8 text-stone-700">{destination.description}</p>
                 <div className="flex items-center justify-between border-t border-stone-200 pt-3">
-                  <p className="text-[11px] uppercase tracking-[0.24em] text-[#E67E22]">{destination.season}</p>
-                  <span className="text-sm font-medium text-[#E67E22]">{destination.duration}</span>
+                  <p className="text-[11px] uppercase tracking-[0.24em] text-[#fcc000]">{destination.season}</p>
+                  <span className="text-sm font-medium text-[#fcc000]">{destination.duration}</span>
                 </div>
               </div>
             </Link>
@@ -232,13 +232,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 rounded-3xl border-4 border-[#E67E22] bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
+      <section className="mt-20 rounded-3xl border-4 border-[#fcc000] bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
         <div className="px-6 py-5 lg:px-8 md:py-7">
           <div>
             <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Featured Tours</p>
             <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
               <span className="text-black">Signature Tour Packages,</span>{' '}
-              <span className="text-[#E67E22]">Crafted for Comfort</span>
+              <span className="text-[#fcc000]">Crafted for Comfort</span>
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
               Compare top routes at a glance and jump directly into the package that matches your travel style.
@@ -247,7 +247,7 @@ export default function Home() {
 
           <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
-              <article key={tour.name} className="overflow-hidden rounded-xl border-4 border-[#E67E22] bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
+              <article key={tour.name} className="overflow-hidden rounded-xl border-4 border-[#fcc000] bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
                 <div className="relative h-[240px] overflow-hidden bg-stone-100">
                   <img
                     src={tour.image}
@@ -269,7 +269,7 @@ export default function Home() {
                   </h3>
                   <Link
                     href={tour.href}
-                    className="inline-flex w-full items-center justify-center rounded-md bg-[#E67E22] px-5 py-3 text-sm font-semibold uppercase tracking-[0.14em] !text-black transition hover:bg-[#f19243]"
+                    className="inline-flex w-full items-center justify-center rounded-[12px] bg-gradient-to-r from-[#ffd14b] via-[#ffc000] to-[#f4b700] px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.14em] !text-black shadow-[0_14px_35px_rgba(255,192,0,0.16)] transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(255,192,0,0.24)] hover:from-[#ffe45b] hover:via-[#ffd24d] hover:to-[#f8b700]"
                   >
                     View Details
                   </Link>
@@ -286,13 +286,13 @@ export default function Home() {
             <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Why Choose Us</p>
             <h2 className="mt-3 font-serif text-4xl">
               <span className="text-black">Trustworthy planning</span>{' '}
-              <span className="text-[#E67E22]">with premium restraint.</span>
+              <span className="text-[#fcc000]">with premium restraint.</span>
             </h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {serviceHighlights.map((item) => (
-            <article key={item.title} className="rounded-[1.75rem] border-4 border-[#E67E22] bg-white p-6 shadow-[0_18px_35px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5">
-              <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-[#E67E22]/30 bg-[#fff4eb]">
+            <article key={item.title} className="rounded-[1.75rem] border-4 border-[#fcc000] bg-white p-6 shadow-[0_18px_35px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5">
+              <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-stone-200 bg-stone-100">
                 <img src={item.icon} alt={item.title} width={48} height={48} className="h-full w-full object-cover" />
               </div>
               <h3 className="mt-5 text-xl font-semibold">{item.title}</h3>
@@ -303,12 +303,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 overflow-hidden rounded-3xl border-4 border-[#E67E22] bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
+      <section className="mt-20 overflow-hidden rounded-3xl border-4 border-[#fcc000] bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
         <div className="px-6 py-8 lg:px-8">
           <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Testimonials</p>
           <h2 className="mt-3 font-serif text-4xl">
             <span className="text-black">Our clients don&apos;t just like us -</span>{' '}
-            <span className="text-[#E67E22]">they rave about us.</span>
+            <span className="text-[#fcc000]">they rave about us.</span>
           </h2>
           <TestimonialsCarousel testimonials={testimonials} />
         </div>
@@ -316,8 +316,8 @@ export default function Home() {
 
       <section className="mt-20 w-full">
         <div className="px-6 lg:px-8">
-          <h2 className="text-center font-bold text-2xl sm:text-3xl mb-6 text-black">Hodophile Adventures Provide Free <span className="text-[#E67E22]">Travel Kit</span> to Our Customers</h2>
-          <div className="mx-auto max-w-7xl rounded-3xl border-4 border-[#E67E22] bg-white overflow-hidden shadow-sm">
+          <h2 className="text-center font-bold text-2xl sm:text-3xl mb-6 text-black">Hodophile Adventures Provide Free <span className="text-[#fcc000]">Travel Kit</span> to Our Customers</h2>
+          <div className="mx-auto max-w-7xl rounded-3xl border-4 border-[#fcc000] bg-white overflow-hidden shadow-sm">
             <div className="relative bg-black">
             <video
                 src="/travel-kit.mp4"
@@ -337,10 +337,16 @@ export default function Home() {
                 Let us craft a destination experience around your style. Share your preferred route, travel month, and group details. We will curate a polished domestic itinerary with premium pacing and memorable scenic moments.
               </p>
               <div className="mt-7 flex flex-wrap justify-center gap-3">
-                <Link href="/make-my-trip" className="inline-flex rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold !text-white transition hover:bg-stone-800">
+                <Link
+                  href="/make-my-trip"
+                  className="inline-flex items-center justify-center rounded-[12px] bg-gradient-to-r from-[#111111] via-[#121212] to-[#1f1f1f] px-8 py-3.5 text-sm font-semibold !text-white shadow-[0_14px_35px_rgba(0,0,0,0.22)] transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(0,0,0,0.28)] hover:from-[#151515] hover:via-[#1b1b1b] hover:to-[#292929]"
+                >
                   Make My Trip
                 </Link>
-                <Link href="/contact-us" className="inline-flex rounded-full border border-[#E67E22] bg-[#0b0b0b] px-6 py-3 text-sm font-semibold !text-[#E67E22] shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:bg-black">
+                <Link
+                  href="/contact-us"
+                  className="inline-flex items-center justify-center rounded-[12px] border border-[#ffc000] bg-gradient-to-r from-[#0b0b0b] via-[#111111] to-[#161616] px-8 py-3.5 text-sm font-semibold !text-[#ffc000] shadow-[0_14px_35px_rgba(255,192,0,0.18)] transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(255,192,0,0.26)] hover:from-[#0d0d0d] hover:via-[#111111] hover:to-[#1c1c1c]"
+                >
                   Contact Concierge
                 </Link>
               </div>
@@ -352,7 +358,7 @@ export default function Home() {
       <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
         <Link
           href="/contact-us"
-          className="rounded-full border border-[#E67E22] bg-[#E67E22] px-5 py-3 text-sm font-medium !text-[#0b0b0b] shadow-[0_18px_40px_rgba(0,0,0,0.2)] transition hover:-translate-y-0.5 hover:bg-[#f19243]"
+          className="inline-flex items-center justify-center rounded-[12px] border border-[#ffc000] bg-gradient-to-r from-[#ffd14b] via-[#ffc000] to-[#f4b700] px-7 py-3.5 text-sm font-medium !text-[#0b0b0b] shadow-[0_14px_35px_rgba(255,192,0,0.22)] transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(255,192,0,0.28)] hover:from-[#ffe45b] hover:via-[#ffd24d] hover:to-[#f8b700]"
         >
           Contact us
         </Link>
