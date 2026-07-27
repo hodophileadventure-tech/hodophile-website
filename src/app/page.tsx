@@ -185,7 +185,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 space-y-8 w-full">
+      <section className="mt-20 space-y-8 w-full overflow-hidden bg-[#fbf8f2]">
+        <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
+          <div className="absolute left-[-3rem] top-10 h-72 w-72 rounded-full bg-[#f4ddb2] blur-3xl" />
+          <div className="absolute right-0 top-36 h-56 w-56 rounded-full bg-[#e9dec8] blur-3xl" />
+        </div>
         <div className="px-6 lg:px-8">
           <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
@@ -232,7 +236,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 rounded-3xl border-4 border-[#fcc000] bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
+      <section className="mt-20 rounded-3xl border-4 border-[#fcc000] bg-[#fdf8f2] shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full overflow-hidden relative">
+        <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
+          <div className="absolute left-8 top-8 h-60 w-60 rounded-full bg-[#f6e2c3] blur-3xl" />
+          <div className="absolute right-8 bottom-8 h-48 w-48 rounded-full bg-[#ece2d4] blur-3xl" />
+        </div>
         <div className="px-6 py-5 lg:px-8 md:py-7">
           <div>
             <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Featured Tours</p>
@@ -280,7 +288,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 w-full">
+      <section className="mt-20 w-full overflow-hidden bg-[#f9f9f8]">
+        <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
+          <div className="absolute left-6 top-10 h-56 w-56 rounded-full bg-[#e8e2d8] blur-3xl" />
+          <div className="absolute right-8 bottom-10 h-48 w-48 rounded-full bg-[#e7dcbf] blur-3xl" />
+        </div>
         <div className="px-6 lg:px-8">
           <div className="mb-8">
             <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Why Choose Us</p>
@@ -303,7 +315,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 overflow-hidden rounded-3xl border-4 border-[#fcc000] bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full">
+      <section className="mt-20 overflow-hidden rounded-3xl border-4 border-[#fcc000] bg-[#f7f6f4] shadow-[0_12px_36px_rgba(15,23,42,0.06)] w-full relative">
+        <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
+          <div className="absolute left-10 top-12 h-52 w-52 rounded-full bg-[#e5dcc8] blur-3xl" />
+          <div className="absolute right-10 bottom-12 h-48 w-48 rounded-full bg-[#ede6d0] blur-3xl" />
+        </div>
         <div className="px-6 py-8 lg:px-8">
           <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Testimonials</p>
           <h2 className="mt-3 font-serif text-4xl">
@@ -314,7 +330,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 w-full">
+      <section className="mt-20 w-full overflow-hidden bg-[#fbf7f1]">
+        <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
+          <div className="absolute left-10 top-14 h-60 w-60 rounded-full bg-[#f2e3b8] blur-3xl" />
+          <div className="absolute right-10 bottom-14 h-48 w-48 rounded-full bg-[#e9d8b0] blur-3xl" />
+        </div>
         <div className="px-6 lg:px-8">
           <h2 className="text-center font-bold text-2xl sm:text-3xl mb-6 text-black">Hodophile Adventures Provide Free <span className="text-[#fcc000]">Travel Kit</span> to Our Customers</h2>
           <div className="mx-auto max-w-7xl rounded-3xl border-4 border-[#fcc000] bg-white overflow-hidden shadow-sm">
