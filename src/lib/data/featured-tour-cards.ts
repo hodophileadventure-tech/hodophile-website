@@ -113,6 +113,7 @@ export type FeaturedTourCard = {
   highlights: string[];
   itinerary: FeaturedTourDay[];
   hoverVideo?: string;
+  priceFrom?: string;
 };
 
 export const featuredTourCards: FeaturedTourCard[] = [

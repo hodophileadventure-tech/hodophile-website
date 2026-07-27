@@ -135,6 +135,9 @@ export default function Home() {
       name: tour.title,
       image: tour.homeImage,
       href: `/tours/featured/${tour.slug}`,
+      duration: tour.duration,
+      priceFrom: tour.priceFrom ?? "From PKR 0",
+      summary: tour.summary,
     };
   });
 
@@ -207,27 +210,44 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
           {destinations.slice(0, 4).map((destination) => (
             <Link
               href={destinationPackageLinks[destination.name] ?? "/destinations"}
               key={destination.name}
-              className="group overflow-hidden rounded-[30px] border-4 border-[#fcc000] bg-white p-3 shadow-[0_14px_30px_rgba(15,23,42,0.06)] transition hover:-translate-y-1"
+              className="group overflow-hidden rounded-[20px] bg-white shadow-[0_18px_45px_rgba(15,23,42,0.14)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(15,23,42,0.18)]"
             >
-                <div className="relative h-64 overflow-hidden rounded-2xl">
+              <div className="relative h-[30rem] overflow-hidden bg-stone-100">
                 <img
                   src={destination.image}
                   alt={destination.name}
-                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.05]"
                 />
+                <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs uppercase tracking-[0.24em] text-white">
+                  <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-[#fcc000] stroke-current" strokeWidth="1.8">
+                    <path d="M12 21s8-4.438 8-10a8 8 0 1 0-16 0c0 5.562 8 10 8 10Z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <span>Destination</span>
+                </div>
+                <div className="absolute right-5 top-5 rounded-full bg-black/55 px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white">
+                  {destination.duration}
+                </div>
+                <div className="absolute left-5 bottom-6 right-5">
+                  <h3 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">{destination.name}</h3>
+                </div>
               </div>
 
-              <div className="space-y-4 px-4 pb-5 pt-4">
-                <h3 className="font-serif text-[2.2rem] font-semibold leading-none">{destination.name}</h3>
-                <p className="text-[1.02rem] leading-8 text-stone-700">{destination.description}</p>
-                <div className="flex items-center justify-between border-t border-stone-200 pt-3">
-                  <p className="text-[11px] uppercase tracking-[0.24em] text-[#fcc000]">{destination.season}</p>
-                  <span className="text-sm font-medium text-[#fcc000]">{destination.duration}</span>
+              <div className="space-y-4 p-6">
+                <p className="text-sm leading-7 text-stone-600">{destination.description}</p>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="inline-flex items-center rounded-full bg-[#111111] px-4 py-2 text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-[0_12px_28px_rgba(0,0,0,0.16)]">
+                    {destination.priceFrom}
+                  </span>
+                  <span className="inline-flex items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-[#0b0b0b] shadow-[0_10px_24px_rgba(255,192,0,0.18)]">
+                    Explore →
+                  </span>
                 </div>
               </div>
             </Link>
@@ -253,36 +273,60 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-8 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
-              <article key={tour.name} className="overflow-hidden rounded-xl border-4 border-[#fcc000] bg-white shadow-[0_4px_14px_rgba(15,23,42,0.08)] flex flex-col h-full">
-                <div className="relative h-[240px] overflow-hidden bg-stone-100">
+              <Link
+                key={tour.name}
+                href={tour.href}
+                className="group overflow-hidden rounded-[20px] bg-white shadow-[0_18px_45px_rgba(15,23,42,0.14)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(15,23,42,0.18)]"
+              >
+                <div className="relative h-[28rem] overflow-hidden bg-stone-100">
                   <img
                     src={tour.image}
                     alt={tour.name}
                     sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 hover:scale-[1.02]"
+                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-[1.05]"
                   />
+                  <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                  <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs uppercase tracking-[0.22em] text-white">
+                    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-[#fcc000] stroke-current" strokeWidth="1.8">
+                      <path d="M12 21s8-4.438 8-10a8 8 0 1 0-16 0c0 5.562 8 10 8 10Z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    {tour.duration}
+                  </div>
+                  <div className="absolute right-5 top-5 rounded-full bg-[#fcc000] px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0b0b0b] shadow-[0_10px_24px_rgba(255,192,0,0.16)]">
+                    {tour.priceFrom}
+                  </div>
+                  <div className="absolute left-5 bottom-6 right-5">
+                    <h3 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                      {tour.titleParts.length > 1 ? (
+                        <>
+                          <span className="block">{tour.titleParts[0]}</span>
+                          <span className="block">{tour.titleParts[1]}</span>
+                        </>
+                      ) : (
+                        tour.name
+                      )}
+                    </h3>
+                  </div>
                 </div>
-                <div className="p-5 flex flex-col justify-between gap-5 flex-1">
-                  <h3 className="text-center text-lg font-semibold leading-7 text-black">
-                    {tour.titleParts.length > 1 ? (
-                      <>
-                        <span className="block">{tour.titleParts[0]}</span>
-                        <span className="block">{tour.titleParts[1]}</span>
-                      </>
-                    ) : (
-                      tour.name
-                    )}
-                  </h3>
-                  <Link
-                    href={tour.href}
-                    className="inline-flex w-full items-center justify-center rounded-[12px] bg-gradient-to-r from-[#ffd14b] via-[#ffc000] to-[#f4b700] px-7 py-3.5 text-sm font-semibold uppercase tracking-[0.14em] !text-black shadow-[0_14px_35px_rgba(255,192,0,0.16)] transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(255,192,0,0.24)] hover:from-[#ffe45b] hover:via-[#ffd24d] hover:to-[#f8b700]"
-                  >
-                    View Details
-                  </Link>
+                <div className="space-y-4 p-6">
+                  <p className="text-sm leading-7 text-stone-600">{tour.summary}</p>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-[#111111] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-[0_12px_28px_rgba(0,0,0,0.16)]">
+                      <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5 text-[#fcc000] stroke-current" strokeWidth="1.8">
+                        <path d="M12 21s8-4.438 8-10a8 8 0 1 0-16 0c0 5.562 8 10 8 10Z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                      Premium route
+                    </span>
+                    <span className="inline-flex items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-[#0b0b0b] shadow-[0_10px_24px_rgba(255,192,0,0.16)]">
+                      Explore →
+                    </span>
+                  </div>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </div>
