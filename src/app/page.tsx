@@ -215,9 +215,9 @@ export default function Home() {
             <Link
               href={destinationPackageLinks[destination.name] ?? "/destinations"}
               key={destination.name}
-              className="group overflow-hidden rounded-[20px] bg-white shadow-[0_18px_45px_rgba(15,23,42,0.14)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(15,23,42,0.18)]"
+              className="group flex h-[40rem] flex-col overflow-hidden rounded-[20px] bg-white shadow-[0_18px_45px_rgba(15,23,42,0.14)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(15,23,42,0.18)]"
             >
-              <div className="relative h-[30rem] overflow-hidden bg-stone-100">
+              <div className="relative h-[28rem] overflow-hidden bg-stone-100">
                 <img
                   src={destination.image}
                   alt={destination.name}
@@ -235,12 +235,18 @@ export default function Home() {
                   {destination.duration}
                 </div>
                 <div className="absolute left-5 bottom-6 right-5">
-                  <h3 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">{destination.name}</h3>
+                  <h3 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl line-clamp-2" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {destination.name}
+                  </h3>
                 </div>
               </div>
 
-              <div className="space-y-4 p-6">
-                <p className="text-sm leading-7 text-stone-600">{destination.description}</p>
+              <div className="flex flex-1 flex-col justify-between gap-4 p-6">
+                <div>
+                  <p className="text-sm leading-6 text-stone-600" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {destination.description}
+                  </p>
+                </div>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <span className="inline-flex items-center rounded-full bg-[#111111] px-4 py-2 text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-[0_12px_28px_rgba(0,0,0,0.16)]">
                     {destination.priceFrom}
@@ -278,7 +284,7 @@ export default function Home() {
               <Link
                 key={tour.name}
                 href={tour.href}
-                className="group overflow-hidden rounded-[20px] bg-white shadow-[0_18px_45px_rgba(15,23,42,0.14)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(15,23,42,0.18)]"
+                className="group flex h-[40rem] flex-col overflow-hidden rounded-[20px] bg-white shadow-[0_18px_45px_rgba(15,23,42,0.14)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(15,23,42,0.18)]"
               >
                 <div className="relative h-[28rem] overflow-hidden bg-stone-100">
                   <img
@@ -299,7 +305,7 @@ export default function Home() {
                     {tour.priceFrom}
                   </div>
                   <div className="absolute left-5 bottom-6 right-5">
-                    <h3 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                    <h3 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl line-clamp-2" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {tour.titleParts.length > 1 ? (
                         <>
                           <span className="block">{tour.titleParts[0]}</span>
@@ -311,8 +317,10 @@ export default function Home() {
                     </h3>
                   </div>
                 </div>
-                <div className="space-y-4 p-6">
-                  <p className="text-sm leading-7 text-stone-600">{tour.summary}</p>
+                <div className="flex flex-1 flex-col justify-between gap-4 p-6">
+                  <p className="text-sm leading-6 text-stone-600" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {tour.summary}
+                  </p>
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <span className="inline-flex items-center gap-2 rounded-full bg-[#111111] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-[0_12px_28px_rgba(0,0,0,0.16)]">
                       <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5 text-[#fcc000] stroke-current" strokeWidth="1.8">
