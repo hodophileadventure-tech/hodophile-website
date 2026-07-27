@@ -61,7 +61,7 @@ export function SiteHeader() {
             onFocus={openDesktopToursMenu}
             className={`inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1.5 text-[0.9rem] transition ${
               isToursActive
-                ? "text-[#ffc000]"
+                ? "text-[#E67E22]"
                 : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
             }`}
           >
@@ -80,7 +80,7 @@ export function SiteHeader() {
           >
             <div className="grid h-[26rem] max-h-[calc(100vh-6.5rem)] overflow-hidden rounded-[1.9rem] border border-[#4a3d18] bg-[#111111] shadow-[0_30px_80px_rgba(0,0,0,0.35)] ring-1 ring-black/30 md:grid-cols-[15rem_minmax(0,1fr)]">
               <div className="min-h-0 overflow-y-auto overscroll-contain border-r border-white/10 bg-[#171717] p-4">
-                <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#ffc000]">Tour Groups</p>
+                <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#E67E22]">Tour Groups</p>
                 <div className="grid gap-2">
                   {tourMenu.map((group) => {
                     const isActive = activeTourGroup === group.href;
@@ -92,8 +92,8 @@ export function SiteHeader() {
                         onFocus={() => setActiveTourGroup(group.href)}
                         className={`rounded-xl border px-4 py-3 text-left text-sm font-semibold transition ${
                           isActive
-                            ? "border-[#ffc000] bg-[#2a2110] text-white"
-                            : "border-white/10 bg-white/5 text-stone-100 hover:border-[#ffc000]/60 hover:bg-white/10"
+                            ? "border-[#E67E22] bg-[#2a2110] text-white"
+                            : "border-white/10 bg-white/5 text-stone-100 hover:border-[#E67E22]/60 hover:bg-white/10"
                         }`}
                       >
                         {group.label}
@@ -110,7 +110,7 @@ export function SiteHeader() {
                     <div key={group.href}>
                       <Link
                         href={group.href}
-                        className="text-xs font-semibold uppercase tracking-[0.32em] text-[#ffc000] transition hover:text-white"
+                        className="text-xs font-semibold uppercase tracking-[0.32em] text-[#E67E22] transition hover:text-white"
                       >
                         {group.label}
                       </Link>
@@ -119,7 +119,7 @@ export function SiteHeader() {
                           <Link
                             key={subItem.href}
                             href={subItem.href}
-                            className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-[#ffc000] hover:bg-white/10 hover:shadow-[0_10px_24px_rgba(0,0,0,0.18)]"
+                            className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-[#E67E22] hover:bg-white/10 hover:shadow-[0_10px_24px_rgba(0,0,0,0.18)]"
                           >
                             <div className="text-sm font-semibold text-white">{subItem.label}</div>
                             {subItem.description ? (
@@ -146,7 +146,7 @@ export function SiteHeader() {
             ? "text-stone-900"
             : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
         } ${
-          pathname === item.href ? "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:bg-[#ffc000]" : ""
+          pathname === item.href ? "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:bg-[#E67E22]" : ""
         }`}
       >
         {item.label}
@@ -186,7 +186,7 @@ export function SiteHeader() {
         <div className="hidden justify-self-end min-w-0 flex-none lg:flex">
           <Link
             href="/make-my-trip"
-            className="inline-flex whitespace-nowrap rounded-full border border-[#ffc000] bg-[#ffc000] px-4 py-1.5 text-sm font-semibold !text-[#0b0b0b] shadow-[0_6px_20px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
+            className="inline-flex whitespace-nowrap rounded-full border border-[#E67E22] bg-[#E67E22] px-4 py-1.5 text-sm font-semibold !text-[#0b0b0b] shadow-[0_6px_20px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-[#f19243]"
           >
             Plan Trip
           </Link>
@@ -301,7 +301,7 @@ export function SiteHeader() {
           <Link
             href="/make-my-trip"
             onClick={() => setMobileOpen(false)}
-            className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[#ffc000] bg-[#ffc000] px-5 py-3 text-sm font-semibold !text-[#0b0b0b]"
+            className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[#E67E22] bg-[#E67E22] px-5 py-3 text-sm font-semibold !text-[#0b0b0b]"
           >
             Plan Journey
           </Link>
