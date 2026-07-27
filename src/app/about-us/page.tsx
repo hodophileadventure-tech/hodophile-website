@@ -408,9 +408,6 @@ export default function AboutUsPage() {
                       <p className="text-stone-700">
                         This visual chart highlights our core leadership flow, including CEO Sana Masood, MD Masood Ahmed, Director Corporate Israr Ahmed Siddiqui, HR and Admin Yashar Ahmed Siddiqui, Floor Manager Mamoon, Manager Operations Maaz Ahmed Siddiqui, Sales Executives, Video Editor, Social Media Marketing Executive, and Software Engineer Qasim Ateeque.
                       </p>
-                      <p className="text-sm text-stone-600">
-                        Note: our Software Engineer reports to HR while also collaborating closely with the Managing Director.
-                      </p>
                     </div>
                   </div>
                 </div>
