@@ -136,7 +136,7 @@ export default function Home() {
     },
   ];
 
-  const heroImage = "/hero-images/zain-raza-unsplash.jpg.jpeg";
+  const heroImage = "/hero-images/zain-raza-unsplash.jpg";
   const packageCards = featuredTourCards.map((tour) => {
     const [firstPart, rest] = tour.title.split(/,\s+(.+)/);
 
@@ -375,7 +375,7 @@ export default function Home() {
       <section className="mt-[6rem] min-h-[34rem] relative overflow-hidden bg-[#111111]">
         <div className="absolute inset-0 opacity-80 overflow-hidden">
           <img
-            src="/hero-images/hussain-ahmed-unsplash.jpg.jpeg"
+            src="/hero-images/hussain-ahmed-unsplash.jpg"
             alt="Cinematic travel scene"
             className="absolute inset-0 h-full w-full object-cover"
             style={{ objectPosition: 'center bottom' }}
