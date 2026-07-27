@@ -136,7 +136,7 @@ export default function Home() {
     },
   ];
 
-  const heroImage = "/hero-images/zain-raza-unsplash.jpg";
+  const heroImage = "/hero-images/fairy-meadows.jpeg";
   const packageCards = featuredTourCards.map((tour) => {
     const [firstPart, rest] = tour.title.split(/,\s+(.+)/);
 
@@ -375,10 +375,10 @@ export default function Home() {
       <section className="mt-[6rem] min-h-[34rem] relative overflow-hidden bg-[#111111]">
         <div className="absolute inset-0 opacity-80 overflow-hidden">
           <img
-            src="/hero-images/hussain-ahmed-unsplash.jpg"
+            src="/hero-images/gilgit.jpeg"
             alt="Cinematic travel scene"
             className="absolute inset-0 h-full w-full object-cover"
-            style={{ objectPosition: 'center bottom' }}
+            style={{ objectPosition: 'center center' }}
           />
           <div className="absolute inset-0 bg-black/35" />
         </div>
@@ -441,7 +441,7 @@ export default function Home() {
         <div className="relative overflow-hidden rounded-[2rem] bg-[#111111] px-6 py-16 text-white sm:px-10 lg:px-16">
           <div className="absolute inset-0 overflow-hidden">
             <img
-              src="/hero-images/zain-raza-unsplash.jpg.jpeg"
+              src="/hero-images/kamran-ch-unsplash.jpg"
               alt="Cinematic journey background"
               className="absolute inset-0 h-full w-full object-cover"
               style={{ objectPosition: 'center bottom' }}
