@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@layer base {
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+    object-fit: cover;
+  }
+}
+
 :root {
   --background: #f7f6f2;
   --foreground: #111111;
