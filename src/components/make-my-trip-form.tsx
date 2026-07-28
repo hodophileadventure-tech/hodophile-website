@@ -861,11 +861,10 @@ export function MakeMyTripForm() {
       let hasChanges = false;
       const nextNights = { ...currentNights };
 
-      // Ensure per-city minimums
+      // Ensure each selected city has at least one night entry by default.
       for (const city of selectedCities) {
-        const minimumDays = getCustomChilasMinimumDays(city, startingPoint);
-        if ((nextNights[city] ?? 0) < minimumDays) {
-          nextNights[city] = minimumDays;
+        if ((nextNights[city] ?? 0) < 1) {
+          nextNights[city] = 1;
           hasChanges = true;
         }
       }
@@ -879,31 +878,6 @@ export function MakeMyTripForm() {
         if (!preserveKeys.has(city)) {
           delete nextNights[city];
           hasChanges = true;
-        }
-      }
-
-      // Special rule for CHILLAS-group cities: keep Chilas at 1 night per leg,
-      // Islamabad at 2 nights when auto-added, and Hunza at 5 nights.
-      const hasChillasRelated = usesChilasItinerary;
-      if (hasChillasRelated) {
-        // Calculate if Islamabad will be auto-included
-        const willIncludeIslamabad = shouldAutoIncludeIslamabad();
-        const chilasNights = (nextNights["Chilas (Arrival)"] || 0) + (nextNights["Chilas (Return)"] || 0);
-        const islamabadNights = willIncludeIslamabad ? 2 : 0;
-
-        // Find the main CHILLAS city in selection
-        const mainCity = selectedCities.find((c) => CHILLAS_GROUP.has(c));
-        if (mainCity) {
-          // Target total: 9 nights if from non-ISB (2 Islamabad + 2 Chilas + 5 main),
-          // 7 nights if starting from Islamabad (2 Chilas + 5 main).
-          const targetTotalNights = willIncludeIslamabad ? 9 : 7;
-          const allocatedNights = chilasNights + islamabadNights;
-          const mainCityNights = Math.max(5, targetTotalNights - allocatedNights);
-
-          if ((nextNights[mainCity] || 0) !== mainCityNights) {
-            nextNights[mainCity] = mainCityNights;
-            hasChanges = true;
-          }
         }
       }
 
@@ -1001,7 +975,7 @@ export function MakeMyTripForm() {
 
       setCustomCityNights((currentNights) => ({
         ...currentNights,
-        [city]: Math.max(currentNights[city] ?? 0, getCustomChilasMinimumDays(city, startingPoint)),
+        [city]: Math.max(currentNights[city] ?? 1, 1),
       }));
 
       return proposed;
@@ -2050,17 +2024,16 @@ export function MakeMyTripForm() {
                     {effectiveSelectedCities.map((city) => (
                       <label key={city} className="grid gap-1 rounded-[12px] border border-[#f4d77d] bg-white p-2 text-black shadow-sm">
                         <span className="text-[11px] font-semibold uppercase tracking-wide text-[#6e5200]">
-                          {city} nights {""}
-                          <span className="font-medium normal-case">(min {getCustomChilasMinimumDays(city, startingPoint)} days)</span>
+                          {city} nights
                         </span>
                         <input
                           type="number"
-                          min={getCustomChilasMinimumDays(city, startingPoint)}
-                          value={effectiveCustomCityNights[city] ?? getCustomChilasMinimumDays(city, startingPoint)}
+                          min={1}
+                          value={effectiveCustomCityNights[city] ?? 1}
                           onChange={(e) =>
                             setCustomCityNights({
                               ...customCityNights,
-                              [city]: Math.max(getCustomChilasMinimumDays(city, startingPoint), parseInt(e.target.value) || 0),
+                              [city]: Math.max(1, parseInt(e.target.value) || 1),
                             })
                           }
                           className="rounded-[8px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
