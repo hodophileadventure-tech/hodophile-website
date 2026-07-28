@@ -232,6 +232,7 @@ export default function Home() {
                   src={destination.image}
                   alt={destination.name}
                   className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.05]"
+                  style={{ height: '100%' }}
                 />
                 <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                 <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs uppercase tracking-[0.24em] text-white">
@@ -324,6 +325,7 @@ export default function Home() {
                     alt={tour.name}
                     sizes="(max-width: 1280px) 50vw, 25vw"
                     className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-[1.05]"
+                    style={{ height: '100%' }}
                   />
                   <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                   <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs uppercase tracking-[0.22em] text-white">
