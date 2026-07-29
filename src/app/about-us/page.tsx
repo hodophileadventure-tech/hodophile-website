@@ -1,19 +1,19 @@
 ﻿import type { Metadata } from "next";
 
 import { PageShell } from "@/components/page-shell";
-import { absoluteUrl, siteConfig } from "@/lib/site";
+import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn how Hodophile Adventures plans domestic Pakistan trips with route-first itineraries, private transport, and hotel coordination.",
+    "Learn about Hodophile Adventures, its leadership, vision, mission, travel rewards program, and commitment to safe and memorable experiences.",
   alternates: {
     canonical: "/about-us",
   },
   openGraph: {
     title: "About Us",
     description:
-      "A Pakistan travel brand focused on Hunza, Skardu, Naran, Kashmir, Swat, Murree, Shogran, Nathia Gali, and Astore.",
+      "Founded in 2021 in Karachi, Hodophile Adventures is a government-licensed travel company creating memorable journeys across Pakistan and beyond.",
     url: absoluteUrl("/about-us"),
   },
 };
@@ -21,376 +21,334 @@ export const metadata: Metadata = {
 export default function AboutUsPage() {
   return (
     <PageShell wide>
-      {/* Hero Section with Image */}
-      <section className="relative mt-0 mx-auto max-w-full overflow-hidden border-2 border-[#fcc000] rounded-[2rem]">
-        {/* Background Image */}
-        <div 
+      <section className="relative mt-0 mx-auto max-w-full overflow-hidden rounded-[2rem] border-2 border-[#fcc000]">
+        <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: 'url(/images/editorial/about-us-hero.jpg)',
+            backgroundImage: "url(/images/editorial/about-us-hero.jpg)",
           }}
         />
-        
-        {/* Dark Overlay */}
+
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60" />
-        
-        {/* Content */}
-        <div className="relative z-10 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 py-20 lg:py-32">
+
+        <div className="relative z-10 mx-auto max-w-[96rem] px-6 py-20 lg:px-8 lg:py-32 xl:px-10">
           <div className="max-w-3xl">
-            <div className="inline-block mb-4 px-4 py-2 bg-[#fcc000]/20 border border-[#fcc000]/80 rounded-full backdrop-blur-sm">
-              <span className="text-[#fcc000] font-semibold text-sm tracking-wide uppercase">Our Story</span>
+            <div className="mb-4 inline-block rounded-full border border-[#fcc000]/80 bg-[#fcc000]/20 px-4 py-2 backdrop-blur-sm">
+              <span className="text-sm font-semibold uppercase tracking-wide text-[#fcc000]">Our Story</span>
             </div>
-            
-            <h1 className="font-serif text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
-              Journey With Pakistan's Most Trusted Travel Partner
+
+            <h1 className="mb-6 font-serif text-5xl font-bold tracking-tight text-white lg:text-6xl">
+              Journey With Pakistan&apos;s Most Trusted Travel Partner
             </h1>
-            
-            <p className="text-xl text-gray-100 max-w-2xl leading-relaxed">
-              Since 2021, we've been crafting unforgettable adventures across Pakistan's most breathtaking destinations, one traveler at a time.
+
+            <p className="max-w-2xl text-xl leading-relaxed text-gray-100">
+              Travel has the power to broaden perspectives, create lasting memories, and bring people closer to the world around them.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 py-12 lg:py-16 border-2 border-[#fcc000] rounded-[2rem]">
+      <section className="mx-auto max-w-[96rem] rounded-[2rem] border-2 border-[#fcc000] px-6 py-12 lg:px-8 lg:py-16 xl:px-10">
         <div className="flex flex-wrap gap-8 lg:gap-12">
           <div>
-            <p className="text-4xl font-bold text-[#fcc000]">1000+</p>
-            <p className="text-stone-600 mt-2 text-lg">Happy Travelers</p>
+            <p className="text-4xl font-bold text-[#fcc000]">2021</p>
+            <p className="mt-2 text-lg text-stone-600">Founded</p>
           </div>
           <div>
-            <p className="text-4xl font-bold text-[#fcc000]">15+</p>
-            <p className="text-stone-600 mt-2 text-lg">Destinations</p>
+            <p className="text-4xl font-bold text-[#fcc000]">500+</p>
+            <p className="mt-2 text-lg text-stone-600">Happy Travelers</p>
+          </div>
+          <div>
+            <p className="text-4xl font-bold text-[#fcc000]">50+</p>
+            <p className="mt-2 text-lg text-stone-600">Tours Conducted</p>
+          </div>
+          <div>
+            <p className="text-4xl font-bold text-[#fcc000]">20+</p>
+            <p className="mt-2 text-lg text-stone-600">Destinations Covered</p>
+          </div>
+          <div>
+            <p className="text-4xl font-bold text-[#fcc000]">4.9★</p>
+            <p className="mt-2 text-lg text-stone-600">Customer Rating</p>
           </div>
           <div>
             <p className="text-4xl font-bold text-[#fcc000]">24/7</p>
-            <p className="text-stone-600 mt-2 text-lg">Support Available</p>
-          </div>
-          <div>
-            <p className="text-4xl font-bold text-[#fcc000]">100%</p>
-            <p className="text-stone-600 mt-2 text-lg">Licensed & Insured</p>
+            <p className="mt-2 text-lg text-stone-600">Customer Support</p>
           </div>
         </div>
       </section>
 
-      {/* Why We're Different Section */}
-      <section className="mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 py-16 border-2 border-[#fcc000] rounded-[2rem]">
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="rounded-2xl border-2 border-[#fcc000] bg-gradient-to-br from-[#fffbf0] to-white p-8 hover:shadow-lg transition-shadow">
-            <div className="w-12 h-12 rounded-lg bg-[#fcc000] flex items-center justify-center mb-4">
-              <span className="text-2xl">🗺️</span>
-            </div>
-            <h3 className="text-xl font-semibold text-stone-900 mb-3">Route-First Planning</h3>
-            <p className="text-stone-600">We design trips around routes you want to explore, not random packages. Clear paths, better value.</p>
-          </div>
-          
-          <div className="rounded-2xl border-2 border-[#fcc000] bg-gradient-to-br from-[#fffbf0] to-white p-8 hover:shadow-lg transition-shadow">
-            <div className="w-12 h-12 rounded-lg bg-[#fcc000] flex items-center justify-center mb-4">
-              <span className="text-2xl">🤝</span>
-            </div>
-            <h3 className="text-xl font-semibold text-stone-900 mb-3">Personal Touch</h3>
-            <p className="text-stone-600">Every traveler is unique. Our team listens, plans, and delivers experiences tailored to you.</p>
-          </div>
-          
-          <div className="rounded-2xl border-2 border-[#fcc000] bg-gradient-to-br from-[#fffbf0] to-white p-8 hover:shadow-lg transition-shadow">
-            <div className="w-12 h-12 rounded-lg bg-[#fcc000] flex items-center justify-center mb-4">
-              <span className="text-2xl">✨</span>
-            </div>
-            <h3 className="text-xl font-semibold text-stone-900 mb-3">Complete Peace of Mind</h3>
-            <p className="text-stone-600">From transport to hotels to 24/7 support—we handle everything so you just focus on making memories.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Company Profile Section */}
-      <section className="mt-8 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 pb-12 border-2 border-[#fcc000] rounded-[2rem]">
+      <section className="mx-auto mt-8 max-w-[96rem] rounded-[2rem] border-2 border-[#fcc000] px-6 pb-12 lg:px-8 xl:px-10">
         <div className="mb-12">
-          <div className="inline-block mb-4 px-4 py-2 bg-[#fcc000]/10 border border-[#fcc000] rounded-full">
-            <span className="text-[#fcc000] font-semibold text-sm tracking-wide uppercase">Learn More</span>
+          <div className="mb-4 inline-block rounded-full border border-[#fcc000] bg-[#fcc000]/10 px-4 py-2">
+            <span className="text-sm font-semibold uppercase tracking-wide text-[#fcc000]">Learn More</span>
           </div>
-          
-          <h2 className="font-serif text-4xl lg:text-5xl font-semibold tracking-tight text-stone-900 mb-4">
-            Company Profile
+
+          <h2 className="mb-4 font-serif text-4xl font-semibold tracking-tight text-stone-900 lg:text-5xl">
+            About Hodophile Adventures
           </h2>
-          <p className="text-lg text-stone-600 max-w-2xl">
-            Explore our journey, vision, team, and what sets us apart in Pakistan's travel industry.
+          <p className="max-w-2xl text-lg text-stone-600">
+            Discover our story, values, team, and the services that make every journey safe, seamless, and memorable.
           </p>
         </div>
 
-        <section className="space-y-12 border-2 border-[#fcc000] rounded-[2rem]">
+        <div className="space-y-12 rounded-[2rem] border-2 border-[#fcc000]">
           <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
-            <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900 mb-6">
-              CEO's Message
+            <h3 className="mb-6 font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
+              CEO&apos;s Message
             </h3>
             <div className="space-y-4 text-stone-700">
               <p>
-                At Hodophile Adventures, we are committed to providing safe, professional, and affordable travel experiences for corporate clients, families, and individual travelers.
+                Welcome to <span className="font-semibold text-stone-900">Hodophile Adventures</span>.
               </p>
               <p>
-                As a government-licensed tour company, our goal is to create memorable journeys with exceptional service.
+                Travel has the power to broaden perspectives, create lasting memories, and bring people closer to the world around them. At Hodophile Adventures, we are committed to making every journey safe, seamless, and truly memorable through exceptional service, meticulous planning, and an unwavering focus on customer satisfaction.
               </p>
               <p>
-                From our beginnings in Karachi to serving travelers across Pakistan, we are proud to have earned the trust of countless clients exploring destinations like Hunza, Skardu, Naran, Ormara, and beyond.
+                As a government-licensed travel company, we proudly offer domestic and international tours, corporate travel solutions, customized holiday packages, and Umrah services, ensuring every journey is thoughtfully planned and executed with excellence.
               </p>
               <p>
-                No matter the season, we look forward to welcoming you on an unforgettable adventure.
+                Our vision is to become a globally recognized travel brand, known for professionalism, innovation, and service excellence. We continuously strive to enhance every aspect of our offerings by embracing new destinations, strengthening strategic partnerships, and delivering experiences that exceed our customers&apos; expectations.
               </p>
-              <div className="pt-4 border-t border-stone-200">
+              <p>
+                At Hodophile Adventures, we believe that every journey is unique. Whether you are seeking adventure, relaxation, cultural exploration, business travel, or a spiritual pilgrimage, our dedicated team is committed to creating experiences that leave a lasting impression.
+              </p>
+              <p>
+                Thank you for placing your trust in us. We look forward to being a part of your next unforgettable journey.
+              </p>
+              <div className="border-t border-stone-200 pt-4">
                 <p className="font-semibold text-stone-900">Sana Masood</p>
-                <p className="text-stone-700">CEO, Hodophile Adventures</p>
+                <p className="text-stone-700">Chief Executive Officer</p>
+                <p className="text-stone-700">Hodophile Adventures</p>
               </div>
             </div>
           </section>
 
-          <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] border-2 border-[#fcc000] rounded-[2rem]">
+          <section className="grid gap-8 rounded-[2rem] border-2 border-[#fcc000] lg:grid-cols-[1.2fr_0.8fr]">
             <div className="rounded-[2rem] border border-[#fcc000]/20 bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
-              <div className="flex items-center gap-4 mb-6">
-                <img src="/images/icons/about-us.png" alt="About us icon" className="h-12 w-12 object-contain" />
-                <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900">
+              <div className="mb-6 flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#fcc000]/20 text-2xl">🧭</div>
+                <h3 className="font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
                   About Us
                 </h3>
               </div>
               <div className="space-y-4 text-stone-700">
                 <p>
-                  Founded in 2021 in Karachi, Hodophile Adventures is a government-licensed travel company driven by a passion for creating unforgettable journeys.
+                  Founded in 2021 in Karachi, Hodophile Adventures is a government-licensed travel company dedicated to creating exceptional travel experiences across Pakistan. Built on a passion for exploration and customer satisfaction, we specialize in delivering safe, well-organized, and memorable journeys.
                 </p>
                 <p>
-                  We handle every aspect of your trip—from transportation and accommodation to seamless travel planning—so you can focus on making memories.
+                  From transportation and accommodation to itinerary planning and on-ground support, we manage every aspect of your trip so you can travel with complete peace of mind. Whether you are traveling solo, with family, on your honeymoon, as part of a corporate group, or with friends, our experienced team provides personalized solutions tailored to your needs.
                 </p>
                 <p>
-                  Whether you're traveling solo, with family, on your honeymoon, in a group, or for business, our experienced team delivers safe, affordable, and personalized travel experiences.
+                  Driven by professionalism, transparency, and 24/7 customer support, Hodophile Adventures has earned the trust of travelers seeking reliable and affordable travel experiences.
                 </p>
                 <p className="italic text-stone-600">Take memories, leave footprints.</p>
               </div>
             </div>
+
             <div className="space-y-6">
               <div className="rounded-[2rem] border border-[#fcc000]/20 bg-[#fff8e3] p-6 shadow-sm">
-                <div className="flex items-center gap-3 mb-3">
-                  <img src="/images/icons/vision.png" alt="Vision icon" className="h-10 w-10 object-contain" />
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">👁️</div>
                   <h4 className="font-semibold text-stone-900">Vision</h4>
                 </div>
                 <p className="text-stone-700">
-                  To become the region's most trusted travel brand by delivering innovative, affordable, and responsible travel experiences that inspire lasting customer satisfaction.
+                  To become a globally recognized travel brand, trusted for delivering exceptional, affordable, and sustainable travel experiences that inspire unforgettable journeys.
                 </p>
               </div>
               <div className="rounded-[2rem] border border-[#fcc000]/20 bg-[#fff8e3] p-6 shadow-sm">
-                <div className="flex items-center gap-3 mb-3">
-                  <img src="/images/icons/mission.png" alt="Mission icon" className="h-10 w-10 object-contain" />
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">🎯</div>
                   <h4 className="font-semibold text-stone-900">Mission</h4>
                 </div>
                 <p className="text-stone-700">
-                  To create unforgettable travel experiences by exceeding expectations through exceptional service, personalized journeys, and lasting relationships with every traveler.
+                  To create unforgettable travel experiences by delivering exceptional service, personalized journeys, and seamless travel solutions while building lasting relationships with every traveler.
                 </p>
               </div>
             </div>
           </section>
 
           <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
-            <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900 mb-6">
+            <h3 className="mb-6 font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
               Why Choose Us
             </h3>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <img src="/images/icons/quality-service.png" alt="Quality service icon" className="h-10 w-10 object-contain" />
-                  <h4 className="font-semibold text-stone-900">Quality Service</h4>
+                <div className="mb-2 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">🧳</div>
+                  <h4 className="font-semibold text-stone-900">Personalized Travel Experiences</h4>
                 </div>
                 <p className="text-stone-700">
-                  We create personalized, hassle-free journeys tailored to your preferences, ensuring exceptional value, comfort, and memorable experiences.
+                  Every traveler is unique, and so is every journey. We design customized, hassle-free travel experiences tailored to your preferences, ensuring exceptional value, comfort, and unforgettable memories.
                 </p>
               </div>
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <img src="/images/icons/diverse-experiences.png" alt="Diverse experiences icon" className="h-10 w-10 object-contain" />
-                  <h4 className="font-semibold text-stone-900">Diverse Experiences</h4>
+                <div className="mb-2 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">🏔️</div>
+                  <h4 className="font-semibold text-stone-900">Explore Pakistan Like Never Before</h4>
                 </div>
                 <p className="text-stone-700">
-                  From the majestic mountains of Hunza and Skardu to the serene beaches of Balochistan, we offer unique tours, camping adventures, and authentic cultural experiences across Pakistan.
+                  From the majestic mountains of Hunza, Skardu, and Naran to the pristine beaches of Balochistan, we offer carefully curated tours, camping adventures, cultural experiences, and hidden gems that showcase the true beauty of Pakistan.
                 </p>
               </div>
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <img src="/images/icons/transparent-pricing.png" alt="Transparent pricing icon" className="h-10 w-10 object-contain" />
+                <div className="mb-2 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">💰</div>
                   <h4 className="font-semibold text-stone-900">Transparent Pricing</h4>
                 </div>
                 <p className="text-stone-700">
-                  Enjoy competitive prices with no hidden charges. Every inclusion and cost is clearly communicated before you book.
+                  Enjoy competitive and transparent pricing with no hidden charges. Every inclusion and cost is clearly communicated before you book, ensuring complete peace of mind.
                 </p>
               </div>
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <img src="/images/icons/sustainable-tourism.png" alt="Sustainable tourism icon" className="h-10 w-10 object-contain" />
+                <div className="mb-2 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">🌿</div>
                   <h4 className="font-semibold text-stone-900">Sustainable Tourism</h4>
                 </div>
                 <p className="text-stone-700">
-                  We promote responsible travel by supporting local communities, preserving cultural heritage, protecting nature, and encouraging sustainable tourism practices.
+                  We are committed to responsible travel by supporting local communities, preserving cultural heritage, protecting the environment, and promoting sustainable tourism practices for future generations.
                 </p>
               </div>
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <img src="/images/icons/attention-to-detail.png" alt="Attention to detail icon" className="h-10 w-10 object-contain" />
+                <div className="mb-2 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">📝</div>
                   <h4 className="font-semibold text-stone-900">Attention to Detail</h4>
                 </div>
                 <p className="text-stone-700">
-                  From carefully planned itineraries and timely schedules to weather monitoring and budget management, every detail is thoughtfully handled.
+                  From meticulously planned itineraries and comfortable accommodations to weather monitoring and timely logistics, every aspect of your journey is managed with precision and care.
                 </p>
               </div>
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <img src="/images/icons/professional-tour-guide.png" alt="Professional tour guides icon" className="h-10 w-10 object-contain" />
+                <div className="mb-2 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">🗣️</div>
                   <h4 className="font-semibold text-stone-900">Professional Tour Guides</h4>
                 </div>
                 <p className="text-stone-700">
-                  Our experienced bilingual guides combine local expertise, historical knowledge, and professional service to make every journey informative, safe, and enjoyable.
+                  Our experienced bilingual tour guides combine local expertise, historical knowledge, and professional hospitality to make every trip informative, safe, and enjoyable.
                 </p>
               </div>
             </div>
           </section>
 
           <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
-            <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900 mb-6">
-              What Makes Us Unique
+            <h3 className="mb-6 font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
+              Our Team
             </h3>
-            <div className="space-y-8 text-stone-700">
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <img src="/images/icons/loyalty-card.png" alt="Loyalty card icon" className="h-10 w-10 object-contain" />
-                  <h4 className="font-semibold text-stone-900">Pakistan's First Travel Loyalty Card</h4>
-                </div>
-                <p className="mb-3">
-                  We are proud to introduce Pakistan's first-ever travel Loyalty Card, designed to reward our valued travelers with exclusive benefits, exciting gifts, and special discounts on future adventures.
-                </p>
-                <p>
-                  The more you explore with Hodophile Adventures, the more rewards you unlock — making every journey more memorable and rewarding.
-                </p>
-              </div>
-
-              <div className="rounded-3xl bg-stone-50 p-6 border border-stone-200">
-                <div className="flex items-center gap-3 mb-4">
-                  <img src="/images/icons/exclusive-rewards.png" alt="Exclusive loyalty rewards icon" className="h-10 w-10 object-contain" />
-                  <h5 className="font-semibold text-stone-900">Exclusive Loyalty Rewards</h5>
-                </div>
-                <p className="text-sm text-stone-700 mb-4">
-                  Our Loyalty Program rewards your continued trust with exciting discounts and benefits on every adventure.
-                </p>
-                <div className="space-y-2 text-sm text-stone-700">
-                  <div className="flex justify-between items-center py-2 border-b border-stone-200">
-                    <span className="font-medium text-stone-900">First Tour</span>
-                    <span>Full Price</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-stone-200">
-                    <span className="font-medium text-stone-900">Second Tour</span>
-                    <span>10% Discount</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-stone-200">
-                    <span className="font-medium text-stone-900">Third Tour</span>
-                    <span>15% Discount</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="font-medium text-stone-900">Fourth Tour</span>
-                    <span className="font-semibold text-[#fcc000]">Free of Cost</span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <img src="/images/icons/travel-kit.png" alt="Travel kit icon" className="h-10 w-10 object-contain" />
-                  <h4 className="font-semibold text-stone-900">Complimentary Travel Kit</h4>
-                </div>
-                <p>
-                  We take care of the little details that make your journey comfortable. Our specially designed Travel Kit includes essential items to help you travel with ease so you can spend more time enjoying your destination.
-                </p>
-                <p>
-                  We are proud to be among the first travel companies in Pakistan to introduce this thoughtful service for our travelers.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <section className="mb-12 rounded-[2rem] border-2 border-[#fcc000] bg-[#fff8e3] p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.55)]">
-            <div className="mb-8">
-              <h3 className="font-serif text-3xl lg:text-4xl font-semibold tracking-tight text-stone-900">
-                Our Team
-              </h3>
-              <p className="mt-4 max-w-3xl text-stone-700">
-                Our leadership and specialist teams work together to make every journey smooth, safe, and unforgettable.
-              </p>
-            </div>
-
+            <p className="mb-8 max-w-3xl text-stone-700">
+              Our passionate team of travel professionals is dedicated to anticipating your travel needs and delivering seamless, personalized experiences. From planning your itinerary to supporting you throughout your journey, we ensure every trip is safe, enjoyable, and stress-free.
+            </p>
             <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
                 <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">CEO</p>
                 <p className="mt-3 text-2xl font-semibold text-stone-900">Sana Masood</p>
                 <p className="mt-3 text-stone-700">Leading our vision for safe and inspiring travel across Pakistan.</p>
               </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
                 <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Managing Director</p>
                 <p className="mt-3 text-2xl font-semibold text-stone-900">Masood Ahmed</p>
                 <p className="mt-3 text-stone-700">Driving operational excellence and ensuring our service delivery runs smoothly.</p>
               </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
                 <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Director Corporate</p>
                 <p className="mt-3 text-2xl font-semibold text-stone-900">Israr Ahmed Siddiqui</p>
                 <p className="mt-3 text-stone-700">Strengthening corporate relationships and planning better business travel.</p>
               </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
                 <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">HR & Admin</p>
                 <p className="mt-3 text-2xl font-semibold text-stone-900">Yashar Ahmed Siddiqui</p>
                 <p className="mt-3 text-stone-700">Supporting our people and coordinating the team behind every tour.</p>
               </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
                 <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Floor Manager</p>
                 <p className="mt-3 text-2xl font-semibold text-stone-900">Mamoon</p>
                 <p className="mt-3 text-stone-700">Coordinating ground operations so every tour stays organized.</p>
               </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
+              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
                 <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Manager Operations</p>
                 <p className="mt-3 text-2xl font-semibold text-stone-900">Maaz Ahmed Siddiqui</p>
                 <p className="mt-3 text-stone-700">Overseeing logistics and ensuring every itinerary is delivered effectively.</p>
               </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Software Engineer</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Qasim Ateeque</p>
-                <p className="mt-3 text-stone-700">Building systems that keep our services reliable and responsive.</p>
-              </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Social Media Marketing Executive</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Areeba Siddique</p>
-                <p className="mt-3 text-stone-700">Sharing our travel stories and inspiring more people to explore Pakistan.</p>
-              </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Video Editor</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Sameer Khan</p>
-                <p className="mt-3 text-stone-700">Transforming our tours into visuals that reflect the true spirit of travel.</p>
-              </div>
-              <div className="lg:col-span-2 grid gap-4 sm:grid-cols-2">
-                <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Sales Executive</p>
-                  <p className="mt-3 text-2xl font-semibold text-stone-900">Syed Altamash Ali</p>
-                  <p className="mt-3 text-stone-700">Connecting travelers to the right tour and answering every booking question.</p>
-                </div>
-                <div className="rounded-3xl border border-[#fcc000] bg-white p-6 shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Sales Executive</p>
-                  <p className="mt-3 text-2xl font-semibold text-stone-900">Abdullah Ahmed</p>
-                  <p className="mt-3 text-stone-700">Helping travelers choose the best itinerary and supporting smooth bookings.</p>
-                </div>
-              </div>
             </div>
+          </section>
 
-            <div className="mt-10 overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-white shadow-[0_40px_80px_-40px_rgba(252,192,0,0.45)]">
-              <div className="relative overflow-hidden">
-                <img
-                  src="/images/editorial/about-us-hierarchy.png"
-                  alt="Team hierarchy chart"
-                  className="w-full h-auto object-cover transition-transform duration-500 ease-out hover:scale-[1.02]"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+          <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
+            <h3 className="mb-6 font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
+              What Makes Us Unique
+            </h3>
+            <div className="space-y-8 text-stone-700">
+              <p>
+                We believe travel should become more rewarding every time you explore with us. It should create lifelong memories and meaningful experiences. We go beyond ordinary travel by focusing on exceptional customer service, innovation, value, and long-term relationships with our travelers.
+              </p>
+
+              <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">🎁</div>
+                  <h4 className="font-semibold text-stone-900">Pakistan&apos;s First Travel Rewards Program</h4>
+                </div>
+                <p className="mb-3">
+                  We are proud to introduce Pakistan&apos;s first-ever Travel Rewards Program, designed to reward our valued travelers for choosing Hodophile Adventures.
+                </p>
+                <p>
+                  After completing your first tour, you become eligible for exclusive benefits, exciting gifts, and special discounts on future adventures. The more you travel with us, the more rewards you unlock—making every journey more memorable and rewarding.
+                </p>
+              </div>
+
+              <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">🏷️</div>
+                  <h5 className="font-semibold text-stone-900">Exclusive Loyalty Rewards</h5>
+                </div>
+                <p className="mb-4 text-stone-700">
+                  At Hodophile Adventures, we value our returning travelers. Our Travel Rewards Program recognizes your continued trust by offering exclusive discounts and benefits on every adventure.
+                </p>
+                <div className="space-y-2 text-sm text-stone-700">
+                  <div className="flex items-center justify-between border-b border-stone-200 py-2">
+                    <span className="font-medium text-stone-900">First Tour</span>
+                    <span>Standard Price</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-stone-200 py-2">
+                    <span className="font-medium text-stone-900">Second Tour</span>
+                    <span>10% Discount</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-stone-200 py-2">
+                    <span className="font-medium text-stone-900">Third Tour</span>
+                    <span>15% Discount</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="font-medium text-stone-900">Fourth Tour</span>
+                    <span className="font-semibold text-[#fcc000]">Complimentary Tour*</span>
+                  </div>
+                </div>
+                <p className="mt-4 text-sm text-stone-600">*Terms & Conditions Apply.</p>
+              </div>
+
+              <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">🧰</div>
+                  <h4 className="font-semibold text-stone-900">Complimentary Travel Kit</h4>
+                </div>
+                <p>
+                  At Hodophile Adventures, we believe it&apos;s the little details that make every journey special. Our complimentary Travel Kit includes thoughtfully selected essentials to enhance your comfort and convenience throughout your trip.
+                </p>
+                <p className="mt-3">
+                  We are proud to be one of the few travel companies in Pakistan offering this value-added service, ensuring our travelers enjoy a hassle-free and memorable experience from the very beginning of their journey.
+                </p>
               </div>
             </div>
           </section>
-        </section>
+
+          <section className="rounded-[2rem] border-2 border-[#fcc000] bg-[#fff8e3] p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.55)]">
+            <h3 className="mb-6 font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
+              Our Promise
+            </h3>
+            <p className="max-w-3xl text-stone-700">
+              At Hodophile Adventures, your safety, comfort, and satisfaction are at the heart of everything we do. We are committed to delivering transparent pricing, reliable service, professional tour management, and unforgettable travel experiences.
+            </p>
+            <p className="mt-4 max-w-3xl text-stone-700">
+              Whether you&apos;re planning a family vacation, a corporate retreat, a honeymoon, or an adventurous getaway, our goal is to exceed your expectations and create memories that last a lifetime.
+            </p>
+            <p className="mt-6 text-xl font-semibold text-stone-900">Travel with confidence. Travel with Hodophile Adventures.</p>
+          </section>
+        </div>
       </section>
     </PageShell>
   );
