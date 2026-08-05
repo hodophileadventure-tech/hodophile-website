@@ -168,9 +168,41 @@ export default function AboutUsPage() {
           </section>
 
           <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
-            <h3 className="mb-6 font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
-              Why Choose Us
-            </h3>
+            <div className="mb-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b76d00]">Local Expertise</p>
+                <h3 className="font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
+                  Global Standards
+                </h3>
+                <ul className="mt-6 space-y-4 text-stone-700">
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#fcc000] text-xs font-bold text-stone-900">✓</span>
+                    <span>Ground-level destination knowledge across Pakistan, from mountain routes to cultural hotspots.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#fcc000] text-xs font-bold text-stone-900">✓</span>
+                    <span>Professional planning and responsive support built around traveler comfort and safety.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#fcc000] text-xs font-bold text-stone-900">✓</span>
+                    <span>Transparent itineraries, trusted logistics, and premium service standards from start to finish.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#fcc000] text-xs font-bold text-stone-900">✓</span>
+                    <span>Personalized experiences tailored to your pace, preferences, and travel goals.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-[#fff8e3] p-3 shadow-[0_22px_50px_-28px_rgba(252,192,0,0.28)]">
+                <img
+                  src="/images/editorial/local-expertise-global-standards.png"
+                  alt="Local expertise with global standards"
+                  className="h-full w-full rounded-[1.5rem] object-cover"
+                />
+              </div>
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
                 <div className="mb-2 flex items-center gap-3">

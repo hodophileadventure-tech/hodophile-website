@@ -18,6 +18,7 @@
   --accent: #fcc000;
   --brand-black: #0b0b0b;
   --brand-gold: #ffc000;
+  --site-header-height: 72px;
 }
 
 @theme inline {
@@ -29,6 +30,8 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  scroll-padding-top: var(--site-header-height, 72px);
   min-height: 100%;
   background: radial-gradient(circle at top left, rgba(252, 192, 0, 0.12), transparent 20%),
               radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.06), transparent 24%),

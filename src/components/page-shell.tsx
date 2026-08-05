@@ -7,9 +7,10 @@ import { SiteHeader } from "@/components/site-header";
 type PageShellProps = {
   children: ReactNode;
   wide?: boolean;
+  noTopPadding?: boolean;
 };
 
-export function PageShell({ children, wide = false }: PageShellProps) {
+export function PageShell({ children, wide = false, noTopPadding = false }: PageShellProps) {
   const shellWidthClass = wide ? "max-w-[96rem]" : "max-w-7xl";
   const mainPaddingClass = wide ? "px-4 md:px-6 lg:px-10 xl:px-14" : "px-4 md:px-6 lg:px-8";
 
@@ -19,7 +20,7 @@ export function PageShell({ children, wide = false }: PageShellProps) {
         <SiteHeader />
       </div>
 
-      <main className={`mx-auto ${shellWidthClass} pb-20 pt-28 ${mainPaddingClass}`}>
+      <main className={`mx-auto ${shellWidthClass} pb-20 ${noTopPadding ? "pt-0" : "pt-28"} ${mainPaddingClass}`}>
         {children}
       </main>
 

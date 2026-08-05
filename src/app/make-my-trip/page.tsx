@@ -53,6 +53,7 @@ export default function MakeMyTripPage() {
           </div>
         </div>
       </section>
+
     </PageShell>
   );
 }

@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 
 import { PageShell } from "@/components/page-shell";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
+import { WhyChooseUs } from "@/components/why-choose-us";
 import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, destinations } from "@/lib/site";
 
@@ -32,28 +33,35 @@ export default function Home() {
 
   const serviceHighlights = [
     {
-      title: "Curated Itineraries",
-      description: "Thoughtfully paced routes designed for comfort, scenery, and memorable travel flow.",
-      icon: "/images/icons/travel-icon.png",
-      stat: "3000+ Travellers",
+      title: "Tailor-Made Journeys",
+      description:
+        "Every itinerary is thoughtfully designed around your interests, travel style, budget, and pace. From adventure and family holidays to luxury escapes and Umrah, every journey is uniquely yours.",
+      stat: "Custom Routes",
+      image: "/images/editorial/tailor-made-journeys.png",
     },
     {
-      title: "Private Comfort",
-      description: "Dedicated transport and selective stay options tailored to your travel style.",
-      icon: "/images/icons/comfort.jpg",
-      stat: "98% Satisfaction",
+      title: "Local Expertise, Global Standards",
+      description:
+        "Explore destinations with experienced local guides and trusted travel partners. Enjoy authentic experiences, seamless planning, and professional service at every step.",
+      stat: "Trusted Travel",
     },
     {
-      title: "Local Expertise",
-      description: "Ground insights, route knowledge, and practical planning support across Pakistan.",
-      icon: "/images/icons/local-expertise.png",
-      stat: "24/7 Support",
+      title: "Seamless Travel Experience",
+      description:
+        "We take care of flights, accommodation, visas, transportation, and logistics. Relax and enjoy your journey while we handle every detail from start to finish.",
+      stat: "Full Support",
     },
     {
-      title: "Seamless Support",
-      description: "Responsive travel guidance before departure and throughout your journey.",
-      icon: "/images/icons/support.jpg",
-      stat: "10+ Years",
+      title: "Trusted Support, Anytime",
+      description:
+        "Our dedicated team is available before, during, and after your trip. Count on prompt assistance and reliable guidance whenever you need it.",
+      stat: "24/7 Care",
+    },
+    {
+      title: "Authentic & Memorable Experiences",
+      description:
+        "Go beyond sightseeing with carefully curated cultural, adventure, and spiritual journeys. Create meaningful memories through experiences that inspire, connect, and last a lifetime.",
+      stat: "Life Moments",
     },
   ];
 
@@ -401,39 +409,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-[6rem] w-full overflow-hidden bg-[#f9f9f8]">
-        <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
-          <div className="absolute left-6 top-10 h-56 w-56 rounded-full bg-[#e8e2d8] blur-3xl" />
-          <div className="absolute right-8 bottom-10 h-48 w-48 rounded-full bg-[#e7dcbf] blur-3xl" />
-        </div>
-        <div className="px-6 lg:px-8">
-          <div className="mb-8">
-            <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Why Choose Us</p>
-            <h2 className="mt-3 font-serif text-4xl">
-              <span className="text-black">Trustworthy planning</span>{' '}
-              <span className="text-[#fcc000]">with premium restraint.</span>
-            </h2>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            {serviceHighlights.map((item) => (
-            <article key={item.title} className="group overflow-hidden rounded-[2rem] border border-[#ece2d0] bg-white/95 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.09)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_28px_65px_rgba(15,23,42,0.16)]">
-              <div className="relative overflow-hidden rounded-[2rem] bg-[#fff8e6] p-6 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top_left,rgba(255,208,70,0.14),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(17,17,17,0.06),transparent_30%)] before:opacity-80">
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#fff5d2] via-[#fff0b5] to-[#fff7e2] shadow-[0_10px_25px_rgba(255,198,0,0.18)]">
-                  <img src={item.icon} alt={item.title} width={40} height={40} className="h-10 w-10 object-contain" />
-                </div>
-              </div>
-              <div className="mt-6 flex flex-col gap-4">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.32em] text-[#9c7a00]">{item.stat}</p>
-                  <h3 className="mt-3 text-2xl font-semibold leading-tight text-black">{item.title}</h3>
-                </div>
-                <p className="text-sm leading-7 text-stone-600">{item.description}</p>
-              </div>
-            </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      <WhyChooseUs />
 
       <section className="mt-[6rem] overflow-hidden rounded-[2rem] bg-[#f7f6f4] shadow-[0_20px_45px_rgba(15,23,42,0.06)] w-full relative">
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">

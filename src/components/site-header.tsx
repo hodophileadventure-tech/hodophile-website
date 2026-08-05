@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { navigation, tourMenu } from "@/lib/site";
 
@@ -16,13 +16,28 @@ export function SiteHeader() {
   const [desktopToursOpen, setDesktopToursOpen] = useState(false);
   const [activeTourGroup, setActiveTourGroup] = useState(tourMenu[0]?.href ?? "");
   const [activeMobileTourGroup, setActiveMobileTourGroup] = useState<string | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
+  
   const desktopToursCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // publish header height as a CSS variable so pages can size to viewport minus header
+  useEffect(() => {
+    const setHeaderHeight = () => {
+      const h = headerRef.current?.offsetHeight ?? 72;
+      document.documentElement.style.setProperty("--site-header-height", `${h}px`);
+    };
+
+    setHeaderHeight();
+    window.addEventListener("resize", setHeaderHeight);
+    return () => window.removeEventListener("resize", setHeaderHeight);
   }, []);
 
   const isHome = pathname === "/";
@@ -156,43 +171,34 @@ export function SiteHeader() {
 
   return (
     <header
+      ref={headerRef}
       className={`fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-white/95 backdrop-blur-xl transition duration-300 ${
         scrolled ? "shadow-[0_20px_55px_rgba(15,23,42,0.16)]" : "shadow-[0_12px_36px_rgba(15,23,42,0.08)]"
       }`}
+      aria-hidden={false}
     >
       <div className="mx-auto max-w-[96rem]">
-        <div
-          className="relative min-w-0 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-2 lg:gap-6 lg:px-8 xl:px-12"
-        >
-        <nav className="hidden w-full min-w-0 items-center justify-start gap-1 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
-          {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
-        </nav>
+        <div className="relative flex min-w-0 items-center justify-between gap-4 px-4 py-2 lg:gap-6 lg:px-8 xl:px-12">
+          <nav className="hidden min-w-0 flex-1 items-center justify-start gap-1 lg:flex lg:flex-nowrap">
+            {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
+          </nav>
 
-        <Link
-          href="/"
-          className="group relative hidden h-[3.5rem] w-[12rem] justify-self-center lg:block"
-        >
-          <img
-            src="/logo-transparent.png"
-            alt="Hodophile Adventures"
-            className="mx-auto h-[2.8rem] w-auto max-h-[2.8rem] object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.16)] transition group-hover:scale-[1.02]"
-          />
-        </Link>
-
-        <nav className="hidden w-full min-w-0 items-center justify-start gap-1 lg:flex lg:flex-nowrap lg:pr-6 xl:pr-10">
-          {desktopRightNavigation.map((item) => renderDesktopNavItem(item))}
-        </nav>
-
-        <div className="hidden justify-self-end min-w-0 flex-none lg:flex">
           <Link
-            href="/make-my-trip"
-            className="inline-flex whitespace-nowrap rounded-full border border-[#ffc000] bg-[#ffc000] px-4 py-1.5 text-sm font-semibold !text-[#0b0b0b] shadow-[0_6px_20px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
+            href="/"
+            className="group relative hidden h-[3.5rem] shrink-0 items-center justify-center lg:flex"
           >
-            Plan Trip
+            <img
+              src="/logo-transparent.png"
+              alt="Hodophile Adventures"
+              className="mx-auto h-[2.8rem] w-auto max-h-[2.8rem] object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.16)] transition group-hover:scale-[1.02]"
+            />
           </Link>
-        </div>
 
-        <div className="col-span-4 flex items-center justify-between lg:hidden">
+          <nav className="hidden min-w-0 flex-1 items-center justify-end gap-1 lg:flex lg:flex-nowrap">
+            {desktopRightNavigation.map((item) => renderDesktopNavItem(item))}
+          </nav>
+
+          <div className="col-span-4 flex items-center justify-between lg:hidden">
           <Link
             href="/"
             className="group relative inline-flex h-[2.5rem] w-[10rem] shrink-0 items-center lg:inline-flex"
@@ -203,6 +209,7 @@ export function SiteHeader() {
               className="mx-auto h-[1.9rem] w-auto max-h-[1.9rem] object-contain drop-shadow-[0_1px_4px_rgba(0,0,0,0.12)] transition group-hover:scale-[1.02]"
             />
           </Link>
+          {/* mobile search removed */}
 
           <button
             type="button"
