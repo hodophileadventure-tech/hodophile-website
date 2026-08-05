@@ -2,6 +2,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
+import { FeaturedJourneysCarousel } from "@/components/featured-journeys-carousel";
 import { PageShell } from "@/components/page-shell";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
 import { WhyChooseUs } from "@/components/why-choose-us";
@@ -284,106 +285,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-[6rem] overflow-hidden rounded-[2rem] bg-[#fffdfa] shadow-[0_20px_45px_rgba(15,23,42,0.06)] w-full relative">
-        <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
-          <div className="absolute left-8 top-8 h-60 w-60 rounded-full bg-[#f6e2c3] blur-3xl" />
-          <div className="absolute right-8 bottom-8 h-48 w-48 rounded-full bg-[#ece2d4] blur-3xl" />
-        </div>
-        <div className="px-6 py-5 lg:px-8 md:py-7">
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div>
-              <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Featured Tours</p>
-              <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
-                <span className="text-black">Signature Tour Packages,</span>{' '}
-                <span className="text-[#fcc000]">Crafted for Comfort</span>
-              </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
-                Compare top routes at a glance and jump directly into the package that matches your travel style.
-              </p>
-            </div>
-            <div className="relative overflow-hidden rounded-[2rem] bg-[#f7f3eb] shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
-              <img
-                src={heroImage}
-                alt="Featured tour preview"
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-              <div className="absolute left-6 bottom-6 right-6 rounded-3xl border border-white/20 bg-black/25 p-6 backdrop-blur-sm">
-                <p className="text-xs uppercase tracking-[0.32em] text-white/80">Curated journeys</p>
-                <h3 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                  Discover premium mountain routes with cinematic pace.
-                </h3>
-                <Link
-                  href="/tours"
-                  className="mt-6 inline-flex items-center rounded-full bg-[#fcc000] px-6 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#0b0b0b] shadow-[0_10px_24px_rgba(255,192,0,0.18)] transition duration-200 ease-in-out hover:-translate-y-0.5"
-                >
-                  Explore tours
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-            {packageCards.map((tour) => (
-              <Link
-                key={tour.name}
-                href={tour.href}
-                className="group flex h-[40rem] flex-col overflow-hidden rounded-[20px] bg-white shadow-[0_18px_45px_rgba(15,23,42,0.14)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(15,23,42,0.18)]"
-              >
-                <div className="relative h-[28rem] overflow-hidden bg-stone-100">
-                  <img
-                    src={tour.image}
-                    alt={tour.name}
-                    sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-[1.05]"
-                    style={{ height: '100%' }}
-                  />
-                  <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-                  <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs uppercase tracking-[0.22em] text-white">
-                    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-[#fcc000] stroke-current" strokeWidth="1.8">
-                      <path d="M12 21s8-4.438 8-10a8 8 0 1 0-16 0c0 5.562 8 10 8 10Z" />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                    {tour.duration}
-                  </div>
-                  <div className="absolute right-5 top-5 rounded-full bg-[#fcc000] px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#0b0b0b] shadow-[0_10px_24px_rgba(255,192,0,0.16)]">
-                    {tour.priceFrom}
-                  </div>
-                  <div className="absolute left-5 bottom-6 right-5">
-                    <h3 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl line-clamp-2" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {tour.titleParts.length > 1 ? (
-                        <>
-                          <span className="block">{tour.titleParts[0]}</span>
-                          <span className="block">{tour.titleParts[1]}</span>
-                        </>
-                      ) : (
-                        tour.name
-                      )}
-                    </h3>
-                  </div>
-                </div>
-                <div className="flex flex-1 flex-col justify-between gap-4 p-6">
-                  <p className="text-sm leading-6 text-stone-600" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {tour.summary}
-                  </p>
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-[#111111] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-[0_12px_28px_rgba(0,0,0,0.16)]">
-                      <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5 text-[#fcc000] stroke-current" strokeWidth="1.8">
-                        <path d="M12 21s8-4.438 8-10a8 8 0 1 0-16 0c0 5.562 8 10 8 10Z" />
-                        <circle cx="12" cy="10" r="3" />
-                      </svg>
-                      Premium route
-                    </span>
-                    <span className="inline-flex items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-[#0b0b0b] shadow-[0_10px_24px_rgba(255,192,0,0.16)]">
-                      Explore →
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FeaturedJourneysCarousel tours={packageCards} />
 
       <section className="mt-[6rem] min-h-[34rem] relative overflow-hidden bg-[#111111]">
         <div className="absolute inset-0 opacity-80 overflow-hidden">
