@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { PageShell } from "@/components/page-shell";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
 import { WhyChooseUs } from "@/components/why-choose-us";
+import { MiqatHighlightSection } from "@/components/miqat-highlight";
 import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, destinations } from "@/lib/site";
 
@@ -205,6 +206,8 @@ export default function Home() {
 
         </div>
       </section>
+
+      <MiqatHighlightSection />
 
       <section className="mt-[6rem] space-y-8 w-full overflow-hidden bg-[#fbf8f2]">
         <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
