@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import { FeaturedTours } from "@/components/featured-tours";
+import { DestinationExplorer } from "@/components/destination-explorer";
 import { PageShell } from "@/components/page-shell";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
 import { WhyChooseUs } from "@/components/why-choose-us";
@@ -32,6 +33,13 @@ export default function Home() {
     Naran: "/tours/northern-tours/naran-valley-tour-packages",
     Swat: "/tours/northern-tours/swat-valley-tour-packages",
   };
+
+  const destinationExplorerItems = destinations.map((destination) => ({
+    name: destination.name,
+    image: destination.image,
+    description: destination.description,
+    href: destinationPackageLinks[destination.name] ?? "/destinations",
+  }));
 
   const serviceHighlights = [
     {
@@ -211,80 +219,7 @@ export default function Home() {
 
       <MiqatHighlightSection />
 
-      <section className="mt-[6rem] space-y-8 w-full overflow-hidden bg-[#fbf8f2]">
-        <div className="pointer-events-none absolute inset-0 -z-10 opacity-10">
-          <div className="absolute left-[-3rem] top-10 h-72 w-72 rounded-full bg-[#f4ddb2] blur-3xl" />
-          <div className="absolute right-0 top-36 h-56 w-56 rounded-full bg-[#e9dec8] blur-3xl" />
-        </div>
-        <div className="px-6 lg:px-8">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-              <div>
-              <p className="text-xs uppercase tracking-[0.32em] font-bold text-black">Destinations</p>
-              <h2 className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
-                <span className="text-black">Discover Pakistan&apos;s</span>{' '}
-                <span className="text-[#fcc000]">Most Loved Escapes</span>
-              </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">
-                Scenic valleys, alpine lakes, and heritage routes curated for smooth, memorable journeys.
-              </p>
-            </div>
-          <Link href="/destinations" className="text-sm font-medium text-[#0b0b0b] transition hover:text-[#ffc000]">
-            View all destinations
-          </Link>
-        </div>
-
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-          {destinations.slice(0, 4).map((destination) => (
-            <Link
-              href={destinationPackageLinks[destination.name] ?? "/destinations"}
-              key={destination.name}
-              className="group flex h-[40rem] flex-col overflow-hidden rounded-[20px] bg-white shadow-[0_18px_45px_rgba(15,23,42,0.14)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(15,23,42,0.18)]"
-            >
-              <div className="relative h-[28rem] overflow-hidden bg-stone-100">
-                <img
-                  src={destination.image}
-                  alt={destination.name}
-                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.05]"
-                  style={{ height: '100%' }}
-                />
-                <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-                <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-black/55 px-3 py-2 text-xs uppercase tracking-[0.24em] text-white">
-                  <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-[#fcc000] stroke-current" strokeWidth="1.8">
-                    <path d="M12 21s8-4.438 8-10a8 8 0 1 0-16 0c0 5.562 8 10 8 10Z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                  <span>Destination</span>
-                </div>
-                <div className="absolute right-5 top-5 rounded-full bg-black/55 px-3 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white">
-                  {destination.duration}
-                </div>
-                <div className="absolute left-5 bottom-6 right-5">
-                  <h3 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl line-clamp-2" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {destination.name}
-                  </h3>
-                </div>
-              </div>
-
-              <div className="flex flex-1 flex-col justify-between gap-4 p-6">
-                <div>
-                  <p className="text-sm leading-6 text-stone-600" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {destination.description}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <span className="inline-flex items-center rounded-full bg-[#111111] px-4 py-2 text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-[0_12px_28px_rgba(0,0,0,0.16)]">
-                    {destination.priceFrom}
-                  </span>
-                  <span className="inline-flex items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-[#0b0b0b] shadow-[0_10px_24px_rgba(255,192,0,0.18)]">
-                    Explore →
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-          </div>
-        </div>
-      </section>
+      <DestinationExplorer destinations={destinationExplorerItems} />
 
       <FeaturedTours tours={packageCards} />
 
