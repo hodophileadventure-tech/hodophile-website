@@ -168,6 +168,22 @@ export const destinations: Destination[] = [
     priceFrom: "From PKR 58,000",
   },
   {
+    name: "Fairy Meadows",
+    image: "/images/destinations/fairy-meadows-unsplash.jpeg",
+    description: "Remote alpine meadows with iconic Nanga Parbat views, perfect for camping and mountain-hike journeys.",
+    season: "June to September",
+    duration: "5 Days",
+    priceFrom: "From PKR 85,000",
+  },
+  {
+    name: "Mininmerg",
+    image: "/images/destinations/minimerg-kashmir.jpg",
+    description: "A highland escape into Mininmerg and White Peaks with dramatic valleys and remote jeep-access adventure.",
+    season: "May to October",
+    duration: "6 Days",
+    priceFrom: "From PKR 90,000",
+  },
+  {
     name: "Kashmir",
     image: "/images/destinations/kashmir.jpg",
     description: "Soft green hills and elegant getaways designed for couples and private groups.",

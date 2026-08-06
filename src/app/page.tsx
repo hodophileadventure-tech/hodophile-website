@@ -32,6 +32,8 @@ export default function Home() {
     Skardu: "/tours/northern-tours/skardu-valley-tour-packages",
     Naran: "/tours/northern-tours/naran-valley-tour-packages",
     Swat: "/tours/northern-tours/swat-valley-tour-packages",
+    "Fairy Meadows": "/tours/northern-tours/astor-valley-tour-packages",
+    Mininmerg: "/tours/northern-tours/astor-valley-tour-packages",
   };
 
   const destinationExplorerItems = destinations.map((destination) => ({
