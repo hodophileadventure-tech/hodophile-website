@@ -151,6 +151,7 @@ export default function Home() {
     const [firstPart, rest] = tour.title.split(/,\s+(.+)/);
 
     return {
+      title: tour.title,
       titleParts: rest ? [firstPart + ",", rest] : [tour.title],
       name: tour.title,
       image: tour.homeImage,
