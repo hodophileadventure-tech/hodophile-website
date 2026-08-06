@@ -2,7 +2,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
-import { FeaturedJourneysCarousel } from "@/components/featured-journeys-carousel";
+import { FeaturedTours } from "@/components/featured-tours";
 import { PageShell } from "@/components/page-shell";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
 import { WhyChooseUs } from "@/components/why-choose-us";
@@ -286,7 +286,7 @@ export default function Home() {
         </div>
       </section>
 
-      <FeaturedJourneysCarousel tours={packageCards} />
+      <FeaturedTours tours={packageCards} />
 
       <section className="mt-[6rem] min-h-[34rem] relative overflow-hidden bg-[#111111]">
         <div className="absolute inset-0 opacity-80 overflow-hidden">
