@@ -98,7 +98,7 @@ export function FeaturedTours({ tours }: { tours: FeaturedJourney[] }) {
 
           {/* Secondary list */}
           <div className="col-span-12 lg:col-span-5">
-            <div className="flex h-full flex-col gap-4">
+            <div className="flex h-full flex-col gap-4 bg-[#fbf6ef] rounded-[20px] p-4 lg:p-6 border border-stone-200/30">
               {remaining.map((tour, idx) => (
                 <button
                   key={tour.i}
