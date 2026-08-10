@@ -14,11 +14,33 @@ type TeamMemberArtworkProps = {
   featured?: boolean;
 };
 
+const portraitTransforms: Record<
+  string,
+  { scale: number; translateY: number; objectPosition: string }
+> = {
+  sana: { scale: 1.14, translateY: -8, objectPosition: "50% 26%" },
+  masood: { scale: 1.14, translateY: 3, objectPosition: "50% 20%" },
+  yashar: { scale: 1.06, translateY: 2, objectPosition: "50% 24%" },
+  israr: { scale: 1.02, translateY: -2, objectPosition: "50% 10%" },
+  maaz: { scale: 1.13, translateY: 4, objectPosition: "50% 20%" },
+  qasim: { scale: 1.10, translateY: 0, objectPosition: "50% 14%" },
+  altamash: { scale: 1.03, translateY: 4, objectPosition: "50% 15%" },
+  sameer: { scale: 1.16, translateY: 2, objectPosition: "50% 24%" },
+  areeba: { scale: 1.05, translateY: 2, objectPosition: "50% 9%" },
+  sikandar: { scale: 1.18, translateY: 8, objectPosition: "50% 18%" },
+  emran: { scale: 1.11, translateY: -8, objectPosition: "50% 12%" },
+};
+
 export function TeamMemberArtwork({
   profile,
   featured = false,
 }: TeamMemberArtworkProps) {
   const shouldReduceMotion = useReducedMotion();
+  const portraitTransform = portraitTransforms[profile.id] ?? {
+    scale: 1,
+    translateY: 0,
+    objectPosition: "50% 22%",
+  };
 
   return (
     <motion.article
@@ -29,13 +51,28 @@ export function TeamMemberArtwork({
       transition={{ duration: 0.45 }}
       whileHover={shouldReduceMotion ? undefined : { y: -7 }}
     >
-      <div className="card-accent" aria-hidden />
-      <div className="avatar-frame">
+      <div className="portrait-background" aria-hidden />
+      <div className="yellow-decoration" aria-hidden />
+
+      <div className="portrait-stage">
         {profile.image ? (
           <img
-            className={`portrait portrait-${profile.id}`}
+            className={`person-image person-${profile.id}`}
             src={profile.image}
             alt={`${profile.name} — ${profile.role}`}
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              width: "100%",
+              height: "100%",
+              right: "auto",
+              bottom: "auto",
+              transform: `translateY(${portraitTransform.translateY}px) scale(${portraitTransform.scale})`,
+              transformOrigin: "center top",
+              objectFit: "cover",
+              objectPosition: portraitTransform.objectPosition,
+            }}
           />
         ) : (
           <svg className="avatar-icon" viewBox="0 0 24 24" aria-hidden>
@@ -67,73 +104,77 @@ export function TeamMemberArtwork({
           padding: 0;
           box-shadow: none;
           text-align: center;
+          height: 100%;
         }
 
         .team-card-featured { min-height: 0; }
 
-        .card-accent {
-          display: none;
+        .portrait-background {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          background: transparent;
         }
 
-        .avatar-frame {
-          display: grid;
+        .yellow-decoration {
+          position: absolute;
+          top: 12px;
+          left: 22%;
+          width: 74px;
+          height: 74px;
+          z-index: 1;
+          pointer-events: none;
+          background: linear-gradient(135deg, transparent 0%, transparent 48%, #fcc000 48%, #fcc000 100%);
+          clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+          transform: rotate(-45deg);
+          opacity: 0.95;
+        }
+
+        .portrait-stage {
+          position: relative;
+          z-index: 2;
           width: 100%;
-          aspect-ratio: 1;
+          height: 330px;
+          min-height: 330px;
           margin: 0 0 1.15rem;
           overflow: hidden;
-          place-items: center;
-          position: relative;
           border: 3px solid #fcc000;
           border-radius: 0;
           background: #fff;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
         }
 
-        .team-card-featured .avatar-frame {
-          height: auto;
+        .team-card-featured .portrait-stage {
+          height: 330px;
         }
 
-        .avatar-frame::after {
+        .person-image {
           position: absolute;
+          inset: 0;
           z-index: 2;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          height: 18%;
-          background: #fff;
-          content: "";
-          pointer-events: none;
-        }
-
-        .portrait {
-          position: relative;
-          z-index: 1;
           width: 100%;
           height: 100%;
+          max-width: none;
           object-fit: cover;
-          object-position: 50% 38%;
-          /* Source artwork has generous transparent margins; crop them out. */
-          transform: scale(2.05);
-          transform-origin: center;
+          object-position: center 22%;
+          transform: scale(var(--person-scale, 1));
+          transform-origin: center top;
         }
 
-        /* Normalize the differently composed source artworks to one portrait scale. */
-        .portrait-qasim,
-        .portrait-israr { transform: scale(1.85); }
-
-        .portrait-altamash,
-        .portrait-areeba { transform: scale(1.95); }
-
-        .portrait-emran { transform: scale(1.9); }
-
-        .portrait-maaz,
-        .portrait-sameer,
-        .portrait-sikandar { transform: scale(2.25); }
-
-        .portrait-israr { top: 14px; }
-        .portrait-maaz { top: 36px; }
-        .portrait-altamash { top: 7px; }
-        .portrait-sameer { top: 22px; }
-        .portrait-sikandar { top: 28px; }
+        .person-sana { --person-scale: 1.14; object-position: center 26%; }
+        .person-masood { --person-scale: 1.14; object-position: center 20%; }
+        .person-yashar { --person-scale: 1.06; object-position: center 24%; }
+        .person-israr { --person-scale: 1.02; object-position: center 10%; }
+        .person-maaz { --person-scale: 1.13; object-position: center 20%; }
+        .person-qasim { --person-scale: 1.10; object-position: center 14%; }
+        .person-altamash { --person-scale: 1.03; object-position: center 15%; }
+        .person-sameer { --person-scale: 1.16; object-position: center 24%; }
+        .person-areeba { --person-scale: 1.05; object-position: center 9%; }
+        .person-sikandar { --person-scale: 1.18; object-position: center 18%; }
+        .person-emran { --person-scale: 1.11; object-position: center 12%; }
 
         .avatar-icon {
           z-index: 1;
@@ -188,9 +229,23 @@ export function TeamMemberArtwork({
           text-transform: uppercase;
         }
 
+        @media (max-width: 920px) {
+          .team-card {
+            height: auto;
+          }
+          .portrait-stage {
+            height: 330px;
+            min-height: 330px;
+          }
+        }
+
         @media (max-width: 560px) {
           .team-card,
           .team-card-featured { min-height: 0; }
+          .portrait-stage {
+            height: 330px;
+            min-height: 330px;
+          }
         }
       `}</style>
     </motion.article>

@@ -32,8 +32,7 @@ export function PageShell({ children, wide = false, noTopPadding = false }: Page
               <p>Hodophile Adventure, Plot# 111-113C, Dupatta Gali, PECHS, Block2, Tariq Road, Karachi, Pakistan, 75400</p>
               <p>+92 337 7777460</p>
               <p>+92 337 8233777</p>
-              <p>yasharahmedsiddiqui@hodophile.pk</p>
-              <p>masood.ahmed@hodophile.pk</p>
+              <p>info@hodophile.pk</p>
             </div>
             <div className="mt-6">
               <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-black">Follow Us</h3>

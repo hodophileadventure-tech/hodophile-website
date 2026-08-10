@@ -77,7 +77,7 @@ export function Packages() {
                 </div>
 
                 <Link
-                  href="/contact-us"
+                  href="/umrah-packages/book"
                   className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#FCC000]/35 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#FCC000] hover:text-black"
                 >
                   View Package
