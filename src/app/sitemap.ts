@@ -7,6 +7,7 @@ const routes = [
   "/",
   "/about",
   "/about-us",
+  "/our-team",
   "/blog",
   "/blogs",
   ...blogPosts.map((post) => `/blogs/${post.slug}`),

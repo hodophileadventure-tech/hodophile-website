@@ -1,5 +1,6 @@
 ﻿import type { Metadata } from "next";
 
+import { AboutTeamTabDropdown } from "@/components/about-team-tab-dropdown";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 
@@ -76,6 +77,8 @@ export default function AboutUsPage() {
           </div>
         </div>
       </section>
+
+      <AboutTeamTabDropdown />
 
       <section className="mx-auto mt-8 max-w-[96rem] rounded-[2rem] border-2 border-[#fcc000] px-6 pb-12 lg:px-8 xl:px-10">
         <div className="mb-12">
@@ -257,47 +260,6 @@ export default function AboutUsPage() {
                 <p className="text-stone-700">
                   Our experienced bilingual tour guides combine local expertise, historical knowledge, and professional hospitality to make every trip informative, safe, and enjoyable.
                 </p>
-              </div>
-            </div>
-          </section>
-
-          <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
-            <h3 className="mb-6 font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
-              Our Team
-            </h3>
-            <p className="mb-8 max-w-3xl text-stone-700">
-              Our passionate team of travel professionals is dedicated to anticipating your travel needs and delivering seamless, personalized experiences. From planning your itinerary to supporting you throughout your journey, we ensure every trip is safe, enjoyable, and stress-free.
-            </p>
-            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">CEO</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Sana Masood</p>
-                <p className="mt-3 text-stone-700">Leading our vision for safe and inspiring travel across Pakistan.</p>
-              </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Managing Director</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Masood Ahmed</p>
-                <p className="mt-3 text-stone-700">Driving operational excellence and ensuring our service delivery runs smoothly.</p>
-              </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Director Corporate</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Israr Ahmed Siddiqui</p>
-                <p className="mt-3 text-stone-700">Strengthening corporate relationships and planning better business travel.</p>
-              </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">HR & Admin</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Yashar Ahmed Siddiqui</p>
-                <p className="mt-3 text-stone-700">Supporting our people and coordinating the team behind every tour.</p>
-              </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Floor Manager</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Mamoon</p>
-                <p className="mt-3 text-stone-700">Coordinating ground operations so every tour stays organized.</p>
-              </div>
-              <div className="rounded-3xl border border-[#fcc000] bg-[#fff8e3] p-6 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.25em] text-[#b76d00]">Manager Operations</p>
-                <p className="mt-3 text-2xl font-semibold text-stone-900">Maaz Ahmed Siddiqui</p>
-                <p className="mt-3 text-stone-700">Overseeing logistics and ensuring every itinerary is delivered effectively.</p>
               </div>
             </div>
           </section>

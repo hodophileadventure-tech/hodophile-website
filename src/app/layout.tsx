@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 
 import { siteConfig } from "@/lib/site";
+import { AnalyticsScripts } from "@/components/AnalyticsScripts";
 import { DealsPopup } from "@/components/deals-popup";
+import { JsonLd } from "@/components/JsonLd";
 import { LeadCapturePopup } from "@/components/lead-capture-popup";
 
 const GA_TRACKING_ID =
@@ -86,47 +87,18 @@ export default function RootLayout({
       className={`${poppins.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#f7f6f2] text-stone-900">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify([organizationSchema, websiteSchema]),
-          }}
-        />
-        {GA_TRACKING_ID ? (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-              strategy="beforeInteractive"
-            />
-            <Script id="ga-init" strategy="beforeInteractive">
-              {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${GA_TRACKING_ID}', { page_path: window.location.pathname });`}
-            </Script>
-          </>
-        ) : null}
+        <JsonLd data={[organizationSchema, websiteSchema]} />
+        <AnalyticsScripts gaTrackingId={GA_TRACKING_ID} facebookPixelId={FACEBOOK_PIXEL_ID} />
         {FACEBOOK_PIXEL_ID ? (
-          <>
-            <Script id="fb-pixel" strategy="afterInteractive">
-              {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)
-}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '${FACEBOOK_PIXEL_ID}');
-fbq('track', 'PageView');`}
-            </Script>
-            <noscript>
-              <img
-                height="1"
-                width="1"
-                style={{ display: "none" }}
-                src={`https://www.facebook.com/tr?id=${FACEBOOK_PIXEL_ID}&ev=PageView&noscript=1`}
-                alt="Facebook Pixel"
-              />
-            </noscript>
-          </>
+          <noscript>
+            <img
+              height="1"
+              width="1"
+              style={{ display: "none" }}
+              src={`https://www.facebook.com/tr?id=${FACEBOOK_PIXEL_ID}&ev=PageView&noscript=1`}
+              alt="Facebook Pixel"
+            />
+          </noscript>
         ) : null}
         <DealsPopup />
         <LeadCapturePopup />

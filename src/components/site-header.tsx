@@ -14,11 +14,13 @@ export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [toursOpen, setToursOpen] = useState(false);
   const [desktopToursOpen, setDesktopToursOpen] = useState(false);
+  const [aboutUsDropdownOpen, setAboutUsDropdownOpen] = useState(false);
   const [activeTourGroup, setActiveTourGroup] = useState(tourMenu[0]?.href ?? "");
   const [activeMobileTourGroup, setActiveMobileTourGroup] = useState<string | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
-  
+
   const desktopToursCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const aboutUsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -62,7 +64,81 @@ export function SiteHeader() {
     }, 140);
   };
 
+  const openAboutUsMenu = () => {
+    if (aboutUsCloseTimer.current) {
+      clearTimeout(aboutUsCloseTimer.current);
+      aboutUsCloseTimer.current = null;
+    }
+
+    setAboutUsDropdownOpen(true);
+  };
+
+  const closeAboutUsMenu = () => {
+    aboutUsCloseTimer.current = setTimeout(() => {
+      setAboutUsDropdownOpen(false);
+    }, 160);
+  };
+
   const renderDesktopNavItem = (item: NavigationItem) => {
+    if (item.href === "/about-us") {
+      return (
+        <div
+          key={item.href}
+          className="relative"
+          onMouseEnter={openAboutUsMenu}
+          onMouseLeave={closeAboutUsMenu}
+        >
+          <button
+            type="button"
+            onClick={() => {
+              setAboutUsDropdownOpen((previous) => !previous);
+              if (aboutUsCloseTimer.current) {
+                clearTimeout(aboutUsCloseTimer.current);
+                aboutUsCloseTimer.current = null;
+              }
+            }}
+            onFocus={openAboutUsMenu}
+            className={`inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-2 text-[0.9rem] transition ${
+              pathname === item.href
+                ? "text-stone-900"
+                : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
+            } ${
+              pathname === item.href ? "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:bg-[#ffc000]" : ""
+            }`}
+          >
+            <span>{item.label}</span>
+            <svg viewBox="0 0 20 20" className="ml-1.5 h-3 w-3 fill-current" aria-hidden="true">
+              <path d="M5.8 7.5 10 11.7l4.2-4.2 1.4 1.4L10 14.5 4.4 8.9z" />
+            </svg>
+          </button>
+
+          <div
+            className={`absolute left-0 top-[calc(100%+0.45rem)] z-[90] min-w-[210px] rounded-2xl border border-[#fcc000] bg-white p-1.5 shadow-[0_20px_45px_rgba(0,0,0,0.14)] transition duration-200 ${
+              aboutUsDropdownOpen ? "visible opacity-100" : "invisible opacity-0"
+            }`}
+            onMouseEnter={openAboutUsMenu}
+            onMouseLeave={closeAboutUsMenu}
+          >
+            <div className="grid gap-1">
+              <Link
+                href="/our-team"
+                className="rounded-xl px-4 py-3 text-left text-[0.72rem] font-extrabold uppercase tracking-[0.22em] text-stone-900 transition hover:bg-[#fcc000] hover:text-stone-950"
+                onClick={() => {
+                  setAboutUsDropdownOpen(false);
+                  if (aboutUsCloseTimer.current) {
+                    clearTimeout(aboutUsCloseTimer.current);
+                    aboutUsCloseTimer.current = null;
+                  }
+                }}
+              >
+                Our Team
+              </Link>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     if (item.href === "/tours") {
       return (
         <div
