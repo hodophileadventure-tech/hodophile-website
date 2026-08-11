@@ -19,7 +19,7 @@ const packages = [
     image: "/images/umrah/kabah-shareef.jpg",
   },
   {
-    tier: "VIP",
+    tier: "HARAMAIN",
     price: "From Rs.495,000",
     detail: "Luxury hospitality, premium transfers and elevated support at every step.",
     image: "/images/umrah/kabah.jpg",

@@ -2,7 +2,7 @@
 
 import { MiqatCTA } from "@/components/miqat/MiqatCTA";
 import { MiqatHero } from "@/components/miqat/MiqatHero";
-import { Packages } from "@/components/miqat/Packages";
+import { UmrahPackages } from "@/components/miqat/UmrahPackages";
 import { SacredPlaces } from "@/components/miqat/SacredPlaces";
 import { Testimonials } from "@/components/miqat/Testimonials";
 import { JourneyTimeline } from "@/components/miqat/JourneyTimeline";
@@ -20,7 +20,7 @@ export function MiqatLanding() {
       </div>
 
       <div className="">
-        <Packages />
+        <UmrahPackages />
       </div>
 
       <div className="">
