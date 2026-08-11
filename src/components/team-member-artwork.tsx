@@ -14,33 +14,11 @@ type TeamMemberArtworkProps = {
   featured?: boolean;
 };
 
-const portraitTransforms: Record<
-  string,
-  { scale: number; translateY: number; objectPosition: string }
-> = {
-  sana: { scale: 1.14, translateY: -8, objectPosition: "50% 26%" },
-  masood: { scale: 1.14, translateY: 3, objectPosition: "50% 20%" },
-  yashar: { scale: 1.06, translateY: 2, objectPosition: "50% 24%" },
-  israr: { scale: 1.02, translateY: -2, objectPosition: "50% 10%" },
-  maaz: { scale: 1.13, translateY: 4, objectPosition: "50% 20%" },
-  qasim: { scale: 1.10, translateY: 0, objectPosition: "50% 14%" },
-  altamash: { scale: 1.03, translateY: 4, objectPosition: "50% 15%" },
-  sameer: { scale: 1.16, translateY: 2, objectPosition: "50% 24%" },
-  areeba: { scale: 1.05, translateY: 2, objectPosition: "50% 9%" },
-  sikandar: { scale: 1.18, translateY: 8, objectPosition: "50% 18%" },
-  emran: { scale: 1.11, translateY: -8, objectPosition: "50% 12%" },
-};
-
 export function TeamMemberArtwork({
   profile,
   featured = false,
 }: TeamMemberArtworkProps) {
   const shouldReduceMotion = useReducedMotion();
-  const portraitTransform = portraitTransforms[profile.id] ?? {
-    scale: 1,
-    translateY: 0,
-    objectPosition: "50% 22%",
-  };
 
   return (
     <motion.article
@@ -57,22 +35,9 @@ export function TeamMemberArtwork({
       <div className="portrait-stage">
         {profile.image ? (
           <img
-            className={`person-image person-${profile.id}`}
+            className="person-image"
             src={profile.image}
             alt={`${profile.name} — ${profile.role}`}
-            style={{
-              position: "absolute",
-              left: 0,
-              top: 0,
-              width: "100%",
-              height: "100%",
-              right: "auto",
-              bottom: "auto",
-              transform: `translateY(${portraitTransform.translateY}px) scale(${portraitTransform.scale})`,
-              transformOrigin: "center top",
-              objectFit: "cover",
-              objectPosition: portraitTransform.objectPosition,
-            }}
           />
         ) : (
           <svg className="avatar-icon" viewBox="0 0 24 24" aria-hidden>
@@ -159,22 +124,8 @@ export function TeamMemberArtwork({
           height: 100%;
           max-width: none;
           object-fit: cover;
-          object-position: center 22%;
-          transform: scale(var(--person-scale, 1));
-          transform-origin: center top;
+          object-position: center bottom;
         }
-
-        .person-sana { --person-scale: 1.14; object-position: center 26%; }
-        .person-masood { --person-scale: 1.14; object-position: center 20%; }
-        .person-yashar { --person-scale: 1.06; object-position: center 24%; }
-        .person-israr { --person-scale: 1.02; object-position: center 10%; }
-        .person-maaz { --person-scale: 1.13; object-position: center 20%; }
-        .person-qasim { --person-scale: 1.10; object-position: center 14%; }
-        .person-altamash { --person-scale: 1.03; object-position: center 15%; }
-        .person-sameer { --person-scale: 1.16; object-position: center 24%; }
-        .person-areeba { --person-scale: 1.05; object-position: center 9%; }
-        .person-sikandar { --person-scale: 1.18; object-position: center 18%; }
-        .person-emran { --person-scale: 1.11; object-position: center 12%; }
 
         .avatar-icon {
           z-index: 1;
