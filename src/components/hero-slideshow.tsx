@@ -252,3 +252,4 @@ export function HeroSlideshow() {
       </motion.div>
     </div>
   );
+}
