@@ -225,33 +225,6 @@ export default function Home() {
 
       <FeaturedTours tours={packageCards} />
 
-      <section className="mt-[6rem] min-h-[34rem] relative overflow-hidden bg-[#111111]">
-        <div className="absolute inset-0 opacity-80 overflow-hidden">
-          <img
-            src="/hero-images/gilgit.jpeg"
-            alt="Cinematic travel scene"
-            className="absolute inset-0 h-full w-full object-cover"
-            style={{ objectPosition: 'center center' }}
-          />
-          <div className="absolute inset-0 bg-black/35" />
-        </div>
-        <div className="relative mx-auto max-w-6xl px-6 py-20 text-center lg:px-8">
-          <p className="text-xs uppercase tracking-[0.32em] font-bold text-white/75">A journey that lingers</p>
-          <h2 className="mt-4 text-4xl font-serif leading-tight text-white sm:text-5xl">
-            Travel with depth, calm, and a sense of true discovery.
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/80 sm:text-base">
-            A single cinematic moment can shape the feeling of an entire itinerary. Explore routes crafted to feel effortless and unforgettable.
-          </p>
-          <Link
-            href="/make-my-trip"
-            className="mt-10 inline-flex items-center justify-center rounded-full bg-[#fcc000] px-8 py-4 text-sm font-semibold uppercase tracking-[0.14em] text-[#0b0b0b] shadow-[0_14px_40px_rgba(255,192,0,0.2)] transition duration-200 ease-in-out hover:-translate-y-0.5"
-          >
-            Plan My Journey
-          </Link>
-        </div>
-      </section>
-
       <WhyChooseUs />
 
       <section className="mt-[6rem] overflow-hidden rounded-[2rem] bg-[#f7f6f4] shadow-[0_20px_45px_rgba(15,23,42,0.06)] w-full relative">

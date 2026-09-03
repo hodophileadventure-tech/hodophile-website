@@ -98,23 +98,21 @@ export function SiteHeader() {
               }
             }}
             onFocus={openAboutUsMenu}
-            className={`inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-2 text-[0.9rem] transition ${
+            className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition duration-300 ${
               pathname === item.href
-                ? "text-stone-900"
-                : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
-            } ${
-              pathname === item.href ? "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:bg-[#ffc000]" : ""
+                ? "text-yellow-600"
+                : "text-stone-700 hover:text-stone-900 hover:bg-stone-100/50"
             }`}
           >
             <span>{item.label}</span>
-            <svg viewBox="0 0 20 20" className="ml-1.5 h-3 w-3 fill-current" aria-hidden="true">
+            <svg viewBox="0 0 20 20" className={`h-3 w-3 fill-current transition-transform duration-300 ${aboutUsDropdownOpen ? 'rotate-180' : ''}`} aria-hidden="true">
               <path d="M5.8 7.5 10 11.7l4.2-4.2 1.4 1.4L10 14.5 4.4 8.9z" />
             </svg>
           </button>
 
           <div
-            className={`absolute left-0 top-[calc(100%+0.45rem)] z-[90] min-w-[210px] rounded-2xl border border-[#fcc000] bg-white p-1.5 shadow-[0_20px_45px_rgba(0,0,0,0.14)] transition duration-200 ${
-              aboutUsDropdownOpen ? "visible opacity-100" : "invisible opacity-0"
+            className={`absolute left-0 top-[calc(100%+0.6rem)] z-[90] min-w-[220px] rounded-2xl border border-yellow-400/30 bg-white/95 backdrop-blur-lg p-2 shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-200 ${
+              aboutUsDropdownOpen ? "visible opacity-100 scale-100" : "invisible opacity-0 scale-95 pointer-events-none"
             }`}
             onMouseEnter={openAboutUsMenu}
             onMouseLeave={closeAboutUsMenu}
@@ -122,7 +120,7 @@ export function SiteHeader() {
             <div className="grid gap-1">
               <Link
                 href="/our-team"
-                className="rounded-xl px-4 py-3 text-left text-[0.72rem] font-extrabold uppercase tracking-[0.22em] text-stone-900 transition hover:bg-[#fcc000] hover:text-stone-950"
+                className="rounded-xl px-4 py-3 text-left text-sm font-semibold text-stone-900 transition-all duration-300 hover:bg-yellow-100/50 hover:text-yellow-700"
                 onClick={() => {
                   setAboutUsDropdownOpen(false);
                   if (aboutUsCloseTimer.current) {
@@ -150,28 +148,28 @@ export function SiteHeader() {
           <Link
             href={item.href}
             onFocus={openDesktopToursMenu}
-            className={`inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1.5 text-[0.9rem] transition ${
+            className={`inline-flex gap-1 items-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition duration-300 ${
               isToursActive
-                ? "text-[#ffc000]"
-                : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
+                ? "text-yellow-600"
+                : "text-stone-700 hover:text-stone-900 hover:bg-stone-100/50"
             }`}
           >
             {item.label}
-            <svg viewBox="0 0 20 20" className="ml-1.5 h-3 w-3 fill-current" aria-hidden="true">
+            <svg viewBox="0 0 20 20" className={`h-3 w-3 fill-current transition-transform duration-300 ${desktopToursOpen ? 'rotate-180' : ''}`} aria-hidden="true">
               <path d="M5.8 7.5 10 11.7l4.2-4.2 1.4 1.4L10 14.5 4.4 8.9z" />
             </svg>
           </Link>
 
           <div
-            className={`fixed left-1/2 top-[4.5rem] z-[80] w-[min(54rem,calc(100vw-1rem))] -translate-x-1/2 transition duration-200 ${
-              desktopToursOpen ? "visible opacity-100" : "invisible opacity-0"
+            className={`fixed left-1/2 top-[calc(100%+0.8rem)] z-[80] w-[min(56rem,calc(100vw-2rem))] -translate-x-1/2 transition-all duration-300 ${
+              desktopToursOpen ? "visible opacity-100 scale-100" : "invisible opacity-0 scale-95 pointer-events-none"
             }`}
             onMouseEnter={openDesktopToursMenu}
             onMouseLeave={closeDesktopToursMenu}
           >
-            <div className="grid h-[26rem] max-h-[calc(100vh-6.5rem)] overflow-hidden rounded-[1.9rem] border border-[#4a3d18] bg-[#111111] shadow-[0_30px_80px_rgba(0,0,0,0.35)] ring-1 ring-black/30 md:grid-cols-[15rem_minmax(0,1fr)]">
-              <div className="min-h-0 overflow-y-auto overscroll-contain border-r border-white/10 bg-[#171717] p-4">
-                <p className="mb-3 px-2 text-xs font-semibold uppercase tracking-[0.3em] text-[#ffc000]">Tour Groups</p>
+            <div className="grid h-[26rem] max-h-[calc(100vh-7rem)] overflow-hidden rounded-3xl border border-stone-200/50 bg-white/95 backdrop-blur-lg shadow-[0_30px_80px_rgba(0,0,0,0.12)] ring-1 ring-white/20 md:grid-cols-[16rem_minmax(0,1fr)]">
+              <div className="min-h-0 overflow-y-auto overscroll-contain border-r border-stone-200/50 bg-stone-50/30 p-4">
+                <p className="mb-4 px-3 text-xs font-bold uppercase tracking-[0.35em] text-yellow-600">Tour Groups</p>
                 <div className="grid gap-2">
                   {tourMenu.map((group) => {
                     const isActive = activeTourGroup === group.href;
@@ -181,10 +179,10 @@ export function SiteHeader() {
                         type="button"
                         onMouseEnter={() => setActiveTourGroup(group.href)}
                         onFocus={() => setActiveTourGroup(group.href)}
-                        className={`rounded-xl border px-4 py-3 text-left text-sm font-semibold transition ${
+                        className={`rounded-lg border px-4 py-3 text-left text-sm font-semibold transition-all duration-300 ${
                           isActive
-                            ? "border-[#ffc000] bg-[#2a2110] text-white"
-                            : "border-white/10 bg-white/5 text-stone-100 hover:border-[#ffc000]/60 hover:bg-white/10"
+                            ? "border-yellow-400/60 bg-yellow-50/60 text-yellow-900"
+                            : "border-stone-200/50 bg-white/40 text-stone-700 hover:border-yellow-400/40 hover:bg-yellow-50/40"
                         }`}
                       >
                         {group.label}
@@ -194,27 +192,27 @@ export function SiteHeader() {
                 </div>
               </div>
 
-              <div className="min-h-0 overflow-y-auto overscroll-contain p-5">
+              <div className="min-h-0 overflow-y-auto overscroll-contain p-6">
                 {tourMenu
                   .filter((group) => group.href === activeTourGroup)
                   .map((group) => (
                     <div key={group.href}>
                       <Link
                         href={group.href}
-                        className="text-xs font-semibold uppercase tracking-[0.32em] text-[#ffc000] transition hover:text-white"
+                        className="text-xs font-bold uppercase tracking-[0.35em] text-yellow-600 transition duration-300 hover:text-yellow-700"
                       >
                         {group.label}
                       </Link>
-                      <div className="mt-4 grid gap-2">
+                      <div className="mt-4 grid gap-3">
                         {group.items.map((subItem) => (
                           <Link
                             key={subItem.href}
                             href={subItem.href}
-                            className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-[#ffc000] hover:bg-white/10 hover:shadow-[0_10px_24px_rgba(0,0,0,0.18)]"
+                            className="group/item rounded-lg border border-stone-200/50 bg-stone-50/30 px-4 py-3 transition-all duration-300 hover:border-yellow-400/40 hover:bg-yellow-50/40 hover:shadow-[0_8px_20px_rgba(0,0,0,0.08)]"
                           >
-                            <div className="text-sm font-semibold text-white">{subItem.label}</div>
+                            <div className="text-sm font-semibold text-stone-900 group-hover/item:text-yellow-700">{subItem.label}</div>
                             {subItem.description ? (
-                              <div className="mt-1 text-xs leading-5 text-stone-300">{subItem.description}</div>
+                              <div className="mt-1 text-xs leading-5 text-stone-600">{subItem.description}</div>
                             ) : null}
                           </Link>
                         ))}
@@ -232,15 +230,16 @@ export function SiteHeader() {
       <Link
         key={item.href}
         href={item.href}
-        className={`relative inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-2 text-[0.9rem] transition ${
+        className={`relative inline-flex items-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition duration-300 ${
           pathname === item.href
-            ? "text-stone-900"
-            : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
-        } ${
-          pathname === item.href ? "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:bg-[#ffc000]" : ""
+            ? "text-yellow-600"
+            : "text-stone-700 hover:text-stone-900 hover:bg-stone-100/50"
         }`}
       >
         {item.label}
+        {pathname === item.href && (
+          <span className="absolute bottom-1 left-1/2 -translate-x-1/2 h-1 w-6 bg-gradient-to-r from-yellow-400 to-yellow-400/50 rounded-full" />
+        )}
       </Link>
     );
   };
@@ -248,13 +247,15 @@ export function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-white/95 backdrop-blur-xl transition duration-300 ${
-        scrolled ? "shadow-[0_20px_55px_rgba(15,23,42,0.16)]" : "shadow-[0_12px_36px_rgba(15,23,42,0.08)]"
+      className={`fixed inset-x-0 top-0 z-50 border-b transition duration-300 ${
+        scrolled 
+          ? "border-black/5 bg-white/90 shadow-[0_20px_60px_rgba(0,0,0,0.12)] backdrop-blur-2xl" 
+          : "border-black/0 bg-white/70 shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-xl"
       }`}
       aria-hidden={false}
     >
       <div className="mx-auto max-w-[96rem]">
-        <div className="relative flex min-w-0 items-center justify-between gap-4 px-4 py-2 lg:gap-6 lg:px-8 xl:px-12">
+        <div className="relative flex min-w-0 items-center justify-between gap-4 px-4 py-3 lg:gap-8 lg:px-8 xl:px-12">
           <nav className="hidden min-w-0 flex-1 items-center justify-start gap-1 lg:flex lg:flex-nowrap">
             {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
           </nav>
@@ -266,7 +267,7 @@ export function SiteHeader() {
             <img
               src="/logo-transparent.png"
               alt="Hodophile Adventures"
-              className="mx-auto h-[2.8rem] w-auto max-h-[2.8rem] object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.16)] transition group-hover:scale-[1.02]"
+              className="mx-auto h-[2.8rem] w-auto max-h-[2.8rem] object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-transform duration-300 group-hover:scale-[1.03]"
             />
           </Link>
 
@@ -282,7 +283,7 @@ export function SiteHeader() {
             <img
               src="/logo-transparent.png"
               alt="Hodophile Adventures"
-              className="mx-auto h-[1.9rem] w-auto max-h-[1.9rem] object-contain drop-shadow-[0_1px_4px_rgba(0,0,0,0.12)] transition group-hover:scale-[1.02]"
+              className="mx-auto h-[1.9rem] w-auto max-h-[1.9rem] object-contain drop-shadow-[0_1px_4px_rgba(0,0,0,0.12)] transition-transform group-hover:scale-[1.03]"
             />
           </Link>
           {/* mobile search removed */}
@@ -293,7 +294,7 @@ export function SiteHeader() {
               setToursOpen(false);
               setMobileOpen((prev) => !prev);
             }}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-stone-300 bg-white text-stone-700 transition lg:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-stone-200/50 bg-white/50 text-stone-700 transition duration-300 hover:bg-white hover:border-stone-300 hover:shadow-md lg:hidden"
             aria-expanded={mobileOpen}
             aria-label="Toggle navigation menu"
           >
@@ -305,18 +306,22 @@ export function SiteHeader() {
       </div>
 
       {mobileOpen ? (
-        <div className="border-t border-stone-200 bg-white/95 px-6 pb-6 pt-4 shadow-[0_18px_40px_rgba(15,23,42,0.08)] lg:hidden">
+        <div className="border-t border-stone-100 bg-white/95 px-6 pb-6 pt-4 shadow-[0_20px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl lg:hidden">
           <nav className="grid gap-3">
             {navigation.map((item) => (
               item.href === "/tours" ? (
-                <div key={item.href} className="rounded-2xl border border-stone-200 bg-white p-4">
+                <div key={item.href} className="rounded-2xl border border-stone-200/50 bg-stone-50/50 p-4 backdrop-blur-sm">
                   <button
                     type="button"
                     onClick={() => setToursOpen((prev) => !prev)}
-                    className="flex w-full items-center justify-between text-sm font-semibold text-stone-900"
+                    className="flex w-full items-center justify-between text-sm font-bold text-stone-900 uppercase tracking-[0.1em]"
                   >
                     <span>Tours</span>
-                    <span className="text-stone-500">{toursOpen ? "−" : "+"}</span>
+                    <span className={`text-stone-500 transition-transform ${toursOpen ? 'rotate-180' : ''}`}>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                      </svg>
+                    </span>
                   </button>
 
                   {toursOpen ? (
@@ -324,12 +329,12 @@ export function SiteHeader() {
                       <Link
                         href="/tours"
                         onClick={() => setMobileOpen(false)}
-                        className="rounded-xl border border-stone-200 px-4 py-3 text-sm font-medium text-stone-700"
+                        className="rounded-xl border border-yellow-400/30 bg-yellow-50/50 px-4 py-3 text-sm font-semibold text-yellow-900 transition hover:bg-yellow-100/50 hover:border-yellow-400/60"
                       >
                         All Tours
                       </Link>
                       {tourMenu.map((group) => (
-                        <div key={group.href} className="rounded-xl border border-stone-200 p-3">
+                        <div key={group.href} className="rounded-xl border border-stone-200/50 bg-white/60 p-3 backdrop-blur-sm">
                           <button
                             type="button"
                             onClick={() =>
@@ -337,10 +342,14 @@ export function SiteHeader() {
                                 prev === group.href ? null : group.href,
                               )
                             }
-                            className="flex w-full items-center justify-between text-xs font-semibold uppercase tracking-[0.24em] text-stone-500"
+                            className="flex w-full items-center justify-between text-xs font-bold uppercase tracking-[0.2em] text-stone-600"
                           >
                             <span>{group.label}</span>
-                            <span>{activeMobileTourGroup === group.href ? "−" : "+"}</span>
+                            <span className={`transition-transform ${activeMobileTourGroup === group.href ? 'rotate-180' : ''}`}>
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                              </svg>
+                            </span>
                           </button>
 
                           {activeMobileTourGroup === group.href ? (
@@ -348,7 +357,7 @@ export function SiteHeader() {
                               <Link
                                 href={group.href}
                                 onClick={() => setMobileOpen(false)}
-                                className="rounded-lg border border-stone-200 px-3 py-2 text-sm font-semibold text-stone-800"
+                                className="rounded-lg border border-yellow-400/30 bg-gradient-to-r from-yellow-50 to-yellow-100/50 px-3 py-2 text-sm font-semibold text-yellow-900 transition hover:from-yellow-100 hover:to-yellow-100"
                               >
                                 View {group.label}
                               </Link>
@@ -357,7 +366,7 @@ export function SiteHeader() {
                                   key={subItem.href}
                                   href={subItem.href}
                                   onClick={() => setMobileOpen(false)}
-                                  className="rounded-lg border border-stone-200 px-3 py-2 text-sm font-medium text-stone-700"
+                                  className="rounded-lg border border-stone-200/50 bg-white/60 px-3 py-2 text-sm font-medium text-stone-700 transition hover:bg-white hover:border-stone-300"
                                 >
                                   {subItem.label}
                                 </Link>
@@ -374,7 +383,7 @@ export function SiteHeader() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-medium text-stone-700 transition hover:border-stone-300 hover:text-stone-900"
+                  className="rounded-xl border border-stone-200/50 bg-white/60 px-4 py-3 text-sm font-medium text-stone-700 transition duration-300 hover:border-stone-300 hover:text-stone-900 hover:bg-white hover:shadow-md backdrop-blur-sm"
                 >
                   {item.label}
                 </Link>
@@ -384,7 +393,7 @@ export function SiteHeader() {
           <Link
             href="/make-my-trip"
             onClick={() => setMobileOpen(false)}
-            className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[#ffc000] bg-[#ffc000] px-5 py-3 text-sm font-semibold !text-[#0b0b0b]"
+            className="mt-6 btn-primary w-full justify-center"
           >
             Plan Journey
           </Link>

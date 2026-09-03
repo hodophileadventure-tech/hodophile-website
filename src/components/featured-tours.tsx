@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type FeaturedJourney = {
   title: string;
@@ -24,119 +25,196 @@ export function FeaturedTours({ tours }: { tours: FeaturedJourney[] }) {
   }, [tours]);
 
   const active = tours[activeIndex] ?? tours[0];
-
   const remaining = useMemo(() => tours.map((t, i) => ({ ...t, i })), [tours]);
 
   return (
-    <section className="mt-[6rem] px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl">
-        <div className="max-w-3xl">
-          <p className="text-xs uppercase tracking-[0.32em] text-stone-700/80">
-            FEATURED TOURS
-          </p>
-          <h2 className="mt-3 text-3xl font-serif tracking-tight text-stone-950 sm:text-4xl">
-            Signature journeys, thoughtfully crafted.
-          </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-stone-600">
-            Cinematic routes and intimate itineraries curated for meaningful travel.
-          </p>
-        </div>
-
-        <div className="mt-8 grid grid-cols-12 gap-6 items-start">
-          {/* Main featured */}
-          <div className="col-span-12 lg:col-span-7">
-            <div className="relative overflow-hidden rounded-[22px]" style={{ aspectRatio: '16/9' }}>
-              <Image
-                src={active.image}
-                alt={active.name}
-                fill
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                className="object-cover transition-transform duration-500 ease-out hover:scale-[1.02]"
-                priority
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-
-              <div className="absolute left-6 bottom-6 right-6 z-10 text-white">
-                <div className="flex items-center gap-3 text-sm uppercase tracking-[0.24em] text-white/80">
-                  <div className="text-stone-300">0{activeIndex + 1}</div>
-                  <div className="h-px w-10 bg-[#fcc000]/70" />
-                  <div className="text-sm text-white/80">{String(tours.length).padStart(2, '0')} journeys</div>
-                </div>
-
-                <h3 className="mt-3 text-4xl font-serif leading-tight sm:text-[3.4rem]">
-                  {active.titleParts && active.titleParts.length > 1 ? (
-                    <>
-                      <span className="block">{active.titleParts[0]}</span>
-                      <span className="block text-3xl font-medium opacity-95">{active.titleParts[1]}</span>
-                    </>
-                  ) : (
-                    <span className="block">{active.title}</span>
-                  )}
-                </h3>
-
-                <div className="mt-4 flex items-center gap-4 text-sm text-white/80">
-                  <div className="uppercase tracking-[0.18em]">{active.duration}</div>
-                  <div className="text-[#fcc000]">· {active.priceFrom}</div>
-                </div>
-
-                {active.summary && (
-                  <p className="mt-4 max-w-2xl text-sm text-white/90">{active.summary}</p>
-                )}
-
-                <div className="mt-6">
-                  <Link
-                    href={active.href}
-                    className="inline-flex items-center gap-3 rounded-full bg-[#fcc000] px-6 py-3 text-sm font-semibold text-[#0b0b0b] shadow-[0_12px_30px_rgba(255,192,0,0.12)] transition-transform duration-200 hover:-translate-y-0.5"
-                  >
-                    Explore Journey →
-                  </Link>
-                </div>
-              </div>
-            </div>
+    <section className="mt-20 px-6 lg:px-8 py-20">
+      <div className="mx-auto max-w-7xl">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mb-16"
+        >
+          <div className="inline-flex items-center gap-3 mb-6">
+            <div className="h-px w-8 bg-yellow-400" />
+            <p className="text-xs uppercase tracking-[0.35em] text-yellow-600 font-bold">
+              CURATED EXPERIENCES
+            </p>
           </div>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold leading-tight mb-4 text-stone-950">
+            Signature Journeys
+          </h2>
+          <p className="text-lg text-stone-600 leading-relaxed max-w-2xl">
+            Meticulously designed itineraries featuring our most sought-after destinations. Each journey is crafted for unforgettable moments.
+          </p>
+        </motion.div>
 
-          {/* Secondary list */}
+        <div className="grid grid-cols-12 gap-8">
+          {/* Main Featured Tour */}
+          <motion.div
+            key={`featured-${activeIndex}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="col-span-12 lg:col-span-7"
+          >
+            <div className="relative overflow-hidden rounded-2xl group" style={{ aspectRatio: '16/9' }}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeIndex}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.6 }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={active.image}
+                    alt={active.name}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 60vw"
+                    className="object-cover"
+                    priority
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-black/10 via-black/30 to-black/70" />
+              
+              {/* Vignette */}
+              <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.3)]" />
+
+              {/* Content Overlay */}
+              <motion.div
+                key={`content-${activeIndex}`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="absolute inset-0 flex flex-col justify-end p-8 lg:p-10 z-10"
+              >
+                <div className="space-y-4">
+                  {/* Journey Counter */}
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-bold uppercase tracking-[0.2em] text-yellow-400">
+                      0{activeIndex + 1} / {String(tours.length).padStart(2, '0')}
+                    </span>
+                    <div className="h-0.5 flex-1 max-w-xs bg-gradient-to-r from-yellow-400 to-transparent" />
+                  </div>
+
+                  {/* Title */}
+                  <div className="space-y-2">
+                    <h3 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight drop-shadow-lg">
+                      {active.titleParts && active.titleParts.length > 1 ? (
+                        <>
+                          <span className="block">{active.titleParts[0]}</span>
+                          <span className="text-yellow-400">{active.titleParts[1]}</span>
+                        </>
+                      ) : (
+                        <span>{active.title}</span>
+                      )}
+                    </h3>
+                  </div>
+
+                  {/* Meta Info */}
+                  <div className="flex items-center gap-6 text-sm text-white/90">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span className="uppercase tracking-[0.15em] font-semibold">{active.duration}</span>
+                    </div>
+                    <div className="h-1 w-1 bg-yellow-400 rounded-full" />
+                    <span className="text-yellow-400 font-bold">{active.priceFrom}</span>
+                  </div>
+
+                  {/* CTA Button */}
+                  <div className="pt-4">
+                    <Link
+                      href={active.href}
+                      className="btn-primary inline-flex gap-2 group"
+                    >
+                      Discover This Journey
+                      <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Secondary Tours List */}
           <div className="col-span-12 lg:col-span-5">
-            <div className="flex h-full flex-col gap-4 bg-[#fbf6ef] rounded-[20px] p-4 lg:p-6 border border-stone-200/30">
+            <div className="space-y-3">
               {remaining.map((tour, idx) => (
-                <button
+                <motion.button
                   key={tour.i}
                   onMouseEnter={() => setActiveIndex(tour.i)}
                   onFocus={() => setActiveIndex(tour.i)}
                   onClick={() => setActiveIndex(tour.i)}
-                  className={`group flex w-full items-center gap-4 rounded-md px-3 py-3 text-left transition-colors duration-300 focus:outline-none ${
-                    tour.i === activeIndex ? "bg-white/6" : "hover:bg-white/3"
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.05, duration: 0.4 }}
+                  className={`w-full group relative overflow-hidden rounded-lg p-4 transition-all duration-300 ${
+                    tour.i === activeIndex
+                      ? 'bg-yellow-400/10 border border-yellow-400/40'
+                      : 'bg-stone-100/50 border border-stone-200/50 hover:bg-stone-100/80'
                   }`}
                 >
-                  <div className="relative h-20 w-32 flex-shrink-0 overflow-hidden rounded-md">
-                    <Image
-                      src={tour.image}
-                      alt={tour.name}
-                      fill
-                      className={`object-cover transition-transform duration-500 ${tour.i === activeIndex ? 'scale-[1.03]' : 'group-hover:scale-[1.02]'}`}
-                    />
-                    <div className={`absolute inset-0 ${tour.i === activeIndex ? 'bg-black/20' : 'bg-black/12'}`} />
-                  </div>
+                  <div className="flex gap-4 items-center">
+                    {/* Thumbnail */}
+                    <div className="relative h-20 w-28 flex-shrink-0 overflow-hidden rounded-lg">
+                      <Image
+                        src={tour.image}
+                        alt={tour.name}
+                        fill
+                        className={`object-cover transition-transform duration-500 ${
+                          tour.i === activeIndex ? 'scale-110' : 'group-hover:scale-105'
+                        }`}
+                      />
+                      <div className={`absolute inset-0 transition-colors duration-300 ${
+                        tour.i === activeIndex ? 'bg-black/20' : 'bg-black/10'
+                      }`} />
+                    </div>
 
-                  <div className="flex flex-1 flex-col">
-                    <div className={`flex items-center justify-between gap-4`}> 
-                      <div className={`text-sm font-semibold ${tour.i === activeIndex ? 'text-white' : 'text-stone-900'}`}>
+                    {/* Info */}
+                    <div className="flex-1">
+                      <h4 className={`text-sm font-bold transition-colors duration-300 ${
+                        tour.i === activeIndex ? 'text-stone-950' : 'text-stone-700'
+                      }`}>
                         {tour.titleParts && tour.titleParts.length > 1 ? (
-                          <span className="block">{tour.titleParts[0]} <span className="opacity-90">{tour.titleParts[1]}</span></span>
+                          <>
+                            <span className="block">{tour.titleParts[0]}</span>
+                            <span className="text-xs opacity-75">{tour.titleParts[1]}</span>
+                          </>
                         ) : (
-                          <span>{tour.title}</span>
+                          tour.title
                         )}
+                      </h4>
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-xs text-stone-500">{tour.duration}</span>
+                        <span className={`text-sm font-bold ${
+                          tour.i === activeIndex ? 'text-yellow-600' : 'text-stone-600'
+                        }`}>
+                          {tour.priceFrom}
+                        </span>
                       </div>
-                      <div className="text-sm text-[#fcc000]">→</div>
                     </div>
 
-                    <div className="mt-2 flex items-center justify-between text-sm text-stone-600">
-                      <div>{tour.duration}</div>
-                      <div className="font-semibold text-stone-900">{tour.priceFrom}</div>
-                    </div>
+                    {/* Arrow */}
+                    <svg className={`w-5 h-5 transition-all duration-300 ${
+                      tour.i === activeIndex ? 'text-yellow-600 translate-x-1' : 'text-stone-400'
+                    }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                   </div>
-                </button>
+                </motion.button>
               ))}
             </div>
           </div>

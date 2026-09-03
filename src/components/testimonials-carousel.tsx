@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 type Testimonial = {
   quote: string;
@@ -44,34 +45,87 @@ export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps
       scroller.scrollBy({ left: cardWidth + cardGap, behavior: "smooth" });
     };
 
-    const intervalId = window.setInterval(step, 3000);
+    const intervalId = window.setInterval(step, 5000);
 
     return () => window.clearInterval(intervalId);
   }, [testimonials.length]);
 
   return (
-    <div ref={scrollerRef} role="region" aria-label="Testimonials" className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]">
-      {testimonials.map((story, index) => (
-        <article
-          key={`${story.name}-${index}`}
-          className="w-[22rem] shrink-0 snap-start rounded-[1.75rem] border border-stone-200 bg-white p-6 shadow-[0_18px_40px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_30px_70px_rgba(15,23,42,0.12)] sm:w-[24rem]"
-        >
-          <div className="mb-4 flex items-center gap-3">
-            <Image
-              src={story.image}
-              alt={story.name}
-              width={52}
-              height={52}
-              className="h-12 w-12 rounded-full border border-stone-200 object-cover"
-            />
-            <div>
-              <h3 className="text-sm font-semibold">{story.name}</h3>
-              <p className="text-xs uppercase tracking-[0.2em] text-stone-500">{story.role}</p>
+    <div className="mt-12">
+      <div 
+        ref={scrollerRef} 
+        role="region" 
+        aria-label="Client Testimonials" 
+        className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 px-2 -mx-2 [scrollbar-width:thin] [scrollbar-color:rgba(252,192,0,0.3)_transparent] scroll-smooth"
+      >
+        {testimonials.map((story, index) => (
+          <motion.article
+            key={`${story.name}-${index}`}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.1, duration: 0.5 }}
+            className="w-[28rem] shrink-0 snap-start"
+          >
+            <div className="group relative h-full rounded-2xl overflow-hidden card-premium">
+              {/* Gradient Border Effect */}
+              <div className="absolute inset-0 rounded-2xl p-[1px] bg-gradient-to-br from-yellow-400/40 via-stone-200/20 to-yellow-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              
+              {/* Card Content */}
+              <div className="relative bg-white rounded-2xl p-8 h-full flex flex-col z-10">
+                {/* Star Rating */}
+                <div className="flex gap-1 mb-6">
+                  {[...Array(5)].map((_, i) => (
+                    <svg
+                      key={i}
+                      className="w-4 h-4 fill-yellow-400"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ))}
+                </div>
+
+                {/* Quote */}
+                <p className="text-base leading-relaxed text-stone-700 mb-8 flex-1 italic">
+                  &ldquo;{story.quote}&rdquo;
+                </p>
+
+                {/* Divider */}
+                <div className="w-12 h-1 bg-gradient-to-r from-yellow-400 to-transparent rounded-full mb-6" />
+
+                {/* Author Info */}
+                <div className="flex items-center gap-4 pt-4 border-t border-stone-100">
+                  <div className="relative w-14 h-14">
+                    <Image
+                      src={story.image}
+                      alt={story.name}
+                      fill
+                      className="rounded-full object-cover border-2 border-yellow-400/20"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-stone-900">{story.name}</h3>
+                    <p className="text-xs uppercase tracking-[0.15em] text-stone-500 font-semibold">
+                      {story.role}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <p className="text-sm leading-7 text-stone-600">&ldquo;{story.quote}&rdquo;</p>
-        </article>
-      ))}
+          </motion.article>
+        ))}
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="mt-8 text-center">
+        <p className="text-xs uppercase tracking-[0.2em] text-stone-500 mb-3">Swipe to see more</p>
+        <div className="flex justify-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-yellow-400/40 animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-yellow-400/60 animate-pulse" style={{ animationDelay: '0.1s' }} />
+          <div className="w-2 h-2 rounded-full bg-yellow-400/40 animate-pulse" style={{ animationDelay: '0.2s' }} />
+        </div>
+      </div>
     </div>
   );
 }
