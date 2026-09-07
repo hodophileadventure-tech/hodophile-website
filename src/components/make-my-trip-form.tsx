@@ -20,6 +20,7 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
+import { formatPKR } from "@/lib/currency";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes, type Route } from "@/lib/data/routes";
 import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "@/lib/data/routeActivities";
@@ -28,6 +29,7 @@ import COMBO_ITINERARIES from "@/lib/data/combo-itineraries";
 import { normalizeComboKey as toCombinationKey } from "@/lib/data/combo-keys";
 import { orderedFeaturedTourCards } from "@/lib/data/featured-tour-cards";
 import { ROUTE_GRAPH, validateRoute } from "@/lib/data/custom-itinerary";
+import { whatsappUrl } from "@/lib/site";
 
 // Map featured tours to their corresponding route slugs
 const PREPLANNED_TRIP_MAP: Record<string, string> = {
@@ -113,6 +115,8 @@ function isValidCustomRoute(startingPointValue: string, cities: string[]) {
 
 export function MakeMyTripForm() {
   const router = useRouter();
+  const [plannerStep, setPlannerStep] = useState(1);
+  const [stepError, setStepError] = useState("");
   
   // Form state
   const [tripDate, setTripDate] = useState("");
@@ -1590,6 +1594,65 @@ export function MakeMyTripForm() {
   ];
   const formProgress = Math.round((progressChecklist.filter(Boolean).length / progressChecklist.length) * 100);
 
+  const plannerSteps = [
+    { number: 1, label: "Dates" },
+    { number: 2, label: "Destination" },
+    { number: 3, label: "Travelers" },
+    { number: 4, label: "Preferences" },
+    { number: 5, label: "Quote" },
+  ];
+
+  const validatePlannerStep = (step: number): string | null => {
+    if (step === 1) {
+      if (!tripDate) return "Please select your travel date.";
+      if (!startingPointValid) return "Please select your starting city.";
+    }
+
+    if (step === 2) {
+      if (!destinationValid) return "Please select at least one destination.";
+      if (isInvalidCombination) return "Please choose an on-route destination combination.";
+    }
+
+    if (step === 3) {
+      if (!adultsValid) return "Please add at least one adult traveler.";
+      if (numberOfRooms < 1) return "Please select at least one room.";
+    }
+
+    if (step === 4) {
+      if (!vehicleValid) return "Please select a vehicle for your journey.";
+      if (!hotelSelectionValid) return "Please select the hotel and room details for your stay.";
+    }
+
+    if (step === 5) {
+      if (!customerNameValid) return "Please enter your name.";
+      if (!customerPhoneValid) return "Please enter a valid WhatsApp number.";
+      if (!quotation) return "Complete your trip preferences to generate an estimate.";
+    }
+
+    return null;
+  };
+
+  const handlePlannerContinue = () => {
+    const error = validatePlannerStep(plannerStep);
+    if (error) {
+      setStepError(error);
+      return;
+    }
+
+    setStepError("");
+    setPlannerStep((currentStep) => Math.min(5, currentStep + 1));
+  };
+
+  const handlePlannerBack = () => {
+    setStepError("");
+    setPlannerStep((currentStep) => Math.max(1, currentStep - 1));
+  };
+
+  const journeyLabel = isCustomCitySelection()
+    ? effectiveSelectedCities.join(" + ") || "Custom itinerary"
+    : selectedRoute?.name || "Your selected route";
+  const journeyWhatsAppMessage = `Hi Hodophile, I'd like to plan a trip to ${journeyLabel} from ${tripDate || "my preferred date"} for ${totalGuests || "my"} travelers. Please share my itinerary and availability.`;
+
   useEffect(() => {
     const hasJustGeneratedQuotation = !previousQuotationRef.current && quotation;
     previousQuotationRef.current = quotation;
@@ -1690,9 +1753,9 @@ export function MakeMyTripForm() {
 
           <div className="mb-6 text-center md:text-left">
             <p className="text-sm font-bold uppercase tracking-[0.38em] text-black">Craft your own Trip</p>
-            <h1 className="mt-2 font-serif text-3xl leading-snug sm:text-4xl lg:text-5xl font-bold drop-shadow-[0_2px_4px_rgba(255,255,255,0.4)]">
+            <h2 className="mt-2 font-serif text-3xl leading-snug sm:text-4xl lg:text-5xl font-bold drop-shadow-[0_2px_4px_rgba(255,255,255,0.4)]">
               <span className="text-black">Your Adventure</span>, <span className="text-black">Your Way</span>
-            </h1>
+            </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-black font-medium md:mx-0 drop-shadow-[0_1px_2px_rgba(255,255,255,0.3)]">
               Select your dates, destination, vehicle, and hotel. Get an instant quotation powered by real-time pricing.
             </p>
@@ -1757,9 +1820,40 @@ export function MakeMyTripForm() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="grid gap-4">
+          <form onSubmit={handleSubmit} noValidate className="grid gap-4">
+            <nav aria-label="Trip builder progress" className="rounded-[20px] bg-white/85 p-4 shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.24em] text-stone-500">Step {plannerStep} of 5</p>
+                  <p className="mt-1 text-lg font-semibold text-stone-950">{plannerSteps[plannerStep - 1].label}</p>
+                </div>
+                <span className="text-sm font-semibold text-[#8d6500]">{formProgress}% complete</span>
+              </div>
+              <ol className="grid grid-cols-5 gap-2">
+                {plannerSteps.map((step) => (
+                  <li key={step.number}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (step.number < plannerStep) {
+                          setStepError("");
+                          setPlannerStep(step.number);
+                        }
+                      }}
+                      disabled={step.number > plannerStep}
+                      className={`flex min-h-14 w-full flex-col items-center justify-center rounded-[12px] border px-1 py-2 text-center transition ${step.number === plannerStep ? "border-[#fcc000] bg-[#fcc000] text-black" : step.number < plannerStep ? "border-[#fcc000]/50 bg-[#fff8df] text-stone-800" : "border-stone-200 bg-stone-50 text-stone-400"}`}
+                    >
+                      <span className="text-sm font-bold">{step.number}</span>
+                      <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.08em]">{step.label}</span>
+                    </button>
+                  </li>
+                ))}
+              </ol>
+              {stepError ? <p role="alert" className="mt-3 rounded-[12px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">{stepError}</p> : null}
+            </nav>
+
             {/* Customer Info */}
-            <div className="grid grid-cols-1 gap-4 rounded-[24px] border border-[#E8A500] bg-white p-4 shadow-[0_8px_20px_rgba(0,0,0,0.06)] lg:grid-cols-2">
+            <div hidden={plannerStep !== 5} className="grid grid-cols-1 gap-4 rounded-[24px] border border-[#E8A500] bg-white p-4 shadow-[0_8px_20px_rgba(0,0,0,0.06)] lg:grid-cols-2">
               <label className="grid gap-2 text-sm font-medium text-black">
                 <span className="flex items-center gap-2">
                   <User className={LABEL_ICON_CLASS} aria-hidden="true" />
@@ -1794,7 +1888,7 @@ export function MakeMyTripForm() {
 
             {/* Show preplanned trip details if selected */}
             {selectedPreplannedTrip && preplannedRoute && (
-              <div className="rounded-[22px] border border-[#f4d77d] bg-white p-4 shadow-[0_8px_22px_rgba(252,192,0,0.06)]">
+              <div hidden={plannerStep !== 1} className="rounded-[22px] border border-[#f4d77d] bg-white p-4 shadow-[0_8px_22px_rgba(252,192,0,0.06)]">
                 <p className="text-sm text-stone-700 font-medium">
                   <span className="inline-flex items-center gap-2">
                     <MapPin className={LABEL_ICON_CLASS} aria-hidden="true" />
@@ -1809,7 +1903,7 @@ export function MakeMyTripForm() {
             )}
 
             {/* Trip Details - Always visible */}
-            <div className="grid gap-4 rounded-[24px] border border-[#f4d77d] bg-white p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
+            <div hidden={plannerStep !== 1} className="grid gap-4 rounded-[24px] border border-[#f4d77d] bg-white p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <label className="grid gap-2 text-sm font-medium text-black">
                   <span className="flex items-center gap-2">
@@ -1948,7 +2042,7 @@ export function MakeMyTripForm() {
 
             {/* Individual City Selection - Always visible for private tours */}
             {chosenPackage && (
-              <div className="rounded-[14px] bg-white border border-[#f4d77d] p-3 mb-4 flex items-center justify-between">
+              <div hidden={plannerStep !== 2} className="rounded-[14px] bg-white border border-[#f4d77d] p-3 mb-4 flex items-center justify-between">
                 <div className="text-sm font-medium text-black">Selected Package: {(chosenPackage as any)?.label}</div>
                 <div>
                   <button
@@ -1967,7 +2061,7 @@ export function MakeMyTripForm() {
               </div>
             )}
 
-            <div className={`rounded-[20px] border border-[#f4d77d] bg-white p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)] ${chosenPackage ? 'hidden' : ''}`}>
+            <div hidden={plannerStep !== 2} className={`rounded-[20px] border border-[#f4d77d] bg-white p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)] ${chosenPackage ? 'hidden' : ''}`}>
               <p className="text-sm font-semibold text-[#6e5200] mb-4">
                 Select Destination Cities (Multiple Allowed) *
               </p>
@@ -2047,7 +2141,7 @@ export function MakeMyTripForm() {
 
             {/* Invalid Combination Alert */}
             {isInvalidCombination && selectedCities.length > 0 && (
-              <div className="rounded-[20px] border-2 border-red-400 bg-red-50 p-4 shadow-[0_8px_20px_rgba(255,59,48,0.1)]">
+              <div hidden={plannerStep !== 2} className="rounded-[20px] border-2 border-red-400 bg-red-50 p-4 shadow-[0_8px_20px_rgba(255,59,48,0.1)]">
                 <div className="flex gap-3">
                   <div className="text-red-600 text-xl font-bold flex-shrink-0">⚠️</div>
                   <div>
@@ -2062,7 +2156,11 @@ export function MakeMyTripForm() {
               </div>
             )}
 
+            <div hidden={plannerStep !== 4} className="grid gap-4">
             {/* Hotel Category Selection */}
+            </div>
+
+            <div hidden={plannerStep !== 4} className="grid gap-4">
             <label className="grid gap-2 text-sm font-medium text-black">
               <span className="flex items-center gap-2">
                 <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
@@ -2920,8 +3018,10 @@ export function MakeMyTripForm() {
               </div>
             )}
 
+            </div>
+
             {/* Guest & Room Details */}
-            <div className="grid gap-4 grid-cols-1 xl:grid-cols-3">
+            <div hidden={plannerStep !== 3} className="grid gap-4 grid-cols-1 xl:grid-cols-3">
               <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
                 <span className="flex items-center gap-2">
                   <BedDouble className={LABEL_ICON_CLASS} aria-hidden="true" />
@@ -2970,7 +3070,7 @@ export function MakeMyTripForm() {
 
             {/* Kids Ages */}
             {kids > 0 && (
-              <div className="grid gap-3 p-4 rounded-[15px] bg-[#fcc000]/5 border border-[#fcc000]/20">
+              <div hidden={plannerStep !== 3} className="grid gap-3 p-4 rounded-[15px] bg-[#fcc000]/5 border border-[#fcc000]/20">
                 <p className="text-sm font-medium text-black">Ages of Kids</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                   {Array.from({ length: kids }).map((_, index) => (
@@ -2986,6 +3086,30 @@ export function MakeMyTripForm() {
                 </div>
               </div>
             )}
+
+            <div hidden={plannerStep !== 5} className="grid gap-4">
+            {quotation ? (
+              <section className="rounded-[20px] border border-[#f4d77d] bg-white p-5 shadow-[0_10px_28px_rgba(0,0,0,0.08)]" aria-labelledby="journey-estimate-heading">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#8d6500]">Your estimated journey</p>
+                    <h2 id="journey-estimate-heading" className="mt-2 text-2xl font-semibold text-stone-950">{formatPKR(quotation.totalCost + offRouteChargePKR)}</h2>
+                    <p className="mt-1 text-sm text-stone-600">{formatPKR(quotation.perPersonCost + (offRouteChargePKR / Math.max(1, totalGuests)))} per person · {totalGuests} traveler{totalGuests === 1 ? "" : "s"}</p>
+                  </div>
+                  <div className="grid gap-1 text-right text-xs text-stone-600">
+                    <span>{journeyLabel}</span>
+                    <span>{tripDate || "Date to be confirmed"}</span>
+                    <span>{vehicleName || "Vehicle to be selected"}</span>
+                  </div>
+                </div>
+                <div className="mt-5 grid gap-3 border-t border-stone-200 pt-4 text-sm sm:grid-cols-3">
+                  <div><span className="block text-xs uppercase tracking-[0.16em] text-stone-500">Transport</span><strong>{formatPKR(quotation.transportCost)}</strong></div>
+                  <div><span className="block text-xs uppercase tracking-[0.16em] text-stone-500">Accommodation</span><strong>{formatPKR(quotation.hotelCost)}</strong></div>
+                  <div><span className="block text-xs uppercase tracking-[0.16em] text-stone-500">Add-ons</span><strong>{formatPKR(quotation.jeepAddonsCost)}</strong></div>
+                </div>
+                <a href={whatsappUrl(journeyWhatsAppMessage)} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex w-full items-center justify-center rounded-[14px] bg-[#31563f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#244432]">Get my itinerary on WhatsApp</a>
+              </section>
+            ) : null}
 
             {/* Messages */}
             {submitMessage && (
@@ -3027,6 +3151,17 @@ export function MakeMyTripForm() {
                 </span>
               )}
             </button>
+            </div>
+
+            {plannerStep < 5 && (
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[#f4d77d] bg-white p-3">
+                <button type="button" onClick={handlePlannerBack} disabled={plannerStep === 1} className="rounded-full border border-stone-300 px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500 disabled:cursor-not-allowed disabled:opacity-40">Back</button>
+                <button type="button" onClick={handlePlannerContinue} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-[#fcc000] transition hover:brightness-110">Continue <span aria-hidden="true">→</span></button>
+              </div>
+            )}
+            {plannerStep === 5 && (
+              <button type="button" onClick={handlePlannerBack} className="justify-self-start rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500">← Back to preferences</button>
+            )}
           </form>
           </div>
         </div>

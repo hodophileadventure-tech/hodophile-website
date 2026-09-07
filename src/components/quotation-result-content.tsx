@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { routes } from "@/lib/data/routes";
 import { formatPKR } from "@/lib/currency";
+import { siteConfig } from "@/lib/site";
 
 export function QuotationResultContent() {
   const searchParams = useSearchParams();
@@ -161,7 +162,7 @@ export function QuotationResultContent() {
           <div className="mt-10 overflow-hidden rounded-3xl border border-stone-300 bg-white p-6 print:mt-3 print:p-3 print:rounded-lg">
             <div className="text-sm text-stone-900 print:text-xs">
               <p className="font-semibold mb-2 print:mb-1">Quotation Details</p>
-              <p className="mb-4 print:mb-2 print:text-xs">This quotation has been prepared for your requested itinerary. Detailed pricing has been withheld in this view for privacy. To view the full pricing breakdown, please contact our sales team at <a className="font-semibold underline" href="tel:+923001234567">+92 300 1234567</a> or reply to the email we sent you.</p>
+              <p className="mb-4 print:mb-2 print:text-xs">This quotation has been prepared for your requested itinerary. Detailed pricing has been withheld in this view for privacy. To view the full pricing breakdown, please contact our sales team at <a className="font-semibold underline" href={`tel:${siteConfig.phone}`}>{siteConfig.phone}</a> or reply to the email we sent you.</p>
               <div className="mt-4 rounded-[10px] border border-stone-200 bg-stone-50 p-4 print:mt-2 print:p-2 print:rounded-md">
                 <p className="text-sm print:text-xs"><span className="font-semibold">Route:</span> {routeName}</p>
                 <p className="text-sm print:text-xs"><span className="font-semibold">Passengers:</span> {numberOfGuests}</p>

@@ -5,12 +5,17 @@ export const siteConfig = {
     "Curated domestic tours across Pakistan with premium route planning, private transport, and elegant travel experiences.",
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-    "https://hodophiletours.com",
+    "https://hodophile.pk",
   email: "masood.ahmed@hodophile.pk",
   phone: "+92337777460",
   whatsapp: "+923377774460",
   location: "Hodophile Adventure, Plot# 111-113C, Dupatta Gali, PECHS, Block2, Tariq Road, Karachi, Pakistan, 75400",
 };
+
+export function whatsappUrl(message?: string) {
+  const query = message ? `?text=${encodeURIComponent(message)}` : "";
+  return `https://wa.me/${siteConfig.whatsapp}${query}`;
+}
 
 export const navigation = [
   { href: "/", label: "Home" },
@@ -176,9 +181,9 @@ export const destinations: Destination[] = [
     priceFrom: "From PKR 85,000",
   },
   {
-    name: "Mininmerg",
+    name: "Minimerg",
     image: "/images/destinations/minimerg-kashmir.jpg",
-    description: "A highland escape into Mininmerg and White Peaks with dramatic valleys and remote jeep-access adventure.",
+    description: "A highland escape into Minimerg and White Peaks with dramatic valleys and remote jeep-access adventure.",
     season: "May to October",
     duration: "6 Days",
     priceFrom: "From PKR 90,000",

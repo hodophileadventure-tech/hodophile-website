@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { DM_Serif_Display, Manrope } from "next/font/google";
 import "./globals.css";
 
 import { siteConfig } from "@/lib/site";
@@ -12,14 +12,21 @@ const GA_TRACKING_ID =
   process.env.NEXT_PUBLIC_GA_TRACKING_ID || process.env.NEXT_PUBLIC_GA_ID;
 const FACEBOOK_PIXEL_ID = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
 
-const poppins = Poppins({
+const manrope = Manrope({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const display = DM_Serif_Display({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  viewport: 'width=device-width, initial-scale=1',
   metadataBase: new URL(siteConfig.siteUrl),
   title: {
     default: siteConfig.name,
@@ -84,7 +91,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${poppins.variable} h-full antialiased`}
+      className={`${manrope.variable} ${display.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#f7f6f2] text-stone-900">
         <JsonLd data={[organizationSchema, websiteSchema]} />

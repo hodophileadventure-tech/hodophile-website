@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { whatsappUrl } from "@/lib/site";
 
 const hotelDistances = [100, 300, 500, 700, 900, 1100, 1400, 1600];
 
@@ -182,8 +183,8 @@ export function UmrahBookingForm() {
             >
               Contact Us
             </a>
-            <a href="#" className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/80">
-              Live Chat
+            <a href={whatsappUrl("Hi Hodophile, I need help choosing a MIQAT Umrah package.")} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/80">
+              WhatsApp MIQAT
             </a>
           </div>
         </aside>

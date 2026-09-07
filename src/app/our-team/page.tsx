@@ -23,6 +23,7 @@ export default function OurTeamPage() {
   return (
     <PageShell wide>
       <section className="team-page-hero">
+        <h1 className="sr-only">Our Team at Hodophile Adventures</h1>
         <div className="team-page-hero-wrap">
           <img
             className="team-page-hero-image"

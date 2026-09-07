@@ -1,18 +1,4 @@
-"use client";
-
-import { useEffect } from "react";
-
 export function JsonLd({ data }: { data: unknown }) {
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.text = JSON.stringify(data);
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, [data]);
-
-  return null;
+  const json = JSON.stringify(data).replace(/</g, "\\u003c");
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
 }

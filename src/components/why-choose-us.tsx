@@ -166,7 +166,7 @@ export function WhyChooseUs() {
           <motion.div variants={introItemVariants} className="inline-flex items-center gap-3 mb-6">
             <div className="h-px w-8 bg-yellow-400" />
             <p className="text-xs uppercase tracking-[0.35em] text-yellow-600 font-bold">
-              WHY CHOOSE HODOPHILE
+              THE HODOPHILE STANDARD
             </p>
             <div className="h-px w-8 bg-yellow-400" />
           </motion.div>
@@ -175,14 +175,14 @@ export function WhyChooseUs() {
             variants={introItemVariants}
             className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold mb-4 text-stone-950 leading-tight"
           >
-            Five Reasons to Travel with Us
+            Every detail handled. Every moment yours.
           </motion.h2>
           
           <motion.p
             variants={introItemVariants}
             className="text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed"
           >
-            Excellence in every detail, from planning to return home
+            Five reasons to travel with us, thoughtfully designed around the way you want to move.
           </motion.p>
         </motion.div>
 

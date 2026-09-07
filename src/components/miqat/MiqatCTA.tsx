@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { whatsappUrl } from "@/lib/site";
 
 export function MiqatCTA() {
   return (
@@ -40,7 +41,7 @@ export function MiqatCTA() {
                   Book Your Umrah
                 </Link>
                 <a
-                  href="https://wa.me/923377774460"
+                  href={whatsappUrl("Hi Hodophile, I would like to learn more about MIQAT Umrah packages.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-[#FCC000] hover:text-[#FCC000]"

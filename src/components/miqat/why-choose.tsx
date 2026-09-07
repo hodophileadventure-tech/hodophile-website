@@ -14,7 +14,7 @@ import {
 const features = [
   { label: "Visa Assistance", icon: BadgeCheck },
   { label: "Premium Hotels", icon: Hotel },
-  { label: "Direct Flights", icon: Plane },
+  { label: "Airline Options", icon: Plane },
   { label: "Guided Ziyarat", icon: Landmark },
   { label: "24/7 Support", icon: Headset },
   { label: "Flexible Installments", icon: WalletCards },

@@ -393,18 +393,13 @@ export function calculateQuotation(
     const routeJeepCostPerJeep = getMandatoryJeepCost(route?.id || input.routeId);
     const customCityJeepCostPerJeep = input.customCities ? getMandatoryJeepCostForCities(input.customCities) : 0;
 
-    // Determine mandatory jeep cost. Priority:
-    // 1. If caller provided exact mandatoryJeepCost (total), use it.
-    // 2. Otherwise determine per-jeep mandatory cost and scale by required jeep count.
+    // Derive mandatory activity costs from the selected route/cities so callers
+    // cannot override server-side pricing with a client-supplied total.
     let actualMandatoryJeepCost = 0;
-    if (input.mandatoryJeepCost && input.mandatoryJeepCost > 0) {
-      actualMandatoryJeepCost = input.mandatoryJeepCost;
-    } else {
-      const perJeep = input.customCities ? customCityJeepCostPerJeep : routeJeepCostPerJeep;
-      const estimatedJeepCount = (input.jeepCount ?? Math.ceil((input.adults + input.kids) / 6)) || 1;
-      if (perJeep && perJeep > 0) {
-        actualMandatoryJeepCost = perJeep * Math.max(1, estimatedJeepCount);
-      }
+    const perJeep = input.customCities ? customCityJeepCostPerJeep : routeJeepCostPerJeep;
+    const estimatedJeepCount = Math.ceil((input.adults + input.kids) / 6) || 1;
+    if (perJeep && perJeep > 0) {
+      actualMandatoryJeepCost = perJeep * Math.max(1, estimatedJeepCount);
     }
 
     let jeepAddonsCost = 0;
@@ -452,7 +447,7 @@ export function calculateQuotation(
         route: isCustomItinerary ? (input.customRouteLabel || "Custom Itinerary") : (route?.name || "Unknown"),
         vehicle: input.vehicleName,
         hotel: hotelName,
-        roomType: input.roomId || "Multiple",
+        roomType,
         accommodationType: getAccommodationType(input.hotelCategory),
         numberOfRooms: input.numberOfRooms,
         numberOfGuests,

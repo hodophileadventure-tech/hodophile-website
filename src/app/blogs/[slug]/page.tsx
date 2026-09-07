@@ -70,9 +70,9 @@ export default async function BlogArticlePage({ params }: PageProps) {
             <span className="inline-flex rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-4 py-2 text-sm font-medium text-[#8a6a12]">
               {post.category}
             </span>
-            <h1 className="max-w-4xl font-serif text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
+            <h2 className="max-w-4xl font-serif text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
               {post.title}
-            </h1>
+            </h2>
             <p className="max-w-3xl text-lg leading-8 text-stone-600">{post.intro}</p>
           </div>
 

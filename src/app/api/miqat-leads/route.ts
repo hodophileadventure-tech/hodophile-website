@@ -46,25 +46,25 @@ export async function POST(request: NextRequest) {
     });
 
     const responseText = await response.text();
-    console.log("MIQAT sheet response status:", response.status);
-    console.log("MIQAT sheet response text:", responseText);
-
     if (!response.ok) {
-      let errorDetails = responseText;
-      try {
-        const json = JSON.parse(responseText);
-        errorDetails = json.error || json.message || responseText;
-      } catch {
-        errorDetails = responseText || `HTTP ${response.status}`;
+      console.error("MIQAT lead service failed:", response.status);
+      return NextResponse.json({ error: "Unable to submit the MIQAT request." }, { status: 500 });
+    }
+
+    try {
+      const result = JSON.parse(responseText);
+      if (result?.success === false) {
+        return NextResponse.json({ error: "Unable to submit the MIQAT request." }, { status: 502 });
       }
-      return NextResponse.json({ error: `Google Sheet error: ${errorDetails}` }, { status: 500 });
+    } catch {
+      // Some Apps Script deployments return an empty or non-JSON success body.
     }
 
     return NextResponse.json({ success: true, message: "MIQAT lead submitted successfully" }, { status: 201 });
   } catch (error) {
     console.error("Error submitting MIQAT lead:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Unknown error" },
+      { error: "Unable to submit the MIQAT request." },
       { status: 500 }
     );
   }

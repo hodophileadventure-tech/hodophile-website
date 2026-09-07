@@ -2,6 +2,10 @@ import type { MetadataRoute } from "next";
 
 import { absoluteUrl, allTourRoutes, blogPosts, destinationGalleryRoutes } from "@/lib/site";
 import { featuredTourRoutePaths } from "@/lib/data/featured-tour-cards";
+import { umrahPackages } from "@/lib/data/umrah-packages";
+import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "@/lib/data/premiumDestinations.js";
+
+const packageRoutes = [...premiumDestinations, ...readyToBookDestinations, ...exclusiveOffers].map((item) => `/packages/${item.id}`);
 
 const routes = [
   "/",
@@ -22,6 +26,9 @@ const routes = [
   "/terms-and-conditions",
   "/tours",
   "/umrah-packages",
+  "/umrah-packages/book",
+  ...umrahPackages.map((pkg) => `/umrah-packages/${pkg.id}`),
+  ...packageRoutes,
   ...allTourRoutes,
   ...featuredTourRoutePaths,
   ...destinationGalleryRoutes,

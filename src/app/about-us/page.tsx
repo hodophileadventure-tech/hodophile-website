@@ -2,6 +2,7 @@
 
 import { AboutTeamTabDropdown } from "@/components/about-team-tab-dropdown";
 import { PageShell } from "@/components/page-shell";
+import { companyStats } from "@/lib/data/company-stats";
 import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -51,30 +52,12 @@ export default function AboutUsPage() {
 
       <section className="mx-auto max-w-[96rem] rounded-[2rem] border-2 border-[#fcc000] px-6 py-12 lg:px-8 lg:py-16 xl:px-10">
         <div className="flex flex-wrap gap-8 lg:gap-12">
-          <div>
-            <p className="text-4xl font-bold text-[#fcc000]">2021</p>
-            <p className="mt-2 text-lg text-stone-600">Founded</p>
-          </div>
-          <div>
-            <p className="text-4xl font-bold text-[#fcc000]">500+</p>
-            <p className="mt-2 text-lg text-stone-600">Happy Travelers</p>
-          </div>
-          <div>
-            <p className="text-4xl font-bold text-[#fcc000]">50+</p>
-            <p className="mt-2 text-lg text-stone-600">Tours Conducted</p>
-          </div>
-          <div>
-            <p className="text-4xl font-bold text-[#fcc000]">20+</p>
-            <p className="mt-2 text-lg text-stone-600">Destinations Covered</p>
-          </div>
-          <div>
-            <p className="text-4xl font-bold text-[#fcc000]">4.9★</p>
-            <p className="mt-2 text-lg text-stone-600">Customer Rating</p>
-          </div>
-          <div>
-            <p className="text-4xl font-bold text-[#fcc000]">24/7</p>
-            <p className="mt-2 text-lg text-stone-600">Customer Support</p>
-          </div>
+          {companyStats.map((stat) => (
+            <div key={stat.key}>
+              <p className="text-4xl font-bold text-[#fcc000]">{stat.value}</p>
+              <p className="mt-2 text-lg text-stone-600">{stat.label}</p>
+            </div>
+          ))}
         </div>
       </section>
 

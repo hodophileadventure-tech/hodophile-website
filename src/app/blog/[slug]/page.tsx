@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -6,5 +6,5 @@ type PageProps = {
 
 export default async function BlogRedirectPage({ params }: PageProps) {
   const { slug } = await params;
-  redirect(`/blogs/${slug}`);
+  permanentRedirect(`/blogs/${slug}`);
 }

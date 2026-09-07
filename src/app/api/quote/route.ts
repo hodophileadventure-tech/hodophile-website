@@ -29,6 +29,30 @@ function getMissingFields(body: QuoteRequestBody) {
 }
 
 function buildValidationError(body: QuoteRequestBody) {
+  const integerFields = ["numberOfRooms", "adults", "kids"] as const;
+  for (const field of integerFields) {
+    const value = body[field];
+    if (!Number.isInteger(value) || value < 0 || value > 100) {
+      return `${field} must be a whole number between 0 and 100.`;
+    }
+  }
+  if (!body.tripDate || Number.isNaN(Date.parse(body.tripDate))) {
+    return "Please provide a valid trip date.";
+  }
+  if (body.travelMode && body.travelMode !== "road" && body.travelMode !== "air") {
+    return "Please select a valid travel mode.";
+  }
+  const nights = [
+    ...Object.values(body.multiCityNights || {}),
+    ...(body.singleCityHotelStays || []).map((stay) => stay.nights),
+  ];
+  if (nights.some((value) => !Number.isInteger(value) || value < 0 || value > 60)) {
+    return "Hotel nights must be whole numbers between 0 and 60.";
+  }
+  if (body.jeepAddons?.some((addon) => !Number.isInteger(addon.quantity) || addon.quantity < 0 || addon.quantity > 20)) {
+    return "Jeep add-on quantities must be whole numbers between 0 and 20.";
+  }
+
   const missing = getMissingFields(body);
   if (missing.length > 0) {
     return `Missing required field(s): ${missing.join(", ")}`;
@@ -139,9 +163,7 @@ export async function POST(request: NextRequest) {
       kids: body.kids || 0,
       tripDate: body.tripDate,
       jeepAddons: body.jeepAddons,
-      mandatoryJeepCost: body.mandatoryJeepCost,
-      // allow frontend to provide jeepCount; pricingEngine will multiply by per-jeep cost when appropriate
-      ...(typeof (body as any).jeepCount !== 'undefined' ? { jeepCount: Number((body as any).jeepCount) } : {}),
+      jeepCount: Math.ceil((body.adults + (body.kids || 0)) / 6) || 1,
     });
 
     if (!quotation) {
@@ -270,7 +292,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: "Internal server error",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: "Please try again or contact Hodophile support.",
       },
       { status: 500 }
     );

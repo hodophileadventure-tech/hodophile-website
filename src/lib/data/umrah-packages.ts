@@ -222,3 +222,7 @@ export const umrahPackages: UmrahPackage[] = [
     prices: { quint: 310602, quad: 305849, triple: 477056, double: 680016 },
   },
 ];
+
+export function getUmrahPackage(id: string) {
+  return umrahPackages.find((pkg) => pkg.id === id);
+}

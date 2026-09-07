@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
-import { navigation, tourMenu } from "@/lib/site";
+import { navigation, tourMenu, whatsappUrl } from "@/lib/site";
 
 type NavigationItem = (typeof navigation)[number];
 
@@ -18,10 +19,11 @@ export function SiteHeader() {
   const [activeTourGroup, setActiveTourGroup] = useState(tourMenu[0]?.href ?? "");
   const [activeMobileTourGroup, setActiveMobileTourGroup] = useState<string | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
 
   const desktopToursCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const aboutUsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -29,6 +31,40 @@ export function SiteHeader() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    const menu = mobileMenuRef.current;
+    const focusable = menu?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])") ?? [];
+    focusable[0]?.focus();
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileOpen(false);
+        requestAnimationFrame(() => mobileMenuButtonRef.current?.focus());
+        return;
+      }
+
+      if (event.key !== "Tab" || focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   // publish header height as a CSS variable so pages can size to viewport minus header
   useEffect(() => {
@@ -39,10 +75,14 @@ export function SiteHeader() {
 
     setHeaderHeight();
     window.addEventListener("resize", setHeaderHeight);
-    return () => window.removeEventListener("resize", setHeaderHeight);
-  }, []);
+    const observer = headerRef.current ? new ResizeObserver(setHeaderHeight) : null;
+    if (observer && headerRef.current) observer.observe(headerRef.current);
+    return () => {
+      window.removeEventListener("resize", setHeaderHeight);
+      observer?.disconnect();
+    };
+  }, [mobileOpen]);
 
-  const isHome = pathname === "/";
   const isToursActive = pathname.startsWith("/tours");
   const splitIndex = 4;
   const desktopLeftNavigation = navigation.slice(0, splitIndex);
@@ -264,9 +304,11 @@ export function SiteHeader() {
             href="/"
             className="group relative hidden h-[3.5rem] shrink-0 items-center justify-center lg:flex"
           >
-            <img
+            <Image
               src="/logo-transparent.png"
               alt="Hodophile Adventures"
+              width={240}
+              height={68}
               className="mx-auto h-[2.8rem] w-auto max-h-[2.8rem] object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-transform duration-300 group-hover:scale-[1.03]"
             />
           </Link>
@@ -280,15 +322,18 @@ export function SiteHeader() {
             href="/"
             className="group relative inline-flex h-[2.5rem] w-[10rem] shrink-0 items-center lg:inline-flex"
           >
-            <img
+            <Image
               src="/logo-transparent.png"
               alt="Hodophile Adventures"
+              width={240}
+              height={68}
               className="mx-auto h-[1.9rem] w-auto max-h-[1.9rem] object-contain drop-shadow-[0_1px_4px_rgba(0,0,0,0.12)] transition-transform group-hover:scale-[1.03]"
             />
           </Link>
           {/* mobile search removed */}
 
           <button
+            ref={mobileMenuButtonRef}
             type="button"
             onClick={() => {
               setToursOpen(false);
@@ -296,6 +341,7 @@ export function SiteHeader() {
             }}
             className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-stone-200/50 bg-white/50 text-stone-700 transition duration-300 hover:bg-white hover:border-stone-300 hover:shadow-md lg:hidden"
             aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation"
             aria-label="Toggle navigation menu"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-[1.9]">
@@ -306,7 +352,7 @@ export function SiteHeader() {
       </div>
 
       {mobileOpen ? (
-        <div className="border-t border-stone-100 bg-white/95 px-6 pb-6 pt-4 shadow-[0_20px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl lg:hidden">
+        <div ref={mobileMenuRef} id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Mobile navigation" className="border-t border-stone-100 bg-white/95 px-6 pb-6 pt-4 shadow-[0_20px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl lg:hidden">
           <nav className="grid gap-3">
             {navigation.map((item) => (
               item.href === "/tours" ? (
@@ -395,8 +441,17 @@ export function SiteHeader() {
             onClick={() => setMobileOpen(false)}
             className="mt-6 btn-primary w-full justify-center"
           >
-            Plan Journey
+            Plan My Trip
           </Link>
+          <a
+            href={whatsappUrl("Hi Hodophile, I would like to speak with a travel expert.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMobileOpen(false)}
+            className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-stone-300 px-4 py-3 text-sm font-semibold text-stone-900 transition hover:border-[#fcc000] hover:bg-[#fff8df]"
+          >
+            WhatsApp Hodophile
+          </a>
         </div>
       ) : null}
       </div>

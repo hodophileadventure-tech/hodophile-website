@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
-import { absoluteUrl, featuredPackages, tourMenu } from "@/lib/site";
+import { featuredTourCards } from "@/lib/data/featured-tour-cards";
+import { absoluteUrl, tourMenu, whatsappUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Pakistan Tour Packages",
@@ -31,27 +33,37 @@ export default function ToursPage() {
         description="Browse grouped routes and destination-first package pages designed for smooth planning and confident booking."
       />
 
-      <section className="mt-12 grid gap-6 lg:grid-cols-3 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
-        {featuredPackages.map((trip) => (
-          <article
-            key={trip.name}
-            className="flex h-full flex-col rounded-[2rem] border border-black/10 bg-white/90 p-6 shadow-[0_24px_45px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_30px_70px_rgba(15,23,42,0.12)]"
-          >
-            <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/75">{trip.duration}</p>
-            <h2 className="mt-4 text-2xl font-semibold tracking-tight text-stone-950">{trip.name}</h2>
-            <p className="mt-3 text-sm leading-7 text-stone-600">{trip.description}</p>
-            <div className="mt-6 flex flex-wrap gap-2">
-              {trip.highlights.map((item) => (
-                <span
-                  key={item}
-                  className="rounded-full border border-[#fcc000]/30 bg-[#fff6d2] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#8a6800]"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-          </article>
-        ))}
+      <section className="mt-12" aria-labelledby="signature-journeys-heading">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Signature journeys</p>
+            <h2 id="signature-journeys-heading" className="mt-3 font-serif text-4xl text-stone-950">Compare real routes at a glance.</h2>
+          </div>
+          <Link href="/make-my-trip" className="text-sm font-semibold text-stone-700 transition hover:text-stone-950">Need a custom route? ↗</Link>
+        </div>
+
+        <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {featuredTourCards.map((tour) => (
+            <article key={tour.slug} className="group flex h-full flex-col overflow-hidden border border-stone-200 bg-white shadow-[0_16px_40px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:border-[#fcc000]/70">
+              <div className="relative aspect-[4/3] overflow-hidden bg-stone-100">
+                <Image src={tour.homeImage} alt={tour.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
+                <span className="absolute left-4 top-4 bg-[#fcc000] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-black">{tour.duration}</span>
+              </div>
+              <div className="flex flex-1 flex-col p-5">
+                <h3 className="text-2xl font-semibold leading-tight text-stone-950">{tour.title}</h3>
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600">{tour.summary}</p>
+                <div className="mt-5 flex items-end justify-between gap-4 border-t border-stone-200 pt-4">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-stone-500">From</p>
+                    <p className="mt-1 text-lg font-semibold text-stone-950">{tour.priceFrom ?? "Contact for pricing"}</p>
+                  </div>
+                  <Link href={`/tours/featured/${tour.slug}`} className="text-sm font-bold uppercase tracking-[0.12em] text-stone-950 transition hover:text-[#9a7600]">View journey ↗</Link>
+                </div>
+                <a href={whatsappUrl(`Hi Hodophile, I'm interested in ${tour.title}. Please share availability and booking details.`)} target="_blank" rel="noopener noreferrer" className="mt-4 text-sm font-semibold text-[#557a63] hover:text-[#31563f]">Ask an expert on WhatsApp</a>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="mt-14 rounded-[2rem] border border-stone-200 bg-white p-7 shadow-sm">

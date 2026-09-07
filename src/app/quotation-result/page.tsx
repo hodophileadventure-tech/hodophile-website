@@ -1,5 +1,11 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { QuotationResultContent } from "@/components/quotation-result-content";
+
+export const metadata: Metadata = {
+  title: "Quotation Result",
+  robots: { index: false, follow: false },
+};
 
 export default function QuotationResultPage() {
   return (

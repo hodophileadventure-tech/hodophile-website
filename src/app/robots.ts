@@ -7,6 +7,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/api/", "/quotation-result", "/quotation-edit"],
     },
     sitemap: absoluteUrl("/sitemap.xml"),
   };

@@ -6,8 +6,6 @@ import { motion } from "framer-motion";
 const places = [
   { title: "Masjid Al Haram", image: "/images/umrah/kabah.jpg" },
   { title: "Masjid An Nabawi", image: "/images/umrah/masjid-e-nabvi.jpg" },
-  { title: "Mount Arafat", image: "/images/umrah/kabah-shareef.jpg" },
-  { title: "Jabal Al Noor", image: "/images/umrah/masjid-nabvi.jpg" },
 ];
 
 export function SacredPlaces() {

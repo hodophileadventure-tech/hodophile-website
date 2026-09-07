@@ -1,12 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { whatsappUrl } from "@/lib/site";
 
 export function MiqatHero() {
-  const reduceMotion = useReducedMotion();
-
   return (
     <section className="relative snap-start min-h-[calc(115vh-var(--site-header-height))] overflow-hidden bg-black px-4 py-4 text-white sm:px-6 lg:px-10 xl:px-14">
       <motion.div
@@ -16,14 +14,15 @@ export function MiqatHero() {
       >
         <video
           className="h-full w-full object-cover"
-          src="/videos/qasim.mp4"
           poster="/images/umrah/kabah.jpg"
           autoPlay
           muted
           loop
           playsInline
           preload="metadata"
-        />
+        >
+          <source src="/videos/qasim-opt.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(0,0,0,0.84)_0%,rgba(0,0,0,0.62)_45%,rgba(0,0,0,0.22)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(252,192,0,0.16),transparent_32%)]" />
       </motion.div>
@@ -54,7 +53,7 @@ export function MiqatHero() {
           />
 
           <p className="mt-6 font-[var(--font-miqat-heading)] text-2xl italic text-[#FCC000] sm:text-3xl">
-            Your Sacred Journey Begins Here
+            Your Sacred Journey, Thoughtfully Arranged.
           </p>
 
           <p className="mt-5 max-w-2xl text-base leading-8 text-[#B5B5B5] sm:text-lg">
@@ -69,10 +68,12 @@ export function MiqatHero() {
               Explore Packages
             </Link>
             <Link
-              href="/contact-us"
+              href={whatsappUrl("Hi Hodophile, I would like to speak with a MIQAT Umrah expert.")}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-[#FCC000] hover:text-[#FCC000]"
             >
-              Contact Expert
+              Talk to a MIQAT Expert
             </Link>
           </div>
         </motion.div>

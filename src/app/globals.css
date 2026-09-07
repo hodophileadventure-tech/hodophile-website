@@ -14,7 +14,7 @@
 
 :root {
   /* Premium Color Palette */
-  --background: #faf9f7;
+  --background: #f4f1eb;
   --foreground: #0a0a0a;
   --accent: #fcc000;
   --brand-black: #0b0b0b;
@@ -32,7 +32,7 @@
   --stone-500: #78756e;
   --stone-600: #57544f;
   --stone-700: #3f3d39;
-  --stone-800: #28272z;
+  --stone-800: #28272c;
   --stone-900: #1c1b19;
   
   /* Accent Colors for Sophistication */
@@ -56,14 +56,9 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y mandatory;
   scroll-padding-top: var(--site-header-height, 72px);
   min-height: 100%;
-  background: 
-    radial-gradient(circle at top left, rgba(252, 192, 0, 0.08), transparent 25%),
-    radial-gradient(circle at bottom right, rgba(26, 32, 46, 0.04), transparent 28%),
-    radial-gradient(circle at 85% 15%, rgba(252, 192, 0, 0.05), transparent 20%),
-    #faf9f7;
+  background: #f4f1eb;
 }
 
 body {
@@ -76,7 +71,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.7;
-  letter-spacing: 0.003em;
+  letter-spacing: 0;
   position: relative;
   overflow-x: hidden;
 }
@@ -172,7 +167,7 @@ h3,
 h4,
 h5,
 h6 {
-  letter-spacing: -0.015em;
+  letter-spacing: 0;
   line-height: 1.1;
   font-weight: 600;
 }
@@ -194,7 +189,30 @@ p {
 }
 
 section {
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: 6rem;
+}
+
+.display-serif {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.editorial-rule {
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), rgba(252, 192, 0, 0));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
 input,

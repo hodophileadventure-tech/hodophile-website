@@ -23,8 +23,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("Sending contact form data to Google Sheet:", data);
-
     // Transform contact form data to lead format for Google Apps Script
     // The contact form has a message field, so we'll store the phone as whatsapp
     const leadData = {
@@ -48,12 +46,8 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(leadData),
     });
 
-    const responseText = await response.text();
-    console.log("Google Sheet Response Status:", response.status);
-    console.log("Google Sheet Response:", responseText);
-
     if (!response.ok) {
-      console.error("Google Sheet Error:", response.status, responseText);
+      console.error("Google Sheet contact submission failed:", response.status);
       return NextResponse.json(
         { error: `Google Sheet returned ${response.status}` },
         { status: response.status }
@@ -67,7 +61,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("API Error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to process request" },
+      { error: "Failed to process request" },
       { status: 500 }
     );
   }

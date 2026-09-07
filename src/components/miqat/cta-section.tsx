@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { whatsappUrl } from "@/lib/site";
 
 export function CTASection() {
   return (
@@ -39,7 +40,7 @@ export function CTASection() {
                   Book Now
                 </Link>
                 <a
-                  href="https://wa.me/923377774460"
+                  href={whatsappUrl("Hi Hodophile, I would like to learn more about MIQAT Umrah packages.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center rounded-full border border-[#FDFBF7]/80 px-7 py-3 text-sm font-semibold text-[#FDFBF7] transition hover:-translate-y-0.5 hover:bg-[#FDFBF7] hover:text-[#0F5132]"

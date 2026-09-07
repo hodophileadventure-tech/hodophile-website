@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PageShell } from "@/components/page-shell";
-import { absoluteUrl } from "@/lib/site";
-import { featuredTourRoutePaths, getFeaturedTourBySlug } from "@/lib/data/featured-tour-cards";
+import { absoluteUrl, whatsappUrl } from "@/lib/site";
+import { featuredTourCards, featuredTourRoutePaths, getFeaturedTourBySlug } from "@/lib/data/featured-tour-cards";
 
 type FeaturedTourPageProps = {
   params: Promise<{ slug: string }>;
@@ -69,6 +69,14 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
             <p className="mt-5 max-w-3xl text-sm leading-7 text-white/85 sm:text-base">
               {tour.summary}
             </p>
+            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-white/85">
+              <span><strong className="text-white">Duration</strong> {tour.duration}</span>
+              {tour.priceFrom ? <span><strong className="text-white">From</strong> {tour.priceFrom}</span> : null}
+            </div>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link href="/contact-us" className="inline-flex rounded-full bg-[#fcc000] px-5 py-3 text-sm font-semibold !text-black transition hover:-translate-y-0.5 hover:bg-[#ffd24d]">Reserve my seat</Link>
+              <a href={whatsappUrl(`Hi Hodophile, I'm interested in ${tour.title}. Please share availability and booking details.`)} target="_blank" rel="noopener noreferrer" className="inline-flex rounded-full border border-white/60 bg-black/30 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-[#fcc000] hover:text-[#fcc000]">WhatsApp an expert</a>
+            </div>
           </div>
         </div>
       </section>
@@ -101,6 +109,10 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
                 </span>
               ))}
             </div>
+            <div className="mt-6 grid grid-cols-2 gap-3 border-t border-stone-200 pt-5 text-sm">
+              <div><p className="text-xs uppercase tracking-[0.18em] text-stone-500">Duration</p><p className="mt-1 font-semibold text-stone-900">{tour.duration}</p></div>
+              {tour.priceFrom ? <div><p className="text-xs uppercase tracking-[0.18em] text-stone-500">Starting from</p><p className="mt-1 font-semibold text-stone-900">{tour.priceFrom}</p></div> : null}
+            </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/contact-us"
@@ -108,6 +120,14 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
               >
                 Request This Tour
               </Link>
+              <a
+                href={whatsappUrl(`Hi Hodophile, I'm interested in ${tour.title}. Please share availability and booking details.`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex rounded-full border border-[#557a63] px-5 py-3 text-sm font-semibold text-[#31563f] transition hover:bg-[#edf5ef]"
+              >
+                Ask on WhatsApp
+              </a>
               <Link
                 href="/tours"
                 className="inline-flex rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-800 transition hover:border-stone-400 hover:text-stone-900"
@@ -307,6 +327,19 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
                 ))}
               </div>
             ) : null}
+
+            <section className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm md:p-8" aria-labelledby="related-journeys-heading">
+              <p className="text-xs uppercase tracking-[0.32em] text-stone-500">You may also like</p>
+              <h2 id="related-journeys-heading" className="mt-3 font-serif text-3xl text-stone-900">More journeys worth considering</h2>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                {featuredTourCards.filter((relatedTour) => relatedTour.slug !== tour.slug).slice(0, 3).map((relatedTour) => (
+                  <Link key={relatedTour.slug} href={`/tours/featured/${relatedTour.slug}`} className="group flex gap-4 border border-stone-200 p-3 transition hover:border-[#fcc000]">
+                    <Image src={relatedTour.homeImage} alt={relatedTour.title} width={96} height={96} className="h-24 w-24 shrink-0 object-cover" />
+                    <span><strong className="block text-sm leading-6 text-stone-900 group-hover:text-[#9a7600]">{relatedTour.title}</strong><small className="mt-2 block text-xs text-stone-500">{relatedTour.duration} · {relatedTour.priceFrom ?? "Contact for pricing"}</small></span>
+                  </Link>
+                ))}
+              </div>
+            </section>
           </div>
 
           <div className="mt-8 rounded-[2rem] border border-[#fcc000] bg-[#fff8df] p-6 shadow-sm md:p-8">

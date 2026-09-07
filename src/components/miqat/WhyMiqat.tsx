@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 
 const features = [
-  "Complete Visa Assistance",
-  "Premium Accommodation",
-  "Guided Ziyarat",
-  "Experienced Tour Managers",
-  "24/7 Support",
-  "Transparent Pricing",
+  "Founded in Karachi in 2021",
+  "Government license no. 5436",
+  "TAAP and PATO affiliations",
+  "Umrah services and travel planning",
+  "Experienced team support",
+  "24/7 customer service",
 ];
 
 export function WhyMiqat() {
@@ -43,12 +43,12 @@ export function WhyMiqat() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.04 }}
           className="max-w-2xl"
         >
-          <p className="text-sm font-semibold uppercase tracking-[0.38em] text-[#FCC000]">Why MIQAT</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.38em] text-[#FCC000]">Trust, clearly stated</p>
           <h2 className="mt-4 font-[var(--font-miqat-heading)] text-4xl leading-tight text-white sm:text-5xl">
-            Why Choose MIQAT?
+            A considered partner for your journey.
           </h2>
           <p className="mt-5 text-base leading-8 text-[#B5B5B5] sm:text-lg">
-            Every detail is crafted to feel calm, secure and deeply respectful, from your first consultation to your return home.
+            MIQAT is backed by Hodophile Adventures, a Karachi-based, government-licensed travel company founded in 2021. We bring the same careful planning and clear communication to Umrah services.
           </p>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2">

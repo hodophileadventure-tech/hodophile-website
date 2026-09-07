@@ -34,8 +34,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('Sending lead data to Google Apps Script:', body);
-
     // Send to Google Apps Script with proper format
     const response = await fetch(GOOGLE_LEADS_SCRIPT_URL, {
       method: 'POST',
@@ -55,9 +53,6 @@ export async function POST(request: NextRequest) {
     });
 
     const responseText = await response.text();
-    console.log('Google Apps Script Response Status:', response.status);
-    console.log('Google Apps Script Response:', responseText);
-
     if (!response.ok) {
       // Try to parse error details from Google Apps Script
       let errorDetails = responseText;
@@ -77,13 +72,14 @@ export async function POST(request: NextRequest) {
     } catch {
       result = { success: true, message: 'Lead processed' };
     }
-    console.log('Lead submitted successfully:', result);
+    if (result && result.success === false) {
+      throw new Error('Lead service rejected the submission');
+    }
 
     return NextResponse.json(
       {
         success: true,
         message: 'Lead captured successfully',
-        data: body,
       },
       { status: 201 }
     );
@@ -93,7 +89,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: 'Failed to process lead',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: 'Please try again later.',
       },
       { status: 500 }
     );
