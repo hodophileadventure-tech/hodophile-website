@@ -150,7 +150,7 @@ export const destinations: Destination[] = [
   },
   {
     name: "Skardu",
-    image: "/images/destinations/skardu-1080x1920.png",
+    image: "/images/destinations/skardu-unsplash.jpg",
     description: "Alpine lakes, forts, and cinematic mountain routes for immersive northern tours.",
     season: "April to October",
     duration: "7 Days",
