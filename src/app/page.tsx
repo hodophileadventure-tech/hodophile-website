@@ -246,7 +246,7 @@ export default function Home() {
                   decoding="async"
                   className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                   <div className="flex items-end justify-between gap-3">
                     <div>
