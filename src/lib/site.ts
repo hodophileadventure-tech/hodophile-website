@@ -166,7 +166,7 @@ export const destinations: Destination[] = [
   },
   {
     name: "Swat",
-    image: "/images/destinations/swat-hd.jpg",
+    image: "/images/destinations/swat-unsplash.png",
     description: "Pine landscapes and calm valleys tailored for family and group travelers.",
     season: "April to November",
     duration: "4 Days",
