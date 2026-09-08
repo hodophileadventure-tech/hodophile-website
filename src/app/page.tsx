@@ -183,8 +183,8 @@ export default function Home() {
       </section>
 
       <section className="relative mt-24 w-full overflow-hidden border-y border-stone-300/70 py-16 lg:py-24">
-        <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-20">
-          <div className="relative h-[26rem] overflow-hidden sm:h-[34rem]">
+        <div className="grid min-w-0 gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-center lg:gap-20">
+          <div className="relative min-w-0 h-[26rem] overflow-hidden sm:h-[34rem]">
             <img
               src="/images/editorial/editorial-8.jpg"
               alt="A quiet mountain landscape in Pakistan"
@@ -195,7 +195,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
             <p className="absolute bottom-5 left-5 text-xs uppercase tracking-[0.28em] text-white/80">Pakistan · In between places</p>
           </div>
-          <div className="max-w-2xl">
+          <div className="min-w-0 max-w-2xl">
             <p className="eyebrow text-stone-600">A reason to go</p>
             <h2 className="display-serif mt-5 text-5xl font-normal leading-[0.98] text-stone-950 sm:text-6xl lg:text-7xl">
               The best journeys stay with you.
@@ -246,7 +246,7 @@ export default function Home() {
                   decoding="async"
                   className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                   <div className="flex items-end justify-between gap-3">
                     <div>
