@@ -288,7 +288,7 @@ export default function Home() {
 
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
-              <article key={tour.name} className="group flex h-full flex-col overflow-hidden rounded-xl bg-white text-black shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+              <article key={tour.name} className="noise-surface group flex h-full flex-col overflow-hidden rounded-xl border border-white/70 bg-white/85 text-black shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur-md">
                 <div className="relative h-[240px] overflow-hidden bg-stone-100">
                   <img
                     src={tour.image}

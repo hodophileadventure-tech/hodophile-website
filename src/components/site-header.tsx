@@ -287,7 +287,7 @@ export function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`glass-header fixed inset-x-0 top-0 z-50 border-b transition duration-300 ${
+      className={`glass-header noise-surface fixed inset-x-0 top-0 z-50 border-b transition duration-300 ${
         scrolled 
           ? "border-black/5 shadow-[0_20px_60px_rgba(0,0,0,0.12)] backdrop-blur-2xl"
           : "border-black/0 shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-xl"
@@ -352,7 +352,7 @@ export function SiteHeader() {
       </div>
 
       {mobileOpen ? (
-        <div ref={mobileMenuRef} id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Mobile navigation" className="glass-surface border-t border-stone-100/70 px-6 pb-6 pt-4 lg:hidden">
+        <div ref={mobileMenuRef} id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Mobile navigation" className="glass-surface noise-surface border-t border-stone-100/70 px-6 pb-6 pt-4 lg:hidden">
           <nav className="grid gap-3">
             {navigation.map((item) => (
               item.href === "/tours" ? (
