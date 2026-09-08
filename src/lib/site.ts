@@ -158,7 +158,7 @@ export const destinations: Destination[] = [
   },
   {
     name: "Naran",
-    image: "/images/destinations/naran-hd.jpg",
+    image: "/images/destinations/naran-unsplash.png",
     description: "River valleys, emerald meadows, and summer road journeys with crisp mountain air.",
     season: "May to September",
     duration: "4 Days",

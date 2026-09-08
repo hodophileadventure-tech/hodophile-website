@@ -244,7 +244,7 @@ export default function Home() {
                   alt={destination.name}
                   loading="lazy"
                   decoding="async"
-                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  className={`absolute inset-0 h-full w-full transition duration-700 group-hover:scale-105 ${destination.name === "Naran" ? "object-contain bg-[#171717]" : "object-cover"}`}
                 />
                 <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5 text-white">
