@@ -239,12 +239,22 @@ export default function Home() {
               className="group relative overflow-hidden bg-[#171717] transition hover:-translate-y-1"
             >
                 <div className="relative h-[30rem] overflow-hidden">
+                {destination.name === "Naran" || destination.name === "Swat" ? (
+                  <img
+                    src={destination.image}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full scale-110 object-cover blur-xl"
+                  />
+                ) : null}
                 <img
                   src={destination.image}
                   alt={destination.name}
                   loading="lazy"
                   decoding="async"
-                  className={`absolute inset-0 h-full w-full transition duration-700 group-hover:scale-105 ${destination.name === "Naran" || destination.name === "Swat" ? "object-contain bg-[#171717]" : "object-cover"}`}
+                  className={`absolute inset-0 h-full w-full transition duration-700 group-hover:scale-105 ${destination.name === "Naran" || destination.name === "Swat" ? "object-contain" : "object-cover"}`}
                 />
                 <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5 text-white">
