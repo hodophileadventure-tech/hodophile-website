@@ -10,7 +10,6 @@ export function DealsPopup() {
     setIsMounted(true);
     
     // Check if user has closed the popup in this session (page load)
-    const sessionKey = `dealsPopupClosed_${new Date().getTime()}`;
     const wasClosedThisSession = sessionStorage.getItem("dealsPopupClosedThisSession");
     
     // Show popup only if it hasn't been closed in this session
@@ -41,9 +40,9 @@ export function DealsPopup() {
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-[101] flex items-center justify-center p-4 overflow-y-auto">
+      <div className="fixed inset-0 z-[101] flex items-center justify-center overflow-y-auto p-3 sm:p-4">
         <div
-          className="relative w-full max-w-lg rounded-[15px] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-300 my-8"
+          className="relative my-2 flex max-h-[calc(100svh-1.5rem)] w-[min(92vw,32rem)] flex-col overflow-hidden rounded-[15px] shadow-2xl animate-in fade-in zoom-in-95 duration-300 sm:my-8 sm:max-h-[calc(100vh-4rem)] sm:w-full sm:max-w-lg"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close Button - On Top of Image */}
@@ -68,11 +67,11 @@ export function DealsPopup() {
           </button>
 
           {/* Image Container - Scrollable */}
-          <div className="w-full bg-black overflow-y-auto max-h-[80vh]">
+          <div className="min-h-0 w-full overflow-hidden bg-black sm:max-h-[80vh]">
             <img
               src="/images/summer-tour-2026.jpg"
               alt="Summer Tour 2026 - Special Deals"
-              className="w-full h-auto block"
+              className="block max-h-[calc(100svh-8rem)] w-full object-contain sm:max-h-none sm:object-cover"
             />
           </div>
 
