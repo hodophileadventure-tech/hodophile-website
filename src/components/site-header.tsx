@@ -289,8 +289,8 @@ export function SiteHeader() {
       ref={headerRef}
       className={`glass-header fixed inset-x-0 top-0 z-50 border-b transition duration-300 ${
         scrolled 
-          ? "border-black/5 bg-white/90 shadow-[0_20px_60px_rgba(0,0,0,0.12)] backdrop-blur-2xl" 
-          : "border-black/0 bg-white/70 shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-xl"
+          ? "border-black/5 shadow-[0_20px_60px_rgba(0,0,0,0.12)] backdrop-blur-2xl"
+          : "border-black/0 shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-xl"
       }`}
       aria-hidden={false}
     >
