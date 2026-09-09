@@ -48,11 +48,11 @@ export function DealsPopup() {
           {/* Close Button - On Top of Image */}
           <button
             onClick={handleClose}
-            className="absolute top-3 right-3 z-30 bg-white/95 hover:bg-white p-2 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
+            className="absolute right-3 top-3 z-30 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/95 p-0 text-stone-900 shadow-lg transition-transform duration-200 hover:scale-110 hover:bg-white"
             aria-label="Close popup"
           >
             <svg
-              className="w-5 h-5 sm:w-6 sm:h-6 text-stone-900"
+              className="h-5 w-5 sm:h-6 sm:w-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
