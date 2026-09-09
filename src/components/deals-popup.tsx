@@ -66,7 +66,7 @@ export function DealsPopup() {
             </svg>
           </button>
 
-          <div className="min-h-0 overflow-hidden rounded-[15px]">
+          <div className="min-h-0 max-h-full overflow-x-hidden overflow-y-auto rounded-[15px]">
             {/* Image Container - Scrollable */}
             <div className="w-full bg-black sm:max-h-[80vh]">
               <img
