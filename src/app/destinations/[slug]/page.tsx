@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
+import { getTourPackagesForDestination } from "@/lib/data/tour-packages";
 
 type DestinationPageProps = {
   params: Promise<{ slug: string }>;
@@ -56,6 +57,24 @@ const destinationGalleries = {
     ],
     highlights: ["Green hills", "Peaceful routes", "Valley scenery", "Cultural experiences"],
   },
+  khaplu: {
+    name: "Khaplu",
+    description: "A quiet Baltistan valley of historic forts, wide mountain views, and peaceful cultural routes.",
+    images: [{ src: "/images/destinations/featured-skardu-basho.jpg", alt: "Khaplu mountain landscape" }],
+    highlights: ["Khaplu Palace", "Baltistan culture", "Mountain views", "Quiet routes"],
+  },
+  shogran: {
+    name: "Shogran",
+    description: "A cool forested hill retreat with meadow views and an easy escape into the Kaghan Valley.",
+    images: [{ src: "/images/destinations/naran.jpg", alt: "Shogran valley landscape" }],
+    highlights: ["Forest trails", "Siri Paye", "Meadow views", "Kaghan Valley"],
+  },
+  ormara: {
+    name: "Ormara",
+    description: "A relaxed Makran coast escape for beachside camping, open sea views, and slow weekend travel.",
+    images: [{ src: "/images/editorial/editorial-4.jpg", alt: "Ormara coastal escape" }],
+    highlights: ["Beach camping", "Makran coast", "Sea views", "Weekend escape"],
+  },
 };
 
 export async function generateStaticParams() {
@@ -102,6 +121,8 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
     notFound();
   }
 
+  const packages = getTourPackagesForDestination(slug);
+
   return (
     <PageShell wide>
       <section className="space-y-6">
@@ -124,6 +145,48 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
           ))}
         </div>
       </section>
+
+      {packages.length > 0 && (
+        <section className="relative mt-20 overflow-hidden rounded-[2rem] bg-[#0b0b0b] px-5 py-8 text-white shadow-[0_28px_70px_rgba(11,11,11,0.16)] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+          <div className="pointer-events-none absolute right-[-5rem] top-[-7rem] h-64 w-64 rounded-full border border-[#fcc000]/20" />
+          <div className="pointer-events-none absolute right-8 top-8 h-24 w-24 rounded-full border border-[#fcc000]/10" />
+
+          <div className="relative flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-8">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#fcc000]">Curated departures</p>
+              <h2 className="mt-4 max-w-xl font-serif text-3xl font-normal leading-tight sm:text-4xl">{destination.name} journeys, thoughtfully arranged.</h2>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/60">Choose a considered route with transparent pricing, carefully planned transport, and the freedom to travel at your own pace.</p>
+            </div>
+            <p className="shrink-0 text-xs uppercase tracking-[0.2em] text-white/45">{packages.length} {packages.length === 1 ? "route" : "routes"} available</p>
+          </div>
+
+          <div className="relative mt-8 grid gap-5 md:grid-cols-2">
+            {packages.map((tourPackage) => (
+              <article key={tourPackage.id} className="group rounded-2xl border border-white/10 bg-white/[0.06] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/50 hover:bg-white/[0.09] sm:p-7">
+                <div className="flex flex-wrap items-start justify-between gap-5 border-b border-white/10 pb-5">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#fcc000]">{tourPackage.duration}</p>
+                    <h3 className="mt-3 max-w-sm font-serif text-2xl font-normal leading-tight text-white">{tourPackage.title}</h3>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/45">From</p>
+                    <p className="mt-1 text-xl font-semibold text-[#fcc000]">PKR {tourPackage.pricePerPerson.toLocaleString()}</p>
+                    <p className="text-xs text-white/45">per person</p>
+                    {tourPackage.couplePrice && <p className="mt-2 text-xs text-white/60">PKR {tourPackage.couplePrice.toLocaleString()} / couple</p>}
+                  </div>
+                </div>
+                <div className="mt-5 space-y-3 text-sm leading-6 text-white/65">
+                  {tourPackage.departure && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Departure</span>{tourPackage.departure}</p>}
+                  {tourPackage.transport && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Transport</span>{tourPackage.transport.join("; ")}</p>}
+                  {tourPackage.includes && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Includes</span>{tourPackage.includes.join("; ")}</p>}
+                  {tourPackage.excludes && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Excludes</span>{tourPackage.excludes.join("; ")}</p>}
+                </div>
+                {tourPackage.notes?.map((note) => <p key={note} className="mt-5 border-t border-white/10 pt-4 text-xs leading-6 text-white/45">{note}</p>)}
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="mt-16">
         <h2 className="mb-8 font-serif text-3xl font-semibold">Gallery</h2>
