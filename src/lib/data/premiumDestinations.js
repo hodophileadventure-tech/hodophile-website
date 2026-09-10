@@ -11,28 +11,28 @@ export const premiumDestinations = [
     title: '3 Days Kashmir',
     description: 'Haji Peer, alpine lakes & refined mountain escapes.',
     image: '/images/kashmir-arangkel.jpg',
-    href: '/packages/kashmir',
+    href: '/destinations/kashmir',
   },
   {
     id: 'naran',
     title: '3 Days Naran',
     description: 'Lulusar Lake, Babusar Top, and emerald valley serenity.',
     image: '/images/naran-kamran-ch.jpg',
-    href: '/packages/naran',
+    href: '/destinations/naran',
   },
   {
     id: 'swat',
     title: '3 Days Swat',
     description: 'Malakand, Kalam, and emerald riverside adventure.',
     image: '/images/swat-cf1j4iu5u2041.jpg',
-    href: '/packages/swat',
+    href: '/destinations/swat',
   },
   {
     id: 'hunza',
     title: '5 Days Hunza',
     description: 'Khunjerab, Attabad Lake, Naltar Valley, and alpine luxury.',
     image: '/images/hunza-20a0ee7fd25c225b8cbe054af0eb3e79.jpg',
-    href: '/packages/hunza',
+    href: '/destinations/hunza',
   },
 ];
 
@@ -49,7 +49,7 @@ export const readyToBookDestinations = [
     title: '6 Days Skardu',
     description: 'Scenic Skardu journey with lakeside views, mountain passes, and premium stays.',
     image: '/images/skardu-ready-2.jpg',
-    href: '/packages/ready-skardu',
+    href: '/destinations/skardu',
   },
   {
     id: 'ready-astore',
