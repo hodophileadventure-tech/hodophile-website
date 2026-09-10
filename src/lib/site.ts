@@ -131,6 +131,7 @@ export const destinationGallerySlugs = ["hunza", "skardu", "naran", "kashmir", "
 export const destinationGalleryRoutes = destinationGallerySlugs.map((slug) => `/destinations/${slug}`);
 
 export type Destination = {
+  slug: string;
   name: string;
   image: string;
   description: string;
@@ -141,6 +142,7 @@ export type Destination = {
 
 export const destinations: Destination[] = [
   {
+    slug: "hunza",
     name: "Hunza",
     image: "/images/destinations/hunza-unsplash.jpg",
     description: "Terraced valleys, dramatic peaks, and heritage villages for scenic slow travel.",
@@ -149,6 +151,7 @@ export const destinations: Destination[] = [
     priceFrom: "From PKR 95,000",
   },
   {
+    slug: "skardu",
     name: "Skardu",
     image: "/images/destinations/skardu-unsplash.jpg",
     description: "Alpine lakes, forts, and cinematic mountain routes for immersive northern tours.",
@@ -157,6 +160,7 @@ export const destinations: Destination[] = [
     priceFrom: "From PKR 120,000",
   },
   {
+    slug: "naran",
     name: "Naran",
     image: "/images/destinations/naran-unsplash.png",
     description: "River valleys, emerald meadows, and summer road journeys with crisp mountain air.",
@@ -165,6 +169,7 @@ export const destinations: Destination[] = [
     priceFrom: "From PKR 62,000",
   },
   {
+    slug: "swat",
     name: "Swat",
     image: "/images/destinations/swat-unsplash.png",
     description: "Pine landscapes and calm valleys tailored for family and group travelers.",
@@ -173,6 +178,7 @@ export const destinations: Destination[] = [
     priceFrom: "From PKR 58,000",
   },
   {
+    slug: "fairy-meadows",
     name: "Fairy Meadows",
     image: "/images/destinations/fairy-meadows-unsplash.jpeg",
     description: "Remote alpine meadows with iconic Nanga Parbat views, perfect for camping and mountain-hike journeys.",
@@ -181,6 +187,7 @@ export const destinations: Destination[] = [
     priceFrom: "From PKR 85,000",
   },
   {
+    slug: "minimerg",
     name: "Minimerg",
     image: "/images/destinations/minimerg-kashmir.jpg",
     description: "A highland escape into Minimerg and White Peaks with dramatic valleys and remote jeep-access adventure.",
@@ -189,12 +196,40 @@ export const destinations: Destination[] = [
     priceFrom: "From PKR 90,000",
   },
   {
+    slug: "kashmir",
     name: "Kashmir",
     image: "/images/destinations/kashmir.jpg",
     description: "Soft green hills and elegant getaways designed for couples and private groups.",
     season: "All Year",
     duration: "5 Days",
     priceFrom: "From PKR 82,000",
+  },
+  {
+    slug: "khaplu",
+    name: "Khaplu",
+    image: "/images/destinations/featured-skardu-basho.jpg",
+    description: "A quiet Baltistan valley of historic forts, wide mountain views, and peaceful cultural routes.",
+    season: "May to October",
+    duration: "7 Days",
+    priceFrom: "From PKR 90,000",
+  },
+  {
+    slug: "shogran",
+    name: "Shogran",
+    image: "/images/destinations/naran.jpg",
+    description: "A cool forested hill retreat with meadow views and an easy escape into the Kaghan Valley.",
+    season: "May to October",
+    duration: "9 Days",
+    priceFrom: "From PKR 39,000",
+  },
+  {
+    slug: "ormara",
+    name: "Ormara",
+    image: "/images/editorial/editorial-4.jpg",
+    description: "A relaxed Makran coast escape for beachside camping, open sea views, and slow weekend travel.",
+    season: "October to March",
+    duration: "2 Days / 1 Night",
+    priceFrom: "From PKR 13,500",
   },
 ];
 

@@ -75,6 +75,18 @@ const destinationGalleries = {
     images: [{ src: "/images/editorial/editorial-4.jpg", alt: "Ormara coastal escape" }],
     highlights: ["Beach camping", "Makran coast", "Sea views", "Weekend escape"],
   },
+  "fairy-meadows": {
+    name: "Fairy Meadows",
+    description: "Remote alpine meadows beneath Nanga Parbat, made for dramatic views and mountain-hike journeys.",
+    images: [{ src: "/images/destinations/fairy-meadows-unsplash.jpeg", alt: "Fairy Meadows" }],
+    highlights: ["Nanga Parbat", "Alpine meadows", "Mountain hikes", "Remote escape"],
+  },
+  minimerg: {
+    name: "Minimerg",
+    description: "A remote highland escape into White Peaks and dramatic valleys with a slower mountain rhythm.",
+    images: [{ src: "/images/destinations/minimerg-kashmir.jpg", alt: "Minimerg valley" }],
+    highlights: ["White Peaks", "Remote valleys", "Jeep access", "Highland scenery"],
+  },
 };
 
 export async function generateStaticParams() {

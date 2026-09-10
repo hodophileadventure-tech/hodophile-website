@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
-import { absoluteUrl, destinationHighlights, destinations, destinationGallerySlugs } from "@/lib/site";
+import { absoluteUrl, destinations } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Pakistan Travel Destinations",
@@ -32,14 +32,13 @@ export default function DestinationsPage() {
       />
 
       <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
-        {destinations.map((destination, idx) => {
-          const slug = destinationGallerySlugs[idx] || destination.name.toLowerCase().replace(/\s+/g, "-");
+        {destinations.map((destination) => {
           return (
             <article
               key={destination.name}
               className="group overflow-hidden rounded-[2rem] border border-black/10 bg-white/90 shadow-[0_24px_45px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_30px_70px_rgba(15,23,42,0.12)]"
             >
-              <a href={`/destinations/${slug}`} className="block">
+              <a href={`/destinations/${destination.slug}`} className="block">
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">
                   <Image
                     src={destination.image}
