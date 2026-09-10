@@ -27,10 +27,10 @@ export const metadata: Metadata = {
 
 export default function Home() {
   const destinationPackageLinks: Record<string, string> = {
-    Hunza: "/tours/northern-tours/hunza-valley-tour-packages",
-    Skardu: "/tours/northern-tours/skardu-valley-tour-packages",
-    Naran: "/tours/northern-tours/naran-valley-tour-packages",
-    Swat: "/tours/northern-tours/swat-valley-tour-packages",
+    Hunza: "/destinations/hunza",
+    Skardu: "/destinations/skardu",
+    Naran: "/destinations/naran",
+    Swat: "/destinations/swat",
   };
 
   const testimonials = [
