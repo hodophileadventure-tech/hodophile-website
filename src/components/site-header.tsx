@@ -128,15 +128,8 @@ export function SiteHeader() {
           onMouseEnter={openAboutUsMenu}
           onMouseLeave={closeAboutUsMenu}
         >
-          <button
-            type="button"
-            onClick={() => {
-              setAboutUsDropdownOpen((previous) => !previous);
-              if (aboutUsCloseTimer.current) {
-                clearTimeout(aboutUsCloseTimer.current);
-                aboutUsCloseTimer.current = null;
-              }
-            }}
+          <Link
+            href={item.href}
             onFocus={openAboutUsMenu}
             className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition duration-300 ${
               pathname === item.href
@@ -148,7 +141,7 @@ export function SiteHeader() {
             <svg viewBox="0 0 20 20" className={`h-3 w-3 fill-current transition-transform duration-300 ${aboutUsDropdownOpen ? 'rotate-180' : ''}`} aria-hidden="true">
               <path d="M5.8 7.5 10 11.7l4.2-4.2 1.4 1.4L10 14.5 4.4 8.9z" />
             </svg>
-          </button>
+          </Link>
 
           <div
             className={`absolute left-0 top-[calc(100%+0.6rem)] z-[90] min-w-[220px] rounded-2xl border border-yellow-400/30 bg-white/95 backdrop-blur-lg p-2 shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-200 ${
