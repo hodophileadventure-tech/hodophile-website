@@ -657,7 +657,7 @@ export const blogPosts: BlogPost[] = [
           "Yes, but it works best when the route is kept realistic and the number of stops is limited.",
       },
     ],
-    hero: "/images/destinations/murree.jpg",
+    hero: "/images/nathia-ready.webp",
     heroAlt: "Murree hills",
   },
   {
