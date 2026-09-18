@@ -10,7 +10,8 @@ import { LeadCapturePopup } from "@/components/lead-capture-popup";
 
 const GA_TRACKING_ID =
   process.env.NEXT_PUBLIC_GA_TRACKING_ID || process.env.NEXT_PUBLIC_GA_ID;
-const FACEBOOK_PIXEL_ID = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
+const FACEBOOK_PIXEL_ID =
+  process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || "1993102121396051";
 
 const manrope = Manrope({
   variable: "--font-body",
