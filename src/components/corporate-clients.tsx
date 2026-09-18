@@ -3,39 +3,39 @@ import Image from "next/image";
 const corporateClients = [
   {
     name: "Hamdard University",
-    logo: "/images/clients/humdard-university.png",
+    logo: "/images/clients/humdard-university.webp",
   },
   {
     name: "Iqra University",
-    logo: "/images/clients/iqra-university.png",
+    logo: "/images/clients/iqra-university.webp",
   },
   {
     name: "Baqai Medical University",
-    logo: "/images/clients/baqai.png",
+    logo: "/images/clients/baqai.webp",
   },
   {
     name: "HBL DHA Phase 4 Branch",
-    logo: "/images/clients/hbl.png",
+    logo: "/images/clients/hbl.webp",
   },
   {
     name: "SMC Flavours and Fragrances",
-    logo: "/images/clients/smc.png",
+    logo: "/images/clients/smc.webp",
   },
   {
     name: "Highland Agri Solutions (Hydrabad)",
-    logo: "/images/clients/highland-agri.png",
+    logo: "/images/clients/highland-agri.webp",
   },
   {
     name: "Ask Shipping and Logistics Karachi",
-    logo: "/images/clients/ask-shipping.png",
+    logo: "/images/clients/ask-shipping.webp",
   },
   {
     name: "GET LISENCED Software House Karachi",
-    logo: "/images/clients/get-lisenced.png",
+    logo: "/images/clients/get-lisenced.webp",
   },
   {
     name: "Tapal Tea (Pvt.) Ltd",
-    logo: "/images/clients/tapal.png",
+    logo: "/images/clients/tapal.webp",
   },
 ];
 

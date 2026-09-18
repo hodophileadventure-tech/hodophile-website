@@ -29,7 +29,7 @@ const packages: Record<
   "swat-kalam-4days": {
     title: "Swat & Kalam — 4 Days",
     duration: "4 Days / 3 Nights",
-    image: "/images/honeymoon/swat-kalam.jpg",
+    image: "/images/honeymoon/swat-kalam.webp",
     description: "Experience Swat Valley and Kalam with Mahodand Lake and Ushu Forest excursions.",
     price: "PKR 120,000",
     overview: "Experience the breathtaking beauty of Swat Valley and Kalam: alpine forests, clear rivers, and relaxed valley rhythms. This 4-day route is paced for couples wanting scenic drives, short hikes, and intimate mountain moments. Stay in comfortable hotels, explore meadows and lakes by 4x4, and witness sunsets from elevated vantage points.",
@@ -105,7 +105,7 @@ const packages: Record<
   "naran-babusar-4days": {
     title: "Naran & Babusar — 4 Days",
     duration: "4 Days / 3 Nights",
-    image: "/images/honeymoon/naran-babusar.jpg",
+    image: "/images/honeymoon/naran-babusar.webp",
     description: "A romantic route through Kaghan Valley with Saif-ul-Malook and Babusar Top highlights.",
     price: "PKR 120,000",
     overview: "Escape to Kaghan Valley's dramatic alpine landscape: sweeping mountain passes, high-altitude lakes, and breathtaking viewpoints. This journey balances scenic drives with gentle hiking, perfect for couples seeking adventure without excessive exertion. Experience changing elevations, diverse vegetation, and mountain culture in four transformative days.",
@@ -181,7 +181,7 @@ const packages: Record<
   "kashmir-arangkel-5days": {
     title: "Kashmir Arang Kel — 5 Days",
     duration: "5 Days / 4 Nights",
-    image: "/images/honeymoon/kashmir-arangkel.jpg",
+    image: "/images/honeymoon/kashmir-arangkel.webp",
     description: "Neelum Valley journey to Kel and Arang Kel with hill-meadow stays and riverside views.",
     price: "PKR 150,000",
     overview: "Discover Azad Kashmir's hidden gem: Neelum Valley's terraced meadows, pine forests, and the enchanting cliff-hugging village of Arang Kel. This five-day journey combines scenic drives with a rewarding hike to pristine highland meadows. Experience local hospitality, riverside camps, and the raw beauty of the Himalayas at the border's edge.",

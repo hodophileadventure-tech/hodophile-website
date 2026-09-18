@@ -33,7 +33,7 @@ export function WhyChoose() {
         >
           <div className="relative h-[26rem] sm:h-[34rem]">
             <Image
-              src="/images/umrah/masjid-e-nabvi.jpg"
+              src="/images/umrah/masjid-e-nabvi.webp"
               alt="Pilgrims in Masjid an Nabawi courtyard"
               fill
               sizes="(max-width: 1024px) 100vw, 45vw"

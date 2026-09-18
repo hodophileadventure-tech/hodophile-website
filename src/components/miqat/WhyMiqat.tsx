@@ -26,7 +26,7 @@ export function WhyMiqat() {
         >
           <div className="relative h-[28rem] sm:h-[34rem]">
             <Image
-              src="/images/umrah/masjid-e-nabvi.jpg"
+              src="/images/umrah/masjid-e-nabvi.webp"
               alt="Masjid al Nabawi"
               fill
               sizes="(max-width: 1024px) 100vw, 45vw"

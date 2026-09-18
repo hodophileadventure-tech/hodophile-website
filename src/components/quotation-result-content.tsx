@@ -125,7 +125,7 @@ export function QuotationResultContent() {
           <div className="flex flex-wrap items-center justify-between gap-6 border-b border-stone-200 pb-6 print:gap-3 print:pb-3">
             <div className="flex items-center gap-4 print:gap-2">
               <div className="h-20 w-20 overflow-hidden rounded-3xl bg-white p-3 shadow-sm print:h-12 print:w-12 print:rounded-xl print:p-1">
-                <Image src="/logo-transparent.png" alt="Hodophile Adventures logo" width={80} height={80} className="h-full w-full object-contain" />
+                <Image src="/logo-transparent.webp" alt="Hodophile Adventures logo" width={80} height={80} className="h-full w-full object-contain" />
               </div>
               <div>
                 <h1 className="text-4xl font-black uppercase tracking-[0.12em] text-stone-950 print:text-xl">Hodophile Adventures</h1>

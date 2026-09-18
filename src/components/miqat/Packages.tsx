@@ -10,19 +10,19 @@ const packages = [
     tier: "Economy",
     price: "From Rs.195,000",
     detail: "Thoughtfully paced stays with essential comforts and complete guidance.",
-    image: "/images/umrah/masjid-e-nabvi.jpg",
+    image: "/images/umrah/masjid-e-nabvi.webp",
   },
   {
     tier: "Premium",
     price: "From Rs.325,000",
     detail: "A refined balance of comfort, service and spiritual ease throughout the journey.",
-    image: "/images/umrah/kabah-shareef.jpg",
+    image: "/images/umrah/kabah-shareef.webp",
   },
   {
     tier: "HARAMAIN",
     price: "From Rs.495,000",
     detail: "Luxury hospitality, premium transfers and elevated support at every step.",
-    image: "/images/umrah/kabah.jpg",
+    image: "/images/umrah/kabah.webp",
   },
 ];
 

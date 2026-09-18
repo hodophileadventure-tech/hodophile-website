@@ -77,7 +77,7 @@ export function HeroSection() {
           <div className="relative overflow-hidden rounded-[2rem] border border-[#0F5132]/10 bg-white p-2 shadow-[0_22px_60px_rgba(15,81,50,0.15)]">
             <motion.div style={{ y: imageY }} className="relative h-[24rem] overflow-hidden rounded-[1.5rem] sm:h-[32rem]">
               <Image
-                src="/images/umrah/kabah.jpg"
+                src="/images/umrah/kabah.webp"
                 alt="Kaaba in Masjid al Haram"
                 fill
                 priority

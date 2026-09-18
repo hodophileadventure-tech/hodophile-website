@@ -10,21 +10,21 @@ const testimonials = [
     role: "Pakistan",
     quote:
       "Everything was managed with remarkable care. Hotel check-ins, transfers and daily guidance were seamless, allowing us to stay fully focused on worship.",
-    image: "/images/testimonials/female-1.png",
+    image: "/images/testimonials/female-1.webp",
   },
   {
     name: "Khalid Rehman",
     role: "United Kingdom",
     quote:
       "MIQAT delivered exactly what was promised. The process was transparent from booking to return, and the support team remained available at every step.",
-    image: "/images/testimonials/male-2.png",
+    image: "/images/testimonials/male-2.webp",
   },
   {
     name: "Fatima Noor",
     role: "UAE",
     quote:
       "A calm and premium Umrah experience. The itinerary was thoughtfully paced, and every sacred visit felt organized and peaceful.",
-    image: "/images/testimonials/female-2.png",
+    image: "/images/testimonials/female-2.webp",
   },
 ];
 

@@ -23,7 +23,7 @@ export default function InquiryPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-6.jpg"
+        image="/images/editorial/editorial-6.webp"
         imageAlt="Travelers in scenic valley"
         eyebrow="Trip Inquiry"
         title="Collect the details you need before turning a lead into a polished trip plan."

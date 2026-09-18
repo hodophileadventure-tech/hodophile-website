@@ -27,7 +27,7 @@ export default function OurTeamPage() {
         <div className="team-page-hero-wrap">
           <img
             className="team-page-hero-image"
-            src="/images/team/our-team-header.png"
+            src="/images/team/our-team-header.webp"
             alt=""
             aria-hidden="true"
           />

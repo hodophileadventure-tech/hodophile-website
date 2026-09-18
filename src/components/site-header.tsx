@@ -298,7 +298,7 @@ export function SiteHeader() {
             className="group relative hidden h-[3.5rem] shrink-0 items-center justify-center lg:flex"
           >
             <Image
-              src="/logo-transparent.png"
+              src="/logo-transparent.webp"
               alt="Hodophile Adventures"
               width={240}
               height={68}
@@ -316,7 +316,7 @@ export function SiteHeader() {
             className="group relative inline-flex h-[2.5rem] w-[10rem] shrink-0 items-center lg:inline-flex"
           >
             <Image
-              src="/logo-transparent.png"
+              src="/logo-transparent.webp"
               alt="Hodophile Adventures"
               width={240}
               height={68}

@@ -19,7 +19,7 @@ const pillars: WhyChoosePillar[] = [
     title: "",
     description:
       "Every itinerary is thoughtfully designed around your interests, travel style, budget, and pace. From adventure and family holidays to luxury escapes and Umrah, every journey is uniquely yours.",
-    image: "/images/editorial/tailor-made-journeys.png",
+    image: "/images/editorial/tailor-made-journeys.webp",
     imageLift: 8,
   },
   {
@@ -28,7 +28,7 @@ const pillars: WhyChoosePillar[] = [
     title: "",
     description:
       "Explore destinations with experienced local guides and trusted travel partners. Enjoy authentic experiences, seamless planning, and professional service at every step.",
-    image: "/images/editorial/hodophile_cutout_4.png",
+    image: "/images/editorial/hodophile_cutout_4.webp",
     imageLift: 24,
   },
   {
@@ -37,7 +37,7 @@ const pillars: WhyChoosePillar[] = [
     title: "",
     description:
       "We take care of flights, accommodation, visas, transportation, and logistics. Relax and enjoy your journey while we handle every detail from start to finish.",
-    image: "/images/editorial/hodophile_cutout_1.png",
+    image: "/images/editorial/hodophile_cutout_1.webp",
     imageLift: 0,
   },
   {
@@ -46,7 +46,7 @@ const pillars: WhyChoosePillar[] = [
     title: "",
     description:
       "Go beyond sightseeing with carefully curated cultural, adventure, and spiritual journeys. Create meaningful memories through experiences that inspire, connect, and last a lifetime.",
-    image: "/images/editorial/hodophile_cutout_3.png",
+    image: "/images/editorial/hodophile_cutout_3.webp",
     imageLift: 18,
   },
   {
@@ -56,7 +56,7 @@ const pillars: WhyChoosePillar[] = [
     description:
       "Our dedicated team is available before, during, and after your trip. Count on prompt assistance and reliable guidance whenever you need it.",
     highlight: "24/7 TRAVEL SUPPORT",
-    image: "/images/editorial/hodophile_cutout_2.png",
+    image: "/images/editorial/hodophile_cutout_2.webp",
     imageLift: 6,
   },
 ];

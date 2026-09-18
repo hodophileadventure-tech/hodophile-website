@@ -6,7 +6,7 @@ import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 import { hotels } from "@/lib/data/hotels";
 
-const fallbackImage = "/images/editorial/editorial-3.jpg";
+const fallbackImage = "/images/editorial/editorial-3.webp";
 
 const hotelCities = Array.from(new Set(hotels.map((hotel) => hotel.city))).sort();
 
@@ -37,7 +37,7 @@ export default function HotelsGalleryPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-2.jpg"
+        image="/images/editorial/editorial-2.webp"
         imageAlt="Hotel room gallery"
         eyebrow="Hotel Gallery"
         title="Hotel room galleries by city, hotel, and room type."

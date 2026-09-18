@@ -12,15 +12,15 @@ type TeamProfile = {
 const teamProfiles: readonly TeamProfile[] = [
   { id: "sana", name: "Sana Masood", role: "Chief Executive Officer" },
   { id: "masood", name: "Masood Ahmed", role: "Managing Director" },
-  { id: "israr", name: "Israr Ahmed Siddiqui", image: "/images/team/israar.png", role: "Director Corporate" },
+  { id: "israr", name: "Israr Ahmed Siddiqui", image: "/images/team/israar.webp", role: "Director Corporate" },
   { id: "yashar", name: "Yashar Ahmed Siddiqui", role: "HR" },
-  { id: "maaz", name: "Maaz Ahmed Siddiqui", image: "/images/team/maaz.png", role: "Operations Executive" },
-  { id: "qasim", name: "Qasim Ateeque", image: "/images/team/qasim.png", role: "Software Engineer" },
-  { id: "altamash", name: "Altamash Ali", image: "/images/team/ALTAMASH ALI.png", role: "Travel Consultant" },
-  { id: "sameer", name: "Sameer Khan", image: "/images/team/sameer (1).png", role: "Video Editor" },
-  { id: "areeba", name: "Areeba Siddique", image: "/images/team/areeba.png", role: "Content Creator" },
-  { id: "sikandar", name: "Sikandar Abbas", image: "/images/team/sikander.png", role: "Tour Manager" },
-  { id: "emran", name: "Emraan Nadeem", image: "/images/team/imran.png", role: "Tour Manager" },
+  { id: "maaz", name: "Maaz Ahmed Siddiqui", image: "/images/team/maaz.webp", role: "Operations Executive" },
+  { id: "qasim", name: "Qasim Ateeque", image: "/images/team/qasim.webp", role: "Software Engineer" },
+  { id: "altamash", name: "Altamash Ali", image: "/images/team/ALTAMASH ALI.webp", role: "Travel Consultant" },
+  { id: "sameer", name: "Sameer Khan", image: "/images/team/sameer (1).webp", role: "Video Editor" },
+  { id: "areeba", name: "Areeba Siddique", image: "/images/team/areeba.webp", role: "Content Creator" },
+  { id: "sikandar", name: "Sikandar Abbas", image: "/images/team/sikander.webp", role: "Tour Manager" },
+  { id: "emran", name: "Emraan Nadeem", image: "/images/team/imran.webp", role: "Tour Manager" },
 ] as const;
 
 function getMember(id: string) {

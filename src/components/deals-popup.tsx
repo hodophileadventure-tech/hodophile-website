@@ -70,7 +70,7 @@ export function DealsPopup() {
             {/* Image Container - Scrollable */}
             <div className="w-full bg-black sm:max-h-[80vh]">
               <img
-                src="/images/summer-tour-2026.jpg"
+                src="/images/summer-tour-2026.webp"
                 alt="Summer Tour 2026 - Special Deals"
                 className="block max-h-[calc(100svh-8rem)] w-full object-contain sm:max-h-none sm:object-cover"
               />

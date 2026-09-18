@@ -23,7 +23,7 @@ export default function BlogsPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-2.jpg"
+        image="/images/editorial/editorial-2.webp"
         imageAlt="Valley road through mountains"
         eyebrow="Blogs"
         title="Travel stories and practical guides for better domestic trip planning."

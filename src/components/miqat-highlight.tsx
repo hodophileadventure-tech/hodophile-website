@@ -66,7 +66,7 @@ export function MiqatHighlightSection() {
                 className="overflow-hidden bg-[#f3ede5] lg:relative lg:-top-10 lg:translate-x-8"
               >
                 <img
-                  src="/images/miqat/miqat-cinematic.jpg"
+                  src="/images/miqat/miqat-cinematic.webp"
                   alt="Pilgrims moving through Masjid al-Haram in soft evening light, an intimate Umrah moment."
                   className="h-[58vh] min-h-[500px] w-full object-cover object-[50%_20%] lg:h-[72vh]"
                 />

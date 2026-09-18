@@ -24,7 +24,7 @@ export default function ContactPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-6.jpg"
+        image="/images/editorial/editorial-6.webp"
         imageAlt="Traveler using phone in mountains"
         eyebrow="Contact"
         title="Ask about routes, pricing, and custom Pakistan travel plans."

@@ -43,9 +43,9 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
-      { url: "/logo.png", type: "image/png" },
+      { url: "/logo.webp", type: "image/webp" },
     ],
-    apple: "/logo.png",
+    apple: "/logo.webp",
   },
   openGraph: {
     type: "website",

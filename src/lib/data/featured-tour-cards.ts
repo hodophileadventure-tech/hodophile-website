@@ -120,8 +120,8 @@ export const featuredTourCards: FeaturedTourCard[] = [
   {
     slug: "kashmir-taobat",
     title: "9 Days Kashmir, Arangkel & Taobat",
-    homeImage: "/images/featured-tours/kashmir-taobat.jpg.jpeg",
-    heroImage: "/images/destinations/kashmir.jpg",
+    homeImage: "/images/featured-tours/kashmir-taobat.jpg.webp",
+    heroImage: "/images/destinations/kashmir.webp",
     duration: "9 Days / 8 Nights",
     priceFrom: "Rs. 37,500",
     summary: "A standard group tour from Karachi through Islamabad into Kashmir, Taobat, and Arangkel.",
@@ -350,8 +350,8 @@ export const featuredTourCards: FeaturedTourCard[] = [
   {
     slug: "skardu-deosai",
     title: "10 Days Skardu, Shigar & Shangrila",
-    homeImage: "/images/featured-tours/skardu-deosai.jpg.jpeg",
-    heroImage: "/images/destinations/skardu.jpg",
+    homeImage: "/images/featured-tours/skardu-deosai.jpg.webp",
+    heroImage: "/images/destinations/skardu.webp",
     duration: "10 Days / 7 Nights",
     priceFrom: "Rs. 39,000",
     summary: "A rugged Skardu route with Shangrila, Shigar Fort, Sarfranga Cold Desert, and Deosai.",
@@ -548,8 +548,8 @@ export const featuredTourCards: FeaturedTourCard[] = [
   {
     slug: "hunza-skardu",
     title: "12 Days Naran, Hunza, Skardu",
-    homeImage: "/images/featured-tours/hunza-skardu-featured.png",
-    heroImage: "/images/destinations/featured-skardu-hunza-2.jpg",
+    homeImage: "/images/featured-tours/hunza-skardu-featured.webp",
+    heroImage: "/images/destinations/featured-skardu-hunza-2.webp",
     duration: "12 Days / 11 Nights",
     priceFrom: "Rs. 46,700",
     summary: "Naran, Hunza, Skardu, Shigar, and Deosai combined into a bold northern journey.",
@@ -753,8 +753,8 @@ export const featuredTourCards: FeaturedTourCard[] = [
   {
     slug: "hunza-naltar",
     title: "10 Days Naran, Hunza & Naltar",
-    homeImage: "/images/featured-tours/hunza-naltar.jpg.jpeg",
-    heroImage: "/images/destinations/naltar-valley-pakistan.jpg",
+    homeImage: "/images/featured-tours/hunza-naltar.jpg.webp",
+    heroImage: "/images/destinations/naltar-valley-pakistan.webp",
     duration: "10 Days / 9 Nights",
     priceFrom: "Rs. 39,000",
     summary: "A refreshing northern route with Naran Valley, Hunza heritage, and alpine Naltar lakes.",

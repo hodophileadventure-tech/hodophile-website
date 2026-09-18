@@ -26,7 +26,7 @@ export default function ToursPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-8.jpg"
+        image="/images/editorial/editorial-8.webp"
         imageAlt="Scenic tour route"
         eyebrow="Tours and Packages"
         title="Domestic Pakistan packages built for clear comparisons and stronger search visibility."

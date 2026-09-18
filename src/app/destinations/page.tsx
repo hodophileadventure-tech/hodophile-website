@@ -24,7 +24,7 @@ export default function DestinationsPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-4.jpg"
+        image="/images/editorial/editorial-4.webp"
         imageAlt="Mountain valley with river"
         eyebrow="Destinations"
         title="The routes travelers search most when planning domestic Pakistan journeys."

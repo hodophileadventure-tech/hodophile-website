@@ -38,7 +38,7 @@ export default function UmrahBookingPage() {
     <div className={`${inter.variable} ${cormorant.variable}`}>
       <PageShell wide noTopPadding>
         <PageHeroImage
-          image="/images/miqat/miqat-booking-header.jpg"
+          image="/images/miqat/miqat-booking-header.webp"
           imageAlt="MIQAT by Hodophile Umrah booking form"
           imageClassName="object-contain object-center"
           eyebrow="MIQAT Booking"

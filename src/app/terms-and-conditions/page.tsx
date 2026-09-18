@@ -41,7 +41,7 @@ export default function TermsAndConditionsPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-7.jpg"
+        image="/images/editorial/editorial-7.webp"
         imageAlt="Mountain road and clouds"
         eyebrow="Terms & Conditions"
         title="Booking terms that keep the trip process clear and predictable."

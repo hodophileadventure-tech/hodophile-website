@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 
 import { AboutTeamTabDropdown } from "@/components/about-team-tab-dropdown";
 import { PageShell } from "@/components/page-shell";
@@ -27,7 +27,7 @@ export default function AboutUsPage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url(/images/editorial/about-us-hero.jpg)",
+            backgroundImage: "url(/images/editorial/about-us-hero.webp)",
           }}
         />
 
@@ -182,7 +182,7 @@ export default function AboutUsPage() {
 
               <div className="overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-[#fff8e3] p-3 shadow-[0_22px_50px_-28px_rgba(252,192,0,0.28)]">
                 <img
-                  src="/images/editorial/local-expertise-global-standards.png"
+                  src="/images/editorial/local-expertise-global-standards.webp"
                   alt="Local expertise with global standards"
                   className="h-full w-full rounded-[1.5rem] object-cover"
                 />

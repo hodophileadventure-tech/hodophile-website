@@ -39,70 +39,70 @@ export default function Home() {
         "This was our First trip with Hodophile. We have really enjoyed at Bhit Khori. Hodophile is really good travel agency for family and friends tours. I was travel with other traveling agencies but I was not satisfied with services. When I tried this travel agency I am really satisfied with Hodophile services. Thanks to Hodophile.",
       name: "Dileep Rathore",
       role: "Satisfied Client",
-      image: "/images/testimonials/male-1.png",
+      image: "/images/testimonials/male-1.webp",
     },
     {
       quote:
         "This was our second trip with Hodophile Adventures and it lived up to our very high expectations. Hunza and Kalash, both tours have been excellent. We had an amazing time at Chillam Joshi festival. From initial contact to booking, to superb coordination by the tour organizer.",
       name: "Aiman Zaib",
       role: "Satisfied Client",
-      image: "/images/testimonials/female-1.png",
+      image: "/images/testimonials/female-1.webp",
     },
     {
       quote:
         "Every thing was so managed. Breakfast and lunch was too delicious and on time. The most important thing there environment was so clean and all the families there were so decent. We enjoyed a lot without fear. If you want to go on a trip with your family, I definitely suggest Hodophile Adventures.",
       name: "Fariha",
       role: "Satisfied Client",
-      image: "/images/testimonials/female-2.png",
+      image: "/images/testimonials/female-2.webp",
     },
     {
       quote:
         "Amazing trip to Arabian Rocks called Bhit Khori in my life, never before experience like this. I enjoyed the underwater world amazingly. The organizer Hodophile Adventures and their staff like Mr. Akhter Jan behaved extremely well while giving instructions to new people. Really a great life time experience.",
       name: "Rahul Gill",
       role: "Satisfied Client",
-      image: "/images/testimonials/male-2.png",
+      image: "/images/testimonials/male-2.webp",
     },
     {
       quote:
         "Our Bhit Khori tour was beautifully arranged and properly timed. The overall coordination and guidance from the team made the journey relaxed and memorable.",
       name: "Bilal Raza",
       role: "Satisfied Client",
-      image: "/images/testimonials/male-4.png",
+      image: "/images/testimonials/male-4.webp",
     },
     {
       quote:
         "From planning to execution, this trip felt organized and smooth. The route was excellent and the team remained supportive throughout the whole journey.",
       name: "Saima Noor",
       role: "Satisfied Client",
-      image: "/images/testimonials/female-2.png",
+      image: "/images/testimonials/female-2.webp",
     },
     {
       quote:
         "We planned a trip to Gorakh Hill with Hodophile Adventures and it turned out to be an excellent experience. The journey started from Karachi and departed exactly on time. Transport was comfortable, the team was supportive, and the guide remained helpful throughout. Food, accommodation, photography support, bonfire, and camping were all very well organized. Overall, it was a well-planned and unforgettable trip. Highly recommended.",
       name: "Qamar Imam",
       role: "Verified Client Review",
-      image: "/images/testimonials/qamar.jpg",
+      image: "/images/testimonials/qamar.webp",
     },
     {
       quote:
         "Assalaam o Alaikum. I had a lovely trip to Ormara with Hodophile Adventures. It was my first solo trip, so I had many questions, and the team answered every query politely and patiently. From safety and punctuality to resort management, night camping, bonfire, and food quality, every detail was managed beautifully. This trip will stay in our memories for life, and we will definitely join again.",
       name: "Nusrat Waqar",
       role: "Verified Client Review",
-      image: "/images/testimonials/nusrat.jpg",
+      image: "/images/testimonials/nusrat.webp",
     },
     {
       quote:
         "Rating: 5/5. Our Skardu trip with Hodophile Adventure was truly once-in-a-lifetime. From initial communication to on-ground execution, everything was professional and well managed. Guides were knowledgeable about local culture and geography, adventure activities were exciting and safe, accommodations were comfortable, and the itinerary balanced exploration with relaxation perfectly. I wholeheartedly recommend them for Skardu adventures.",
       name: "SamMamah Zubair",
       role: "Verified Client Review",
-      image: "/images/testimonials/samama.jpg",
+      image: "/images/testimonials/samama.webp",
     },
     {
       quote:
         "I recently went on a 3-day trip to Quetta and Ziarat with Hodophile Adventures and it was an absolute success. The team ensured a seamless and enjoyable experience from start to finish. Accommodations were top-notch, the itinerary was thoughtful, and Mr. Akhter Jan made the journey even more special with his knowledge and passion. I highly recommend Hodophile Adventures and give them a 5-star rating for excellent service.",
       name: "Imran Ahmed",
       role: "Verified Client Review",
-      image: "/images/testimonials/imran.jpg",
+      image: "/images/testimonials/imran.webp",
     },
   ];
 
@@ -186,7 +186,7 @@ export default function Home() {
         <div className="grid min-w-0 gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-center lg:gap-20">
           <div className="relative min-w-0 h-[26rem] overflow-hidden sm:h-[34rem]">
             <img
-              src="/images/editorial/editorial-8.jpg"
+              src="/images/editorial/editorial-8.webp"
               alt="A quiet mountain landscape in Pakistan"
               loading="lazy"
               decoding="async"
@@ -392,7 +392,7 @@ export default function Home() {
         </div>
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {blogPosts.slice(0, 3).map((post, index) => {
-            const destinationImage = destinations[index]?.image ?? "/images/editorial/editorial-2.jpg";
+            const destinationImage = destinations[index]?.image ?? "/images/editorial/editorial-2.webp";
             return (
               <Link key={post.slug} href={`/blogs/${post.slug}`} className="group overflow-hidden border border-stone-200 bg-white transition hover:-translate-y-1 hover:border-[#fcc000]/70">
                 <div className="relative h-52 overflow-hidden bg-stone-100">
