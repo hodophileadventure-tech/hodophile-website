@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
 import { TourLanding } from "@/components/tour-landing";
 import { absoluteUrl, destinations, tourMenu } from "@/lib/site";
+import { buildPageSchema } from "@/lib/seo/structured-data";
 
 type TourPackagePageProps = {
   params: Promise<{ region: string; slug: string }>;
@@ -89,19 +91,34 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
   }
 
   return (
-    <PageShell wide>
-      <TourLanding
-        eyebrow={group.label}
-        title={item.label}
-        description={
-          item.description ??
-          `${item.label} designed for smooth travel pacing, scenic stopovers, and premium domestic route planning.`
-        }
-        image={getPackageImage(slug)}
-        highlights={["Tailored itinerary", "Route support", "Private options", "Booking assistance"]}
-        ctaHref="/make-my-trip"
-        ctaLabel="Request This Package"
+    <>
+      <JsonLd
+        data={buildPageSchema({
+          title: item.label,
+          description: item.description ?? `${item.label} by Hodophile Adventures with curated route support.`,
+          url: item.href,
+          breadcrumbs: [
+            { name: "Home", url: "/" },
+            { name: "Tours", url: "/tours" },
+            { name: group.label, url: group.href },
+            { name: item.label, url: item.href },
+          ],
+        })}
       />
-    </PageShell>
+      <PageShell wide>
+        <TourLanding
+          eyebrow={group.label}
+          title={item.label}
+          description={
+            item.description ??
+            `${item.label} designed for smooth travel pacing, scenic stopovers, and premium domestic route planning.`
+          }
+          image={getPackageImage(slug)}
+          highlights={["Tailored itinerary", "Route support", "Private options", "Booking assistance"]}
+          ctaHref="/make-my-trip"
+          ctaLabel="Request This Package"
+        />
+      </PageShell>
+    </>
   );
 }

@@ -1,9 +1,20 @@
+import { seasonalTourPackages } from "./seasonal-tour-packages";
+
 export type TourPackage = {
   id: string;
   title: string;
   destinationSlugs: string[];
+  region?: "northern" | "southern";
+  image?: string;
   duration: string;
   pricePerPerson: number;
+  priceWithoutIslamabadStay?: number;
+  sharingPrices?: {
+    quad: number;
+    triple: number;
+    twin: number;
+    solo: number;
+  };
   couplePrice?: number;
   departure?: string;
   transport?: string[];
@@ -117,6 +128,8 @@ export const tourPackages: TourPackage[] = [
     notes: ["Directly joining from Islamabad: PKR 39,500 per person or PKR 89,000 per couple."],
   },
 ];
+
+tourPackages.push(...seasonalTourPackages);
 
 export function getTourPackagesForDestination(destinationSlug: string) {
   return tourPackages.filter((tourPackage) => tourPackage.destinationSlugs.includes(destinationSlug));

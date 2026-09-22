@@ -3,9 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 import { getTourPackagesForDestination } from "@/lib/data/tour-packages";
+import { buildPageSchema } from "@/lib/seo/structured-data";
 
 type DestinationPageProps = {
   params: Promise<{ slug: string }>;
@@ -136,7 +138,20 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
   const packages = getTourPackagesForDestination(slug);
 
   return (
-    <PageShell wide>
+    <>
+      <JsonLd
+        data={buildPageSchema({
+          title: `${destination.name} travel guide`,
+          description: destination.description,
+          url: `/destinations/${slug}`,
+          breadcrumbs: [
+            { name: "Home", url: "/" },
+            { name: "Destinations", url: "/destinations" },
+            { name: destination.name, url: `/destinations/${slug}` },
+          ],
+        })}
+      />
+      <PageShell wide>
       <section className="space-y-6">
         <div>
           <Link href="/destinations" className="text-sm font-medium text-[#ffc000] hover:text-[#ffd24d]">
@@ -178,7 +193,9 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
                 <div className="flex flex-wrap items-start justify-between gap-5 border-b border-white/10 pb-5">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#fcc000]">{tourPackage.duration}</p>
-                    <h3 className="mt-3 max-w-sm font-serif text-2xl font-normal leading-tight text-white">{tourPackage.title}</h3>
+                    <h3 className="mt-3 max-w-sm font-serif text-2xl font-normal leading-tight text-white">
+                      <Link href={`/packages/${tourPackage.id}`} className="transition hover:text-[#fcc000]">{tourPackage.title}</Link>
+                    </h3>
                   </div>
                   <div className="text-right">
                     <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/45">From</p>
@@ -242,6 +259,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
           </Link>
         </div>
       </section>
-    </PageShell>
+      </PageShell>
+    </>
   );
 }

@@ -22,7 +22,7 @@ export function TourLanding({
   ctaLabel = "Request a Plan",
 }: TourLandingProps) {
   return (
-    <section className="overflow-hidden rounded-[1.5rem] bg-white shadow-[0_24px_70px_rgba(11,11,11,0.12)]">
+    <section className="overflow-hidden rounded-[2.5rem] bg-[#0b0b0b] text-white shadow-[0_30px_90px_rgba(11,11,11,0.2)]">
       <div className="grid gap-0 lg:grid-cols-[1.08fr_.92fr]">
         <div className="relative min-h-[28rem]">
           <Image src={image} alt={title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
@@ -35,13 +35,13 @@ export function TourLanding({
 
         <div className="flex flex-col justify-between p-8 lg:p-10 xl:p-12">
           <div>
-            <p className="eyebrow text-stone-500">Tour overview</p>
-            <p className="mt-4 max-w-2xl text-base leading-8 text-stone-600">{description}</p>
+            <p className="eyebrow text-[#fcc000]">Tour overview</p>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-white/65">{description}</p>
             <div className="mt-8 flex flex-wrap gap-2">
               {highlights.map((item) => (
                 <span
                   key={item}
-                  className="rounded-full border border-stone-300 px-3 py-1 text-xs uppercase tracking-[0.22em] text-stone-600"
+                  className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-xs uppercase tracking-[0.22em] text-white/65"
                 >
                   {item}
                 </span>
@@ -60,13 +60,13 @@ export function TourLanding({
               href={whatsappUrl(`Hi Hodophile, I'm interested in ${title}. Please share availability and booking details.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex rounded-full border border-[#557a63] px-5 py-3 text-sm font-semibold text-[#31563f] transition hover:bg-[#edf5ef]"
+              className="inline-flex rounded-full border border-[#b8d5bf] px-5 py-3 text-sm font-semibold text-[#b8d5bf] transition hover:border-[#fcc000] hover:bg-[#fcc000]/10 hover:text-[#fcc000]"
             >
               WhatsApp an expert
             </a>
             <Link
               href="/tours"
-              className="inline-flex rounded-full border border-[#fcc000] bg-white px-5 py-3 text-sm font-semibold text-[#fcc000] transition hover:border-[#fcc000] hover:bg-[#fff8df]"
+              className="inline-flex rounded-full border border-white/25 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white transition hover:border-[#fcc000] hover:bg-[#fcc000]/10 hover:text-[#fcc000]"
             >
               Back to Tours
             </Link>

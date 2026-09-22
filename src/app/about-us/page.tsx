@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 
 import { AboutTeamTabDropdown } from "@/components/about-team-tab-dropdown";
+import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
 import { companyStats } from "@/lib/data/company-stats";
 import { absoluteUrl } from "@/lib/site";
+import { buildPageSchema } from "@/lib/seo/structured-data";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -22,7 +24,18 @@ export const metadata: Metadata = {
 
 export default function AboutUsPage() {
   return (
-    <PageShell wide>
+    <>
+      <JsonLd data={buildPageSchema({
+        title: "About Us",
+        description:
+          "Learn about Hodophile Adventures, its leadership, vision, mission, travel rewards program, and commitment to safe and memorable experiences.",
+        url: "/about-us",
+        breadcrumbs: [
+          { name: "Home", url: "/" },
+          { name: "About Us", url: "/about-us" },
+        ],
+      })} />
+      <PageShell wide>
       <section className="relative mt-0 mx-auto max-w-full overflow-hidden rounded-[2rem] border-2 border-[#fcc000]">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -327,6 +340,7 @@ export default function AboutUsPage() {
           </section>
         </div>
       </section>
-    </PageShell>
+      </PageShell>
+    </>
   );
 }

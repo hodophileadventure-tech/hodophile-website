@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 
 import { notFound } from "next/navigation";
 
+import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
 import { PageHeroImage } from "@/components/page-hero-image";
 import { absoluteUrl, blogPosts } from "@/lib/site";
+import { buildPageSchema } from "@/lib/seo/structured-data";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -51,7 +53,20 @@ export default async function BlogArticlePage({ params }: PageProps) {
   }
 
   return (
-    <PageShell wide>
+    <>
+      <JsonLd
+        data={buildPageSchema({
+          title: post.title,
+          description: post.excerpt,
+          url: `/blogs/${post.slug}`,
+          breadcrumbs: [
+            { name: "Home", url: "/" },
+            { name: "Blogs", url: "/blogs" },
+            { name: post.title, url: `/blogs/${post.slug}` },
+          ],
+        })}
+      />
+      <PageShell wide>
       {post.hero && (
         <div className="mb-8">
           <PageHeroImage
@@ -146,6 +161,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
           </div>
         </div>
       </article>
-    </PageShell>
+      </PageShell>
+    </>
   );
 }

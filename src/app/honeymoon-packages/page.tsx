@@ -4,6 +4,7 @@ import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 import Link from "next/link";
+import { additionalHoneymoonPackages } from "@/lib/data/additional-honeymoon-packages";
 
 export const metadata: Metadata = {
   title: "Honeymoon Packages",
@@ -27,7 +28,7 @@ const honeymoonPackages = [
     duration: "4 Days / 3 Nights",
     detail: "Ushu forests, Mahodand Lake excursion, and relaxed valley pacing.",
     price: "PKR 120,000",
-    image: "/images/honeymoon/swat-kalam.webp",
+    image: "/images/honeymoon/swat-valley-deluxe.webp",
   },
   {
     slug: "naran-babusar-4days",
@@ -35,7 +36,7 @@ const honeymoonPackages = [
     duration: "4 Days / 3 Nights",
     detail: "Kaghan Valley highlights: Saif-ul-Malook, Lulusar, and Babusar Top.",
     price: "PKR 120,000",
-    image: "/images/honeymoon/naran-babusar.webp",
+    image: "/images/honeymoon/naran-kaghan.webp",
   },
   {
     slug: "kashmir-arangkel-5days",
@@ -43,8 +44,9 @@ const honeymoonPackages = [
     duration: "5 Days / 4 Nights",
     detail: "Neelum Valley route to Kel and the hill-meadow of Arang Kel.",
     price: "PKR 150,000",
-    image: "/images/honeymoon/kashmir-arangkel.webp",
+    image: "/images/honeymoon/ratti-gali-lake.webp",
   },
+  ...Object.values(additionalHoneymoonPackages),
 ];
 
 export default function HoneymoonPackagesPage() {
@@ -58,27 +60,33 @@ export default function HoneymoonPackagesPage() {
         description="Choose from premium domestic routes in Pakistan and let us craft an elegant honeymoon itinerary around your preferred pace."
       />
 
-      <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <section className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {honeymoonPackages.map((item) => (
           <Link
             key={item.slug}
             href={`/honeymoon-packages/${item.slug}`}
-            className="group block rounded-[2rem] border border-black/10 bg-white/85 p-0 shadow-sm backdrop-blur overflow-hidden"
+            className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_16px_40px_rgba(55,55,48,0.08)] transition duration-500 hover:-translate-y-1 hover:border-[#d4aa18] hover:shadow-[0_24px_55px_rgba(55,55,48,0.15)]"
           >
-            <div className="h-48 w-full overflow-hidden bg-stone-100">
+            <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-200">
               <img
                 src={item.image}
                 alt={item.name}
-                className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                className="h-full w-full object-contain bg-stone-100 p-0 brightness-105 saturate-110 transition duration-700 group-hover:scale-[1.02] group-hover:brightness-110"
               />
+              <span className="absolute left-4 top-4 bg-[#fcc000] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0b0b0b]">
+                {item.duration}
+              </span>
             </div>
-            <div className="p-6">
-              <div className="flex items-baseline justify-between">
-                <p className="text-xs uppercase tracking-[0.3em] text-[#fcc000]">{item.duration}</p>
-                <p className="text-sm font-semibold text-stone-900">{item.price}</p>
+            <div className="flex flex-1 flex-col p-5 sm:p-6">
+              <h2 className="!text-2xl font-semibold leading-tight text-stone-950">{item.name}</h2>
+              <p className="mt-4 line-clamp-3 text-sm leading-6 text-stone-600">{item.detail}</p>
+              <div className="mt-auto flex items-end justify-between gap-4 border-t border-stone-200 pt-5">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-stone-500">From</p>
+                  <p className="mt-1 text-xl font-semibold text-[#9a7600]">{item.price ?? "Contact us"}</p>
+                </div>
+                <span className="text-sm font-bold uppercase tracking-[0.12em] text-stone-950 transition group-hover:text-[#9a7600]">View journey ↗</span>
               </div>
-              <h2 className="mt-3 text-2xl font-semibold">{item.name}</h2>
-              <p className="mt-3 text-sm leading-7 text-stone-600">{item.detail}</p>
             </div>
           </Link>
         ))}

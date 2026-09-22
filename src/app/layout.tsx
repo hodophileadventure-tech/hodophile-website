@@ -5,7 +5,6 @@ import "./globals.css";
 import { siteConfig } from "@/lib/site";
 import { AnalyticsScripts } from "@/components/AnalyticsScripts";
 import { DealsPopup } from "@/components/deals-popup";
-import { JsonLd } from "@/components/JsonLd";
 import { LeadCapturePopup } from "@/components/lead-capture-popup";
 
 const GA_TRACKING_ID =
@@ -70,32 +69,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "TravelAgency",
-    name: siteConfig.name,
-    url: siteConfig.siteUrl,
-    description: siteConfig.description,
-    email: siteConfig.email,
-    telephone: siteConfig.phone,
-    areaServed: siteConfig.location,
-  };
-
-  const websiteSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: siteConfig.name,
-    url: siteConfig.siteUrl,
-    description: siteConfig.description,
-  };
-
   return (
     <html
       lang="en"
       className={`${manrope.variable} ${display.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#f7f6f2] text-stone-900">
-        <JsonLd data={[organizationSchema, websiteSchema]} />
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-[#f7f6f2] text-stone-900">
         <AnalyticsScripts gaTrackingId={GA_TRACKING_ID} facebookPixelId={FACEBOOK_PIXEL_ID} />
         {FACEBOOK_PIXEL_ID ? (
           <noscript>

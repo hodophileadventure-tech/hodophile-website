@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
+import { additionalHoneymoonPackages } from "@/lib/data/additional-honeymoon-packages";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -254,6 +255,8 @@ const packages: Record<
       },
     ],
   },
+
+  ...additionalHoneymoonPackages,
 };
 
 function SwatKalamContent() {

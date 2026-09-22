@@ -4,8 +4,11 @@ import { absoluteUrl, allTourRoutes, blogPosts, destinationGalleryRoutes } from 
 import { featuredTourRoutePaths } from "@/lib/data/featured-tour-cards";
 import { umrahPackages } from "@/lib/data/umrah-packages";
 import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "@/lib/data/premiumDestinations.js";
+import { seasonalTourPackages } from "@/lib/data/seasonal-tour-packages";
+import { additionalHoneymoonPackages } from "@/lib/data/additional-honeymoon-packages";
 
 const packageRoutes = [...premiumDestinations, ...readyToBookDestinations, ...exclusiveOffers].map((item) => `/packages/${item.id}`);
+const seasonalPackageRoutes = seasonalTourPackages.map((item) => `/packages/${item.id}`);
 
 const routes = [
   "/",
@@ -21,6 +24,7 @@ const routes = [
   "/gallery",
   "/hotels",
   "/honeymoon-packages",
+  ...Object.keys(additionalHoneymoonPackages).map((slug) => `/honeymoon-packages/${slug}`),
   "/inquiry",
   "/make-my-trip",
   "/terms-and-conditions",
@@ -29,6 +33,7 @@ const routes = [
   "/umrah-packages/book",
   ...umrahPackages.map((pkg) => `/umrah-packages/${pkg.id}`),
   ...packageRoutes,
+  ...seasonalPackageRoutes,
   ...allTourRoutes,
   ...featuredTourRoutePaths,
   ...destinationGalleryRoutes,

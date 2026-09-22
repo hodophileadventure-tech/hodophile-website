@@ -3,13 +3,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
+import { buildPageSchema } from "@/lib/seo/structured-data";
 import {
   premiumDestinations,
   readyToBookDestinations,
   exclusiveOffers,
 } from "@/lib/data/premiumDestinations";
+import { seasonalTourPackages } from "@/lib/data/seasonal-tour-packages";
 
 type PackagePageProps = {
   params: Promise<{ slug: string }>;
@@ -21,6 +24,7 @@ type PackageDetail = {
   heroImage: string;
   homeImage: string;
   duration: string;
+  departure?: string;
   summary: string;
   description: string;
   overview: string;
@@ -207,6 +211,143 @@ const allPackages: PackageDetail[] = [
   return customized;
 });
 
+function getSeasonalRouteDetails(title: string, duration: string) {
+  if (/swat|kalam|malam jabba/i.test(title)) {
+    return {
+      attractions: ["Islamabad", "Swat", "Fizaghat", "Bahrain", "Kalam", "Osho Forest", "Palogah Village", "Mahodand Lake", "Malam Jabba Ski Resort", "Khanpur Lake"],
+      itinerary: [
+        { day: "Day 1", title: "Departure from Karachi", description: "Travel toward Islamabad by bus or train. Travelers choosing the flight option depart according to the confirmed flight schedule." },
+        { day: "Day 2", title: "Arrival in Islamabad / Rawalpindi", description: "Reach Islamabad or Rawalpindi, transfer to the hotel, check in, rest, and enjoy dinner and an overnight stay." },
+        { day: "Day 3", title: "Islamabad to Kalam", description: "Depart early for Kalam with scenic stops at Fizaghat and Bahrain, then check in and explore Kalam Bazaar." },
+        { day: "Day 4", title: "Upper Kalam and Mahodand Lake", description: "Ride a 4x4 Prado toward Upper Kalam through Osho Forest and Palogah Village. Visit Mahodand Lake if accessible and return for the overnight stay." },
+        { day: "Day 5", title: "Malam Jabba Ski Resort", description: "Travel to Malam Jabba and enjoy the ski resort surroundings and optional activities such as the chairlift or zip line before returning to the hotel." },
+        { day: "Day 6", title: "Kalam / Mingora to Islamabad via Khanpur", description: "Travel toward Islamabad with a stop at Khanpur Lake for leisure and optional water activities, then check in for the final Islamabad overnight stay." },
+        { day: "Day 7", title: "Islamabad to Karachi", description: "Check out and travel to the bus terminal, railway station, or airport. Transport tickets are optional and subject to availability." },
+        { day: "Day 8", title: "Arrival in Karachi", description: "Reach Karachi and complete the tour." },
+      ].slice(0, Number.parseInt(duration, 10)),
+    };
+  }
+
+  if (/hunza|naltar/i.test(title)) {
+    return {
+      attractions: ["Islamabad", "Besham", "Chilas", "Hunza Valley", "Karimabad", "Baltit Fort", "Attabad Lake", "Passu Cones", "Khunjerab Pass", "Naltar Valley", "Naltar Lakes", "Naltar Ski Resort"],
+      itinerary: [
+        { day: "Day 1", title: "Departure from Karachi", description: "Begin the journey to Islamabad by bus or train, or use the separately arranged flight option." },
+        { day: "Day 2", title: "Arrival in Islamabad", description: "Check in at the Islamabad or Rawalpindi hotel, rest, and prepare for the northern route." },
+        { day: "Day 3", title: "Islamabad to Chilas", description: "Travel north through the Hazara route and Besham with scenic stops before the overnight stay in Chilas." },
+        { day: "Day 4", title: "Chilas to Hunza", description: "Continue along the Karakoram Highway, taking in the Indus views and mountain landscapes before reaching Hunza." },
+        { day: "Day 5", title: "Hunza Valley highlights", description: "Explore Karimabad, Baltit Fort, the local bazaar, and nearby viewpoints with time for photography and local culture." },
+        { day: "Day 6", title: "Attabad, Passu and upper Hunza", description: "Visit Attabad Lake, Passu Cones, the suspension bridge area, and other scenic stops subject to road and weather access." },
+        { day: "Day 7", title: "Naltar Valley excursion", description: "Travel by local 4x4 toward Naltar Valley and its lakes or ski resort, then return to the main hotel route." },
+        { day: "Day 8", title: "Return toward Islamabad", description: "Begin the return journey through the mountain corridor with planned rest and meal stops." },
+        { day: "Day 9", title: "Islamabad stay and departure preparation", description: "Complete the Islamabad stay, check out, and prepare for the return transport." },
+        { day: "Day 10", title: "Return journey", description: "Travel back to Karachi by the selected transport option." },
+        { day: "Day 11", title: "Transit", description: "Continue the return journey according to the confirmed bus, train, or air schedule." },
+        { day: "Day 12", title: "Arrival and tour completion", description: "Reach Karachi and complete the tour." },
+      ].slice(0, Number.parseInt(duration, 10)),
+    };
+  }
+
+  if (/skardu|manthoka|basho/i.test(title)) {
+    return {
+      attractions: ["Islamabad", "Chilas", "Skardu", "Upper Kachura Lake", "Shangrila", "Manthoka Waterfall", "Basho Valley", "Shigar Fort", "Katpana Desert", "Deosai access where scheduled"],
+      itinerary: [
+        { day: "Day 1", title: "Departure from Karachi", description: "Travel toward Islamabad by bus or train, with air travel available as an optional arrangement." },
+        { day: "Day 2", title: "Islamabad arrival", description: "Arrive, check in, rest, and prepare for the northern journey." },
+        { day: "Day 3", title: "Islamabad to Chilas", description: "Drive north with scenic stops through the Hazara and Indus routes before the overnight stay." },
+        { day: "Day 4", title: "Chilas to Skardu", description: "Continue toward Skardu through dramatic mountain roads and arrive for hotel check-in." },
+        { day: "Day 5", title: "Skardu lakes and viewpoints", description: "Visit Upper Kachura Lake, Shangrila, and the surrounding viewpoints before returning to Skardu." },
+        { day: "Day 6", title: "Manthoka Waterfall", description: "Take the local route to Manthoka Waterfall and enjoy the valley scenery and photography stops." },
+        { day: "Day 7", title: "Basho Valley excursion", description: "Travel by suitable local vehicle toward Basho Valley, subject to road access and weather." },
+        { day: "Day 8", title: "Skardu heritage and return preparation", description: "Explore available local attractions such as Shigar Fort or Katpana Desert and prepare for the return route." },
+        { day: "Day 9", title: "Return toward Islamabad", description: "Begin the return drive with planned rest stops and an overnight stay according to the confirmed itinerary." },
+        { day: "Day 10", title: "Islamabad and onward travel", description: "Complete the Islamabad stay and continue to Karachi by the selected transport option." },
+        { day: "Day 11", title: "Return transit", description: "Continue the journey according to the confirmed bus, train, or flight schedule." },
+        { day: "Day 12", title: "Arrival and tour completion", description: "Reach Karachi and complete the tour." },
+      ].slice(0, Number.parseInt(duration, 10)),
+    };
+  }
+
+  if (/kashmir|arang kel|taobat/i.test(title)) {
+    return {
+      attractions: ["Islamabad", "Muzaffarabad", "Keran", "Sharda", "Kel", "Arang Kel", "Taobat", "Halmat Valley", "Neelum River", "Kutton Waterfall"],
+      itinerary: [
+        { day: "Day 1", title: "Departure from Karachi", description: "Begin the journey toward Islamabad by bus or train, with flights available as an optional add-on." },
+        { day: "Day 2", title: "Islamabad arrival", description: "Check in at the Islamabad or Rawalpindi hotel, rest, and prepare for the Kashmir route." },
+        { day: "Day 3", title: "Islamabad to Keran / Sharda", description: "Travel through Muzaffarabad and the Neelum Valley with scenic waterfall and river stops before the overnight stay." },
+        { day: "Day 4", title: "Sharda and Kel", description: "Continue through Upper Neelum, visit Sharda, and travel onward toward Kel for the upper-valley excursion." },
+        { day: "Day 5", title: "Arang Kel trek", description: "Cross by cable car or suspension crossing and hike to Arang Kel, subject to access, before returning to the valley stay." },
+        { day: "Day 6", title: "Taobat Valley excursion", description: "Travel by local 4x4 toward Taobat and Halmat Valley, enjoying the river scenery and highland viewpoints." },
+        { day: "Day 7", title: "Return through Neelum Valley", description: "Begin the return route with scenic stops and an overnight stay according to the confirmed schedule." },
+        { day: "Day 8", title: "Islamabad and onward travel", description: "Complete the Islamabad stay and prepare for the return transport to Karachi." },
+        { day: "Day 9", title: "Arrival and tour completion", description: "Reach Karachi and complete the tour." },
+      ].slice(0, Number.parseInt(duration, 10)),
+    };
+  }
+
+  return {
+    attractions: ["Islamabad", "Balakot", "Naran Valley", "Kunhar River", "Lulusar Lake", "Babusar Top", "Saif-ul-Malook Lake", "Shogran", "Siri Paye"],
+    itinerary: [
+      { day: "Day 1", title: "Departure and Islamabad arrival", description: "Travel toward Islamabad, check in, and prepare for the northern route." },
+      { day: "Day 2", title: "Islamabad to Naran", description: "Drive through Balakot and the Kaghan Valley with scenic stops along the Kunhar River." },
+      { day: "Day 3", title: "Babusar and Lulusar", description: "Visit Lulusar Lake and Babusar Top where open and safe, then return to the valley accommodation." },
+      { day: "Day 4", title: "Saif-ul-Malook and Naran", description: "Take the local jeep route to Saif-ul-Malook, enjoy the lake, and return for evening leisure." },
+      { day: "Day 5", title: "Naran to Shogran", description: "Travel toward Shogran and enjoy the forested meadows and local viewpoints." },
+      { day: "Day 6", title: "Siri Paye excursion", description: "Visit Siri Paye by local jeep where accessible, then return to Shogran for the night." },
+      { day: "Day 7", title: "Return toward Islamabad", description: "Begin the return route with stops along the valley and transfer to Islamabad." },
+      { day: "Day 8", title: "Islamabad and onward travel", description: "Complete the Islamabad stay and continue to Karachi by the selected transport option." },
+      { day: "Day 9", title: "Arrival and tour completion", description: "Reach Karachi and complete the tour." },
+    ].slice(0, Number.parseInt(duration, 10)),
+  };
+}
+
+allPackages.push(
+  ...seasonalTourPackages.map((item) => {
+    const title = item.title;
+    const destinationName = title.replace(/\s*\([^)]*\)$/, "").replace(/^Blossom Special\s*-?\s*/, "").replace(/^\d+\s*Days?\s+tour\s+to\s+/i, "");
+    const routeDetails = getSeasonalRouteDetails(title, item.duration);
+    const image = item.image ?? (/skardu|basho|manthoka/i.test(title)
+      ? "/images/destinations/skardu-1080x1920.webp"
+      : /hunza|naltar/i.test(title)
+        ? "/images/destinations/hunza-custom.webp"
+        : /kashmir|taobat|arang kel/i.test(title)
+          ? "/images/destinations/kashmir.webp"
+          : /naran/i.test(title)
+            ? "/images/destinations/naran-hd.webp"
+            : "/images/destinations/swat-hd.webp");
+
+    return {
+      slug: item.id,
+      title,
+      heroImage: image,
+      homeImage: image,
+      duration: item.duration,
+      departure: item.departure,
+      summary: `${destinationName} seasonal departure with planned accommodation, meals, transport, and on-ground tour support across northern Pakistan.`,
+      description: `${destinationName} seasonal departure with planned accommodation, meals, transport, and on-ground tour support across northern Pakistan.`,
+      overview: `Travel through ${destinationName} with a carefully paced group itinerary covering scenic valleys, local viewpoints, and the route highlights listed in the brochure. Exact stops may change with weather, road access, and local conditions.`,
+      highlights: [destinationName, "Hotel accommodation", "Breakfast and dinner", "Tour manager support"],
+      attractions: routeDetails.attractions,
+      itinerary: routeDetails.itinerary,
+      includes: item.includes ?? [],
+      excludes: item.excludes ?? [],
+      bookingPolicy: ["A minimum 50% advance is required to confirm the booking.", "The remaining amount is due before departure.", "Bus, train, and air tickets are subject to availability and provider policies."],
+      detailSections: [
+        { title: "Room sharing prices", content: item.sharingPrices ? [`With Islamabad stays: quad PKR ${item.sharingPrices.quad.toLocaleString()}, triple PKR ${item.sharingPrices.triple.toLocaleString()}, twin PKR ${item.sharingPrices.twin.toLocaleString()}, solo PKR ${item.sharingPrices.solo.toLocaleString()}.`, `Without Islamabad stays: PKR ${item.priceWithoutIslamabadStay?.toLocaleString() ?? "contact us"} and above depending on room sharing.`] : [] },
+        { title: "Important route notes", content: ["Mahodand Lake, Malam Jabba activities, water sports, and other outdoor stops depend on weather, access, and local charges.", "Hotels may be substituted with an equivalent property when operational conditions require it."] },
+      ],
+      priceWithIslamabadStay: `PKR ${item.pricePerPerson.toLocaleString()}`,
+      priceWithoutIslamabadStay: `PKR ${item.priceWithoutIslamabadStay?.toLocaleString() ?? "Contact us"}`,
+      tourNotes: item.notes ?? [],
+      refundPolicy: ["90% refund up to 15 days before departure.", "50% refund 7-14 days before departure.", "25% refund 5 days before departure; no refund inside 5 days.", "Transport ticket refunds follow the relevant provider's policy."],
+      terms: ["Routes and hotels may change because of weather, road closures, or local conditions.", "Travelers must carry original CNICs and follow the tour manager's instructions.", "Personal expenses, optional activities, and costs caused by force majeure are excluded."],
+      travelerInstruction: ["Travel light and carry warm layers, rain protection, comfortable shoes, medicines, cash, and a power bank.", "Keep luggage near 10 kg where possible and report before every scheduled departure.", "Network and charging facilities may be limited in mountain areas."],
+      childPolicy: ["Below 4 years: no charge without a seat.", "4 to 7 years: 50% charge with a jumper seat.", "Above 7 years: 100% charge with a full seat."],
+      meals: { breakfast: "Tea, paratha, omelet, water, and channa when available.", dinner: "Chicken karahi or handi, daal or vegetable, roti, raita, water, and cold drinks, or an equivalent menu." },
+    };
+  }),
+);
+
 export async function generateStaticParams() {
   return allPackages.map(({ slug }) => ({ slug }));
 }
@@ -242,7 +383,20 @@ export default async function PackagePage({ params }: PackagePageProps) {
   }
 
   return (
-    <PageShell wide>
+    <>
+      <JsonLd
+        data={buildPageSchema({
+          title: pkg.title,
+          description: pkg.summary,
+          url: `/packages/${pkg.slug}`,
+          breadcrumbs: [
+            { name: "Home", url: "/" },
+            { name: "Destinations", url: "/destinations" },
+            { name: pkg.title, url: `/packages/${pkg.slug}` },
+          ],
+        })}
+      />
+      <PageShell wide>
       <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
         <div className="relative min-h-[62vh] md:min-h-[68vh]">
           <Image
@@ -285,6 +439,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
             <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Tour Snapshot</p>
             <p className="mt-3 font-serif text-3xl text-stone-900">{pkg.duration}</p>
             <p className="mt-3 text-sm leading-7 text-stone-600">{pkg.description}</p>
+            {pkg.departure ? <p className="mt-4 border-l-2 border-[#fcc000] pl-3 text-sm font-medium leading-6 text-stone-700">{pkg.departure}</p> : null}
 
             <div className="mt-5 rounded-[1.25rem] border border-[#fcc000]/30 bg-[#fff8df] p-4">
               <p className="text-[11px] uppercase tracking-[0.26em] text-stone-500">Package Pricing</p>
@@ -519,6 +674,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
           </div>
         </div>
       </section>
-    </PageShell>
+      </PageShell>
+    </>
   );
 }

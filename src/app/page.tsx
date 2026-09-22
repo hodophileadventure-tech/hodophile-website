@@ -6,9 +6,11 @@ import { PageShell } from "@/components/page-shell";
 import { MiqatHighlightSection } from "@/components/miqat-highlight";
 import { WhyChooseUs } from "@/components/why-choose-us";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
+import { JsonLd } from "@/components/JsonLd";
 import { companyStats } from "@/lib/data/company-stats";
 import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, blogPosts, destinations, whatsappUrl } from "@/lib/site";
+import { buildHomePageSchema } from "@/lib/seo/structured-data";
 
 export const metadata: Metadata = {
   title: "Domestic Tours in Pakistan",
@@ -121,7 +123,9 @@ export default function Home() {
   });
 
   return (
-    <PageShell wide>
+    <>
+      <JsonLd data={buildHomePageSchema()} />
+      <PageShell wide>
       <section className="relative left-1/2 -mt-24 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
         <div className="relative min-h-[88vh]">
           <video
@@ -475,6 +479,7 @@ export default function Home() {
           </svg>
         </a>
       </div>
-    </PageShell>
+      </PageShell>
+    </>
   );
 }
