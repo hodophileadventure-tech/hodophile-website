@@ -7,7 +7,7 @@ import { formatPKR } from "@/lib/currency";
 import { umrahPackages, type UmrahPackage } from "@/lib/data/umrah-packages";
 import { whatsappUrl } from "@/lib/site";
 
-const durationOptions = [15, 20] as const;
+const durationOptions = [10, 15, 20] as const;
 const tierOrder = ["SAFAR", "NOOR", "SUKOON", "BARAKAH", "RAHAT", "MANZIL", "REHMAT", "HARAMAIN", "AAFIYAT", "MAQAM"] as const;
 
 function startingPrice(pkg: UmrahPackage) {
@@ -75,7 +75,7 @@ function PackageCard({ pkg }: { pkg: UmrahPackage }) {
 }
 
 export function UmrahPackages() {
-  const [selectedDuration, setSelectedDuration] = useState<15 | 20>(15);
+  const [selectedDuration, setSelectedDuration] = useState<10 | 15 | 20>(15);
   const packages = useMemo(
     () => umrahPackages.filter((pkg) => pkg.duration === selectedDuration).sort((a, b) => tierOrder.indexOf(a.name as (typeof tierOrder)[number]) - tierOrder.indexOf(b.name as (typeof tierOrder)[number])),
     [selectedDuration]
