@@ -7,7 +7,7 @@
     "restartPolicyType": "on_failure",
     "restartPolicyMaxRetries": 5,
     "numReplicas": 1,
-    "startCommand": "npm start",
+    "startCommand": "next build && next start -H 0.0.0.0 -p ${PORT:-3000}",
     "healthcheckPath": "/",
     "healthcheckTimeout": 30
   },
