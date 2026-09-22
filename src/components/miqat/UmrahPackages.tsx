@@ -31,6 +31,12 @@ function HotelBlock({ city, hotel, distance }: { city: string; hotel: string; di
 function PackageCard({ pkg }: { pkg: UmrahPackage }) {
   return (
     <article className="flex h-full flex-col border border-[#dedbd2] bg-white">
+      {pkg.image ? (
+        <div className="relative h-56 overflow-hidden border-b border-[#ebe8e0] bg-[#f7f5ef]">
+          <img src={pkg.image} alt={pkg.name} className="h-full w-full object-contain bg-[#f7f5ef] p-2 transition duration-700 group-hover:scale-[1.02]" />
+        </div>
+      ) : null}
+
       <div className="border-b border-[#ebe8e0] px-5 py-5 sm:px-6">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -69,7 +75,7 @@ function PackageCard({ pkg }: { pkg: UmrahPackage }) {
 }
 
 export function UmrahPackages() {
-  const [selectedDuration, setSelectedDuration] = useState<15 | 20>(20);
+  const [selectedDuration, setSelectedDuration] = useState<15 | 20>(15);
   const packages = useMemo(
     () => umrahPackages.filter((pkg) => pkg.duration === selectedDuration).sort((a, b) => tierOrder.indexOf(a.name as (typeof tierOrder)[number]) - tierOrder.indexOf(b.name as (typeof tierOrder)[number])),
     [selectedDuration]
