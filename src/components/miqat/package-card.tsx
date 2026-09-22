@@ -27,7 +27,7 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
       whileHover={{ y: -8 }}
       className="group overflow-visible rounded-[1.75rem] border border-[#0F5132]/10 bg-white shadow-[0_16px_45px_rgba(15,81,50,0.08)] transition-all duration-500 hover:border-[#C9A227]/55 hover:shadow-[0_26px_60px_rgba(15,81,50,0.14)]"
     >
-      <div className="relative h-60 overflow-visible">
+      <div className="relative h-[18rem] overflow-visible sm:h-[20rem]">
         <Image
           src={pkg.image}
           alt={pkg.name}
