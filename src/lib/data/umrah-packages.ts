@@ -31,7 +31,7 @@ export const umrahPackages: UmrahPackage[] = [
     image: "/images/miqat/miqat-10-safar.webp",
     makkah: { hotel: "Hidaya Tower", distance: "Shuttle" },
     madinah: { hotel: "Ritaj Al Madinah", distance: "Shuttle" },
-    prices: { quint: 210000, quad: 216000, triple: 226000, double: 244000 },
+    prices: { quint: 210847, quad: 214994, triple: 220922, double: 237042 },
   },
   {
     id: "10-noor",
@@ -42,7 +42,7 @@ export const umrahPackages: UmrahPackage[] = [
     image: "/images/miqat/miqat-10-noor.webp",
     makkah: { hotel: "Fundaq Bilal", distance: "Shuttle" },
     madinah: { hotel: "Ritaj Al Madinah", distance: "Shuttle" },
-    prices: { quint: 214000, quad: 220000, triple: 230000, double: 248000 },
+    prices: { quint: 212459, quad: 217009, triple: 223609, double: 241072 },
   },
   {
     id: "10-sukoon",
@@ -53,7 +53,7 @@ export const umrahPackages: UmrahPackage[] = [
     image: "/images/miqat/miqat-10-sukoon.webp",
     makkah: { hotel: "Land Premium", distance: "1000 MTR" },
     madinah: { hotel: "Shaza Muwannara", distance: "850 MTR" },
-    prices: { quint: 232000, quad: 245000, triple: 268000, double: 294000 },
+    prices: { quint: 219874, quad: 226278, triple: 233599, double: 255983 },
   },
   {
     id: "10-barakah",
@@ -64,7 +64,7 @@ export const umrahPackages: UmrahPackage[] = [
     image: "/images/miqat/miqat-10-barakah.webp",
     makkah: { hotel: "Jowhra Majid", distance: "750 MTR" },
     madinah: { hotel: "Diyar Al Aws", distance: "450 MTR" },
-    prices: { quint: 236000, quad: 249000, triple: 272000, double: 305000 },
+    prices: { quint: 225033, quad: 232728, triple: 242147, double: 288779 },
   },
   {
     id: "10-rahat",
@@ -75,7 +75,7 @@ export const umrahPackages: UmrahPackage[] = [
     image: "/images/miqat/miqat-10-rahat.webp",
     makkah: { hotel: "Mather Al Jawwar", distance: "550 MTR" },
     madinah: { hotel: "Bir Al Eiman", distance: "350 MTR" },
-    prices: { quint: 248000, quad: 286000, triple: 318000, double: 382000 },
+    prices: { quint: 234221, quad: 244212, triple: 258935, double: 293462 },
   },
   {
     id: "10-manzil",
@@ -86,7 +86,7 @@ export const umrahPackages: UmrahPackage[] = [
     image: "/images/miqat/miqat-10-manzil.webp",
     makkah: { hotel: "Voco", distance: "Shuttle" },
     madinah: { hotel: "Artal Intl", distance: "350 MTR" },
-    prices: { quint: 250000, quad: 293000, triple: 325000, double: 330000 },
+    prices: { quint: 238735, quad: 249894, triple: 266058, double: 304746 },
   },
   {
     id: "10-rehmat",
@@ -97,7 +97,7 @@ export const umrahPackages: UmrahPackage[] = [
     image: "/images/miqat/miqat-10-rehmat.webp",
     makkah: { hotel: "Zilal Al Zulzula", distance: "350 MTR" },
     madinah: { hotel: "Taif Nabras", distance: "200 MTR" },
-    prices: { quint: 252000, quad: 270000, triple: 305000, double: 352000 },
+    prices: { quint: 241797, quad: 253682, triple: 271163, double: 312403 },
   },
   {
     id: "10-haramain",
@@ -108,7 +108,7 @@ export const umrahPackages: UmrahPackage[] = [
     image: "/images/miqat/miqat-10-haramain.webp",
     makkah: { hotel: "Nawarat Ul Shams 3", distance: "300 MTR" },
     madinah: { hotel: "Plaza Unhood", distance: "300 MTR" },
-    prices: { quint: 260000, quad: 270000, triple: 349000, double: 365000 },
+    prices: { quint: 271136, quad: 260130, triple: 277611, double: 322075 },
   },
   {
     id: "10-aafiyat",
@@ -119,7 +119,7 @@ export const umrahPackages: UmrahPackage[] = [
     image: "/images/miqat/miqat-10-aafiyat.webp",
     makkah: { hotel: "Le Meridien", distance: "Shuttle" },
     madinah: { hotel: "Grand Zawar", distance: "250 MTR" },
-    prices: { quint: 267000, quad: 262000, triple: 320000, double: 326000 },
+    prices: { quint: 254210, quad: 269198, triple: 292119, double: 343837 },
   },
   {
     id: "10-maqam",
@@ -130,7 +130,7 @@ export const umrahPackages: UmrahPackage[] = [
     image: "/images/miqat/miqat-10-maqam.webp",
     makkah: { hotel: "Makkah Tower", distance: "250 MTR" },
     madinah: { hotel: "Dallah Taibah", distance: "270 MTR" },
-    prices: { quint: 289000, quad: 284000, triple: 442000, double: 634000 },
+    prices: { quint: 316272, quad: 333375, triple: 372316, double: 454461 },
   },
   {
     id: "20-safar",
