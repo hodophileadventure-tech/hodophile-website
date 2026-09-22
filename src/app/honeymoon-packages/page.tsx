@@ -36,7 +36,7 @@ const honeymoonPackages = [
     duration: "4 Days / 3 Nights",
     detail: "Kaghan Valley highlights: Saif-ul-Malook, Lulusar, and Babusar Top.",
     price: "PKR 120,000",
-    image: "/images/honeymoon/naran-kaghan.webp",
+    image: "/images/honeymoon/naran-babusar.webp",
   },
   {
     slug: "kashmir-arangkel-5days",
