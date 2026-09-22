@@ -178,7 +178,7 @@ export function UmrahBookingForm() {
           </p>
           <div className="mt-4 flex gap-3">
             <a
-              href="/contact"
+              href="/contact-us"
               className="inline-flex items-center gap-2 rounded-full bg-[#FCC000] px-4 py-2 text-sm font-semibold text-black shadow-sm"
             >
               Contact Us

@@ -69,9 +69,25 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Redirects for SEO (migrate old routes if needed)
+  // Redirects for SEO (migrate old routes to the canonical URLs)
   async redirects() {
-    return [];
+    return [
+      {
+        source: "/about",
+        destination: "/about-us",
+        permanent: true,
+      },
+      {
+        source: "/contact",
+        destination: "/contact-us",
+        permanent: true,
+      },
+      {
+        source: "/blog",
+        destination: "/blogs",
+        permanent: true,
+      },
+    ];
   },
 };
 

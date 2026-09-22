@@ -12,13 +12,10 @@ const seasonalPackageRoutes = seasonalTourPackages.map((item) => `/packages/${it
 
 const routes = [
   "/",
-  "/about",
   "/about-us",
   "/our-team",
-  "/blog",
   "/blogs",
   ...blogPosts.map((post) => `/blogs/${post.slug}`),
-  "/contact",
   "/contact-us",
   "/destinations",
   "/gallery",
