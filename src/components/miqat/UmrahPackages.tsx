@@ -32,8 +32,8 @@ function PackageCard({ pkg }: { pkg: UmrahPackage }) {
   return (
     <article className="flex h-full flex-col border border-[#dedbd2] bg-white">
       {pkg.image ? (
-        <div className="relative h-56 overflow-hidden border-b border-[#ebe8e0] bg-[#f7f5ef]">
-          <img src={pkg.image} alt={pkg.name} className="h-full w-full object-contain bg-[#f7f5ef] p-2 transition duration-700 group-hover:scale-[1.02]" />
+        <div className="relative h-56 overflow-visible border-b border-[#ebe8e0] bg-[#f7f5ef]">
+          <img src={pkg.image} alt={pkg.name} className="h-full w-full object-contain bg-[#f7f5ef] p-2 object-center transition duration-700" />
         </div>
       ) : null}
 

@@ -25,15 +25,15 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.65, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -8 }}
-      className="group overflow-hidden rounded-[1.75rem] border border-[#0F5132]/10 bg-white shadow-[0_16px_45px_rgba(15,81,50,0.08)] transition-all duration-500 hover:border-[#C9A227]/55 hover:shadow-[0_26px_60px_rgba(15,81,50,0.14)]"
+      className="group overflow-visible rounded-[1.75rem] border border-[#0F5132]/10 bg-white shadow-[0_16px_45px_rgba(15,81,50,0.08)] transition-all duration-500 hover:border-[#C9A227]/55 hover:shadow-[0_26px_60px_rgba(15,81,50,0.14)]"
     >
-      <div className="relative h-60 overflow-hidden">
+      <div className="relative h-60 overflow-visible">
         <Image
           src={pkg.image}
           alt={pkg.name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transition duration-700 group-hover:scale-110"
+          className="object-contain object-center transition duration-700"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
         <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-[#C9A227]/60 bg-[#0F5132]/90 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-[#FDFBF7]">

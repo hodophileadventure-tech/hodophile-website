@@ -67,11 +67,11 @@ export default function HoneymoonPackagesPage() {
             href={`/honeymoon-packages/${item.slug}`}
             className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_16px_40px_rgba(55,55,48,0.08)] transition duration-500 hover:-translate-y-1 hover:border-[#d4aa18] hover:shadow-[0_24px_55px_rgba(55,55,48,0.15)]"
           >
-            <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-200">
+            <div className="relative aspect-[4/3] w-full overflow-visible bg-stone-200">
               <img
                 src={item.image}
                 alt={item.name}
-                className="h-full w-full object-contain bg-stone-100 p-0 brightness-105 saturate-110 transition duration-700 group-hover:scale-[1.02] group-hover:brightness-110"
+                className="h-full w-full object-contain bg-stone-100 p-0 object-center brightness-105 saturate-110 transition duration-700"
               />
               <span className="absolute left-4 top-4 bg-[#fcc000] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0b0b0b]">
                 {item.duration}
