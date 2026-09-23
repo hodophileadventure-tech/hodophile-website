@@ -390,13 +390,34 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-24 w-full overflow-hidden bg-white px-6 py-10 lg:px-10 lg:py-14">
-        <div>
-          <p className="eyebrow text-stone-600">Hodophile Reviews</p>
-          <h2 className="display-serif mt-3 text-5xl font-normal">
-            Our Clients just don&apos;t love us they Rave about us
-          </h2>
-          <TestimonialsCarousel testimonials={testimonials.slice(0, 10)} />
+      <section className="mt-24 w-full overflow-hidden bg-white px-6 py-10 lg:px-10 lg:py-14" aria-labelledby="hodophile-reviews-heading">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8">
+            <p className="eyebrow text-stone-600">Hodophile Reviews</p>
+            <h2 id="hodophile-reviews-heading" className="display-serif mt-3 text-5xl font-normal leading-none sm:text-6xl lg:text-7xl">
+              Our Clients just don&apos;t love us they Rave about us
+            </h2>
+          </div>
+
+          <div className="overflow-hidden rounded-[28px] border border-[#fcc000]/60 bg-[#f9f7f1] p-3 shadow-[0_22px_55px_rgba(0,0,0,0.08)] sm:p-5">
+            <div
+              className="fb-page"
+              data-href="https://www.facebook.com/Hodophileadventure"
+              data-tabs="reviews"
+              data-width="1000"
+              data-height="650"
+              data-small-header="false"
+              data-adapt-container-width="true"
+              data-hide-cover="false"
+              data-show-facepile="true"
+            />
+            <script
+              async
+              defer
+              crossOrigin="anonymous"
+              src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v19.0"
+            />
+          </div>
         </div>
       </section>
 
