@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
+    "dev": "node scripts/clean-next.js && next dev --webpack",
     "build": "next build",
     "start": "next build && next start -H 0.0.0.0 -p ${PORT:-3000}",
     "start:hostinger": "node ./server.js",
