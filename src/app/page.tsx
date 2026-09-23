@@ -386,6 +386,79 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="mt-24 w-full bg-[#151515] px-6 py-12 text-white lg:px-10 lg:py-16" aria-labelledby="facebook-reviews-heading">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
+            <div>
+              <p className="eyebrow text-white/70">Facebook reviews</p>
+              <h2 id="facebook-reviews-heading" className="display-serif mt-3 text-5xl font-normal leading-tight text-white sm:text-6xl">
+                Loved by travelers.
+              </h2>
+            </div>
+            <a
+              href="https://www.facebook.com/Hodophileadventure/reviews"
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:text-[#fcc000]"
+            >
+              View all reviews ↗
+            </a>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {[
+              {
+                name: "Aiman Zaib",
+                role: "Verified traveler",
+                quote:
+                  "Hunza and Kalash both tours were excellent. From the initial contact to booking and coordination, everything was smooth and memorable.",
+              },
+              {
+                name: "Fariha",
+                role: "Family trip",
+                quote:
+                  "Everything was so well managed. Breakfast and lunch were on time, the environment was clean, and we enjoyed every moment without any stress.",
+              },
+              {
+                name: "Qamar Imam",
+                role: "Verified traveler",
+                quote:
+                  "Our Gorakh Hill trip was perfectly planned. Transport, food, accommodation, bonfire, and camping were all organized beautifully.",
+              },
+              {
+                name: "Nusrat Waqar",
+                role: "Solo traveler",
+                quote:
+                  "It was my first solo trip, and the team answered every question patiently. Safety, punctuality, and hospitality were outstanding.",
+              },
+            ].map((review) => (
+              <article
+                key={review.name}
+                className="group rounded-[28px] border border-white/10 bg-white/[0.03] p-5 shadow-[0_18px_40px_rgba(0,0,0,0.18)] transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/60 hover:bg-white/[0.05]"
+              >
+                <div className="mb-5 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-1 text-base text-[#fcc000]" aria-label="5 star review">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <span key={`${review.name}-${index}`}>★</span>
+                    ))}
+                  </div>
+                  <span className="rounded-full border border-[#fcc000]/40 bg-[#fcc000]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#fcc000]">
+                    Verified
+                  </span>
+                </div>
+
+                <p className="text-base leading-7 text-white/80">&ldquo;{review.quote}&rdquo;</p>
+
+                <div className="mt-6 border-t border-white/10 pt-4">
+                  <p className="text-sm font-semibold text-white">{review.name}</p>
+                  <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-white/50">{review.role}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="mt-24 w-full" aria-labelledby="journal-heading">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
