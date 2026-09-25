@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { PageShell } from "@/components/page-shell";
 import { TourLanding } from "@/components/tour-landing";
-import { seasonalTourPackages } from "@/lib/data/seasonal-tour-packages";
+import { tourPackages } from "@/lib/data/tour-packages";
 import { absoluteUrl, destinations, tourMenu } from "@/lib/site";
 
 type RegionPageProps = {
@@ -58,9 +58,11 @@ export default async function RegionPage({ params }: RegionPageProps) {
     notFound();
   }
 
-  const seasonalPackages = seasonalTourPackages.filter((item) =>
-    region === "southern-tours" ? item.region === "southern" : item.region === "northern",
-  );
+  const regionalPackages = tourPackages.filter((item) => {
+    const destinationSlugs = item.destinationSlugs ?? [];
+    const isSouthern = destinationSlugs.some((slug) => ["ormara", "gorakh", "moola", "ranikot", "charo"].includes(slug));
+    return region === "southern-tours" ? isSouthern : !isSouthern;
+  });
 
   return (
     <PageShell wide>
@@ -104,13 +106,13 @@ export default async function RegionPage({ params }: RegionPageProps) {
         <div className="relative flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-6">
           <div>
             <p className="text-xs uppercase tracking-[0.32em] text-[#fcc000]">Scheduled departures</p>
-            <h2 className="mt-3 font-serif text-3xl text-white">{seasonalPackages.length} {group.label} departures.</h2>
+            <h2 className="mt-3 font-serif text-3xl text-white">{regionalPackages.length} {group.label} departures.</h2>
           </div>
           <Link href="/tours" className="text-sm font-semibold text-white/65 transition hover:text-[#fcc000]">View all departures ↗</Link>
         </div>
 
         <div className="relative mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {seasonalPackages.map((item) => (
+          {regionalPackages.map((item) => (
             <Link key={item.id} href={`/packages/${item.id}`} className="group rounded-2xl border border-white/10 bg-white/[0.05] p-5 transition hover:-translate-y-1 hover:border-[#fcc000]/60 hover:bg-[#fcc000]/10">
               <div className="flex items-center justify-between gap-3 text-[10px] uppercase tracking-[0.2em] text-white/45">
                 <span>{item.duration}</span>

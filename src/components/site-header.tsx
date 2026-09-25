@@ -84,10 +84,6 @@ export function SiteHeader() {
   }, [mobileOpen]);
 
   const isToursActive = pathname.startsWith("/tours");
-  const splitIndex = 4;
-  const desktopLeftNavigation = navigation.slice(0, splitIndex);
-  const desktopRightNavigation = navigation.slice(splitIndex);
-
   const openDesktopToursMenu = () => {
     if (desktopToursCloseTimer.current) {
       clearTimeout(desktopToursCloseTimer.current);
@@ -124,17 +120,17 @@ export function SiteHeader() {
       return (
         <div
           key={item.href}
-          className="relative"
+          className="relative flex items-center justify-center"
           onMouseEnter={openAboutUsMenu}
           onMouseLeave={closeAboutUsMenu}
         >
           <Link
             href={item.href}
             onFocus={openAboutUsMenu}
-            className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition duration-300 ${
+            className={`inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full px-2 py-2 text-[11px] font-medium transition duration-300 xl:px-3 xl:text-sm ${
               pathname === item.href
-                ? "text-yellow-600"
-                : "text-stone-700 hover:text-stone-900 hover:bg-stone-100/50"
+                ? "bg-[#fff8df] text-[#8b6b00] shadow-[inset_0_0_0_1px_rgba(217,164,7,0.25)]"
+                : "text-stone-700 hover:bg-white/70 hover:text-[#8b6b00]"
             }`}
           >
             <span>{item.label}</span>
@@ -144,7 +140,7 @@ export function SiteHeader() {
           </Link>
 
           <div
-            className={`absolute left-0 top-[calc(100%+0.6rem)] z-[90] min-w-[220px] rounded-2xl border border-yellow-400/30 bg-white/95 backdrop-blur-lg p-2 shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-200 ${
+            className={`absolute left-1/2 top-[calc(100%+0.6rem)] z-[90] min-w-[220px] -translate-x-1/2 rounded-2xl border border-yellow-400/30 bg-white/95 backdrop-blur-lg p-2 shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-200 ${
               aboutUsDropdownOpen ? "visible opacity-100 scale-100" : "invisible opacity-0 scale-95 pointer-events-none"
             }`}
             onMouseEnter={openAboutUsMenu}
@@ -170,24 +166,24 @@ export function SiteHeader() {
       );
     }
 
-    if (item.href === "/tours") {
+    if (item.href === "/destinations") {
       return (
         <div
           key={item.href}
-          className="relative group"
+          className="relative flex items-center justify-center"
           onMouseEnter={openDesktopToursMenu}
           onMouseLeave={closeDesktopToursMenu}
         >
           <Link
             href={item.href}
             onFocus={openDesktopToursMenu}
-            className={`inline-flex gap-1 items-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition duration-300 ${
-              isToursActive
-                ? "text-yellow-600"
-                : "text-stone-700 hover:text-stone-900 hover:bg-stone-100/50"
+            className={`inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full px-2 py-2 text-[11px] font-medium transition duration-300 xl:px-3 xl:text-sm ${
+              pathname === item.href || isToursActive
+                ? "bg-[#fff8df] text-[#8b6b00] shadow-[inset_0_0_0_1px_rgba(217,164,7,0.25)]"
+                : "text-stone-700 hover:bg-white/70 hover:text-[#8b6b00]"
             }`}
           >
-            {item.label}
+            <span>{item.label}</span>
             <svg viewBox="0 0 20 20" className={`h-3 w-3 fill-current transition-transform duration-300 ${desktopToursOpen ? 'rotate-180' : ''}`} aria-hidden="true">
               <path d="M5.8 7.5 10 11.7l4.2-4.2 1.4 1.4L10 14.5 4.4 8.9z" />
             </svg>
@@ -263,10 +259,10 @@ export function SiteHeader() {
       <Link
         key={item.href}
         href={item.href}
-        className={`relative inline-flex items-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition duration-300 ${
+        className={`relative inline-flex items-center justify-center whitespace-nowrap rounded-full px-2 py-2 text-[11px] font-medium transition duration-300 xl:px-3 xl:text-sm ${
           pathname === item.href
-            ? "text-yellow-600"
-            : "text-stone-700 hover:text-stone-900 hover:bg-stone-100/50"
+            ? "bg-[#fff8df] text-[#8b6b00] shadow-[inset_0_0_0_1px_rgba(217,164,7,0.25)]"
+            : "text-stone-700 hover:bg-white/70 hover:text-[#8b6b00]"
         }`}
       >
         {item.label}
@@ -287,34 +283,36 @@ export function SiteHeader() {
       }`}
       aria-hidden={false}
     >
-      <div className="mx-auto max-w-[96rem]">
-        <div className="relative flex min-w-0 items-center justify-between gap-4 px-4 py-3 lg:gap-8 lg:px-8 xl:px-12">
-          <nav className="hidden min-w-0 flex-1 items-center justify-start gap-1 lg:flex lg:flex-nowrap">
-            {desktopLeftNavigation.map((item) => renderDesktopNavItem(item))}
-          </nav>
-
+      <div className="w-full">
+        <div className="relative flex min-w-0 items-center px-3 py-2.5 lg:px-5 xl:px-8">
           <Link
             href="/"
-            className="group relative hidden h-[3.5rem] shrink-0 items-center justify-center lg:flex"
+            className="group relative hidden h-12 w-[10.5rem] shrink-0 items-center justify-start rounded-2xl border border-white/60 bg-white/25 px-3 shadow-[0_8px_24px_rgba(25,22,16,0.08)] lg:inline-flex"
           >
+            <span className="absolute left-0 top-1/2 h-7 w-0.5 -translate-y-1/2 rounded-full bg-[#d9a407]" aria-hidden="true" />
             <Image
               src="/logo-transparent.webp"
               alt="Hodophile Adventures"
               width={240}
               height={68}
-              className="mx-auto h-[2.8rem] w-auto max-h-[2.8rem] object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-transform duration-300 group-hover:scale-[1.03]"
+              className="h-[2.35rem] w-auto max-w-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-transform duration-300 group-hover:scale-[1.03]"
             />
           </Link>
 
-          <nav className="hidden min-w-0 flex-1 items-center justify-end gap-1 lg:flex lg:flex-nowrap">
-            {desktopRightNavigation.map((item) => renderDesktopNavItem(item))}
+          <nav className="mx-3 hidden min-w-0 flex-1 items-center justify-center gap-0.5 rounded-full border border-white/60 bg-white/25 px-1.5 py-1 shadow-[0_8px_24px_rgba(25,22,16,0.06)] lg:flex xl:mx-5 xl:gap-1" aria-label="Primary navigation">
+            {navigation.map((entry) => (
+              <div key={entry.href} className="flex min-w-0 items-center justify-center">
+                {renderDesktopNavItem(entry)}
+              </div>
+            ))}
           </nav>
 
-          <div className="col-span-4 flex items-center justify-between lg:hidden">
+          <div className="flex flex-1 items-center justify-between lg:hidden">
           <Link
             href="/"
-            className="group relative inline-flex h-[2.5rem] w-[10rem] shrink-0 items-center lg:inline-flex"
+            className="group relative inline-flex h-[2.8rem] w-[10rem] shrink-0 items-center rounded-xl border border-white/60 bg-white/25 px-2 shadow-[0_6px_18px_rgba(25,22,16,0.06)] lg:inline-flex"
           >
+            <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-[#d9a407]" aria-hidden="true" />
             <Image
               src="/logo-transparent.webp"
               alt="Hodophile Adventures"

@@ -382,6 +382,40 @@ export default async function PackagePage({ params }: PackagePageProps) {
     notFound();
   }
 
+  const travelDetailCards = [
+    {
+      title: "Accommodation",
+      text: "We plan room options by your group size and route preferences, with standard, deluxe, and executive hotel categories available when the route supports them.",
+    },
+    {
+      title: "Transport",
+      text: "Vehicle choice is matched to the terrain and group size, including AC travel and 4x4 options where the mountain route requires deeper access or rougher road conditions.",
+    },
+    {
+      title: "Good to know",
+      text: "Mountain routes can change with weather, road closures, and access permissions, so we keep the route flexible and communicate adjustments early.",
+    },
+  ];
+
+  const faqs = [
+    {
+      question: "What is included in this package?",
+      answer: "Most packages include the hotel stay, transport support, and the meals or route services described in the itinerary. Optional activities, personal purchases, and local entry charges are usually not included unless stated clearly.",
+    },
+    {
+      question: "Can this trip be upgraded?",
+      answer: "Yes. We can usually move your tour to a higher hotel category, upgrade the vehicle, or adjust the room sharing for a more premium experience.",
+    },
+    {
+      question: "What happens if the route changes?",
+      answer: "If weather, road conditions, or local access limit the usual route, our team may revise the schedule or substitute a safe alternative while keeping the group experience comfortable and on track.",
+    },
+    {
+      question: "How do I confirm my booking?",
+      answer: "Share your preferred travel dates and group size with our team through WhatsApp or the inquiry form, and we will confirm the package, pricing, and booking process.",
+    },
+  ];
+
   return (
     <>
       <JsonLd
@@ -508,8 +542,19 @@ export default async function PackagePage({ params }: PackagePageProps) {
             ) : null}
           </div>
 
-          <div className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8">
-            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Itinerary</p>
+          <div className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8">            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Travel details</p>
+            <h2 className="mt-3 font-serif text-3xl text-stone-900">Everything you need to know before you book</h2>
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {travelDetailCards.map((card) => (
+                <div key={card.title} className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
+                  <p className="text-sm font-semibold text-stone-900">{card.title}</p>
+                  <p className="mt-3 text-sm leading-7 text-stone-600">{card.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8">            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Itinerary</p>
             <h2 className="mt-3 font-serif text-3xl text-stone-900">Day wise plan for this route</h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-stone-600">
               A clear overview of how the journey flows, from arrival through the best scenic moments and the final return.
@@ -603,7 +648,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
 
               {pkg.travelerInstruction?.length ? (
                 <details className="rounded-[1.75rem] border border-stone-200 bg-white p-5 shadow-sm">
-                  <summary className="cursor-pointer list-none text-lg font-semibold text-stone-900 before:content-['▶'] before:mr-3 before:inline-block before:text-[#0b0b0b]">Traveler's Instruction</summary>
+                  <summary className="cursor-pointer list-none text-lg font-semibold text-stone-900 before:content-['▶'] before:mr-3 before:inline-block before:text-[#0b0b0b]">Traveler&apos;s Instruction</summary>
                   <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">
                     {pkg.travelerInstruction.map((item) => (
                       <li key={item} className="flex items-start gap-3">
@@ -645,6 +690,19 @@ export default async function PackagePage({ params }: PackagePageProps) {
                 </div>
               </div>
             ) : null}
+
+            <div className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm md:p-8">
+              <p className="text-xs uppercase tracking-[0.32em] text-stone-500">FAQs</p>
+              <h2 className="mt-3 font-serif text-3xl text-stone-900">Common questions before you book</h2>
+              <div className="mt-6 space-y-4">
+                {faqs.map((item) => (
+                  <details key={item.question} className="rounded-[1.25rem] border border-stone-200 bg-stone-50 p-4">
+                    <summary className="cursor-pointer text-sm font-semibold text-stone-900">{item.question}</summary>
+                    <p className="mt-3 text-sm leading-7 text-stone-600">{item.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
 
             {pkg.detailSections?.length ? (
               <div className="mt-8 space-y-4">

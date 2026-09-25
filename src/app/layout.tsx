@@ -1,30 +1,16 @@
 import type { Metadata } from "next";
-import { DM_Serif_Display, Manrope } from "next/font/google";
 import "./globals.css";
 
 import { siteConfig } from "@/lib/site";
 import { AnalyticsScripts } from "@/components/AnalyticsScripts";
 import { DealsPopup } from "@/components/deals-popup";
+import { FloatingCtaBar } from "@/components/floating-cta-bar";
 import { LeadCapturePopup } from "@/components/lead-capture-popup";
 
 const GA_TRACKING_ID =
   process.env.NEXT_PUBLIC_GA_TRACKING_ID || process.env.NEXT_PUBLIC_GA_ID;
 const FACEBOOK_PIXEL_ID =
   process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID || "1993102121396051";
-
-const manrope = Manrope({
-  variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
-});
-
-const display = DM_Serif_Display({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.siteUrl),
@@ -72,7 +58,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${display.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col bg-[#f7f6f2] text-stone-900">
         <AnalyticsScripts gaTrackingId={GA_TRACKING_ID} facebookPixelId={FACEBOOK_PIXEL_ID} />
@@ -89,6 +75,7 @@ export default function RootLayout({
         ) : null}
         <DealsPopup />
         <LeadCapturePopup />
+        <FloatingCtaBar />
         {children}
       </body>
     </html>

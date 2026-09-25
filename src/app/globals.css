@@ -22,6 +22,8 @@
   --gold-light: #ffe066;
   --gold-dark: #d4a600;
   --site-header-height: 72px;
+  --font-body: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
   
   /* Premium Grays */
   --stone-50: #fafaf9;

@@ -7,7 +7,7 @@ import { MiqatHighlightSection } from "@/components/miqat-highlight";
 import { WhyChooseUs } from "@/components/why-choose-us";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
 import { JsonLd } from "@/components/JsonLd";
-import { FacebookReviewsWidget } from "@/components/facebook-reviews-widget";
+import { HomeQuickLeadForm } from "@/components/home-quick-lead";
 import { companyStats } from "@/lib/data/company-stats";
 import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, blogPosts, destinations, whatsappUrl } from "@/lib/site";
@@ -35,6 +35,33 @@ export default function Home() {
     Naran: "/tours/northern-tours/naran-valley-tour-packages",
     Swat: "/tours/northern-tours/swat-valley-tour-packages",
   };
+
+  const reviews = [
+    {
+      platform: "Google Reviews",
+      quote:
+        "This was our First trip with Hodophile. We have really enjoyed at Bhit Khori. Hodophile is really good travel agency for family and friends tours. I was travel with other traveling agencies but I was not satisfied with services. When I tried this travel agency I am really satisfied with Hodophile services. Thanks to Hodophile.",
+      name: "Dileep Rathore",
+      role: "Satisfied Client",
+      image: "/images/testimonials/male-1.webp",
+    },
+    {
+      platform: "Facebook Reviews",
+      quote:
+        "Our Bhit Khori tour was beautifully arranged and properly timed. The overall coordination and guidance from the team made the journey relaxed and memorable.",
+      name: "Bilal Raza",
+      role: "Satisfied Client",
+      image: "/images/testimonials/male-4.webp",
+    },
+    {
+      platform: "Google Reviews",
+      quote:
+        "Assalaam o Alaikum. I had a lovely trip to Ormara with Hodophile Adventures. It was my first solo trip, so I had many questions, and the team answered every query politely and patiently. From safety and punctuality to resort management, night camping, bonfire, and food quality, every detail was managed beautifully. This trip will stay in our memories for life, and we will definitely join again.",
+      name: "Nusrat Waqar",
+      role: "Verified Client Review",
+      image: "/images/testimonials/nusrat.webp",
+    },
+  ];
 
   const testimonials = [
     {
@@ -137,6 +164,62 @@ export default function Home() {
     };
   });
 
+  const tripStyles = [
+    {
+      label: "Family Escapes",
+      description: "Comfortable stays, easy pacing, and memorable journeys for all ages.",
+      href: "/tours",
+      accent: "Family",
+    },
+    {
+      label: "Couple Getaways",
+      description: "Romantic mountain and valley escapes designed for a slower, richer experience.",
+      href: "/honeymoon-packages",
+      accent: "Couples",
+    },
+    {
+      label: "Adventure Routes",
+      description: "Highland drives, alpine views, camping, and more dynamic mountain experiences.",
+      href: "/tours#adventure-tours",
+      accent: "Adventure",
+    },
+    {
+      label: "Custom Itineraries",
+      description: "Tell us your dates, group, and dream route and we will shape the trip around you.",
+      href: "/make-my-trip",
+      accent: "Tailored",
+    },
+  ];
+
+  const topSellingTrips = packageCards.slice(0, 4);
+  const seasonalHighlights = [
+    {
+      title: "Skardu & Hunza",
+      description: "High-altitude escapes for mountain lovers and slow travelers.",
+      href: "/tours/northern-tours/skardu-valley-tour-packages",
+      image: "/images/destinations/skardu-unsplash.webp",
+    },
+    {
+      title: "Kashmir & Arang Kel",
+      description: "Cool winds, valleys, and a leisurely route with scenic stops.",
+      href: "/tours/northern-tours/kashmir-valley-tour-packages",
+      image: "/images/destinations/kashmir.webp",
+    },
+    {
+      title: "Swat & Kalam",
+      description: "Forest roads, emerald valleys, and family-friendly holiday pacing.",
+      href: "/tours/northern-tours/swat-valley-tour-packages",
+      image: "/images/destinations/swat-unsplash.webp",
+    },
+  ];
+
+  const routeFinderOptions = [
+    { title: "Mountain escapes", href: "/tours/northern-tours", subtitle: "Hunza · Skardu · Naran" },
+    { title: "Family holidays", href: "/tours", subtitle: "Easy-paced trips with comfort in mind" },
+    { title: "Couple getaways", href: "/honeymoon-packages", subtitle: "Quiet, scenic, and romantic routes" },
+    { title: "Adventure routes", href: "/tours#adventure-tours", subtitle: "Camping, jeeps, and highland drives" },
+  ];
+
   return (
     <>
       <JsonLd data={buildHomePageSchema()} />
@@ -184,6 +267,12 @@ export default function Home() {
                   Plan my trip <span aria-hidden="true">↗</span>
                 </Link>
               </div>
+
+              <div className="mt-7 flex flex-wrap gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-white/80">
+                <span className="rounded-full border border-white/20 bg-white/5 px-3 py-2">4.9 rating</span>
+                <span className="rounded-full border border-[#fcc000]/40 bg-[#fcc000]/10 px-3 py-2 text-[#fcc000]">Fast quote</span>
+                <span className="rounded-full border border-white/20 bg-white/5 px-3 py-2">Curated departures</span>
+              </div>
             </div>
           </div>
 
@@ -198,6 +287,237 @@ export default function Home() {
               <span className="text-xs uppercase tracking-[0.18em] text-stone-500">{stat.label}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="mt-20 w-full px-5 sm:px-8">
+        <div className="mx-auto max-w-6xl rounded-[2rem] border border-stone-200 bg-white/80 p-6 shadow-[0_25px_60px_rgba(15,15,15,0.08)] backdrop-blur-sm sm:p-8 lg:p-10">
+          <div className="flex flex-col gap-5 border-b border-stone-200 pb-8 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="eyebrow text-stone-600">Best-selling trips</p>
+              <h2 className="display-serif mt-3 text-4xl font-normal leading-tight text-stone-950 sm:text-5xl">
+                Pick the journey that fits your travel mood.
+              </h2>
+            </div>
+            <Link href="/tours" className="inline-flex items-center justify-center rounded-full border border-stone-300 bg-stone-100 px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] text-stone-900 transition hover:border-[#fcc000] hover:bg-[#fff8df]">
+              Explore all tours
+            </Link>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {tripStyles.map((trip) => (
+              <Link
+                key={trip.label}
+                href={trip.href}
+                className="group relative overflow-hidden rounded-[1.5rem] border border-stone-200 bg-[#111111] p-5 text-left text-white shadow-[0_20px_50px_rgba(15,15,15,0.14)] transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/60"
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(252,192,0,0.28),transparent_42%)]" />
+                <div className="relative z-10 flex min-h-[15rem] flex-col justify-between">
+                  <span className="inline-flex w-fit rounded-full border border-white/20 bg-white/5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#fcc000]">
+                    {trip.accent}
+                  </span>
+                  <div>
+                    <h3 className="text-2xl font-semibold leading-tight text-white">{trip.label}</h3>
+                    <p className="mt-3 text-sm leading-6 text-white/75">{trip.description}</p>
+                  </div>
+                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-white">
+                    View routes <span aria-hidden="true">↗</span>
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <HomeQuickLeadForm />
+
+      <section className="mt-20 w-full px-5 sm:px-8">
+        <div className="mx-auto max-w-6xl rounded-[2rem] border border-stone-200 bg-[#f7f3ea] p-6 shadow-[0_25px_60px_rgba(15,15,15,0.08)] sm:p-8 lg:p-10">
+          <div className="flex flex-col gap-4 border-b border-stone-300 pb-8 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="eyebrow text-stone-600">Top-selling departures</p>
+              <h2 className="display-serif mt-3 text-4xl font-normal leading-tight text-stone-950 sm:text-5xl">
+                Most loved routes by Pakistan travelers.
+              </h2>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href={whatsappUrl("Hi Hodophile, I want the best package for my dates and budget.")}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-[#1f6b4a] px-5 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5"
+              >
+                WhatsApp best price
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
+            <div className="grid gap-4 md:grid-cols-2">
+              {topSellingTrips.map((tour) => (
+                <article key={tour.name} className="group overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_16px_30px_rgba(17,17,17,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/70">
+                  <div className="relative h-44 overflow-hidden bg-stone-100">
+                    <img src={tour.image} alt={tour.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                    <span className="absolute left-3 top-3 rounded-full bg-[#fcc000] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-black">
+                      {tour.duration}
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-center justify-between gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">
+                      <span>{tour.duration}</span>
+                      <span className="text-[#9a7600]">{tour.priceFrom}</span>
+                    </div>
+                    <h3 className="mt-3 text-xl font-semibold leading-6 text-stone-950">{tour.name}</h3>
+                    <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600">{tour.summary}</p>
+                    <Link href={tour.href} className="mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-stone-900 transition hover:text-[#9a7600]">
+                      View package <span aria-hidden="true">↗</span>
+                    </Link>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="rounded-[1.75rem] border border-stone-200 bg-[#101010] p-5 text-white shadow-[0_18px_40px_rgba(17,17,17,0.15)]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#fcc000]">Need help choosing?</p>
+              <h3 className="mt-4 font-serif text-4xl leading-tight text-white">Let our team match the right route to you.</h3>
+              <p className="mt-4 text-sm leading-7 text-white/70">
+                Choose your destination, travel dates, and budget and we will suggest the best-fit Pakistan route.
+              </p>
+              <div className="mt-6 space-y-3">
+                <Link href="/make-my-trip" className="inline-flex w-full items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-semibold text-black transition hover:bg-[#ffd24d]">
+                  Build my trip
+                </Link>
+                <a
+                  href={whatsappUrl("Hi Hodophile, I want a tailored Pakistan holiday plan.")}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  Chat on WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-20 w-full px-5 sm:px-8">
+        <div className="mx-auto max-w-6xl rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_25px_60px_rgba(15,15,15,0.04)] sm:p-8 lg:p-10">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="eyebrow text-stone-600">This season</p>
+              <h2 className="display-serif mt-3 text-4xl font-normal leading-tight text-stone-950 sm:text-5xl">
+                Best routes for your next escape.
+              </h2>
+            </div>
+            <Link href="/destinations" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-stone-900 transition hover:text-[#9a7600]">
+              See all destinations <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {seasonalHighlights.map((item) => (
+              <Link key={item.title} href={item.href} className="group overflow-hidden rounded-[1.5rem] border border-stone-200 bg-stone-100 transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/60">
+                <div className="relative h-60 overflow-hidden">
+                  <img src={item.image} alt={item.title} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                </div>
+                <div className="p-5">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a7600]">Seasonal pick</p>
+                  <h3 className="mt-3 text-2xl font-semibold leading-tight text-stone-950">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-stone-600">{item.description}</p>
+                  <span className="mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-stone-900">
+                    View route <span aria-hidden="true">↗</span>
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-20 w-full px-5 sm:px-8">
+        <div className="mx-auto max-w-6xl rounded-[2rem] border border-stone-200 bg-[#111111] p-6 text-white shadow-[0_25px_60px_rgba(15,15,15,0.12)] sm:p-8 lg:p-10">
+          <div className="flex flex-col gap-5 border-b border-white/10 pb-8 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="eyebrow text-[#fcc000]">Why travelers book with us</p>
+              <h2 className="display-serif mt-3 text-4xl font-normal leading-tight text-white sm:text-5xl">
+                Premium planning, honest pricing, and a smoother journey.
+              </h2>
+            </div>
+            <div className="flex flex-col items-start gap-2 rounded-full border border-[#fcc000]/30 bg-[#fcc000]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#fcc000]">
+              <span>4.9 customer rating</span>
+              <span className="text-[9px] tracking-[0.18em] text-white/80">Verified by real travelers</span>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {[
+              ["Transparent pricing", "No hidden surprises. Clear route planning and straightforward package breakdowns."],
+              ["24/7 support", "Real team support before, during, and after the trip."],
+              ["Custom route design", "Itineraries shaped around your dates, group, and travel style."],
+              ["Safe and curated", "Comfortable stays, trusted routes, and professional trip coordination."],
+            ].map(([title, description]) => (
+              <div key={title} className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+                <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#fcc000] text-lg font-bold text-black">✓</div>
+                <h3 className="text-xl font-semibold leading-tight text-white">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-white/70">{description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-20 w-full px-5 sm:px-8">
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-stone-200 bg-[#f7f3ea] shadow-[0_25px_60px_rgba(15,15,15,0.08)]">
+          <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="p-6 sm:p-8 lg:p-10">
+              <p className="eyebrow text-stone-600">Start with your trip type</p>
+              <h2 className="display-serif mt-3 text-4xl font-normal leading-tight text-stone-950 sm:text-5xl">
+                Choose the route that matches your travel style.
+              </h2>
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                {routeFinderOptions.map((item) => (
+                  <Link
+                    key={item.title}
+                    href={item.href}
+                    className="group rounded-[1.25rem] border border-stone-200 bg-white p-4 text-left shadow-[0_10px_25px_rgba(15,15,15,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/70"
+                  >
+                    <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#9a7600]">Explore</p>
+                    <h3 className="mt-3 text-xl font-semibold text-stone-950">{item.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-stone-600">{item.subtitle}</p>
+                    <span className="mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-stone-900">
+                      View options <span aria-hidden="true">↗</span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative overflow-hidden bg-[#111111] p-6 text-white sm:p-8 lg:p-10">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(252,192,0,0.28),transparent_35%)]" />
+              <div className="relative z-10">
+                <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#fcc000]">Fast response</p>
+                <h3 className="mt-4 font-serif text-4xl leading-tight text-white">Let us build your route in minutes.</h3>
+                <p className="mt-4 text-sm leading-7 text-white/70">
+                  Share your dates, destination, and group size and we will suggest the best-fit Pakistan itinerary.
+                </p>
+                <div className="mt-7 space-y-3">
+                  <Link href="/make-my-trip" className="inline-flex w-full items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-semibold text-black transition hover:bg-[#ffd24d]">
+                    Create my itinerary
+                  </Link>
+                  <a
+                    href={whatsappUrl("Hi Hodophile, I want a custom Pakistan tour plan.")}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex w-full items-center justify-center rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                  >
+                    WhatsApp now
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -393,20 +713,73 @@ export default function Home() {
 
       <section className="mt-24 w-full overflow-hidden bg-[#f3f0eb] px-6 py-8 lg:px-10 lg:py-10" aria-labelledby="hodophile-reviews-heading">
         <div className="mx-auto max-w-[1600px] rounded-[18px] border border-[#d8d2c7] bg-[#f5f2ee] p-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] sm:p-8 lg:p-10">
-          <p className="mb-5 text-[13px] font-bold uppercase tracking-[0.38em] text-[#d9a407] sm:text-[14px]">
-            Hodophile Reviews
-          </p>
-
-          <h2
-            id="hodophile-reviews-heading"
-            className="display-serif max-w-[1600px] text-[2.8rem] font-normal leading-[0.9] tracking-[-0.04em] text-[#111111] sm:text-[4rem] lg:text-[6rem]"
-          >
-            Our Clients just don&apos;t love us they Rave about us
-          </h2>
+          <div className="mb-8 grid gap-4 rounded-[1.5rem] border border-[#d8d2c7] bg-white p-5 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#9a7600]">Travelers trust us</p>
+              <h3 className="mt-2 text-2xl font-semibold text-stone-900">Most clients come back for another planned route.</h3>
+            </div>
+            <a
+              href={whatsappUrl("Hi Hodophile, I want to plan a trip after seeing your reviews and package options.")}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-full bg-[#111111] px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] text-white transition hover:bg-[#1d1d1d]"
+            >
+              Book a call
+            </a>
+          </div>
+          <div className="flex flex-col gap-4 border-b border-[#d8d2c7] pb-6 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="mb-5 text-[13px] font-bold uppercase tracking-[0.38em] text-[#d9a407] sm:text-[14px]">
+                Hodophile Reviews
+              </p>
+              <h2
+                id="hodophile-reviews-heading"
+                className="display-serif max-w-[1600px] text-[2.8rem] font-normal leading-[0.9] tracking-[-0.04em] text-[#111111] sm:text-[4rem] lg:text-[6rem]"
+              >
+                Our Clients just don&apos;t love us they Rave about us
+              </h2>
+            </div>
+            <div className="flex items-center gap-3 rounded-full border border-[#d8d2c7] bg-white/80 px-4 py-3 text-sm font-semibold text-stone-900">
+              <span className="text-lg text-[#d9a407]">★★★★★</span>
+              <span>4.9/5 average rating</span>
+            </div>
+          </div>
 
           <div className="mt-8 h-[2px] w-full bg-[#d8d2c7]" />
 
-          <FacebookReviewsWidget />
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+            {reviews.map((review) => (
+              <article
+                key={`${review.name}-${review.platform}`}
+                className="rounded-[18px] border border-[#d8d2c7] bg-white/70 p-5 shadow-[0_10px_30px_rgba(17,17,17,0.04)]"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 text-[#d9a407]" aria-label="5 star review">
+                    <span>★★★★★</span>
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8f7a52]">
+                    {review.platform}
+                  </span>
+                </div>
+
+                <p className="mt-4 text-base leading-7 text-[#111111]">“{review.quote}”</p>
+
+                <div className="mt-6 flex items-center gap-3 border-t border-[#eae2d4] pt-4">
+                  <div className="h-10 w-10 overflow-hidden rounded-full bg-[#f2efe9] ring-1 ring-[#d8d2c7]">
+                    <img
+                      src={review.image}
+                      alt={review.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[#111111]">{review.name}</p>
+                    <p className="text-sm text-[#66615c]">{review.role}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { buildHomePageSchema, buildBreadcrumbListSchema } from "./structured-data.ts";
+import { buildHomePageSchema, buildBreadcrumbListSchema } from "./structured-data";
 
 test("homepage schema includes only valid site-level entities", () => {
   const schema = buildHomePageSchema();

@@ -6,6 +6,7 @@ import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
 import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { seasonalTourPackages } from "@/lib/data/seasonal-tour-packages";
+import { tourPackages } from "@/lib/data/tour-packages";
 import { absoluteUrl, tourMenu, whatsappUrl } from "@/lib/site";
 
 function getSeasonalPackageImage(title: string) {
@@ -54,8 +55,25 @@ export default function ToursPage() {
       return seasonDifference || first.title.localeCompare(second.title);
     });
 
-  const northernPackages = sortBySeason(seasonalTourPackages.filter((tourPackage) => tourPackage.region === "northern"));
-  const southernPackages = sortBySeason(seasonalTourPackages.filter((tourPackage) => tourPackage.region === "southern"));
+  const getPackageRegion = (tourPackage: (typeof tourPackages)[number]) => {
+    if (tourPackage.region) {
+      return tourPackage.region;
+    }
+
+    const destinationSlugs = tourPackage.destinationSlugs ?? [];
+    return destinationSlugs.some((slug) => ["ormara", "gorakh", "moola", "ranikot", "charo"].includes(slug)) ? "southern" : "northern";
+  };
+
+  const northernPackages = sortBySeason(
+    tourPackages.filter((tourPackage) => getPackageRegion(tourPackage) === "northern"),
+  );
+  const southernPackages = sortBySeason(
+    tourPackages.filter((tourPackage) => getPackageRegion(tourPackage) === "southern"),
+  );
+  const adventurePackages = tourPackages.filter((tourPackage) => {
+    const searchableText = `${tourPackage.title} ${tourPackage.departure ?? ""} ${tourPackage.notes?.join(" ") ?? ""}`.toLowerCase();
+    return /(air|deosai|basho|khaplu|camping|jeep|hike|hiking|trek|mountain|pass|waterfall|valley)/.test(searchableText);
+  });
 
   const renderDepartureCard = (tourPackage: (typeof seasonalTourPackages)[number], index: number, prefix: string) => (
     <article key={tourPackage.id} className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_16px_40px_rgba(55,55,48,0.08)] transition duration-500 hover:-translate-y-1 hover:border-[#d4aa18] hover:shadow-[0_24px_55px_rgba(55,55,48,0.15)]">
@@ -74,9 +92,12 @@ export default function ToursPage() {
         </span>
       </div>
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#9a7600]">
-          {getPackageSeason(tourPackage.title, tourPackage.departure).label} · Seasonal departure
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#9a7600]">
+            {getPackageSeason(tourPackage.title, tourPackage.departure).label} · Seasonal departure
+          </p>
+          <span className="rounded-full bg-[#fff8df] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#8b6b00]">Popular</span>
+        </div>
         <h3 className="mt-3 font-serif text-[1.85rem] leading-[1.08] text-stone-950">
           {tourPackage.title}
         </h3>
@@ -92,6 +113,14 @@ export default function ToursPage() {
             View journey ↗
           </Link>
         </div>
+        <a
+          href={whatsappUrl(`Hi Hodophile, I am interested in ${tourPackage.title}. Please confirm availability and the best current price.`)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex items-center justify-center rounded-full bg-[#1f6b4a] px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#174f37]"
+        >
+          Check availability
+        </a>
       </div>
     </article>
   );
@@ -105,6 +134,20 @@ export default function ToursPage() {
         title="Domestic Pakistan packages built for clear comparisons and stronger search visibility."
         description="Browse grouped routes and destination-first package pages designed for smooth planning and confident booking."
       />
+
+      <section className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Tour catalog highlights">
+        {[
+          [String(tourPackages.length), "ready-to-compare routes"],
+          [String(seasonalTourPackages.length), "scheduled departures"],
+          [String(northernPackages.length), "northern packages"],
+          [String(southernPackages.length), "southern packages"],
+        ].map(([value, label]) => (
+          <div key={label} className="rounded-[1.25rem] border border-stone-200 bg-white px-5 py-4 shadow-[0_12px_28px_rgba(55,55,48,0.05)]">
+            <p className="text-2xl font-semibold text-stone-950">{value}</p>
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a7600]">{label}</p>
+          </div>
+        ))}
+      </section>
 
       <section className="mt-12 rounded-[2.5rem] border border-stone-200 bg-[#ecece8] px-5 py-8 text-stone-950 shadow-[0_30px_90px_rgba(55,55,48,0.1)] sm:px-8 sm:py-10 lg:px-12 lg:py-14" aria-labelledby="signature-journeys-heading">
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-stone-300 pb-8">
@@ -138,6 +181,22 @@ export default function ToursPage() {
           ))}
         </div>
       </section>
+
+      {adventurePackages.length > 0 && (
+        <section id="adventure-tours" className="mt-16 rounded-[2.5rem] border border-stone-300 bg-white px-5 py-8 shadow-[0_30px_90px_rgba(55,55,48,0.12)] sm:px-8 sm:py-10 lg:px-12 lg:py-12" aria-labelledby="adventure-tours-heading">
+          <div className="flex flex-wrap items-end justify-between gap-4 border-b border-stone-300 pb-8">
+            <div>
+              <p className="text-xs uppercase tracking-[0.32em] text-[#9a7600]">Adventure trips</p>
+              <h2 id="adventure-tours-heading" className="mt-3 font-serif text-4xl text-stone-950">Adventure Tours</h2>
+            </div>
+            <p className="text-xs uppercase tracking-[0.18em] text-stone-500">{adventurePackages.length} curated routes</p>
+          </div>
+
+          <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {adventurePackages.map((tourPackage, index) => renderDepartureCard(tourPackage as (typeof seasonalTourPackages)[number], index, "A"))}
+          </div>
+        </section>
+      )}
 
       <section className="relative mt-16 overflow-hidden rounded-[2.5rem] border border-stone-300 bg-[#dcdcd7] px-5 py-8 text-stone-950 shadow-[0_30px_90px_rgba(55,55,48,0.14)] sm:px-8 sm:py-10 lg:px-12 lg:py-14" aria-labelledby="scheduled-departures-heading">
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full border border-[#b9971f]/25" />
@@ -179,6 +238,16 @@ export default function ToursPage() {
           <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {southernPackages.map((tourPackage, index) => renderDepartureCard(tourPackage, index, "S"))}
           </div>
+        </div>
+      </section>
+
+      <section className="mt-14 rounded-[2.5rem] border border-[#fcc000]/40 bg-[#fff8df] px-5 py-8 text-stone-950 shadow-[0_30px_90px_rgba(55,55,48,0.1)] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-[#e0c566]/60 pb-8">
+          <div>
+            <p className="text-xs uppercase tracking-[0.32em] text-[#8b6b00]">Need a managed plan?</p>
+            <h2 className="mt-3 font-serif text-3xl text-stone-950">Tell us your dates and we will shape the route for you.</h2>
+          </div>
+          <Link href="/make-my-trip" className="inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-5 py-3 text-sm font-semibold !text-white transition hover:bg-black">Build my trip</Link>
         </div>
       </section>
 

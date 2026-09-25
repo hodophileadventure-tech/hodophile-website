@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
 
 import { MiqatLanding } from "@/components/miqat";
 import { PageShell } from "@/components/page-shell";
@@ -21,23 +20,14 @@ export const metadata: Metadata = {
   },
 };
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-miqat-body",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  variable: "--font-miqat-heading",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
 export default function UmrahPackagesPage() {
   return (
-    <div className={`${inter.variable} ${cormorant.variable}`}>
+    <div
+      style={{
+        ["--font-miqat-body" as string]: '"Segoe UI", system-ui, sans-serif',
+        ["--font-miqat-heading" as string]: 'Georgia, "Times New Roman", serif',
+      }}
+    >
       <PageShell wide noTopPadding>
         <MiqatLanding />
       </PageShell>

@@ -11,6 +11,8 @@ interface LeadData {
   email: string;
   whatsapp: string;
   timestamp: string;
+  source?: string;
+  tripType?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -47,7 +49,8 @@ export async function POST(request: NextRequest) {
           email: body.email,
           whatsapp: body.whatsapp,
           timestamp: body.timestamp,
-          source: 'lead-capture-popup',
+          source: body.source || 'lead-capture-popup',
+          tripType: body.tripType || '',
         },
       }),
     });

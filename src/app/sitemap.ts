@@ -18,6 +18,7 @@ const routes = [
   ...blogPosts.map((post) => `/blogs/${post.slug}`),
   "/contact-us",
   "/destinations",
+  "/explore-pakistan",
   "/gallery",
   "/hotels",
   "/honeymoon-packages",
