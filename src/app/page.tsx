@@ -171,24 +171,28 @@ export default function Home() {
       description: "Comfortable stays, easy pacing, and memorable journeys for all ages.",
       href: "/tours",
       accent: "Family",
+      image: "/images/editorial/family-escape.webp",
     },
     {
       label: "Couple Getaways",
       description: "Romantic mountain and valley escapes designed for a slower, richer experience.",
       href: "/honeymoon-packages",
       accent: "Couples",
+      image: "/images/editorial/couple-getaway.webp",
     },
     {
       label: "Adventure Routes",
       description: "Highland drives, alpine views, camping, and more dynamic mountain experiences.",
       href: "/tours#adventure-tours",
       accent: "Adventure",
+      image: "/images/editorial/adventure-routes.webp",
     },
     {
       label: "Custom Itineraries",
       description: "Tell us your dates, group, and dream route and we will shape the trip around you.",
       href: "/make-my-trip",
       accent: "Tailored",
+      image: "/images/editorial/custom-itineraries.webp",
     },
   ];
 
@@ -310,18 +314,24 @@ export default function Home() {
               <Link
                 key={trip.label}
                 href={trip.href}
-                className="group relative overflow-hidden rounded-[1.5rem] border border-stone-200 bg-[#111111] p-5 text-left text-white shadow-[0_20px_50px_rgba(15,15,15,0.14)] transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/60"
+                className="group relative isolate min-h-[18rem] overflow-hidden rounded-[1.5rem] border border-stone-200 bg-[#111111] text-left text-white shadow-[0_20px_50px_rgba(15,15,15,0.14)] transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/70"
               >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(252,192,0,0.28),transparent_42%)]" />
-                <div className="relative z-10 flex min-h-[15rem] flex-col justify-between">
-                  <span className="inline-flex w-fit rounded-full border border-white/20 bg-white/5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-[#fcc000]">
+                <img
+                  src={trip.image}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,8,8,0.12)_0%,rgba(8,8,8,0.24)_34%,rgba(8,8,8,0.88)_100%)]" />
+                <div className="relative z-10 flex min-h-[18rem] flex-col justify-end p-5 sm:p-6">
+                  <span className="mb-4 inline-flex w-fit rounded-full border border-white/35 bg-black/45 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#ffd84d] backdrop-blur-sm">
                     {trip.accent}
                   </span>
-                  <div>
-                    <h3 className="text-2xl font-semibold leading-tight text-white">{trip.label}</h3>
-                    <p className="mt-3 text-sm leading-6 text-white/75">{trip.description}</p>
-                  </div>
-                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-white">
+                  <h3 className="text-2xl font-semibold leading-tight text-white drop-shadow-sm">{trip.label}</h3>
+                  <p className="mt-2 max-w-[18rem] text-sm leading-6 text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.7)]">{trip.description}</p>
+                  <span className="mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-white">
                     View routes <span aria-hidden="true">↗</span>
                   </span>
                 </div>
