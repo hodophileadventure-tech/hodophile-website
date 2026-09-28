@@ -23,6 +23,7 @@ export const navigation = [
   { href: "/tours", label: "Tours" },
   { href: "/tours#adventure-tours", label: "Adventure Tours" },
   { href: "/explore-pakistan", label: "Explore Pakistan" },
+  { href: "/beyond-pakistan", label: "Beyond Pakistan" },
   { href: "/honeymoon-packages", label: "Honeymoon Packages" },
   { href: "/umrah-packages", label: "Umrah Packages" },
   { href: "/about-us", label: "About Us" },

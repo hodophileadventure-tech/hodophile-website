@@ -19,6 +19,7 @@ const routes = [
   "/contact-us",
   "/destinations",
   "/explore-pakistan",
+  "/beyond-pakistan",
   "/gallery",
   "/hotels",
   "/honeymoon-packages",
