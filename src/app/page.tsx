@@ -726,7 +726,7 @@ export default function Home() {
               href={whatsappUrl("Hi Hodophile, I want to plan a trip after seeing your reviews and package options.")}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-full bg-[#111111] px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] text-white transition hover:bg-[#1d1d1d]"
+              className="inline-flex items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] !text-black transition hover:bg-[#ffd24d] hover:!text-black"
             >
               Book a call
             </a>
