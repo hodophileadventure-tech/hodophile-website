@@ -63,7 +63,6 @@ const sourcePackages: SeasonalPackageSource[] = [
 ];
 
 const additionalPackageSources: SeasonalPackageSource[] = [
-  { title: "02 Days Ormara Beach Weekend Trip", duration: "2 Days / 1 Night", withIslamabadStay: [11500, 12500, 13500, 13500], withoutIslamabadStay: [7500, 7500, 7500, 7500] },
   { title: "02 Days Gorakh Hill Station", duration: "2 Days / 1 Night", withIslamabadStay: [16500, 17500, 18500, 18500], withoutIslamabadStay: [16500, 17500, 18500, 18500] },
   { title: "02 Days Moola Chotok", duration: "2 Days / 1 Night", withIslamabadStay: [16000, 17000, 18000, 18000], withoutIslamabadStay: [16000, 17000, 18000, 18000] },
   { title: "02 Days Ranikot for Weekend Trip (14-15 February)", duration: "2 Days / 1 Night", withIslamabadStay: [11500, 12500, 13500, 13500], withoutIslamabadStay: [7000, 7000, 7000, 7000] },
@@ -80,7 +79,6 @@ const additionalPackageSources: SeasonalPackageSource[] = [
   { title: "02 Days Ormara Beach Weekend Trip (31 January-01 February)", duration: "2 Days / 1 Night", withIslamabadStay: [11500, 12500, 13500, 13500], withoutIslamabadStay: [7500, 7500, 7500, 7500] },
   { title: "02 Days Gorakh Hill Station (30 January-01 February)", duration: "2 Days / 1 Night", withIslamabadStay: [16500, 17500, 18500, 18500], withoutIslamabadStay: [16500, 17500, 18500, 18500] },
   { title: "02 Days Moola Chotok (30 January-01 February)", duration: "2 Days / 1 Night", withIslamabadStay: [16000, 17000, 18000, 18000], withoutIslamabadStay: [16000, 17000, 18000, 18000] },
-  { title: "02 Days Moola Chotok (30 January-01 February)", duration: "2 Days / 1 Night", withIslamabadStay: [16000, 17000, 18000, 18000], withoutIslamabadStay: [16000, 17000, 18000, 18000] },
   { title: "02 Days Charo Machi (30 January-01 February)", duration: "2 Days / 1 Night", withIslamabadStay: [16000, 17000, 18000, 18000], withoutIslamabadStay: [16000, 17000, 18000, 18000] },
   { title: "02 Days Ranikot for Weekend Trip (24-25 January)", duration: "2 Days / 1 Night", withIslamabadStay: [11500, 12500, 13500, 13500], withoutIslamabadStay: [7000, 7000, 7000, 7000] },
   { title: "02 Days Ormara Beach Weekend Trip (24-25 January)", duration: "2 Days / 1 Night", withIslamabadStay: [11500, 12500, 13500, 13500], withoutIslamabadStay: [7500, 7500, 7500, 7500] },
@@ -96,7 +94,6 @@ const additionalPackageSources: SeasonalPackageSource[] = [
   { title: "02 Days Ormara Beach Weekend Trip (10-11 January)", duration: "2 Days / 1 Night", withIslamabadStay: [11500, 12500, 13500, 13500], withoutIslamabadStay: [7500, 7500, 7500, 7500] },
   { title: "02 Days Gorakh Hill Station (09-11 January)", duration: "2 Days / 1 Night", withIslamabadStay: [16500, 17500, 18500, 18500], withoutIslamabadStay: [16500, 17500, 18500, 18500] },
   { title: "02 Days Charo Machi (09-11 January)", duration: "2 Days / 1 Night", withIslamabadStay: [16000, 17000, 18000, 18000], withoutIslamabadStay: [16000, 17000, 18000, 18000] },
-  { title: "02 Days Moola Chotok (09-11 January)", duration: "2 Days / 1 Night", withIslamabadStay: [16000, 17000, 18000, 18000], withoutIslamabadStay: [16000, 17000, 18000, 18000] },
   { title: "02 Days Moola Chotok (09-11 January)", duration: "2 Days / 1 Night", withIslamabadStay: [16000, 17000, 18000, 18000], withoutIslamabadStay: [16000, 17000, 18000, 18000] },
   { title: "02 Days Ranikot for Weekend Trip (03-04 January)", duration: "2 Days / 1 Night", withIslamabadStay: [11500, 12500, 13500, 13500], withoutIslamabadStay: [7000, 7000, 7000, 7000] },
   { title: "02 Days Ormara Beach for Weekend Trip (03-04 January)", duration: "2 Days / 1 Night", withIslamabadStay: [11500, 12500, 13500, 13500], withoutIslamabadStay: [7500, 7500, 7500, 7500] },
@@ -198,6 +195,11 @@ const getDestinationSlugs = (title: string) => {
   if (/hunza|naltar/i.test(title)) slugs.push("hunza");
   if (/kashmir|arang kel|taobat/i.test(title)) slugs.push("kashmir");
   if (/naran/i.test(title)) slugs.push("naran");
+  if (/ormara/i.test(title)) slugs.push("ormara");
+  if (/gorakh/i.test(title)) slugs.push("gorakh");
+  if (/moola/i.test(title)) slugs.push("moola");
+  if (/ranikot/i.test(title)) slugs.push("ranikot");
+  if (/charo/i.test(title)) slugs.push("charo");
   return slugs.length ? slugs : ["swat"];
 };
 
@@ -258,15 +260,27 @@ const generatedSeasonalPackages: TourPackage[] = sourcePackages.map((item, index
 const seenDepartures = new Set<string>();
 
 export const seasonalTourPackages = generatedSeasonalPackages.filter((tourPackage) => {
-  if (isPastDeparture(sourcePackages[Number(tourPackage.id.replace("seasonal-", "")) - 1].title)) {
+  const source = sourcePackages[Number(tourPackage.id.replace("seasonal-", "")) - 1];
+  const normalizedSourceTitle = source.title
+    .replace(/!(?=\d)/g, "1")
+    .replace(/\s*-\s*Second departure$/i, "")
+    .toLowerCase()
+    .replace(/\band\b/g, "&")
+    .replace(/[^a-z0-9]+/g, "")
+    .trim();
+  const sourceKey = [
+    normalizedSourceTitle,
+    source.duration,
+    ...source.withIslamabadStay,
+    ...source.withoutIslamabadStay,
+  ].join("|");
+
+  if (seenDepartures.has(sourceKey)) return false;
+  seenDepartures.add(sourceKey);
+
+  if (isPastDeparture(source.title)) {
     return false;
   }
 
-  const normalizedTitle = tourPackage.title.toLowerCase().replace(/\s+/g, " ").trim();
-  const departureDates = tourPackage.departure?.match(/Departure dates: ([^;]+)/)?.[1] ?? "on-request";
-  const departureKey = `${normalizedTitle}|${departureDates.toLowerCase().replace(/\s+/g, "")}`;
-  if (seenDepartures.has(departureKey)) return false;
-
-  seenDepartures.add(departureKey);
   return true;
 });

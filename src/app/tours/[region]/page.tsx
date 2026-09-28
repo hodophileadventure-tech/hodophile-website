@@ -59,6 +59,10 @@ export default async function RegionPage({ params }: RegionPageProps) {
   }
 
   const regionalPackages = tourPackages.filter((item) => {
+    if (item.region) {
+      return region === "southern-tours" ? item.region === "southern" : item.region === "northern";
+    }
+
     const destinationSlugs = item.destinationSlugs ?? [];
     const isSouthern = destinationSlugs.some((slug) => ["ormara", "gorakh", "moola", "ranikot", "charo"].includes(slug));
     return region === "southern-tours" ? isSouthern : !isSouthern;
