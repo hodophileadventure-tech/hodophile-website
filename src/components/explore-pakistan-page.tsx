@@ -1,6 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 
+const PKR_PER_USD = 283;
+const USD_PRICE_INCREASE = 70;
+
+function formatJourneyPrice(pkrAmount: number) {
+  const usdAmount = Math.round(pkrAmount / PKR_PER_USD + USD_PRICE_INCREASE);
+  return `From $${usdAmount.toLocaleString("en-US")}`;
+}
+
 const destinationTiles = [
   {
     name: "Hunza",
@@ -99,7 +107,7 @@ const journeyCards = [
     description: "A standard group tour from Karakorum through Islamabad into Kashmir, Taobat, and Arangkel.",
     href: "/tours",
     image: "/hero-images/zain-raza-unsplash.webp",
-    price: "From PKR 37,500",
+    pricePkr: 37500,
   },
   {
     duration: "10 Days",
@@ -108,7 +116,7 @@ const journeyCards = [
     description: "A rugged Skardu route with Shangrila, Shigar Fort, Sarfaranga Cold Desert, and Deosai.",
     href: "/tours",
     image: "/hero-images/obaid-awan-unsplash.jpg.webp",
-    price: "From PKR 39,000",
+    pricePkr: 39000,
   },
   {
     duration: "12 Days",
@@ -117,7 +125,7 @@ const journeyCards = [
     description: "Naran, Hunza, Skardu, and Deosai combined into a bold northern journey.",
     href: "/tours",
     image: "/hero-images/kamran-ch-unsplash.webp",
-    price: "From PKR 46,700",
+    pricePkr: 46700,
   },
   {
     duration: "10 Days",
@@ -126,7 +134,7 @@ const journeyCards = [
     description: "A refreshing northern route with Naran Valley, Hunza heritage, and alpine Naltar lakes.",
     href: "/tours",
     image: "/hero-images/hussain-ahmed-unsplash.webp",
-    price: "From PKR 39,000",
+    pricePkr: 39000,
   },
 ];
 
@@ -431,7 +439,7 @@ export function ExplorePakistanPageContent() {
                   <div>
                     <div className="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-500">
                       <span>{journey.duration} / {journey.nights}</span>
-                      <span className="text-[#9a7600]">{journey.price}</span>
+                      <span className="text-[#9a7600]">{formatJourneyPrice(journey.pricePkr)}</span>
                     </div>
                     <h3 className="mt-4 text-[2rem] font-semibold leading-[1.05] tracking-[-0.06em] text-stone-950">
                       {journey.route}
@@ -451,6 +459,9 @@ export function ExplorePakistanPageContent() {
               </article>
             ))}
           </div>
+          <p className="mx-auto mt-4 max-w-7xl px-1 text-xs leading-5 text-stone-500">
+            USD prices use a planning rate of PKR 283 per USD and include a $70 increase per journey. Final pricing is confirmed with your itinerary.
+          </p>
         </div>
       </section>
 
