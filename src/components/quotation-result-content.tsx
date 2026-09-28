@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { routes } from "@/lib/data/routes";
 import { formatPKR } from "@/lib/currency";
 import { siteConfig } from "@/lib/site";
+import { whatsappUrl } from "@/lib/site";
 
 export function QuotationResultContent() {
   const searchParams = useSearchParams();
@@ -57,12 +58,32 @@ export function QuotationResultContent() {
   const markupAmount = quotation.markupAmount ?? 0;
   const perPersonPrice = quotation.perPersonCost ?? 0;
   const totalAmount = quotation.totalCost ?? 0;
+  const inclusionList = [
+    "Transport by selected vehicle",
+    "Hotel accommodation as quoted",
+    "City-to-city route planning",
+    "Sightseeing and route coordination",
+  ];
+  const extraNotes = [
+    quotation.customerName ? `Prepared for ${quotation.customerName}` : "Prepared for the selected traveler",
+    quotation.startingPoint ? `Departure: ${quotation.startingPoint}` : "Departure city to be confirmed",
+    quotation.details?.hotel ? `Stay: ${quotation.details.hotel}` : "Hotel category to be confirmed",
+  ];
   const travelMode = quotation.travelMode || "road";
   const packageDescription = quotation.details?.vehicle
     ? `with ${quotation.details.vehicle}`
     : quotation.vehicleName
     ? `with ${quotation.vehicleName}`
     : "Package includes transport and hotel";
+
+  const summaryCards = [
+    { label: "Route", value: routeName },
+    { label: "Travelers", value: `${numberOfGuests} guest${numberOfGuests === 1 ? "" : "s"}` },
+    { label: "Mode", value: travelMode === "air" ? "By Air" : "By Road" },
+    { label: "Vehicle", value: quotation.details?.vehicle || quotation.vehicleName || "To be confirmed" },
+  ];
+
+  const totalBeforeAddOns = subtotal + markupAmount;
 
   const items = [
     {
@@ -115,8 +136,13 @@ export function QuotationResultContent() {
     });
   }
 
-  const quoteNumber = `Q${Date.now().toString().slice(-6)}`;
+  const quoteNumber = quotation.quoteNumber || `Q${Date.now().toString().slice(-6)}`;
   const quoteDate = new Date().toLocaleDateString("en-GB");
+
+  const handleWhatsApp = () => {
+    const message = `Hi Hodophile, I would like to confirm the quotation for ${routeName}. Quote number: ${quoteNumber}. Please share the final trip details and next steps.`;
+    window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
+  };
 
   return (
     <div className="min-h-screen bg-[#f4f4f4] py-10 px-4 print:bg-white print:py-0 print:px-0">
@@ -142,6 +168,7 @@ export function QuotationResultContent() {
                 <p>{quotation.customerPhone || "Cell#"}</p>
                 <p>{quotation.destination || "Destination not specified"}</p>
                 <p>{routeName}</p>
+                <p>{quotation.details?.roomType || quotation.roomType || "Room type to be selected"}</p>
               </div>
             </div>
             <div className="text-right">
@@ -159,15 +186,25 @@ export function QuotationResultContent() {
             </div>
           </div>
 
+          <div className="mt-8 grid gap-3 md:grid-cols-4 print:mt-2 print:grid-cols-4">
+            {summaryCards.map((card) => (
+              <div key={card.label} className="rounded-2xl border border-stone-200 bg-stone-50 p-4 print:rounded-md print:p-2">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-stone-500 print:text-[8px]">{card.label}</p>
+                <p className="mt-2 text-sm font-semibold text-stone-900 print:text-[10px]">{card.value}</p>
+              </div>
+            ))}
+          </div>
+
           <div className="mt-10 overflow-hidden rounded-3xl border border-stone-300 bg-white p-6 print:mt-3 print:p-3 print:rounded-lg">
             <div className="text-sm text-stone-900 print:text-xs">
               <p className="font-semibold mb-2 print:mb-1">Quotation Details</p>
-              <p className="mb-4 print:mb-2 print:text-xs">This quotation has been prepared for your requested itinerary. Detailed pricing has been withheld in this view for privacy. To view the full pricing breakdown, please contact our sales team at <a className="font-semibold underline" href={`tel:${siteConfig.phone}`}>{siteConfig.phone}</a> or reply to the email we sent you.</p>
+              <p className="mb-4 print:mb-2 print:text-xs">This quotation is prepared for the selected destination and traveler profile. It is a planning document for your trip and is valid as a guide for confirmation and booking with our team.</p>
               <div className="mt-4 rounded-[10px] border border-stone-200 bg-stone-50 p-4 print:mt-2 print:p-2 print:rounded-md">
                 <p className="text-sm print:text-xs"><span className="font-semibold">Route:</span> {routeName}</p>
                 <p className="text-sm print:text-xs"><span className="font-semibold">Passengers:</span> {numberOfGuests}</p>
                 <p className="text-sm print:text-xs"><span className="font-semibold">Departure:</span> {quotation.startingPoint || "-"}</p>
                 <p className="text-sm print:text-xs"><span className="font-semibold">Trip Mode:</span> {travelMode === "air" ? "By Air" : "By Road"}</p>
+                <p className="text-sm print:text-xs"><span className="font-semibold">Trip Style:</span> {packageDescription}</p>
               </div>
               <div className="mt-6 print:mt-2">
                 <p className="text-sm font-semibold print:text-xs">NOTES:</p>
@@ -176,6 +213,9 @@ export function QuotationResultContent() {
                   <p><span className="font-semibold">Transportation Type:</span> {quotation.details?.vehicle || quotation.vehicleName || "-"}</p>
                   <p><span className="font-semibold">Tour Mode:</span> {travelMode === "air" ? "By Air" : "By Road"}</p>
                   <p><span className="font-semibold">Departure Location:</span> {quotation.startingPoint || "-"}</p>
+                  {extraNotes.map((note) => (
+                    <p key={note}><span className="font-semibold">Trip Note:</span> {note}</p>
+                  ))}
                   {quotation.isInvalidCombination && offRouteCost > 0 && (
                     <div className="mt-3 rounded-lg bg-amber-50 border border-amber-200 p-3 print:mt-1 print:p-1">
                       <p className="text-amber-900 font-medium print:text-xs">
@@ -215,17 +255,40 @@ export function QuotationResultContent() {
             </table>
           </div>
 
+          <div className="mt-8 grid gap-6 lg:grid-cols-2 print:mt-3 print:grid-cols-2">
+            <div className="rounded-3xl border border-stone-200 bg-stone-50 p-6 print:rounded-lg print:p-3">
+              <p className="text-sm font-semibold text-stone-900 print:text-[11px]">Included in the plan</p>
+              <ul className="mt-4 space-y-2 text-sm text-stone-700 print:mt-2 print:space-y-1 print:text-[10px]">
+                {inclusionList.map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="mt-2 h-2 w-2 rounded-full bg-[#fcc000] print:mt-1" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="rounded-3xl border border-stone-200 bg-[#fff8df] p-6 print:rounded-lg print:p-3">
+              <p className="text-sm font-semibold text-stone-900 print:text-[11px]">Pricing summary</p>
+              <div className="mt-4 space-y-3 text-sm text-stone-700 print:space-y-1 print:text-[10px]">
+                <div className="flex items-center justify-between gap-3"><span>Trip subtotal</span><span className="font-semibold text-stone-900">{formatPKR(subtotal)}</span></div>
+                <div className="flex items-center justify-between gap-3"><span>Planning / markup</span><span className="font-semibold text-stone-900">{formatPKR(markupAmount)}</span></div>
+                <div className="flex items-center justify-between gap-3"><span>Additional charges</span><span className="font-semibold text-stone-900">{formatPKR(offRouteCost + jeepCost)}</span></div>
+                <div className="mt-3 border-t border-stone-300 pt-3 flex items-center justify-between gap-3"><span className="font-bold text-stone-900">Grand total</span><span className="font-black text-[#0b0b0b]">{formatPKR(totalAmount)}</span></div>
+              </div>
+            </div>
+          </div>
+
           {/* Totals Summary */}
           <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_0.9fr] print:gap-2 print:mt-2 print:grid-cols-2">
             <div className="rounded-3xl border border-stone-300 bg-stone-100 p-6 text-sm text-stone-900 print:rounded-lg print:p-3 print:text-xs">
               <p className="font-semibold print:text-xs">Package included:</p>
               <ul className="mt-3 list-disc space-y-2 pl-5 print:mt-1 print:space-y-0 print:pl-4 print:text-[10px]">
-                <li>Transport by AC vehicle</li>
-                <li>Hotel accommodation</li>
-                <li>Sightseeing support</li>
+                <li>Transport by the selected vehicle category</li>
+                <li>Hotel accommodation as quoted</li>
+                <li>Sightseeing and route coordination</li>
               </ul>
-              <p className="mt-6 font-semibold print:mt-2 print:text-xs">Quotation valid only for 3 Days.</p>
-              <p className="mt-3 text-xs text-stone-700 print:mt-1 print:text-[9px]">Quotation is exclusive of air tickets.</p>
+              <p className="mt-6 font-semibold print:mt-2 print:text-xs">Quotation valid for confirmation and booking coordination.</p>
+              <p className="mt-3 text-xs text-stone-700 print:mt-1 print:text-[9px]">Air tickets, personal purchases, and optional activities remain excluded unless expressly mentioned in the final booking confirmation.</p>
             </div>
 
             <div className="rounded-3xl border border-stone-300 bg-white p-6 print:rounded-lg print:p-3">
@@ -238,6 +301,10 @@ export function QuotationResultContent() {
                   <span className="font-semibold print:text-[11px]">Per Person Cost:</span>
                   <span className="font-bold text-stone-900 print:text-[11px]">{formatPKR(perPersonPrice)}</span>
                 </div>
+                <div className="flex justify-between bg-stone-50 p-3 rounded-lg border border-stone-200 print:p-2 print:rounded-md print:text-[11px]">
+                  <span className="font-semibold print:text-[11px]">Trip subtotal</span>
+                  <span className="font-bold text-stone-900 print:text-[11px]">{formatPKR(totalBeforeAddOns)}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -249,6 +316,12 @@ export function QuotationResultContent() {
             className="inline-flex rounded-full bg-[#fcc000] px-8 py-3 text-sm font-semibold text-black transition hover:bg-[#e4b200]"
           >
             Print Quotation
+          </button>
+          <button
+            onClick={handleWhatsApp}
+            className="inline-flex rounded-full border border-stone-300 bg-white px-8 py-3 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
+          >
+            Share on WhatsApp
           </button>
           <button
             onClick={() => window.print()}

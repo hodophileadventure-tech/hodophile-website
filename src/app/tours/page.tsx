@@ -108,10 +108,26 @@ export default function ToursPage() {
         <p className="mt-4 line-clamp-2 text-sm leading-6 text-stone-600">
           {getSeasonalPackageRegion(tourPackage.title)} route with planned accommodation, meals, transport, and on-ground support.
         </p>
+        <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+          <div className="rounded-lg bg-stone-50 px-3 py-2">
+            <span className="block text-[10px] uppercase tracking-[0.16em] text-stone-500">Quad sharing</span>
+            <span className="mt-1 block font-semibold text-stone-900">PKR {tourPackage.sharingPrices?.quad.toLocaleString() ?? tourPackage.pricePerPerson.toLocaleString()}</span>
+          </div>
+          <div className="rounded-lg bg-stone-50 px-3 py-2">
+            <span className="block text-[10px] uppercase tracking-[0.16em] text-stone-500">Twin sharing</span>
+            <span className="mt-1 block font-semibold text-stone-900">{tourPackage.sharingPrices ? `PKR ${tourPackage.sharingPrices.twin.toLocaleString()}` : "Ask for rate"}</span>
+          </div>
+          {tourPackage.priceWithoutIslamabadStay ? (
+            <div className="col-span-2 rounded-lg border border-[#fcc000]/30 bg-[#fff8df] px-3 py-2">
+              <span className="block text-[10px] uppercase tracking-[0.16em] text-stone-600">Quad sharing, without Islamabad stay</span>
+              <span className="mt-1 block font-semibold text-stone-900">PKR {tourPackage.priceWithoutIslamabadStay.toLocaleString()}</span>
+            </div>
+          ) : null}
+        </div>
         <div className="mt-6 flex items-end justify-between gap-4 border-t border-stone-200 pt-4">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-stone-500">From</p>
-            <p className="mt-1 text-xl font-semibold text-[#9a7600]">PKR {tourPackage.pricePerPerson.toLocaleString()}</p>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-stone-500">Per person · quad sharing</p>
+            <p className="mt-1 text-xl font-semibold text-[#9a7600]">PKR {(tourPackage.sharingPrices?.quad ?? tourPackage.pricePerPerson).toLocaleString()}</p>
           </div>
           <Link href={`/packages/${tourPackage.id}`} className="text-sm font-bold uppercase tracking-[0.12em] text-stone-950 transition hover:text-[#9a7600]">
             View journey ↗
@@ -172,6 +188,11 @@ export default function ToursPage() {
               <div className="flex flex-1 flex-col p-5">
                 <h3 className="text-2xl font-semibold leading-tight text-stone-950">{tour.title}</h3>
                 <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600">{tour.summary}</p>
+                <div className="mt-4 flex flex-wrap gap-2" aria-label={`${tour.title} highlights`}>
+                  {tour.highlights.slice(0, 3).map((highlight) => (
+                    <span key={highlight} className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-xs font-medium text-stone-700">{highlight}</span>
+                  ))}
+                </div>
                 <div className="mt-5 flex items-end justify-between gap-4 border-t border-stone-200 pt-4">
                   <div>
                     <p className="text-[11px] uppercase tracking-[0.18em] text-stone-500">From</p>

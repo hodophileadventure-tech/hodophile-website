@@ -1,11 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { trackEvent } from "@/lib/analytics";
 import { whatsappUrl } from "@/lib/site";
 
 export function FloatingCtaBar() {
+  const pathname = usePathname();
+
+  if (pathname === "/make-my-trip") {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-4 left-1/2 z-50 w-[calc(100%-1.25rem)] max-w-xl -translate-x-1/2 md:bottom-6">
       <div className="flex items-center justify-between gap-2 rounded-full border border-[#fcc000]/50 bg-[#121212]/95 px-2 py-2 shadow-[0_18px_40px_rgba(0,0,0,0.28)] backdrop-blur-md">

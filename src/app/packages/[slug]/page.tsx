@@ -524,6 +524,35 @@ export default async function PackagePage({ params }: PackagePageProps) {
               {pkg.overview}
             </p>
 
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              <div className="rounded-[1.25rem] border border-stone-200 bg-stone-50 p-4">
+                <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">Duration</p>
+                <p className="mt-2 text-lg font-semibold text-stone-900">{pkg.duration}</p>
+              </div>
+              <div className="rounded-[1.25rem] border border-stone-200 bg-stone-50 p-4">
+                <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">Best for</p>
+                <p className="mt-2 text-lg font-semibold text-stone-900">Couples & groups</p>
+              </div>
+              <div className="rounded-[1.25rem] border border-stone-200 bg-stone-50 p-4">
+                <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">Departure</p>
+                <p className="mt-2 text-lg font-semibold text-stone-900">{pkg.departure || "Flexible dates"}</p>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-[1.5rem] border border-[#fcc000]/25 bg-[#fff8df] p-5">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">Price transparency</p>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <div className="rounded-[1rem] bg-white p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">With Islamabad stay</p>
+                  <p className="mt-2 text-2xl font-black text-stone-900">{pkg.priceWithIslamabadStay}</p>
+                </div>
+                <div className="rounded-[1rem] bg-white p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Without Islamabad stay</p>
+                  <p className="mt-2 text-2xl font-black text-stone-900">{pkg.priceWithoutIslamabadStay}</p>
+                </div>
+              </div>
+            </div>
+
             {pkg.attractions?.length ? (
               <div className="mt-8">
                 <p className="text-sm font-semibold text-stone-900">Tour Attractions</p>
@@ -540,6 +569,37 @@ export default async function PackagePage({ params }: PackagePageProps) {
                 </div>
               </div>
             ) : null}
+          </div>
+
+          <div className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8">
+            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Included</p>
+            <h2 className="mt-3 font-serif text-3xl text-stone-900">What this package includes</h2>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
+                <p className="text-sm font-semibold text-stone-900">Included in most packages</p>
+                <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">
+                  {pkg.includes?.length ? pkg.includes.map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <span className="mt-2 h-2.5 w-2.5 rounded-full bg-[#fcc000]" />
+                      <span>{item}</span>
+                    </li>
+                  )) : (
+                    <li className="flex items-start gap-3">
+                      <span className="mt-2 h-2.5 w-2.5 rounded-full bg-[#fcc000]" />
+                      <span>Hotel accommodation and route support according to your selected package.</span>
+                    </li>
+                  )}
+                </ul>
+              </div>
+              <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
+                <p className="text-sm font-semibold text-stone-900">Usually excluded</p>
+                <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">
+                  <li className="flex items-start gap-3"><span className="mt-2 h-2.5 w-2.5 rounded-full bg-stone-400" /><span>Air tickets and personal purchases.</span></li>
+                  <li className="flex items-start gap-3"><span className="mt-2 h-2.5 w-2.5 rounded-full bg-stone-400" /><span>Optional activities and local charges where not explicitly included.</span></li>
+                  <li className="flex items-start gap-3"><span className="mt-2 h-2.5 w-2.5 rounded-full bg-stone-400" /><span>Additional costs caused by weather, road closure, or force majeure.</span></li>
+                </ul>
+              </div>
+            </div>
           </div>
 
           <div className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8">            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Travel details</p>

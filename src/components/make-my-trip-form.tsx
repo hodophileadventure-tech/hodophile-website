@@ -3145,9 +3145,12 @@ export function MakeMyTripForm() {
                   <span className="text-lg font-black text-[#FCC000]">Processing...</span>
                 </>
               ) : (
-                <span className="inline-flex items-center gap-3">
-                  <Sparkles className="w-6 h-6 text-[#FCC000]" aria-hidden="true" />
-                  <span className="text-lg text-[#FCC000]">Get Quotation</span>
+                <span className="flex w-full items-center justify-between gap-3">
+                  <span className="inline-flex items-center gap-3">
+                    <Sparkles className="w-6 h-6 text-[#FCC000]" aria-hidden="true" />
+                    <span className="text-base text-[#FCC000] sm:text-lg">Get Quotation</span>
+                  </span>
+                  {quotation ? <span className="text-right text-sm font-bold text-white sm:text-base">{formatPKR(quotation.totalCost + offRouteChargePKR)}</span> : null}
                 </span>
               )}
             </button>
