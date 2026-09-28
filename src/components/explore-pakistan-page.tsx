@@ -192,6 +192,11 @@ const faqItems = [
       "Yes. Pakistan offers a wide range of experiences for first-time visitors, from mountain landscapes and cultural heritage to food, adventure, and local experiences. We can design your journey according to your comfort level and interests.",
   },
   {
+    question: "What should international visitors confirm before booking?",
+    answer:
+      "Visa, entry, and route-permit requirements depend on your nationality, itinerary, and current rules. Confirm them with the relevant official authorities before booking. We can plan the domestic itinerary around your confirmed arrival details; visas and permits are not included unless your written quotation explicitly says so.",
+  },
+  {
     question: "What destinations can I visit in Pakistan?",
     answer:
       "Depending on your itinerary, you can explore destinations such as Hunza, Skardu, Fairy Meadows, Naltar, Deosai, Swat, Kalam, Kashmir, Chitral, Gilgit and other regions across Pakistan.",
@@ -532,6 +537,43 @@ export function ExplorePakistanPageContent() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="international-visitors" className="px-4 py-10 sm:px-6 lg:px-10 xl:px-14">
+        <div className="mx-auto grid max-w-7xl gap-8 border-y border-stone-300 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-14 lg:py-14">
+          <div>
+            <p className="eyebrow !text-stone-600">For international visitors</p>
+            <h2 className="mt-3 max-w-xl text-3xl font-semibold tracking-[-0.05em] text-stone-950 sm:text-4xl">
+              Plan the Pakistan journey around your arrival.
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-7 text-stone-600">
+              Share your arrival city, available days, interests, and confirmed entry arrangements. We can help shape a realistic domestic route with clear travel days and written inclusions.
+            </p>
+            <Link
+              href="/make-my-trip"
+              className="mt-7 inline-flex items-center justify-center rounded-full bg-[#fcc000] px-6 py-3 text-sm font-semibold !text-black transition hover:bg-[#ffd24d]"
+            >
+              Plan an inbound trip
+            </Link>
+          </div>
+
+          <ol className="grid gap-px border border-stone-300 bg-stone-300 sm:grid-cols-3">
+            {[
+              ["01", "Share arrival details", "Airport, dates, group size, and trip length."],
+              ["02", "Shape the route", "Choose regions and a pace that fits the time available."],
+              ["03", "Confirm inclusions", "Review transport, stays, exclusions, and total price in writing."],
+            ].map(([number, title, detail]) => (
+              <li key={number} className="bg-[#f7f3ea] p-5">
+                <span className="text-xs font-bold tracking-[0.2em] text-[#9a7600]">{number}</span>
+                <h3 className="mt-5 text-lg font-semibold text-stone-950">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-stone-600">{detail}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="text-xs leading-6 text-stone-500 lg:col-start-2">
+            Entry, visa, and permit requirements change and depend on nationality and route. Confirm them with official authorities; these services are not included unless stated in your written quotation.
+          </p>
         </div>
       </section>
 

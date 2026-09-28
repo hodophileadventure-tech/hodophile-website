@@ -17,3 +17,10 @@ export function trackEvent(eventName: string, params: AnalyticsParams = {}) {
   window.fbq?.("trackCustom", eventName, params);
   window.dataLayer?.push({ event: eventName, ...params });
 }
+
+export function trackPageView(pathname: string) {
+  if (typeof window === "undefined") return;
+
+  window.gtag?.("event", "page_view", { page_path: pathname });
+  window.fbq?.("track", "PageView");
+}

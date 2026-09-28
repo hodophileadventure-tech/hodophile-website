@@ -45,12 +45,6 @@ function getDestinationTagsFromSlug(slug: string): string[] {
 function buildRouteContent(label: string) {
   const lower = label.toLowerCase();
 
-  const itinerary = [
-    { day: "Day 1", title: "Arrival and route setup", description: "Begin with arrival support, a smooth transfer, and an easy first evening to settle into the destination and restore energy for the trip." },
-    { day: "Day 2", title: "Destination highlights", description: "Explore the region's signature viewpoints, heritage spots, and scenic stops while keeping the pace comfortable and photo-friendly." },
-    { day: "Day 3", title: "Local experience and free time", description: "Enjoy the route at a slower rhythm with valleys, local food, culture, and relaxed downtime before the return or next leg." },
-  ];
-
   const genericIncludes = [
     "Private or shared transport depending on trip structure",
     "Hotel coordination and route planning support",
@@ -64,6 +58,73 @@ function buildRouteContent(label: string) {
     "Travel insurance and medical emergencies",
     "Any cost caused by weather, landslides, or force majeure",
   ];
+
+  if (lower.includes("naran")) {
+    return {
+      summary: "A four-day sample route based on the Naran–Babusar itinerary: arrive in Naran, explore a lake route, take a weather-dependent Babusar excursion, then return.",
+      itinerary: [
+        { day: "Day 1", title: "Drive to Naran", description: "Travel via Balakot and Kaghan, with rest and meal stops along the way. Settle into Naran for the evening." },
+        { day: "Day 2", title: "Lake and valley day", description: "Choose Saif-ul-Malook or Lulusar according to road access, weather, and the confirmed itinerary. Local jeep trips and lake activities may cost extra unless included in writing." },
+        { day: "Day 3", title: "Babusar Top excursion", description: "Visit Babusar Top only when the road is open and conditions allow. Confirm the day's route and return plan with the tour manager." },
+        { day: "Day 4", title: "Return journey", description: "Depart Naran and return toward the confirmed drop-off city, with stops based on timing and road conditions." },
+      ],
+      includes: genericIncludes,
+      excludes: genericExcludes,
+      hotel: "Accommodation and room-sharing basis must be confirmed in the selected package quotation.",
+      vehicle: "Vehicle and local jeep arrangements depend on group size and route conditions; confirm what is included before payment.",
+      pricing: "Final pricing depends on dates, room sharing, transport, and any local jeep or activity charges.",
+      faqs: [
+        { question: "Is Babusar Top always accessible?", answer: "No. Access depends on season, weather, and road conditions. Confirm availability close to travel." },
+        { question: "Are lake jeeps included?", answer: "Local jeep rides and optional activities are included only when stated in your written package details." },
+        { question: "Can this sample route be changed?", answer: "Yes. Ask the team to confirm the route against your dates, group, and road access before booking." },
+      ],
+    };
+  }
+
+  if (lower.includes("swat")) {
+    return {
+      summary: "A four-day sample route based on the Swat–Kalam itinerary, with an overnight base in Kalam and a separate, road-dependent Mahodand excursion.",
+      itinerary: [
+        { day: "Day 1", title: "Mingora to Kalam", description: "Travel through Bahrain toward Kalam, allowing time for stops and the mountain road. Check in and rest on arrival." },
+        { day: "Day 2", title: "Ushu Forest and Matiltan", description: "Explore the forest and Matiltan viewpoints with short walks where conditions permit, then return to Kalam." },
+        { day: "Day 3", title: "Mahodand Lake excursion", description: "A full-day local 4x4 excursion may be planned when road and weather conditions allow. Confirm jeep arrangements and any extra charges in writing." },
+        { day: "Day 4", title: "Return via Bahrain", description: "Return toward Mingora or the confirmed departure point. Additional stops depend on travel time and road conditions." },
+      ],
+      includes: genericIncludes,
+      excludes: genericExcludes,
+      hotel: "Accommodation and room-sharing basis must be confirmed in the selected package quotation.",
+      vehicle: "A local 4x4 may be required for Mahodand and other rough-road sections; confirm whether it is included.",
+      pricing: "Final pricing depends on dates, room sharing, transport, and local 4x4 requirements.",
+      faqs: [
+        { question: "Is Mahodand Lake part of every trip?", answer: "No. The excursion depends on access, weather, and the package selected. Confirm it before booking." },
+        { question: "Do we need a local jeep?", answer: "Some rough-road excursions require a local 4x4. Your written itinerary should state whether this cost is included." },
+        { question: "Can the pace be adjusted for families?", answer: "Discuss group needs and preferred pacing with the team before confirming the itinerary." },
+      ],
+    };
+  }
+
+  if (lower.includes("kashmir")) {
+    return {
+      summary: "A five-day sample route based on the Kashmir–Arang Kel itinerary. Taobat and other sensitive or remote sections remain subject to current access, security guidance, and local requirements.",
+      itinerary: [
+        { day: "Day 1", title: "Muzaffarabad to Neelum Valley", description: "Meet in Muzaffarabad and travel toward the confirmed overnight base, with stops planned around road conditions and daylight." },
+        { day: "Day 2", title: "Kel and Arang Kel", description: "Travel to Kel and arrange the hike or locally available access option. The steep climb and overnight plan should match the group's ability and confirmed lodging." },
+        { day: "Day 3", title: "Neelum Valley villages", description: "Explore accessible villages and viewpoints, allowing time for road travel and local conditions." },
+        { day: "Day 4", title: "Optional Taobat route", description: "A Taobat excursion is subject to current security guidance, permissions, road access, and timing. Confirm feasibility before departure." },
+        { day: "Day 5", title: "Return to Muzaffarabad", description: "Return with stops as timing allows. Exact departure and drop-off details are set in the confirmed itinerary." },
+      ],
+      includes: genericIncludes,
+      excludes: genericExcludes,
+      hotel: "Guesthouse or hotel category and overnight location must be confirmed for the selected package and dates.",
+      vehicle: "Local jeeps and last-mile transport may be required. Confirm each vehicle segment and its price in writing.",
+      pricing: "Final pricing depends on route access, overnight locations, room sharing, and vehicle requirements.",
+      faqs: [
+        { question: "Is Taobat guaranteed on this route?", answer: "No. Access and security conditions can change. Confirm current feasibility with the team and local authorities." },
+        { question: "Is the Arang Kel hike suitable for everyone?", answer: "The climb is steep. Travelers should consider their fitness and confirm the current access arrangements before booking." },
+        { question: "Can the route change after booking?", answer: "Road, security, and local conditions can require changes. The confirmed package terms explain how itinerary adjustments are handled." },
+      ],
+    };
+  }
 
   if (lower.includes("chitral")) {
     return {
@@ -99,7 +160,7 @@ function buildRouteContent(label: string) {
   if (lower.includes("hunza") || lower.includes("skardu") || lower.includes("naran") || lower.includes("swat") || lower.includes("kashmir")) {
     return {
       summary: `This ${label} route is designed for travelers who want scenic variety, a comfortable daily pace, and strong route coordination across mountain sections, valley viewpoints, and accommodation planning.`,
-      itinerary,
+      itinerary: [],
       includes: genericIncludes,
       excludes: genericExcludes,
       hotel: "We match the hotel category to the route, season, and whether you want a standard, deluxe, or premium-room experience for your group.",
@@ -115,7 +176,7 @@ function buildRouteContent(label: string) {
 
   return {
     summary: `${label} is planned to balance scenic highlights, comfortable overnight stays, and a route that feels exciting without becoming rushed.`,
-    itinerary,
+    itinerary: [],
     includes: genericIncludes,
     excludes: genericExcludes,
     hotel: "Accommodation is selected according to the route, room-sharing plan, and the travel style you prefer for the trip.",
@@ -263,19 +324,33 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
           </div>
         </section>
 
-        <section className="mt-10 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_32px_rgba(15,23,42,0.06)] md:p-8">
-          <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Typical itinerary</p>
-          <h2 className="mt-3 font-serif text-3xl text-stone-900">Day-by-day flow</h2>
-          <div className="mt-6 space-y-5">
-            {routeContent.itinerary.map((entry) => (
-              <div key={entry.day} className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
-                <p className="text-[11px] uppercase tracking-[0.32em] text-[#a37a00]">{entry.day}</p>
-                <h3 className="mt-2 text-xl font-semibold text-stone-900">{entry.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-stone-600">{entry.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        {routeContent.itinerary.length ? (
+          <section className="mt-10 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_32px_rgba(15,23,42,0.06)] md:p-8">
+            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Sample route plan</p>
+            <h2 className="mt-3 font-serif text-3xl text-stone-900">A day-by-day example</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-stone-600">
+              This is a planning example, not a confirmed departure itinerary. Stops and timing depend on your package, dates, access, and local conditions; confirm the final schedule in writing.
+            </p>
+            <div className="mt-6 space-y-5">
+              {routeContent.itinerary.map((entry) => (
+                <div key={entry.day} className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
+                  <p className="text-[11px] uppercase tracking-[0.32em] text-[#a37a00]">{entry.day}</p>
+                  <h3 className="mt-2 text-xl font-semibold text-stone-900">{entry.title}</h3>
+                  <p className="mt-2 text-sm leading-7 text-stone-600">{entry.description}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : (
+          <section className="mt-10 flex flex-col gap-4 border-y border-stone-300 py-7 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Package-specific itinerary</p>
+              <h2 className="mt-2 font-serif text-2xl text-stone-900">See the day plan on each package.</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-7 text-stone-600">This destination page does not have one approved day-by-day plan for every departure. Open a package below to review its itinerary and confirm the final schedule with our team.</p>
+            </div>
+            <a href="#available-departures" className="shrink-0 text-sm font-semibold text-[#8b6b00] underline decoration-[#d9a407]/50 underline-offset-4">Browse available packages</a>
+          </section>
+        )}
 
         <section className="mt-10 grid gap-6 lg:grid-cols-2 xl:gap-8">
           <div className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_32px_rgba(15,23,42,0.06)] md:p-8">
@@ -299,7 +374,7 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
           </div>
         </section>
 
-        <section className="mt-10 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_32px_rgba(15,23,42,0.06)] md:p-8">
+        <section id="available-departures" className="mt-10 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_32px_rgba(15,23,42,0.06)] md:p-8">
           <div className="flex items-end justify-between gap-4 border-b border-stone-200 pb-5">
             <div>
               <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Available departures</p>

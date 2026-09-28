@@ -162,9 +162,32 @@ function getPackageDisplayTitle(title: string) {
     .trim();
 }
 
-function getDepartureLabel(title: string) {
-  const dateMatch = title.match(/\(([^)]+)\)/);
-  return dateMatch ? `Departure dates: ${dateMatch[1]}` : "Departure dates available on request";
+const monthNames = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+export function getDepartureLabel(title: string) {
+  const dateText = title.match(/\(([^)]+)\)/)?.[1];
+  if (!dateText) return "Departure dates available on request";
+
+  const months = [...dateText.matchAll(/\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/gi)]
+    .map((match) => monthNames.find((month) => month.toLowerCase() === match[1].toLowerCase()));
+  const years = [...dateText.matchAll(/\b(20\d{2})\b/g)].map((match) => match[1]);
+  if (!months.length || !years.length) return "Departure dates available on request";
+
+  const lastMonth = months.at(-1);
+  const lastYear = years.at(-1);
+  if (!lastMonth || !lastYear) return "Departure dates available on request";
+
+  if (months.length < 2 || months[0] === lastMonth) {
+    return `Departure month: ${lastMonth} ${lastYear}`;
+  }
+
+  const firstYear = years.length > 1 ? years[0] : lastYear;
+  return firstYear === lastYear
+    ? `Departure window: ${months[0]}–${lastMonth} ${lastYear}`
+    : `Departure window: ${months[0]} ${firstYear}–${lastMonth} ${lastYear}`;
 }
 
 const getDestinationSlugs = (title: string) => {
@@ -178,27 +201,29 @@ const getDestinationSlugs = (title: string) => {
   return slugs.length ? slugs : ["swat"];
 };
 
-function isPastDeparture(title: string, referenceDate = new Date()) {
+export function isPastDeparture(title: string, referenceDate = new Date()) {
   const dateText = title.match(/\(([^)]*)\)/)?.[1];
   if (!dateText) return false;
 
   const normalizedDateText = dateText.replace(/!(?=\d)/g, "1");
-  const monthNames = [
-    "january", "february", "march", "april", "may", "june",
-    "july", "august", "september", "october", "november", "december",
-  ];
   const monthMatches = [...normalizedDateText.matchAll(/\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/gi)];
-  if (monthMatches.length === 0) return false;
+  if (monthMatches.length === 0) return /\d/.test(normalizedDateText);
 
-  const dayValues = [...normalizedDateText.matchAll(/\b(\d{1,2})\b/g)].map((match) => Number(match[1]));
+  const explicitYears = [...normalizedDateText.matchAll(/\b(20\d{2})\b/g)].map((match) => Number(match[1]));
+  const explicitYear = explicitYears.at(-1);
+  if (!explicitYear) return true;
+
+  const dayValues = [...normalizedDateText.replace(/\b20\d{2}\b/g, "").matchAll(/\b(\d{1,2})\b/g)].map((match) => Number(match[1]));
   const endDay = dayValues.at(-1);
   const endMonthName = monthMatches.at(-1)?.[1].toLowerCase();
-  if (!endDay || !endMonthName) return false;
+  if (!endMonthName) return true;
 
-  const endMonth = monthNames.indexOf(endMonthName);
-  const explicitYear = normalizedDateText.match(/\b(20\d{2})\b/)?.[1];
-  const endYear = explicitYear ? Number(explicitYear) : referenceDate.getFullYear();
-  const departureEnd = new Date(endYear, endMonth, endDay);
+  const endMonth = monthNames.findIndex((month) => month.toLowerCase() === endMonthName);
+  const endYear = explicitYear;
+  const departureEnd = endDay
+    ? new Date(endYear, endMonth, endDay)
+    : new Date(endYear, endMonth + 1, 0);
+  if (departureEnd.getMonth() !== endMonth) return true;
   const today = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate());
 
   return departureEnd < today;

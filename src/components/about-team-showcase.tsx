@@ -34,9 +34,10 @@ export function AboutTeamShowcase() {
         <div className="team-showcase-heading">
           <p className="eyebrow">OUR TEAM</p>
           <h2>Our leadership <span>team</span></h2>
-          <p>Meet the people who bring thoughtful journeys and exceptional experiences to life.</p>
+          <p>Meet {teamProfiles.length} people across leadership, planning, operations, technology, and content.</p>
         </div>
 
+        <h3 className="team-group-label">Leadership</h3>
         <div className="team-row row-ceo">
           <TeamMemberArtwork profile={getMember("sana")} featured />
         </div>
@@ -46,21 +47,24 @@ export function AboutTeamShowcase() {
           <TeamMemberArtwork profile={getMember("israr")} />
         </div>
 
+        <h3 className="team-group-label">People and operations</h3>
         <div className="team-row row-two">
           <TeamMemberArtwork profile={getMember("yashar")} />
           <TeamMemberArtwork profile={getMember("maaz")} />
         </div>
 
+        <h3 className="team-group-label">Travel planning and on-trip support</h3>
         <div className="team-row row-four">
-          <TeamMemberArtwork profile={getMember("qasim")} />
           <TeamMemberArtwork profile={getMember("altamash")} />
-          <TeamMemberArtwork profile={getMember("sameer")} />
-          <TeamMemberArtwork profile={getMember("areeba")} />
-        </div>
-
-        <div className="team-row row-two">
           <TeamMemberArtwork profile={getMember("sikandar")} />
           <TeamMemberArtwork profile={getMember("emran")} />
+        </div>
+
+        <h3 className="team-group-label">Technology and creative</h3>
+        <div className="team-row row-four">
+          <TeamMemberArtwork profile={getMember("qasim")} />
+          <TeamMemberArtwork profile={getMember("sameer")} />
+          <TeamMemberArtwork profile={getMember("areeba")} />
         </div>
       </div>
 
@@ -114,6 +118,16 @@ export function AboutTeamShowcase() {
           align-items: stretch;
           gap: 1.35rem;
           margin: 0 auto clamp(1rem, 2.25vw, 1.85rem);
+        }
+
+        .team-group-label {
+          margin: clamp(2rem, 4vw, 3.25rem) 0 1.25rem;
+          color: #8b6b00;
+          font-size: 0.72rem;
+          font-weight: 800;
+          letter-spacing: 0.2em;
+          text-align: center;
+          text-transform: uppercase;
         }
 
         .team-row :global(.team-card) { width: 340px; }

@@ -8,6 +8,7 @@ import { WhyChooseUs } from "@/components/why-choose-us";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
 import { JsonLd } from "@/components/JsonLd";
 import { HomeQuickLeadForm } from "@/components/home-quick-lead";
+import { FacebookReviewsWidget } from "@/components/facebook-reviews-widget";
 import { companyStats } from "@/lib/data/company-stats";
 import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, blogPosts, destinations, whatsappUrl } from "@/lib/site";
@@ -739,9 +740,19 @@ export default function Home() {
                 Our Clients just don&apos;t love us they Rave about us
               </h2>
             </div>
-            <div className="flex items-center gap-3 rounded-full border border-[#d8d2c7] bg-white/80 px-4 py-3 text-sm font-semibold text-stone-900">
-              <span className="text-lg text-[#d9a407]">★★★★★</span>
-              <span>4.9/5 average rating</span>
+            <div className="flex flex-wrap items-center gap-3 md:justify-end">
+              <div className="flex items-center gap-3 rounded-full border border-[#d8d2c7] bg-white/80 px-4 py-3 text-sm font-semibold text-stone-900">
+                <span className="text-lg text-[#d9a407]">★★★★★</span>
+                <span>4.9/5 average rating</span>
+              </div>
+              <a
+                href="https://g.page/r/CUZyoGzYsVN5EAE/review"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-full border border-stone-300 bg-white px-4 py-3 text-xs font-bold uppercase tracking-[0.16em] text-stone-900 transition hover:border-[#d9a407] hover:bg-[#fff8df] hover:text-[#8b6b00]"
+              >
+                Read Google reviews <span className="ml-2" aria-hidden="true">↗</span>
+              </a>
             </div>
           </div>
 
@@ -780,6 +791,14 @@ export default function Home() {
               </article>
             ))}
           </div>
+
+          <details className="group mt-8 border-t border-[#d8d2c7] pt-6">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-stone-900 marker:content-none">
+              <span>Browse reviews on our Facebook page</span>
+              <span className="text-xl text-[#9a7600] transition group-open:rotate-45" aria-hidden="true">+</span>
+            </summary>
+            <FacebookReviewsWidget />
+          </details>
         </div>
       </section>
 
