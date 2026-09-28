@@ -9,6 +9,16 @@ import { navigation, tourMenu, whatsappUrl } from "@/lib/site";
 
 type NavigationItem = (typeof navigation)[number];
 
+const desktopPrimaryHrefs = new Set([
+  "/",
+  "/destinations",
+  "/tours",
+  "/beyond-pakistan",
+  "/contact-us",
+]);
+
+const desktopMoreLinks = navigation.filter((item) => !desktopPrimaryHrefs.has(item.href));
+
 export function SiteHeader() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -299,12 +309,27 @@ export function SiteHeader() {
             />
           </Link>
 
-          <nav className="mx-3 hidden min-w-0 flex-1 items-center justify-center gap-0.5 rounded-full border border-white/60 bg-white/25 px-1.5 py-1 shadow-[0_8px_24px_rgba(25,22,16,0.06)] lg:flex xl:mx-5 xl:gap-1" aria-label="Primary navigation">
-            {navigation.map((entry) => (
-              <div key={entry.href} className="flex min-w-0 items-center justify-center">
+          <nav className="mx-3 hidden min-w-0 flex-1 items-center justify-center gap-1 rounded-full border border-white/60 bg-white/25 px-2 py-1 shadow-[0_8px_24px_rgba(25,22,16,0.06)] lg:flex xl:mx-5 xl:gap-2" aria-label="Primary navigation">
+            {navigation.filter((entry) => desktopPrimaryHrefs.has(entry.href)).map((entry) => (
+              <div key={entry.href} className="flex shrink-0 items-center justify-center">
                 {renderDesktopNavItem(entry)}
               </div>
             ))}
+            <details className="group relative shrink-0">
+              <summary className="inline-flex cursor-pointer list-none items-center gap-1 rounded-full px-2 py-2 text-[11px] font-medium text-stone-700 transition hover:bg-white/70 hover:text-[#8b6b00] xl:px-3 xl:text-sm [&::-webkit-details-marker]:hidden">
+                More
+                <svg viewBox="0 0 20 20" className="h-3 w-3 fill-current transition-transform group-open:rotate-180" aria-hidden="true">
+                  <path d="M5.8 7.5 10 11.7l4.2-4.2 1.4 1.4L10 14.5 4.4 8.9z" />
+                </svg>
+              </summary>
+              <div className="absolute right-0 top-[calc(100%+0.65rem)] z-[90] grid min-w-56 gap-1 rounded-2xl border border-stone-200 bg-white/95 p-2 shadow-[0_20px_50px_rgba(0,0,0,0.14)] backdrop-blur-lg">
+                {desktopMoreLinks.map((item) => (
+                  <Link key={item.href} href={item.href} className="rounded-xl px-4 py-3 text-sm font-medium text-stone-700 transition hover:bg-[#fff8df] hover:text-[#8b6b00]">
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </details>
           </nav>
 
           <div className="flex flex-1 items-center justify-between lg:hidden">

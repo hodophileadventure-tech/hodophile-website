@@ -331,7 +331,7 @@ function OfferCard({ offer }: { offer: InternationalOffer }) {
               <p className="mt-1 text-lg font-bold text-stone-950">{offer.price ?? "Request a quote"}</p>
               {offer.priceUnit ? <p className="mt-0.5 text-xs text-stone-500">{offer.priceUnit}</p> : null}
             </div>
-            <a href={whatsappUrl(inquiry)} target="_blank" rel="noopener noreferrer" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#0b0b0b] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[#292929] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d9a407]">
+            <a href={whatsappUrl(inquiry)} target="_blank" rel="noopener noreferrer" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#0b0b0b] px-4 py-3 text-xs font-semibold !text-white transition hover:bg-[#292929] hover:!text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d9a407]">
               Enquire
             </a>
           </div>
