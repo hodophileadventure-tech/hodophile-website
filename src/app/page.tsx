@@ -676,11 +676,31 @@ export default function Home() {
 
       <section className="mt-24 w-full border-y border-stone-300/70 bg-[#f8f5ef] px-6 py-16 lg:px-10 lg:py-20" aria-labelledby="how-it-works-heading">
         <div className="mx-auto max-w-6xl">
-          <p className="eyebrow text-stone-600">The planning process</p>
+          <div className="flex items-center gap-2.5">
+            <p className="eyebrow text-stone-600">The planning process</p>
+            <img
+              src="/images/editorial/planning-process-label.webp"
+              alt=""
+              aria-hidden="true"
+              width={256}
+              height={212}
+              className="h-7 w-7 shrink-0 object-contain"
+            />
+          </div>
           <div className="mt-3 flex flex-wrap items-end justify-between gap-5">
-            <h2 id="how-it-works-heading" className="display-serif max-w-3xl text-5xl font-normal leading-tight sm:text-6xl">
-              A considered journey, from first question to return home.
-            </h2>
+            <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-5">
+              <h2 id="how-it-works-heading" className="display-serif min-w-0 max-w-3xl flex-1 text-4xl font-normal leading-tight sm:text-5xl lg:text-6xl">
+                A considered journey, from first question to return home.
+              </h2>
+              <img
+                src="/images/editorial/planning-process-icon.webp"
+                alt=""
+                aria-hidden="true"
+                width={500}
+                height={500}
+                className="h-11 w-11 shrink-0 object-contain sm:h-16 sm:w-16"
+              />
+            </div>
             <p className="max-w-sm text-sm leading-7 text-stone-600">Simple planning, clear communication, and a real team behind the details.</p>
           </div>
 
@@ -705,7 +725,17 @@ export default function Home() {
         <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
             <p className="eyebrow">Make My Trip</p>
-            <h2 id="planner-heading" className="display-serif mt-3 max-w-3xl text-5xl font-normal leading-tight sm:text-6xl">Your trip. Your way.</h2>
+            <div className="mt-3 flex items-center gap-3 sm:gap-5">
+              <h2 id="planner-heading" className="display-serif max-w-3xl text-4xl font-normal leading-tight sm:text-5xl lg:text-6xl">Your trip. Your way.</h2>
+              <img
+                src="/images/editorial/make-my-trip-heading-icon.webp"
+                alt=""
+                aria-hidden="true"
+                width={256}
+                height={256}
+                className="h-11 w-11 shrink-0 object-contain sm:h-16 sm:w-16"
+              />
+            </div>
             <p className="mt-5 max-w-2xl text-base leading-7 text-white/65">Choose where you want to go, when you want to travel, and how you want to experience it. Our existing planner turns those choices into a tailored quotation.</p>
           </div>
           <Link href="/make-my-trip" className="inline-flex items-center justify-center rounded-full bg-[#fcc000] px-6 py-3 text-sm font-semibold !text-black transition hover:-translate-y-0.5 hover:bg-[#ffd24d]">Build my trip <span aria-hidden="true">↗</span></Link>
@@ -733,12 +763,22 @@ export default function Home() {
               <p className="mb-5 text-[13px] font-bold uppercase tracking-[0.38em] text-[#d9a407] sm:text-[14px]">
                 Hodophile Reviews
               </p>
-              <h2
-                id="hodophile-reviews-heading"
-                className="display-serif max-w-[1600px] text-[2.8rem] font-normal leading-[0.9] tracking-[-0.04em] text-[#111111] sm:text-[4rem] lg:text-[6rem]"
-              >
-                Our Clients just don&apos;t love us they Rave about us
-              </h2>
+              <div className="flex items-end gap-3 sm:gap-5">
+                <h2
+                  id="hodophile-reviews-heading"
+                  className="display-serif min-w-0 max-w-[1600px] flex-1 text-[2.8rem] font-normal leading-[0.9] tracking-[-0.04em] text-[#111111] sm:text-[4rem] lg:text-[6rem]"
+                >
+                  Our Clients just don&apos;t love us they Rave about us
+                </h2>
+                <img
+                  src="/images/editorial/reviews-heading-icon.webp"
+                  alt=""
+                  aria-hidden="true"
+                  width={256}
+                  height={256}
+                  className="mb-1 h-9 w-9 shrink-0 object-contain sm:h-14 sm:w-14 lg:h-16 lg:w-16"
+                />
+              </div>
             </div>
             <div className="flex flex-wrap items-center gap-3 md:justify-end">
               <div className="flex items-center gap-3 rounded-full border border-[#d8d2c7] bg-white/80 px-4 py-3 text-sm font-semibold text-stone-900">
@@ -806,7 +846,17 @@ export default function Home() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="eyebrow text-stone-600">From the journal</p>
-            <h2 id="journal-heading" className="display-serif mt-3 text-5xl font-normal sm:text-6xl">Travel better, before you leave.</h2>
+            <div className="mt-3 flex items-center gap-3 sm:gap-5">
+              <h2 id="journal-heading" className="display-serif text-4xl font-normal sm:text-5xl lg:text-6xl">Travel better, before you leave.</h2>
+              <img
+                src="/images/editorial/journal-heading-icon.webp"
+                alt=""
+                aria-hidden="true"
+                width={256}
+                height={256}
+                className="h-8 w-8 shrink-0 object-contain sm:h-12 sm:w-12"
+              />
+            </div>
           </div>
           <Link href="/blogs" className="text-sm font-bold uppercase tracking-[0.16em] text-stone-900 transition hover:text-[#b58900]">Explore journal <span aria-hidden="true">↗</span></Link>
         </div>

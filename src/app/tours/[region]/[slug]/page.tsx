@@ -261,6 +261,42 @@ function buildRouteContent(label: string) {
     };
   }
 
+  if (lower.includes("gorakh")) {
+    return {
+      summary: "A two-day Karachi-origin Gorakh Hill camping trip via Sehwan and Wahi Pandi, with a local 4x4 ascent, Benazir View Point, and a return route via Khawal Luck Pass when accessible.",
+      itinerary: [
+        { day: "Day 1 — Saturday", title: "Karachi to Gorakh Hill via Wahi Pandi", description: "Depart Karachi around 12:00 AM Friday night. Stop for breakfast near Sehwan Sharif, then continue to Wahi Pandi. Transfer to local 4x4 jeeps for the ascent to Gorakh Hill. After arrival, lunch, and rest, enjoy tea and a short trek to Benazir View Point if conditions permit. Dinner, bonfire/music, and overnight camping in shared three- or four-person camps are planned, subject to site rules and weather." },
+        { day: "Day 2 — Sunday", title: "Gorakh Hill to Karachi via Khawal Luck Pass", description: "Have breakfast at Gorakh Hill and descend toward Wahi Pandi via Khawal Luck Pass only if the route is open and the driver/guide confirms it is safe. Continue to Sehwan for lunch, then return to Karachi. Arrival time depends on road conditions, stops, and traffic." },
+      ],
+      includes: [
+        "Return transport by Daewoo, coaster, or grand cabin as assigned",
+        "All listed tolls and taxes",
+        "4x4 jeep charges between Wahi Pandi and Gorakh Hill, both ways",
+        "Camp or hotel accommodation on three- or four-person sharing basis as confirmed",
+        "Professional guide throughout the trip",
+        "Basic medical-aid kit",
+        "Bonfire and music where permitted by site and weather conditions",
+        "Two breakfasts, two lunches, and one dinner",
+      ],
+      excludes: [
+        "Personal expenses and travel insurance",
+        "Telephone calls, laundry, beverages, and unlisted refreshments",
+        "Emergency medical treatment",
+        "Additional expenses caused by road blockage or route changes",
+        "Hiking equipment, tea, snacks, and mineral water unless confirmed as included",
+      ],
+      hotel: "The supplied itinerary offers camp or hotel accommodation on a three- or four-person sharing basis. Confirm the actual stay type and camp facilities in the booking confirmation.",
+      vehicle: "The sample includes Karachi–Wahi Pandi return transport and local 4x4 jeep charges for the Wahi Pandi–Gorakh Hill route. Khawal Luck Pass return access is conditional on current road and safety conditions.",
+      pricing: "Confirm the written price, transport class, camp/hotel arrangement, jeep route, meals, and all included services before payment.",
+      faqs: [
+        { question: "Is Khawal Luck Pass guaranteed on the return?", answer: "No. The return route depends on access, weather, and the local driver's safety assessment. An alternate route may be used." },
+        { question: "What accommodation is provided?", answer: "The supplied plan lists camp or hotel stay on three- or four-person sharing. Confirm the specific option and facilities before booking." },
+        { question: "What meals are included?", answer: "The supplied service list includes two breakfasts, two lunches, and one dinner. Confirm meal timing and any dietary requests with the operator." },
+        { question: "Are arrival times fixed?", answer: "No. The journey is road-dependent and can be delayed by traffic, weather, or access conditions." },
+      ],
+    };
+  }
+
   if (lower.includes("astore") || lower.includes("minimarg") || lower.includes("minimerg")) {
     return {
       summary: "A six-day Islamabad-origin sample itinerary through Chilas, Astore, Rama, Minimarg, Deosai, and the Rupal Valley. Minimarg/Burzil access is subject to current permissions, security clearance, and road conditions; confirm approval before travel.",
