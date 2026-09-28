@@ -38,6 +38,14 @@ function getDestinationTagsFromSlug(slug: string): string[] {
   if (lower.includes("naran")) tags.push("naran");
   if (lower.includes("shogran")) tags.push("shogran");
   if (lower.includes("astor")) tags.push("skardu");
+  if (lower.includes("ormara")) tags.push("ormara");
+  if (lower.includes("gorakh")) tags.push("gorakh");
+  if (lower.includes("moola")) tags.push("moola");
+  if (lower.includes("ranikot")) tags.push("ranikot");
+  if (lower.includes("charna")) tags.push("charna");
+  if (lower.includes("charo")) tags.push("charo");
+  if (lower.includes("bhit")) tags.push("bhit-khori");
+  if (lower.includes("quetta") || lower.includes("ziyarat")) tags.push("quetta");
 
   return tags.length ? tags : ["swat"];
 }
@@ -58,6 +66,200 @@ function buildRouteContent(label: string) {
     "Travel insurance and medical emergencies",
     "Any cost caused by weather, landslides, or force majeure",
   ];
+
+  if (lower.includes("charna")) {
+    return {
+      summary: "A one-day Karachi-origin boat trip to Charna Island for snorkeling, swimming, and coastal adventure, with activities subject to sea, weather, tide, and operator safety decisions.",
+      itinerary: [
+        { day: "Day 1", title: "Karachi to Mubarak Village", description: "Meet at 7:30 AM at United Center near Star City Mall, opposite Karachi Grammar School. Depart around 8:00 AM for Mubarak Village; the drive is approximately 1.5 hours depending on traffic." },
+        { day: "Day 1", title: "Boat transfer to Charna Island", description: "Transfer to the boat at Mubarak Village and continue to Charna Island, aiming to arrive around 10:00 AM. Boarding and sea crossing depend on operator instructions and marine conditions." },
+        { day: "Day 1", title: "Water activities and lunch", description: "Snorkeling, swimming, underwater/action photography, and cliff jumping may be offered. Cliff jumping is strictly subject to tide, sea state, site access, and crew approval. Non-swimmers should enter the water only with suitable flotation and direct crew supervision. Lunch/free time is planned around 1:00 PM; confirm whether lunch is included." },
+        { day: "Day 1", title: "Return to Karachi", description: "Board the return boat and depart toward Karachi around 5:00 PM, followed by the road transfer from Mubarak Village. Return time depends on sea conditions, loading, and traffic." },
+      ],
+      includes: [
+        "Karachi–Mubarak Village return ground transport as stated in the selected package",
+        "Boat transfer to and from Charna Island as stated in the selected package",
+        "Activity equipment or guide support only where specified in the written confirmation",
+      ],
+      excludes: [
+        "Lunch, refreshments, or personal expenses unless confirmed as included",
+        "Optional activities or photography services not listed in the package",
+        "Travel insurance and emergency medical expenses",
+        "Costs or itinerary changes caused by marine or weather conditions",
+      ],
+      hotel: "This is a day trip; no overnight accommodation is planned.",
+      vehicle: "The sample uses road transport to Mubarak Village and a boat transfer to Charna Island. Confirm vehicle, boat operator, life jackets, activity equipment, and safety briefing before departure.",
+      pricing: "Confirm the written price and whether transport, boat transfer, lunch, snorkeling gear, and photography are included before booking.",
+      faqs: [
+        { question: "Is cliff jumping guaranteed?", answer: "No. It is allowed only when tide, sea state, access, and the responsible crew indicate it is safe. The crew may cancel it without notice if conditions change." },
+        { question: "Can non-swimmers enter the water?", answer: "Only if the operator permits it, with a correctly fitted flotation aid and direct crew supervision. Follow the safety briefing and do not enter the water independently." },
+        { question: "Is snorkeling gear or lunch included?", answer: "Only if the selected package or written booking confirmation specifically lists it as included." },
+        { question: "Are the listed departure and return times fixed?", answer: "No. They are planning estimates and may change because of traffic, tides, sea conditions, or operator safety decisions." },
+      ],
+    };
+  }
+
+  if (lower.includes("bhit") && /night|overnight|2\s*days?/i.test(lower)) {
+    return {
+      summary: "A two-day Karachi-origin Bhit Khori beach camping trip, with a Saturday coastal departure, overnight camp, and Sunday morning activities before returning to Karachi.",
+      itinerary: [
+        { day: "Day 1", title: "Karachi to Bhit Khori camp", description: "Depart Karachi around 3:00 PM and travel to Mubarak Village, aiming to arrive around 5:00 PM. Take the approximately 20-minute trek to Bhit Khori, subject to access and conditions. Set up camp, have tea/refreshments, and enjoy sunset. Dinner/live barbecue and an evening music session or bonfire depend on site rules, weather, and the confirmed package. Overnight in camp." },
+        { day: "Day 2", title: "Breakfast, beach activities, and return", description: "Breakfast is planned around 7:00 AM, followed by free time. Swimming, snorkeling, and cliff jumping are optional and strictly dependent on sea/tide conditions, suitable safety equipment, and crew approval. Depart the beach around 12:30 PM and return to Karachi, aiming for approximately 2:00 PM depending on road and sea conditions." },
+      ],
+      includes: [
+        "Karachi–Mubarak Village return transport as listed in the selected package",
+        "Overnight camp accommodation where confirmed",
+        "Meals, tea, refreshments, or barbecue only where listed in the written confirmation",
+        "Local coordination for the trek and beach stay",
+      ],
+      excludes: [
+        "Personal expenses and any meals or refreshments not listed as included",
+        "Optional water activities or equipment unless confirmed in writing",
+        "Travel insurance and emergency medical expenses",
+        "Costs or changes caused by weather, sea, tide, or access conditions",
+      ],
+      hotel: "The itinerary uses overnight camping at Bhit Khori. Confirm tent setup, sleeping arrangements, and available facilities before booking.",
+      vehicle: "The sample departs from Karachi and transfers by road to Mubarak Village, followed by a local trek to the beach. Confirm vehicle, baggage arrangements, and trek access with the operator.",
+      pricing: "Confirm whether return transport, camp equipment, barbecue, meals, tea, activity gear, and guide support are included in the package price.",
+      faqs: [
+        { question: "Is camping equipment provided?", answer: "Tent and sleeping arrangements depend on the selected package. Confirm exactly what is supplied before payment." },
+        { question: "Are bonfire and music guaranteed?", answer: "No. They depend on site rules, weather, and local conditions and may be changed or cancelled." },
+        { question: "Can everyone join the water activities?", answer: "Activities are optional and subject to operator approval and sea conditions. Non-swimmers should enter the water only if permitted, with suitable flotation and direct crew supervision." },
+        { question: "Are the return times fixed?", answer: "No. The listed times are estimates and may change with access, conditions, and Karachi traffic." },
+      ],
+    };
+  }
+
+  if (lower.includes("bhit")) {
+    return {
+      summary: "A one-day Karachi-origin coastal trip to Bhit Khori via Mubarak Village, with a short trek to the beach and optional sea activities subject to marine conditions and operator approval.",
+      itinerary: [
+        { day: "Day 1", title: "Karachi pickups and drive to Mubarak Village", description: "Meet at Millennium Mall, Johar Mor, around 7:00 AM and depart around 7:30 AM. Pick up participants at Boat Basin around 8:00 AM, then continue to Mubarak Village. Drive times and pickup times may shift with traffic." },
+        { day: "Day 1", title: "Trek to Bhit Khori", description: "On arrival, follow the local route to Bhit Khori; the supplied estimate is a 15–20 minute trek. Wear suitable footwear and follow the guide's instructions; access and timing can vary." },
+        { day: "Day 1", title: "Beach time and lunch", description: "Enjoy beach games and free time, with lunch planned around 2:00 PM. Swimming and snorkeling depend on sea conditions and available safety equipment. Cliff jumping is optional and allowed only with explicit crew approval when tide, water depth, and conditions are judged safe." },
+        { day: "Day 1", title: "Return to Karachi", description: "Depart Bhit Khori around 5:00 PM, return to Mubarak Village, and drop participants at Boat Basin and Millennium Mall. Return timing depends on the trek, road, sea, and traffic conditions." },
+      ],
+      includes: [
+        "Karachi–Mubarak Village return transport when listed in the selected package",
+        "Local coordination for the Bhit Khori route and trek",
+        "Lunch only when stated in the written booking confirmation",
+      ],
+      excludes: [
+        "Personal expenses and unlisted meals or refreshments",
+        "Snorkeling equipment or optional activities unless confirmed as included",
+        "Travel insurance and emergency medical expenses",
+        "Costs or itinerary changes caused by marine, weather, or access conditions",
+      ],
+      hotel: "This is a day trip; no overnight accommodation is planned.",
+      vehicle: "The sample includes Karachi pickups at Millennium Mall and Boat Basin, plus the Mubarak Village road transfer. Confirm vehicle and passenger arrangements before booking.",
+      pricing: "Confirm whether transport, lunch, guide support, and any activity equipment are included in the selected package price.",
+      faqs: [
+        { question: "Is the Bhit Khori trek difficult?", answer: "The supplied estimate is a 15–20 minute trek, but terrain and conditions can vary. Wear suitable footwear and follow the local guide." },
+        { question: "Are swimming, snorkeling, and cliff jumping guaranteed?", answer: "No. Sea activities depend on conditions, equipment, and the responsible crew. Cliff jumping is permitted only with explicit crew approval and may be cancelled for safety." },
+        { question: "Where are the pickups and drop-offs?", answer: "The supplied plan lists Millennium Mall, Johar Mor, and Boat Basin. Confirm exact meeting points and times with the team before departure." },
+        { question: "Is 5:00 PM return guaranteed?", answer: "No. It is an estimate and may change with access, sea conditions, the trek, road conditions, and Karachi traffic." },
+      ],
+    };
+  }
+
+  if (lower.includes("quetta") || lower.includes("ziyarat")) {
+    return {
+      summary: "A four-day Karachi-origin Quetta and Ziarat sample, with an overnight road journey to Quetta, city and Hanna Lake visits, a Ziarat day, and a long-distance return to Karachi.",
+      itinerary: [
+        { day: "Day 0", title: "Karachi to Quetta overnight drive", description: "Meet at Millennium Mall at approximately 9:30 PM and depart around 10:00 PM. Take a short stop near Winder before continuing overnight toward Quetta. The 10–12 hour estimate can vary with traffic, road, and rest stops; no meal is planned on this leg unless arranged separately." },
+        { day: "Day 1", title: "Quetta arrival and city visit", description: "Stop for breakfast after arriving in Quetta, then visit Jabal-e-Noor. Check in to the confirmed hotel and allow time to rest. If the visit falls on Friday, schedule Jumma prayer according to local prayer time. Visit Hanna Lake near sunset if timing, weather, and access allow, then return for dinner and Quetta Bazaar." },
+        { day: "Day 2", title: "Ziarat and Quaid-e-Azam Residency", description: "Depart early for Ziarat with breakfast en route. Visit Quaid-e-Azam Residency and continue to the viewpoint for the juniper forest. Walking routes, site opening, and weather can affect the visit. Confirm whether this night is in Ziarat or Quetta and where the group will stay before booking." },
+        { day: "Day 3", title: "Ziarat/Quetta to Karachi", description: "Begin the long return drive toward Karachi after the confirmed morning plan. Take a meal break near Winder and rest stops near Khuzdar or Bela as conditions allow. Arrival time depends on the route, traffic, and stops; the tour concludes in Karachi." },
+      ],
+      includes: [
+        "Karachi–Quetta–Ziarat return transport as specified in the package",
+        "Hotel accommodation only for the nights stated in the written confirmation",
+        "Visits and local transfers listed in the confirmed itinerary",
+      ],
+      excludes: [
+        "Meals and refreshments unless specifically listed as included",
+        "Personal expenses and optional activities",
+        "Travel insurance and emergency medical expenses",
+        "Costs caused by road, weather, or access changes",
+      ],
+      hotel: "Confirm the hotel city and number of nights, particularly for the night after the Ziarat excursion, in the written quotation.",
+      vehicle: "This route includes long overnight road travel. Confirm vehicle type, pickup/drop-off points, driver rest plan, and passenger capacity before booking.",
+      pricing: "Final price depends on transport, confirmed accommodation nights, group size, meals, and any local transfers or entry charges.",
+      faqs: [
+        { question: "Where is the Karachi meetup point?", answer: "The supplied itinerary lists Millennium Mall. Confirm the exact meeting point and pickup time with the team before departure." },
+        { question: "Is Friday prayer part of every departure?", answer: "No. It applies only if the itinerary falls on Friday; timing is subject to local prayer time and the confirmed schedule." },
+        { question: "Where do we stay after visiting Ziarat?", answer: "The itinerary must confirm whether the group returns to Quetta or stays in Ziarat, and list the accommodation before payment." },
+        { question: "Are arrival times guaranteed?", answer: "No. The road legs are long, and timing may change with traffic, road conditions, and rest stops." },
+      ],
+    };
+  }
+
+  if (lower.includes("ormara")) {
+    return {
+      summary: "A two-day Karachi-origin coastal escape with an overnight stay at Ormara Beach, a sunset and sunrise by the sea, and coastal viewpoints on the return journey.",
+      itinerary: [
+        { day: "Day 1", title: "Karachi to Ormara Beach", description: "Meet near Saima One Mall by Millennium Mall at 8:00 AM and depart Karachi around 8:30 AM. Take a brunch break near Winder, then continue to Ormara, aiming to arrive around late afternoon depending on road and stop conditions. Check in to the confirmed camp or room, enjoy free time and beach activities, hi-tea, sunset, dinner, and an evening bonfire or movie where permitted." },
+        { day: "Day 2", title: "Sunrise and coastal return to Karachi", description: "Wake early for sunrise and a beach walk, followed by breakfast. Depart Ormara around 8:30 AM and stop at Princess of Hope and the Kund Malir viewpoint for photography, subject to access and timing. Take a lunch break near Winder before continuing to Karachi; the stated 6:00 PM arrival is an estimate and may change with traffic and road conditions." },
+      ],
+      includes: [
+        "Karachi–Ormara return transport when listed in the selected package",
+        "Overnight camp or room as stated in the booking confirmation",
+        "Meals and hi-tea only where specified in the confirmed package",
+        "Tour coordination and planned coastal stops, subject to access",
+      ],
+      excludes: [
+        "Personal expenses and unlisted meals or refreshments",
+        "Optional beach activities unless specifically included",
+        "Travel insurance and emergency medical expenses",
+        "Any costs caused by road, weather, or access changes",
+      ],
+      hotel: "Overnight accommodation is camping or a room, depending on the selected package and confirmed availability. Confirm the exact arrangement before payment.",
+      vehicle: "The sample departs from Karachi. Pickup point, vehicle type, passenger capacity, and luggage allowance must be confirmed in the booking details.",
+      pricing: "Final pricing depends on transport, accommodation type, group size, meal inclusions, and optional activities. Your written quotation should list each inclusion.",
+      faqs: [
+        { question: "Where is the Karachi meetup point?", answer: "The supplied itinerary lists the parking area opposite Saima One Mall near Millennium Mall, Johar Mor. Confirm the exact pickup point and departure time before travel." },
+        { question: "Are beach activities and bonfire included?", answer: "They depend on the selected package, local rules, weather, and site conditions. Confirm inclusions and availability with the team." },
+        { question: "Are Princess of Hope and Kund Malir guaranteed stops?", answer: "They are planned coastal stops, but timing, access, weather, and road conditions may affect the final schedule." },
+        { question: "Is the 6:00 PM Karachi arrival guaranteed?", answer: "No. It is an estimate; traffic, road conditions, and stop duration can affect arrival time." },
+      ],
+    };
+  }
+
+  if (lower.includes("moola")) {
+    return {
+      summary: "A three-day Karachi-origin camping trip to Moola Chotok via Khuzdar, with local 4x4 jeep transfers to the waterfall and natural freshwater pools.",
+      itinerary: [
+        { day: "Day 1 — Friday", title: "Karachi to Khuzdar overnight drive", description: "Meet at 10:30 PM at the parking area opposite Saima Mall near Millennium Mall, Gulshan-e-Jamal. Depart Karachi around 11:30 PM in the confirmed coaster, grand cabin, or bus. Travel overnight; exact journey timing depends on road and traffic conditions." },
+        { day: "Day 2 — Saturday", title: "Khuzdar to Moola Chotok", description: "Arrive in Khuzdar in the morning, have breakfast, and continue toward Moola Chotok around 9:00 AM. Transfer to local 4x4 jeeps for the route to the waterfall. Explore the streams, waterfall, and freshwater pools where access and conditions allow; have lunch, set up the shared campsite, then dinner and a bonfire/music evening. Overnight in camp." },
+        { day: "Day 3 — Sunday", title: "Moola Chotok to Karachi", description: "Have breakfast at camp and depart for Khuzdar around 9:00 AM by jeep. Take lunch in Khuzdar, then continue toward Karachi, with a planned stop at Winder. The stated 10:00 PM arrival is an estimate and may vary with road and traffic conditions." },
+      ],
+      includes: [
+        "Luxury transport by coaster, grand cabin, or bus as assigned",
+        "Shared campsite accommodation for three or four people",
+        "Tour manager/guide support",
+        "4x4 jeep transfers between Khuzdar and Moola Chotok",
+        "Quality meals: two breakfasts, two lunches, and one dinner",
+        "Tolls and taxes",
+        "Sightseeing and basic phone photography",
+        "Bonfire/music arrangement, basic first-aid kit, and life jackets",
+      ],
+      excludes: [
+        "Personal expenses and meals not listed as included",
+        "Optional activities or services not listed in the written confirmation",
+        "Travel insurance and emergency medical expenses",
+        "Costs or itinerary changes caused by road, weather, or access conditions",
+      ],
+      hotel: "Overnight accommodation is shared camping for three or four people, as supplied. Confirm the campsite, sleeping equipment, and facilities before booking.",
+      vehicle: "The itinerary includes Karachi–Khuzdar transport and local 4x4 jeeps from Khuzdar to Moola Chotok and back. Road access and jeep arrangements depend on local conditions.",
+      pricing: "Confirm the written price, transport class, sharing basis, meals, jeep transfers, and all listed inclusions with the tour operator before payment.",
+      faqs: [
+        { question: "How many meals are included?", answer: "The supplied service list states two breakfasts, two lunches, and one dinner. Confirm the final meal plan in the booking details." },
+        { question: "Are the 4x4 jeep transfers included?", answer: "The supplied service list includes 4x4 jeeps between Khuzdar and Moola Chotok. Confirm the arrangement and any access limitations before travel." },
+        { question: "Are the trip timings fixed?", answer: "No. As noted in the supplied itinerary, road and traffic conditions can cause delays or changes." },
+        { question: "Are life jackets provided?", answer: "The supplied service list includes life jackets. Confirm availability and follow the guide's instructions near water." },
+      ],
+    };
+  }
 
   if (lower.includes("astore") || lower.includes("minimarg") || lower.includes("minimerg")) {
     return {
