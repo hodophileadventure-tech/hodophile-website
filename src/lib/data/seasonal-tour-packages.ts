@@ -178,7 +178,33 @@ const getDestinationSlugs = (title: string) => {
   return slugs.length ? slugs : ["swat"];
 };
 
-export const seasonalTourPackages: TourPackage[] = sourcePackages.map((item, index) => ({
+function isPastDeparture(title: string, referenceDate = new Date()) {
+  const dateText = title.match(/\(([^)]*)\)/)?.[1];
+  if (!dateText) return false;
+
+  const normalizedDateText = dateText.replace(/!(?=\d)/g, "1");
+  const monthNames = [
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november", "december",
+  ];
+  const monthMatches = [...normalizedDateText.matchAll(/\b(january|february|march|april|may|june|july|august|september|october|november|december)\b/gi)];
+  if (monthMatches.length === 0) return false;
+
+  const dayValues = [...normalizedDateText.matchAll(/\b(\d{1,2})\b/g)].map((match) => Number(match[1]));
+  const endDay = dayValues.at(-1);
+  const endMonthName = monthMatches.at(-1)?.[1].toLowerCase();
+  if (!endDay || !endMonthName) return false;
+
+  const endMonth = monthNames.indexOf(endMonthName);
+  const explicitYear = normalizedDateText.match(/\b(20\d{2})\b/)?.[1];
+  const endYear = explicitYear ? Number(explicitYear) : referenceDate.getFullYear();
+  const departureEnd = new Date(endYear, endMonth, endDay);
+  const today = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate());
+
+  return departureEnd < today;
+}
+
+const generatedSeasonalPackages: TourPackage[] = sourcePackages.map((item, index) => ({
   id: `seasonal-${index + 1}`,
   title: getPackageDisplayTitle(item.title),
   destinationSlugs: getDestinationSlugs(item.title),
@@ -203,3 +229,19 @@ export const seasonalTourPackages: TourPackage[] = sourcePackages.map((item, ind
     "A minimum 50% advance is required to confirm booking; final payment is due before departure.",
   ],
 }));
+
+const seenDepartures = new Set<string>();
+
+export const seasonalTourPackages = generatedSeasonalPackages.filter((tourPackage) => {
+  if (isPastDeparture(sourcePackages[Number(tourPackage.id.replace("seasonal-", "")) - 1].title)) {
+    return false;
+  }
+
+  const normalizedTitle = tourPackage.title.toLowerCase().replace(/\s+/g, " ").trim();
+  const departureDates = tourPackage.departure?.match(/Departure dates: ([^;]+)/)?.[1] ?? "on-request";
+  const departureKey = `${normalizedTitle}|${departureDates.toLowerCase().replace(/\s+/g, "")}`;
+  if (seenDepartures.has(departureKey)) return false;
+
+  seenDepartures.add(departureKey);
+  return true;
+});

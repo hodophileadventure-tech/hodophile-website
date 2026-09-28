@@ -74,6 +74,9 @@ export default function ToursPage() {
     const searchableText = `${tourPackage.title} ${tourPackage.departure ?? ""} ${tourPackage.notes?.join(" ") ?? ""}`.toLowerCase();
     return /(air|deosai|basho|khaplu|camping|jeep|hike|hiking|trek|mountain|pass|waterfall|valley)/.test(searchableText);
   });
+  const scheduledDepartureCount = seasonalTourPackages.filter((tourPackage) =>
+    tourPackage.departure?.includes("Departure dates:"),
+  ).length;
 
   const renderDepartureCard = (tourPackage: (typeof seasonalTourPackages)[number], index: number, prefix: string) => (
     <article key={tourPackage.id} className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_16px_40px_rgba(55,55,48,0.08)] transition duration-500 hover:-translate-y-1 hover:border-[#d4aa18] hover:shadow-[0_24px_55px_rgba(55,55,48,0.15)]">
@@ -94,9 +97,10 @@ export default function ToursPage() {
       <div className="flex flex-1 flex-col p-5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#9a7600]">
-            {getPackageSeason(tourPackage.title, tourPackage.departure).label} · Seasonal departure
+            {tourPackage.departure?.includes("Departure dates:")
+              ? `${getPackageSeason(tourPackage.title, tourPackage.departure).label} · Scheduled departure`
+              : "Dates available on request"}
           </p>
-          <span className="rounded-full bg-[#fff8df] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-[#8b6b00]">Popular</span>
         </div>
         <h3 className="mt-3 font-serif text-[1.85rem] leading-[1.08] text-stone-950">
           {tourPackage.title}
@@ -138,7 +142,7 @@ export default function ToursPage() {
       <section className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Tour catalog highlights">
         {[
           [String(tourPackages.length), "ready-to-compare routes"],
-          [String(seasonalTourPackages.length), "scheduled departures"],
+          [String(scheduledDepartureCount), "upcoming dated departures"],
           [String(northernPackages.length), "northern packages"],
           [String(southernPackages.length), "southern packages"],
         ].map(([value, label]) => (
@@ -211,7 +215,7 @@ export default function ToursPage() {
             <p className="mt-5 max-w-2xl text-sm leading-7 text-stone-600 sm:text-base">A considered collection of seasonal journeys across Pakistan, with transparent starting prices and a complete itinerary behind every card.</p>
           </div>
           <div className="flex items-center gap-4 rounded-full border border-[#b9971f]/40 bg-[#f7f3df] px-4 py-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000] text-sm font-bold text-[#0b0b0b]">{seasonalTourPackages.length}</span>
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000] text-sm font-bold text-[#0b0b0b]">{scheduledDepartureCount}</span>
             <span className="pr-2 text-xs uppercase tracking-[0.18em] text-stone-600">curated<br />departures</span>
           </div>
         </div>
