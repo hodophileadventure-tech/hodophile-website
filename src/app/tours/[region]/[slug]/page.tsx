@@ -59,6 +59,84 @@ function buildRouteContent(label: string) {
     "Any cost caused by weather, landslides, or force majeure",
   ];
 
+  if (lower.includes("astore") || lower.includes("minimarg") || lower.includes("minimerg")) {
+    return {
+      summary: "A six-day Islamabad-origin sample itinerary through Chilas, Astore, Rama, Minimarg, Deosai, and the Rupal Valley. Minimarg/Burzil access is subject to current permissions, security clearance, and road conditions; confirm approval before travel.",
+      itinerary: [
+        { day: "Day 1", title: "Islamabad to Chilas", description: "Depart Islamabad early and travel north with planned prayer, meal, and rest stops. Babusar Top may be used only when open and safe; otherwise follow the confirmed Karakoram Highway route. Overnight in Chilas or Bonar Das." },
+        { day: "Day 2", title: "Chilas to Astore and Rama", description: "After breakfast, travel toward Astore. Transfer to a local jeep where required and visit Rama Meadows and Rama Lake if access and timing allow. Overnight in the confirmed Rama-area accommodation." },
+        { day: "Day 3", title: "Astore to Minimarg via Burzil", description: "Travel to Chilam Check Post and onward toward Minimarg only after required permissions and security clearance are confirmed. Visit Burzil Pass, Domail, and Rainbow Lake as access, weather, and daylight permit. Overnight at confirmed lodging or camp; options depend on availability and approval." },
+        { day: "Day 4", title: "Deosai and Sheosar Lake", description: "Take a full-day 4x4 route toward Deosai, visiting Sheosar Lake, Kala Pani, and Bara Pani when roads and conditions permit. Wildlife sightings are never guaranteed. Overnight in Tarishing at the confirmed guesthouse or equivalent." },
+        { day: "Day 5", title: "Rupal Valley and return to Chilas", description: "Explore Tarishing and the Rupal Face viewpoint. A Rupal Valley jeep excursion or Nanga Parbat Base Camp hike is optional and must be matched to fitness, weather, available time, and local guide advice. Continue toward Chilas only if the day's road schedule allows; otherwise an extra overnight is required." },
+        { day: "Day 6", title: "Chilas to Islamabad", description: "Return to Islamabad with meal and rest stops. The Babusar route is conditional on seasonal opening and safety; use the confirmed alternate route if it is closed. Arrival time depends on road, weather, and traffic." },
+      ],
+      includes: genericIncludes,
+      excludes: genericExcludes,
+      hotel: "The sample uses Chilas/Bonar Das, Rama, Minimarg/Domail, and Tarishing overnights. Exact properties, camping arrangements, and availability must be confirmed in the written quotation.",
+      vehicle: "A suitable vehicle is needed for Islamabad–Astore road travel; local 4x4 jeeps are required for some Rama, Minimarg, Deosai, and Rupal sections. Confirm each vehicle leg and its cost in writing.",
+      pricing: "Final pricing depends on group size, room sharing, local jeep requirements, accommodation availability, permissions, and the confirmed route. Permit or access approval is not guaranteed by submitting an inquiry.",
+      faqs: [
+        { question: "Can every traveler visit Minimarg and Burzil?", answer: "Access is controlled and may require advance permission or security clearance. Eligibility and requirements can vary. Confirm with the relevant authorities and our team before booking; the itinerary must not proceed without approval." },
+        { question: "Is the Nanga Parbat Base Camp hike included?", answer: "No, not automatically. The hike is optional and depends on fitness, guide availability, weather, and time. Confirm the plan and any charges before travel." },
+        { question: "Is Babusar Top guaranteed on the return?", answer: "No. Babusar is seasonal and weather-dependent. If it is closed or unsafe, the return uses the confirmed alternate road route." },
+        { question: "Is six days enough for this route?", answer: "It is a demanding sample with long mountain-road days. The Rupal excursion may need to be shortened or dropped, and an extra Chilas overnight may be needed if road timing or conditions require it." },
+      ],
+    };
+  }
+
+  if (lower.includes("hunza")) {
+    return {
+      summary: "An eight-day Islamabad-origin sample itinerary for Hunza, Upper Hunza, Khunjerab Pass, and an optional Naltar excursion, paced with overnight stops on the Karakoram Highway.",
+      itinerary: [
+        { day: "Day 1", title: "Islamabad to Chilas", description: "Depart Islamabad in the morning and travel north via Besham and Dasu, with meal and rest stops. Arrive in Chilas in the evening and overnight at the confirmed hotel." },
+        { day: "Day 2", title: "Chilas to Hunza", description: "Continue toward Hunza, stopping at the Nanga Parbat viewpoint near Raikot, the three-mountain-junction viewpoint near Jaglot, and Rakaposhi viewpoint as timing and access allow. Check in and overnight in Hunza." },
+        { day: "Day 3", title: "Karimabad and historic forts", description: "Explore Karimabad and visit Baltit and Altit forts, subject to opening hours and entry arrangements. Allow time for the bazaar and valley viewpoints; overnight in Hunza." },
+        { day: "Day 4", title: "Attabad Lake and Upper Hunza", description: "Travel north to Attabad Lake, Passu Cones, and the Hussaini area. Boating and bridge access are optional and depend on local operation, conditions, and charges. Overnight in Gulmit or Passu, as confirmed." },
+        { day: "Day 5", title: "Sost and Khunjerab Pass", description: "Continue to Sost and visit Khunjerab Pass only if the road is open and current access requirements are met. Return to the confirmed Upper Hunza accommodation; border access and timing can change." },
+        { day: "Day 6", title: "Naltar Valley excursion", description: "Travel via Gilgit and use a local 4x4 for Naltar if road and weather conditions permit. Lake walks, skiing, and other activities are seasonal and optional unless listed in the booking confirmation. Overnight in Gilgit." },
+        { day: "Day 7", title: "Gilgit to Chilas", description: "Begin the return south with planned rest and meal stops. Overnight in Chilas to avoid combining the full mountain route with the Islamabad drive." },
+        { day: "Day 8", title: "Chilas to Islamabad", description: "Continue to Islamabad via the confirmed highway route, with stops based on traffic, weather, and road conditions. Tour concludes on arrival." },
+      ],
+      includes: genericIncludes,
+      excludes: genericExcludes,
+      hotel: "The sample uses overnight stays in Chilas, Hunza, Upper Hunza, Gilgit, and Chilas on return. Confirm hotel names, room sharing, and meal plan in the package quotation.",
+      vehicle: "Confirm the Islamabad–Hunza vehicle plan, any local Upper Hunza transport, and the separate 4x4 jeep for Naltar. Optional boating, fort tickets, and activities are included only if stated in writing.",
+      pricing: "Final pricing depends on group size, room sharing, hotel selection, transport, Naltar jeep arrangements, and which optional activities are included.",
+      faqs: [
+        { question: "Why is this itinerary eight days instead of five?", answer: "The Islamabad–Hunza road journey, Upper Hunza and Khunjerab excursions, Naltar detour, and return require substantial driving. Overnight stops make the sample more realistic and avoid an unsafe single-day return drive." },
+        { question: "Is Khunjerab Pass guaranteed to be open?", answer: "No. Road opening, weather, security conditions, and access rules can change. Confirm current access before travel; the itinerary may need adjustment." },
+        { question: "Is Naltar included in the package price?", answer: "Naltar jeep transport and activities are included only if listed in the written quotation. Availability depends on weather and road conditions." },
+        { question: "Can the trip start from Lahore?", answer: "This sample starts and ends in Islamabad. Lahore pickup or transport can be discussed separately and may change the route, duration, and price." },
+      ],
+    };
+  }
+
+  if (lower.includes("skardu")) {
+    return {
+      summary: "A seven-day Islamabad-origin sample itinerary for Skardu, Upper Kachura, Deosai, and Shigar, with overnight transit stops in Chilas on the outward and return journeys.",
+      itinerary: [
+        { day: "Day 1", title: "Islamabad to Chilas", description: "Depart Islamabad and travel north with planned meal and rest stops. The route may use Babusar Top when the pass is open and safe, or the Karakoram Highway via Besham according to season and road conditions. Overnight in Chilas." },
+        { day: "Day 2", title: "Chilas to Skardu", description: "Travel toward Skardu via the Gilgit–Skardu route, allowing time for mountain-road conditions and stops. Check in on arrival and keep the evening relaxed." },
+        { day: "Day 3", title: "Kachura lakes and Soq Valley", description: "Visit the Kachura area, including Shangrila and Upper Kachura Lake. The Upper Kachura walk includes an uphill trail; access, boating, entry fees, and other activities depend on local operation and package inclusions." },
+        { day: "Day 4", title: "Deosai National Park and Sheosar Lake", description: "Take a full-day 4x4 excursion to Deosai and Sheosar Lake if the route is open and conditions permit. Stops at Kala Pani and Bara Pani depend on access and timing. Carry warm layers and follow local safety guidance." },
+        { day: "Day 5", title: "Shigar Valley and Cold Desert", description: "Explore Shigar Fort and the valley, then visit Katpana Cold Desert as timing allows. Paramotoring, jeep rides, and other activities are optional and available only when locally operating; confirm charges before booking." },
+        { day: "Day 6", title: "Skardu to Chilas", description: "Begin the return drive via the Gilgit–Skardu route with rest and meal stops. Overnight in Chilas rather than combining this mountain drive with the onward Islamabad leg." },
+        { day: "Day 7", title: "Chilas to Islamabad", description: "Continue to Islamabad via the confirmed highway route. Stops depend on route choice, traffic, weather, and road conditions; the tour ends on arrival." },
+      ],
+      includes: genericIncludes,
+      excludes: genericExcludes,
+      hotel: "The sample includes overnight stays in Chilas, Skardu, and Chilas on return. Confirm hotel names, room sharing, and meal plan in the package quotation.",
+      vehicle: "Confirm the Islamabad–Chilas and Gilgit–Skardu transport plan, plus a suitable 4x4 for Deosai. Local jeeps and activities are included only if listed in writing.",
+      pricing: "Final pricing depends on group size, room sharing, hotel selection, road route, Deosai 4x4 arrangements, and optional activities.",
+      faqs: [
+        { question: "Is Babusar Top part of the Islamabad route?", answer: "Only when it is seasonally open and safe. The operator may use the Karakoram Highway instead; confirm the route before departure." },
+        { question: "Is Deosai accessible year-round?", answer: "No. Access is seasonal and depends on weather, road, and local conditions. Deosai and Sheosar visits may be changed or omitted when unsafe or inaccessible." },
+        { question: "Are Deosai jeeps and activities included?", answer: "A suitable 4x4 and optional activities are included only when specifically stated in the written quotation." },
+        { question: "Can this trip be completed in six days?", answer: "The sample uses seven days to allow overnight stops on both long road legs. Shortening it may require removing destinations or accepting longer driving days." },
+      ],
+    };
+  }
+
   if (lower.includes("naran")) {
     return {
       summary: "A four-day sample route based on the Naran–Babusar itinerary: arrive in Naran, explore a lake route, take a weather-dependent Babusar excursion, then return.",
