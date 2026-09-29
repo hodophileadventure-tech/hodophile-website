@@ -27,6 +27,8 @@ type PackageDetail = {
   duration: string;
   departure?: string;
   bestFor?: string;
+  transportSummary?: string;
+  factsNeedConfirmation?: boolean;
   priceDisplay?: { label: string; value: string; note: string };
   itineraryHeading?: string;
   itineraryIntro?: string;
@@ -244,6 +246,8 @@ allPackages.push(
         duration: tourPackage.duration,
         departure: tourPackage.departure ?? "Dates available on request",
         bestFor: tourPackage.bestFor,
+        transportSummary: tourPackage.transport?.join("; ") ?? "Transport details are not specified in the source listing.",
+        factsNeedConfirmation: true,
         priceDisplay: {
           label: "Listed starting rate",
           value: startingPrice,
@@ -292,6 +296,19 @@ allPackages.push(
 );
 
 function getSeasonalRouteDetails(title: string, duration: string) {
+  if (/gorakh/i.test(title)) {
+    return { attractions: ["Gorakh Hill Station"], itinerary: [] };
+  }
+
+  if (/moola/i.test(title)) {
+    return { attractions: ["Moola Chotok"], itinerary: [] };
+  }
+
+  if (/kashmir/i.test(title)) {
+    const attractions = ["Kashmir", "Arang Kel", "Taobat"].filter((stop) => title.toLowerCase().includes(stop.toLowerCase()));
+    return { attractions, itinerary: [] };
+  }
+
   if (/swat|kalam|malam jabba/i.test(title)) {
     return {
       attractions: ["Islamabad", "Swat", "Fizaghat", "Bahrain", "Kalam", "Osho Forest", "Palogah Village", "Mahodand Lake", "Malam Jabba Ski Resort", "Khanpur Lake"],
@@ -403,27 +420,35 @@ allPackages.push(
       homeImage: image,
       duration: item.duration,
       departure: item.departure,
-      summary: `${destinationName} seasonal departure with planned accommodation, meals, transport, and on-ground tour support across northern Pakistan.`,
-      description: `${destinationName} seasonal departure with planned accommodation, meals, transport, and on-ground tour support across northern Pakistan.`,
-      overview: `Travel through ${destinationName} with a carefully paced group itinerary covering scenic valleys, local viewpoints, and the route highlights listed in the brochure. Exact stops may change with weather, road access, and local conditions.`,
-      highlights: [destinationName, "Hotel accommodation", "Breakfast and dinner", "Tour manager support"],
+      factsNeedConfirmation: true,
+      transportSummary: "Transport details are not specified in the source listing; confirm them for your requested dates.",
+      summary: `${destinationName} · ${item.duration}. Dates, itinerary, transport, and current availability are confirmed on request.`,
+      description: `${destinationName} · ${item.duration}. Request your dates for confirmed availability and package details.`,
+      overview: `The source listing identifies ${item.routeStops?.join(", ") || destinationName} and the trip duration. It does not specify a day-by-day schedule, transport, or inclusions; confirm those details before booking.`,
+      highlights: item.routeStops ?? [destinationName],
+      itineraryHeading: routeDetails.itinerary.length ? "Day wise plan for this route" : "Detailed itinerary to confirm",
+      itineraryIntro: routeDetails.itinerary.length
+        ? "Check the listed route and confirm the schedule for your travel dates."
+        : "The source listing does not include a day-by-day itinerary. Ask the planner to confirm timing, access, and overnight arrangements for your dates.",
       attractions: routeDetails.attractions,
       itinerary: routeDetails.itinerary,
       includes: item.includes ?? [],
       excludes: item.excludes ?? [],
-      bookingPolicy: ["A minimum 50% advance is required to confirm the booking.", "The remaining amount is due before departure.", "Bus, train, and air tickets are subject to availability and provider policies."],
+      bookingPolicy: ["Request your preferred dates and group size to confirm availability and current package details."],
       detailSections: [
-        { title: "Room sharing prices", content: item.sharingPrices ? [`With Islamabad stays: quad PKR ${item.sharingPrices.quad.toLocaleString()}, triple PKR ${item.sharingPrices.triple.toLocaleString()}, twin PKR ${item.sharingPrices.twin.toLocaleString()}, solo PKR ${item.sharingPrices.solo.toLocaleString()}.`, `Without Islamabad stays: PKR ${item.priceWithoutIslamabadStay?.toLocaleString() ?? "contact us"} and above depending on room sharing.`] : [] },
-        { title: "Important route notes", content: ["Mahodand Lake, Malam Jabba activities, water sports, and other outdoor stops depend on weather, access, and local charges.", "Hotels may be substituted with an equivalent property when operational conditions require it."] },
+        { title: "Room sharing prices", content: [
+          ...(item.sharingPrices ? [`With Islamabad stays: quad PKR ${item.sharingPrices.quad.toLocaleString()}, triple PKR ${item.sharingPrices.triple.toLocaleString()}, twin PKR ${item.sharingPrices.twin.toLocaleString()}, solo PKR ${item.sharingPrices.solo.toLocaleString()}.`] : []),
+          ...(item.sharingPricesWithoutIslamabadStay ? [`Without Islamabad stays: quad PKR ${item.sharingPricesWithoutIslamabadStay.quad.toLocaleString()}, triple PKR ${item.sharingPricesWithoutIslamabadStay.triple.toLocaleString()}, twin PKR ${item.sharingPricesWithoutIslamabadStay.twin.toLocaleString()}, solo PKR ${item.sharingPricesWithoutIslamabadStay.solo.toLocaleString()}.`] : []),
+        ] },
+        { title: "Route details", content: [`Stops named in the source: ${item.routeStops?.join(", ") || destinationName}.`, "Daily timing, transport, inclusions, and access conditions must be confirmed for the requested dates."] },
       ],
       priceWithIslamabadStay: `PKR ${item.pricePerPerson.toLocaleString()}`,
       priceWithoutIslamabadStay: `PKR ${item.priceWithoutIslamabadStay?.toLocaleString() ?? "Contact us"}`,
       tourNotes: item.notes ?? [],
-      refundPolicy: ["90% refund up to 15 days before departure.", "50% refund 7-14 days before departure.", "25% refund 5 days before departure; no refund inside 5 days.", "Transport ticket refunds follow the relevant provider's policy."],
-      terms: ["Routes and hotels may change because of weather, road closures, or local conditions.", "Travelers must carry original CNICs and follow the tour manager's instructions.", "Personal expenses, optional activities, and costs caused by force majeure are excluded."],
-      travelerInstruction: ["Travel light and carry warm layers, rain protection, comfortable shoes, medicines, cash, and a power bank.", "Keep luggage near 10 kg where possible and report before every scheduled departure.", "Network and charging facilities may be limited in mountain areas."],
-      childPolicy: ["Below 4 years: no charge without a seat.", "4 to 7 years: 50% charge with a jumper seat.", "Above 7 years: 100% charge with a full seat."],
-      meals: { breakfast: "Tea, paratha, omelet, water, and channa when available.", dinner: "Chicken karahi or handi, daal or vegetable, roti, raita, water, and cold drinks, or an equivalent menu." },
+      refundPolicy: ["Ask for cancellation and refund terms applicable to the confirmed itinerary before booking."],
+      terms: ["Route access and stop timing can be affected by weather, road conditions, local guidance, or permissions."],
+      travelerInstruction: ["Confirm transport, accommodation, inclusions, itinerary, and current prices with the planner for your selected dates."],
+      childPolicy: [],
     };
   }),
 );
@@ -465,26 +490,34 @@ export default async function PackagePage({ params }: PackagePageProps) {
   const travelDetailCards = [
     {
       title: "Accommodation",
-      text: "We plan room options by your group size and route preferences, with standard, deluxe, and executive hotel categories available when the route supports them.",
+      text: pkg.factsNeedConfirmation
+        ? "The source listing does not specify hotel properties or room categories. Confirm accommodation for your requested dates."
+        : "We plan room options by your group size and route preferences, with standard, deluxe, and executive hotel categories available when the route supports them.",
     },
     {
       title: "Transport",
-      text: "Vehicle choice is matched to the terrain and group size, including AC travel and 4x4 options where the mountain route requires deeper access or rougher road conditions.",
+      text: pkg.transportSummary ?? "Vehicle choice is matched to the terrain and group size, including AC travel and 4x4 options where the mountain route requires deeper access or rougher road conditions.",
     },
     {
-      title: "Good to know",
-      text: "Mountain routes can change with weather, road closures, and access permissions, so we keep the route flexible and communicate adjustments early.",
+      title: pkg.factsNeedConfirmation ? "Availability" : "Good to know",
+      text: pkg.factsNeedConfirmation
+        ? "Request your dates to confirm current availability, itinerary, and package configuration."
+        : "Mountain routes can change with weather, road closures, and access permissions, so we keep the route flexible and communicate adjustments early.",
     },
   ];
 
   const faqs = [
     {
       question: "What is included in this package?",
-      answer: "Most packages include the hotel stay, transport support, and the meals or route services described in the itinerary. Optional activities, personal purchases, and local entry charges are usually not included unless stated clearly.",
+      answer: pkg.factsNeedConfirmation
+        ? "The source listing does not itemize inclusions for this journey. Request a dated quote with transport, accommodation, meals, and optional activities listed before booking."
+        : "Most packages include the hotel stay, transport support, and the meals or route services described in the itinerary. Optional activities, personal purchases, and local entry charges are usually not included unless stated clearly.",
     },
     {
       question: "Can this trip be upgraded?",
-      answer: "Yes. We can usually move your tour to a higher hotel category, upgrade the vehicle, or adjust the room sharing for a more premium experience.",
+      answer: pkg.factsNeedConfirmation
+        ? "Ask the planning team which hotel, vehicle, and room-sharing options are available for your dates; any changes and price differences will be confirmed in your quote."
+        : "Yes. We can usually move your tour to a higher hotel category, upgrade the vehicle, or adjust the room sharing for a more premium experience.",
     },
     {
       question: "What happens if the route changes?",
@@ -686,12 +719,14 @@ export default async function PackagePage({ params }: PackagePageProps) {
                 </ul>
               </div>
               <div className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
-                <p className="text-sm font-semibold text-stone-900">Usually excluded</p>
-                <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">
-                  <li className="flex items-start gap-3"><span className="mt-2 h-2.5 w-2.5 rounded-full bg-stone-400" /><span>Air tickets and personal purchases.</span></li>
-                  <li className="flex items-start gap-3"><span className="mt-2 h-2.5 w-2.5 rounded-full bg-stone-400" /><span>Optional activities and local charges where not explicitly included.</span></li>
-                  <li className="flex items-start gap-3"><span className="mt-2 h-2.5 w-2.5 rounded-full bg-stone-400" /><span>Additional costs caused by weather, road closure, or force majeure.</span></li>
-                </ul>
+                <p className="text-sm font-semibold text-stone-900">{pkg.factsNeedConfirmation ? "Exclusions to confirm" : "Usually excluded"}</p>
+                {pkg.excludes?.length ? (
+                  <ul className="mt-4 space-y-3 text-sm leading-7 text-stone-600">
+                    {pkg.excludes.map((item) => <li key={item} className="flex items-start gap-3"><span className="mt-2 h-2.5 w-2.5 rounded-full bg-stone-400" /><span>{item}</span></li>)}
+                  </ul>
+                ) : (
+                  <p className="mt-4 text-sm leading-7 text-stone-600">The source listing does not specify exclusions. Confirm all excluded costs before booking.</p>
+                )}
               </div>
             </div>
           </div>
@@ -715,18 +750,24 @@ export default async function PackagePage({ params }: PackagePageProps) {
             </p>
 
             <div className="mt-8">
-              <details className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5 shadow-sm" open>
-                <summary className="cursor-pointer text-lg font-semibold text-stone-900">Itinerary</summary>
-                <div className="mt-5 space-y-5 text-sm leading-7 text-stone-600">
-                  {pkg.itinerary.map((item) => (
-                    <div key={`${pkg.slug}-${item.day}`}>
-                      <p className="text-[11px] uppercase tracking-[0.34em] text-[#a37a00]">{item.day}</p>
-                      <h3 className="mt-2 text-xl font-semibold text-stone-900">{item.title}</h3>
-                      <p className="mt-2 text-sm leading-7 text-stone-600">{item.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </details>
+              {pkg.itinerary.length ? (
+                <details className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5 shadow-sm" open>
+                  <summary className="cursor-pointer text-lg font-semibold text-stone-900">Route outline</summary>
+                  <div className="mt-5 space-y-5 text-sm leading-7 text-stone-600">
+                    {pkg.itinerary.map((item) => (
+                      <div key={`${pkg.slug}-${item.day}`}>
+                        <p className="text-[11px] uppercase tracking-[0.34em] text-[#a37a00]">{item.day}</p>
+                        <h3 className="mt-2 text-xl font-semibold text-stone-900">{item.title}</h3>
+                        <p className="mt-2 text-sm leading-7 text-stone-600">{item.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              ) : (
+                <p className="rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 p-5 text-sm leading-7 text-stone-600">
+                  No day-by-day itinerary is present in the source listing. Request your dates to confirm the route schedule.
+                </p>
+              )}
             </div>
 
             <div className="mt-8 space-y-4">

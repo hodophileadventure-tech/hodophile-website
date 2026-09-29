@@ -4,13 +4,13 @@ import { absoluteUrl, allTourRoutes, blogPosts, destinationGalleryRoutes } from 
 import { featuredTourRoutePaths } from "@/lib/data/featured-tour-cards";
 import { umrahPackages } from "@/lib/data/umrah-packages";
 import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "@/lib/data/premiumDestinations.js";
-import { seasonalTourPackages } from "@/lib/data/seasonal-tour-packages";
+import { tourPackages } from "@/lib/data/tour-packages";
 import { additionalHoneymoonPackages } from "@/lib/data/additional-honeymoon-packages";
 
-const packageRoutes = [...premiumDestinations, ...readyToBookDestinations, ...exclusiveOffers].map((item) => `/packages/${item.id}`);
-const seasonalPackageRoutes = seasonalTourPackages.map((item) => `/packages/${item.id}`);
+const packageRoutes = [...premiumDestinations, ...readyToBookDestinations, ...exclusiveOffers, ...tourPackages]
+  .map((item) => `/packages/${item.id}`);
 
-const routes = [
+const routes = [...new Set([
   "/",
   "/about-us",
   "/our-team",
@@ -32,11 +32,10 @@ const routes = [
   "/umrah-packages/book",
   ...umrahPackages.map((pkg) => `/umrah-packages/${pkg.id}`),
   ...packageRoutes,
-  ...seasonalPackageRoutes,
   ...allTourRoutes,
   ...featuredTourRoutePaths,
   ...destinationGalleryRoutes,
-];
+])];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return routes.map((route) => ({

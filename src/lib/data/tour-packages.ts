@@ -27,6 +27,12 @@ export type TourPackage = {
     twin: number;
     solo: number;
   };
+  sharingPricesWithoutIslamabadStay?: {
+    quad: number;
+    triple: number;
+    twin: number;
+    solo: number;
+  };
   couplePrice?: number;
   departure?: string;
   departureAvailability?: "confirmed" | "on-request";

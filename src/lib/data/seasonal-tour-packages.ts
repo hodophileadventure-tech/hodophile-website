@@ -1,13 +1,13 @@
 import type { TourPackage } from "./tour-packages";
 
-type SeasonalPackageSource = {
+export type SeasonalPackageSource = {
   title: string;
   duration: string;
   withIslamabadStay: [number, number, number, number];
   withoutIslamabadStay: [number, number, number, number];
 };
 
-const sourcePackages: SeasonalPackageSource[] = [
+export const seasonalPackageSources: SeasonalPackageSource[] = [
   { title: "08 Days tour to Swat, Kalam & Malam Jabba (29 May-05 June)", duration: "8 Days / 7 Nights", withIslamabadStay: [37500, 39500, 42500, 62500], withoutIslamabadStay: [33500, 34500, 36500, 48500] },
   { title: "10 Days tour to Swat, Kalam, Malam Jabba & Shogran (29 May-07 June)", duration: "10 Days / 9 Nights", withIslamabadStay: [50500, 53500, 57500, 85500], withoutIslamabadStay: [46500, 49500, 51500, 71500] },
   { title: "10 Days tour to Skardu, Manthoka & Basho (29 May-07 June)", duration: "10 Days / 9 Nights", withIslamabadStay: [53500, 56500, 60500, 88500], withoutIslamabadStay: [49500, 51500, 54500, 74500] },
@@ -102,7 +102,7 @@ const additionalPackageSources: SeasonalPackageSource[] = [
   { title: "02 Days Moola Chotok (02-04 January)", duration: "2 Days / 1 Night", withIslamabadStay: [16000, 17000, 18000, 18000], withoutIslamabadStay: [16000, 17000, 18000, 18000] },
 ];
 
-sourcePackages.push(...additionalPackageSources);
+seasonalPackageSources.push(...additionalPackageSources);
 
 const imageNumbersByFamily: Record<string, number[]> = {
   swat: [1, 7, 11, 17, 23, 40, 49, 67, 78, 86, 89, 91],
@@ -203,7 +203,7 @@ const getDestinationSlugs = (title: string) => {
   if (/moola/i.test(title)) slugs.push("moola");
   if (/ranikot/i.test(title)) slugs.push("ranikot");
   if (/charo/i.test(title)) slugs.push("charo");
-  return slugs.length ? slugs : ["swat"];
+  return slugs;
 };
 
 function getSeasonalRouteStops(title: string) {
@@ -273,7 +273,7 @@ export function isPastDeparture(title: string, referenceDate = new Date()) {
   return departureEnd < today;
 }
 
-const generatedSeasonalPackages: TourPackage[] = sourcePackages.map((item, index) => ({
+const generatedSeasonalPackages: TourPackage[] = seasonalPackageSources.map((item, index) => ({
   id: `seasonal-${index + 1}`,
   title: getPackageDisplayTitle(item.title),
   destinationSlugs: getDestinationSlugs(item.title),
@@ -294,21 +294,23 @@ const generatedSeasonalPackages: TourPackage[] = sourcePackages.map((item, index
     twin: item.withIslamabadStay[2],
     solo: item.withIslamabadStay[3],
   },
+  sharingPricesWithoutIslamabadStay: {
+    quad: item.withoutIslamabadStay[0],
+    triple: item.withoutIslamabadStay[1],
+    twin: item.withoutIslamabadStay[2],
+    solo: item.withoutIslamabadStay[3],
+  },
   departure: `${getDepartureLabel(item.title)}; Karachi transport tickets are optional add-ons.`,
-  transport: ["Comfortable AC transport", "Tour manager / guide", "Prado for upper Kalam or local excursions"],
-  includes: ["Hotel accommodation", "Breakfast and dinner", "Fuel, parking, toll taxes and driver expenses", "Basic phone photography", "Basic first aid"],
-  excludes: ["Bus, train or air tickets", "Lunch and refreshments", "Entry fees and water sports", "Travel insurance", "Personal expenses"],
   notes: [
     `Quad sharing from PKR ${item.withIslamabadStay[0].toLocaleString()} with Islamabad stays, or PKR ${item.withoutIslamabadStay[0].toLocaleString()} without them.`,
     `Room rates: triple PKR ${item.withIslamabadStay[1].toLocaleString()}, twin PKR ${item.withIslamabadStay[2].toLocaleString()}, solo PKR ${item.withIslamabadStay[3].toLocaleString()}.`,
-    "A minimum 50% advance is required to confirm booking; final payment is due before departure.",
   ],
 }));
 
 const seenDepartures = new Set<string>();
 
 export const seasonalTourPackages = generatedSeasonalPackages.filter((tourPackage) => {
-  const source = sourcePackages[Number(tourPackage.id.replace("seasonal-", "")) - 1];
+  const source = seasonalPackageSources[Number(tourPackage.id.replace("seasonal-", "")) - 1];
   const normalizedSourceTitle = source.title
     .replace(/!(?=\d)/g, "1")
     .replace(/\s*-\s*Second departure$/i, "")
