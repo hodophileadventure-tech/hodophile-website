@@ -36,6 +36,7 @@ export const navigation = [
 export type TourMenuItem = {
   label: string;
   href: string;
+  destinationSlug: string;
   description?: string;
 };
 
@@ -53,31 +54,37 @@ export const tourMenu: TourMenuGroup[] = [
       {
         label: "Hunza Valley Tour Packages",
         href: "/tours/northern-tours/hunza-valley-tour-packages",
+        destinationSlug: "hunza",
         description: "Alpine scenery, boutique stays, and curated mountain circuits.",
       },
       {
         label: "Skardu Valley Tour Packages",
         href: "/tours/northern-tours/skardu-valley-tour-packages",
+        destinationSlug: "skardu",
         description: "Lakes, forts, and premium glacial landscapes.",
       },
       {
         label: "Astor Valley Tour Packages",
         href: "/tours/northern-tours/astor-valley-tour-packages",
+        destinationSlug: "astore",
         description: "Remote valley routes with river views, mountain scenery, and calm pacing.",
       },
       {
         label: "Naran Valley Tour Packages",
         href: "/tours/northern-tours/naran-valley-tour-packages",
+        destinationSlug: "naran",
         description: "Road journeys, river views, and summer family travel.",
       },
       {
         label: "Kashmir Valley Tour Packages",
         href: "/tours/northern-tours/kashmir-valley-tour-packages",
+        destinationSlug: "kashmir",
         description: "Soft mountain landscapes and elegant getaway planning.",
       },
       {
         label: "Swat Valley Tour Packages",
         href: "/tours/northern-tours/swat-valley-tour-packages",
+        destinationSlug: "swat",
         description: "Green valleys and calm domestic routes.",
       },
     ],
@@ -89,36 +96,43 @@ export const tourMenu: TourMenuGroup[] = [
       {
         label: "Ormara Beach Packages",
         href: "/tours/southern-tours/ormara-beach-packages",
+        destinationSlug: "ormara",
         description: "Refined coastal itineraries for private groups and family departures.",
       },
       {
         label: "Gorakh Hill Packages",
         href: "/tours/southern-tours/gorakh-hill-packages",
+        destinationSlug: "gorakh",
         description: "Cool-weather highland escapes with sunset viewpoints and overnight options.",
       },
       {
         label: "Quetta Ziyarat Packages",
         href: "/tours/southern-tours/quetta-ziyarat-packages",
+        destinationSlug: "quetta",
         description: "City and mountain-edge itineraries with smooth domestic travel planning.",
       },
       {
         label: "Moola Chotok Packages",
         href: "/tours/southern-tours/moola-chotok-packages",
+        destinationSlug: "moola",
         description: "Adventure-led southern routes with natural canyon and spring views.",
       },
       {
         label: "Charna Island Packages",
         href: "/tours/southern-tours/charna-island-packages",
+        destinationSlug: "charna",
         description: "Short coastal getaways with sea activities and easy departure planning.",
       },
       {
         label: "Bhit Khori Day Packages",
         href: "/tours/southern-tours/bhit-khori-day-packages",
+        destinationSlug: "bhit-khori",
         description: "Fast coastal day escapes with curated transport and route support.",
       },
       {
         label: "Bhit Khori Night Packages",
         href: "/tours/southern-tours/bhit-khori-night-packages",
+        destinationSlug: "bhit-khori",
         description: "Night retreat options with beachside pacing and group-friendly planning.",
       },
     ],
@@ -126,6 +140,11 @@ export const tourMenu: TourMenuGroup[] = [
 ];
 
 export const allTourRoutes = tourMenu.flatMap((group) => [group.href, ...group.items.map((item) => item.href)]);
+
+export const destinationTourPageRedirects = {
+  gorakh: "/tours/southern-tours/gorakh-hill-packages",
+  moola: "/tours/southern-tours/moola-chotok-packages",
+} as const;
 
 export const destinationGallerySlugs = ["hunza", "skardu", "naran", "kashmir", "swat", "khaplu", "shogran", "ormara"];
 export const destinationGalleryRoutes = destinationGallerySlugs.map((slug) => `/destinations/${slug}`);
@@ -230,66 +249,6 @@ export const destinations: Destination[] = [
     season: "October to March",
     duration: "2 Days / 1 Night",
     priceFrom: "From PKR 13,500",
-  },
-];
-
-export type FeaturedTour = {
-  name: string;
-  image: string;
-  duration: string;
-  description: string;
-  highlights: string[];
-  priceFrom?: string;
-};
-
-export const featuredTours: FeaturedTour[] = [
-  {
-    name: "Hunza Signature Escape",
-    image: "/images/destinations/hunza.avif",
-    duration: "6 Days / 5 Nights",
-    description: "A refined Hunza route with private transfers, curated scenic stops, and mountain-view stays.",
-    highlights: ["Private transport", "Boutique stays", "Curated stops"],
-    priceFrom: "From PKR 95,000",
-  },
-  {
-    name: "Skardu Lakes and Valleys",
-    image: "/images/destinations/skardu.webp",
-    duration: "7 Days / 6 Nights",
-    description: "A premium itinerary for alpine lakes, heritage forts, and immersive northern landscapes.",
-    highlights: ["Family friendly", "Photography route", "Flexible pacing"],
-    priceFrom: "From PKR 120,000",
-  },
-  {
-    name: "Kashmir Scenic Retreat",
-    image: "/images/destinations/kashmir.webp",
-    duration: "5 Days / 4 Nights",
-    description: "A calm travel plan for soft mountain scenery, elegant stays, and uninterrupted valley time.",
-    highlights: ["Couple ready", "Private option", "Custom add-ons"],
-    priceFrom: "From PKR 82,000",
-  },
-];
-
-export const featuredPackages = [
-  {
-    name: "Hunza Summer Escape",
-    duration: "6 Days / 5 Nights",
-    description:
-      "Scenic domestic travel through Hunza, Altit, Baltit, and the Karakoram viewpoints.",
-    highlights: ["Private transport", "Hotel stay", "Driver guide"],
-  },
-  {
-    name: "Skardu Lakes and Valleys",
-    duration: "7 Days / 6 Nights",
-    description:
-      "A premium route for travelers who want alpine lakes, forts, and slow-paced exploration.",
-    highlights: ["Family friendly", "Custom stops", "Photography spots"],
-  },
-  {
-    name: "Murree and Nathia Gali Weekend",
-    duration: "3 Days / 2 Nights",
-    description:
-      "Fast domestic getaway for couples, families, and corporate groups from major Pakistan cities.",
-    highlights: ["Weekend plan", "Budget options", "24/7 support"],
   },
 ];
 

@@ -13,7 +13,6 @@ import {
   readyToBookDestinations,
   exclusiveOffers,
 } from "@/lib/data/premiumDestinations";
-import { seasonalTourPackages } from "@/lib/data/seasonal-tour-packages";
 
 type PackagePageProps = {
   params: Promise<{ slug: string }>;
@@ -25,7 +24,7 @@ type PackageDetail = {
   heroImage: string;
   homeImage: string;
   duration: string;
-  departure?: string;
+  scheduleNote?: string;
   bestFor?: string;
   transportSummary?: string;
   factsNeedConfirmation?: boolean;
@@ -218,74 +217,55 @@ const allPackages: PackageDetail[] = [
   return customized;
 });
 
-const coreRouteImages: Record<string, string> = {
-  "skardu-deosai-air-3-days": "/images/tour-packages/03.webp",
-  "skardu-deosai-basho-air-5-days": "/images/tour-packages/14.webp",
-  "skardu-khaplu-deosai-basho-air-7-days": "/images/tour-packages/21.webp",
-  "skardu-hunza-air-7-days": "/images/destinations/featured-skardu-hunza.webp",
-  "ormara-beach-camping": "/images/tour-packages/25.webp",
-  "swat-kalam-shogran-10-days": "/images/tour-packages/02.webp",
-  "kashmir-shogran-9-days": "/images/tour-packages/06.webp",
-  "hunza-skardu-naran-12-days": "/images/tour-packages/05.webp",
-  "skardu-deosai-naran-10-days": "/images/featured-tours/10days-skardu-deosai.jpg.webp",
-};
-
 allPackages.push(
-  ...tourPackages
-    .filter((tourPackage) => !tourPackage.id.startsWith("seasonal-"))
-    .map((tourPackage): PackageDetail => {
-      const routeStops = tourPackage.routeStops ?? tourPackage.destinationSlugs;
+  ...tourPackages.map((tourPackage): PackageDetail => {
+      const routeStops = tourPackage.routeStops;
       const startingPrice = `PKR ${tourPackage.pricePerPerson.toLocaleString()}`;
-      const image = tourPackage.image ?? coreRouteImages[tourPackage.id] ?? "/images/editorial/editorial-8.webp";
+      const sharingPrice = tourPackage.sharingPrices?.quad ?? tourPackage.pricePerPerson;
+      const sharingPriceWithoutIslamabad = tourPackage.sharingPricesWithoutIslamabadStay?.quad ?? tourPackage.priceWithoutIslamabadStay;
 
       return {
         slug: tourPackage.id,
         title: tourPackage.title,
-        heroImage: image,
-        homeImage: image,
+        heroImage: tourPackage.image,
+        homeImage: tourPackage.image,
         duration: tourPackage.duration,
-        departure: tourPackage.departure ?? "Dates available on request",
+        scheduleNote: tourPackage.scheduleNote ?? "Departure dates available on request",
         bestFor: tourPackage.bestFor,
         transportSummary: tourPackage.transport?.join("; ") ?? "Transport details are not specified in the source listing.",
         factsNeedConfirmation: true,
         priceDisplay: {
           label: "Listed starting rate",
           value: startingPrice,
-          note: "Room sharing, accommodation, and current availability are confirmed for your requested dates.",
+          note: "Confirm the current price and package configuration for your requested dates.",
         },
-        itineraryHeading: "Suggested route outline",
-        itineraryIntro: "These are the listed route stops, not a confirmed day-by-day schedule. The team will confirm daily timing, access, and overnight arrangements for your dates.",
-        summary: `${tourPackage.title} · ${tourPackage.duration}. Request your dates for current availability and a confirmed trip plan.`,
-        description: `${tourPackage.bestFor ?? "A Pakistan journey"} with a listed starting rate of ${startingPrice}; final arrangements are confirmed for your requested dates.`,
-        overview: `This journey is listed across ${routeStops.join(", ")}. Exact daily sequencing, overnight locations, inclusions, and current availability are confirmed with the planning team before booking.`,
+        summary: tourPackage.description,
+        description: tourPackage.description,
+        overview: tourPackage.description,
         highlights: [
           ...(tourPackage.bestFor ? [tourPackage.bestFor] : []),
           ...(tourPackage.pace ? [`${tourPackage.pace} pace`] : []),
           ...(tourPackage.routeHighlights ?? []),
         ],
         attractions: routeStops,
-        itinerary: routeStops.map((stop, index) => ({
-          day: `Stop ${index + 1}`,
-          title: stop,
-          description: "This stop is part of the listed route. Its day allocation and overnight plan are confirmed for your travel dates.",
-        })),
+        itinerary: [],
         includes: tourPackage.includes ?? [],
         excludes: tourPackage.excludes ?? [],
         bookingPolicy: [
-          "Request your preferred dates and group size to confirm current availability.",
-          "Final price, hotel configuration, inclusions, and day-by-day schedule are confirmed before payment.",
+          "Request your preferred dates and group size to confirm availability and the current package configuration.",
         ],
         detailSections: [
           {
-            title: "Route and transport details",
+            title: "Room sharing prices",
             content: [
-              `Listed stops: ${routeStops.join(" → ")}.`,
-              ...(tourPackage.transport ?? ["Transport arrangements are confirmed for your dates and selected trip configuration."]),
+              ...(tourPackage.sharingPrices ? [`With Islamabad stays: quad PKR ${tourPackage.sharingPrices.quad.toLocaleString()}, triple PKR ${tourPackage.sharingPrices.triple.toLocaleString()}, twin PKR ${tourPackage.sharingPrices.twin.toLocaleString()}, solo PKR ${tourPackage.sharingPrices.solo.toLocaleString()}.`] : []),
+              ...(tourPackage.sharingPricesWithoutIslamabadStay ? [`Without Islamabad stays: quad PKR ${tourPackage.sharingPricesWithoutIslamabadStay.quad.toLocaleString()}, triple PKR ${tourPackage.sharingPricesWithoutIslamabadStay.triple.toLocaleString()}, twin PKR ${tourPackage.sharingPricesWithoutIslamabadStay.twin.toLocaleString()}, solo PKR ${tourPackage.sharingPricesWithoutIslamabadStay.solo.toLocaleString()}.`] : []),
             ],
           },
+          { title: "Route details", content: [`Listed stops: ${routeStops.join(" → ")}.`, ...(tourPackage.transport ?? [])] },
         ],
-        priceWithIslamabadStay: startingPrice,
-        priceWithoutIslamabadStay: "Confirm configuration",
+        priceWithIslamabadStay: `PKR ${sharingPrice.toLocaleString()}`,
+        priceWithoutIslamabadStay: sharingPriceWithoutIslamabad ? `PKR ${sharingPriceWithoutIslamabad.toLocaleString()}` : "Confirm configuration",
         tourNotes: tourPackage.notes ?? [],
         refundPolicy: ["The applicable refund terms are shared with your confirmed itinerary and booking before payment."],
         terms: ["Routes and stop access may change with weather, road conditions, local guidance, or permissions."],
@@ -293,164 +273,6 @@ allPackages.push(
         childPolicy: [],
       };
     }),
-);
-
-function getSeasonalRouteDetails(title: string, duration: string) {
-  if (/gorakh/i.test(title)) {
-    return { attractions: ["Gorakh Hill Station"], itinerary: [] };
-  }
-
-  if (/moola/i.test(title)) {
-    return { attractions: ["Moola Chotok"], itinerary: [] };
-  }
-
-  if (/kashmir/i.test(title)) {
-    const attractions = ["Kashmir", "Arang Kel", "Taobat"].filter((stop) => title.toLowerCase().includes(stop.toLowerCase()));
-    return { attractions, itinerary: [] };
-  }
-
-  if (/swat|kalam|malam jabba/i.test(title)) {
-    return {
-      attractions: ["Islamabad", "Swat", "Fizaghat", "Bahrain", "Kalam", "Osho Forest", "Palogah Village", "Mahodand Lake", "Malam Jabba Ski Resort", "Khanpur Lake"],
-      itinerary: [
-        { day: "Day 1", title: "Departure from Karachi", description: "Travel toward Islamabad by bus or train. Travelers choosing the flight option depart according to the confirmed flight schedule." },
-        { day: "Day 2", title: "Arrival in Islamabad / Rawalpindi", description: "Reach Islamabad or Rawalpindi, transfer to the hotel, check in, rest, and enjoy dinner and an overnight stay." },
-        { day: "Day 3", title: "Islamabad to Kalam", description: "Depart early for Kalam with scenic stops at Fizaghat and Bahrain, then check in and explore Kalam Bazaar." },
-        { day: "Day 4", title: "Upper Kalam and Mahodand Lake", description: "Ride a 4x4 Prado toward Upper Kalam through Osho Forest and Palogah Village. Visit Mahodand Lake if accessible and return for the overnight stay." },
-        { day: "Day 5", title: "Malam Jabba Ski Resort", description: "Travel to Malam Jabba and enjoy the ski resort surroundings and optional activities such as the chairlift or zip line before returning to the hotel." },
-        { day: "Day 6", title: "Kalam / Mingora to Islamabad via Khanpur", description: "Travel toward Islamabad with a stop at Khanpur Lake for leisure and optional water activities, then check in for the final Islamabad overnight stay." },
-        { day: "Day 7", title: "Islamabad to Karachi", description: "Check out and travel to the bus terminal, railway station, or airport. Transport tickets are optional and subject to availability." },
-        { day: "Day 8", title: "Arrival in Karachi", description: "Reach Karachi and complete the tour." },
-      ].slice(0, Number.parseInt(duration, 10)),
-    };
-  }
-
-  if (/hunza|naltar/i.test(title)) {
-    return {
-      attractions: ["Islamabad", "Besham", "Chilas", "Hunza Valley", "Karimabad", "Baltit Fort", "Attabad Lake", "Passu Cones", "Khunjerab Pass", "Naltar Valley", "Naltar Lakes", "Naltar Ski Resort"],
-      itinerary: [
-        { day: "Day 1", title: "Departure from Karachi", description: "Begin the journey to Islamabad by bus or train, or use the separately arranged flight option." },
-        { day: "Day 2", title: "Arrival in Islamabad", description: "Check in at the Islamabad or Rawalpindi hotel, rest, and prepare for the northern route." },
-        { day: "Day 3", title: "Islamabad to Chilas", description: "Travel north through the Hazara route and Besham with scenic stops before the overnight stay in Chilas." },
-        { day: "Day 4", title: "Chilas to Hunza", description: "Continue along the Karakoram Highway, taking in the Indus views and mountain landscapes before reaching Hunza." },
-        { day: "Day 5", title: "Hunza Valley highlights", description: "Explore Karimabad, Baltit Fort, the local bazaar, and nearby viewpoints with time for photography and local culture." },
-        { day: "Day 6", title: "Attabad, Passu and upper Hunza", description: "Visit Attabad Lake, Passu Cones, the suspension bridge area, and other scenic stops subject to road and weather access." },
-        { day: "Day 7", title: "Naltar Valley excursion", description: "Travel by local 4x4 toward Naltar Valley and its lakes or ski resort, then return to the main hotel route." },
-        { day: "Day 8", title: "Return toward Islamabad", description: "Begin the return journey through the mountain corridor with planned rest and meal stops." },
-        { day: "Day 9", title: "Islamabad stay and departure preparation", description: "Complete the Islamabad stay, check out, and prepare for the return transport." },
-        { day: "Day 10", title: "Return journey", description: "Travel back to Karachi by the selected transport option." },
-        { day: "Day 11", title: "Transit", description: "Continue the return journey according to the confirmed bus, train, or air schedule." },
-        { day: "Day 12", title: "Arrival and tour completion", description: "Reach Karachi and complete the tour." },
-      ].slice(0, Number.parseInt(duration, 10)),
-    };
-  }
-
-  if (/skardu|manthoka|basho/i.test(title)) {
-    return {
-      attractions: ["Islamabad", "Chilas", "Skardu", "Upper Kachura Lake", "Shangrila", "Manthoka Waterfall", "Basho Valley", "Shigar Fort", "Katpana Desert", "Deosai access where scheduled"],
-      itinerary: [
-        { day: "Day 1", title: "Departure from Karachi", description: "Travel toward Islamabad by bus or train, with air travel available as an optional arrangement." },
-        { day: "Day 2", title: "Islamabad arrival", description: "Arrive, check in, rest, and prepare for the northern journey." },
-        { day: "Day 3", title: "Islamabad to Chilas", description: "Drive north with scenic stops through the Hazara and Indus routes before the overnight stay." },
-        { day: "Day 4", title: "Chilas to Skardu", description: "Continue toward Skardu through dramatic mountain roads and arrive for hotel check-in." },
-        { day: "Day 5", title: "Skardu lakes and viewpoints", description: "Visit Upper Kachura Lake, Shangrila, and the surrounding viewpoints before returning to Skardu." },
-        { day: "Day 6", title: "Manthoka Waterfall", description: "Take the local route to Manthoka Waterfall and enjoy the valley scenery and photography stops." },
-        { day: "Day 7", title: "Basho Valley excursion", description: "Travel by suitable local vehicle toward Basho Valley, subject to road access and weather." },
-        { day: "Day 8", title: "Skardu heritage and return preparation", description: "Explore available local attractions such as Shigar Fort or Katpana Desert and prepare for the return route." },
-        { day: "Day 9", title: "Return toward Islamabad", description: "Begin the return drive with planned rest stops and an overnight stay according to the confirmed itinerary." },
-        { day: "Day 10", title: "Islamabad and onward travel", description: "Complete the Islamabad stay and continue to Karachi by the selected transport option." },
-        { day: "Day 11", title: "Return transit", description: "Continue the journey according to the confirmed bus, train, or flight schedule." },
-        { day: "Day 12", title: "Arrival and tour completion", description: "Reach Karachi and complete the tour." },
-      ].slice(0, Number.parseInt(duration, 10)),
-    };
-  }
-
-  if (/kashmir|arang kel|taobat/i.test(title)) {
-    return {
-      attractions: ["Islamabad", "Muzaffarabad", "Keran", "Sharda", "Kel", "Arang Kel", "Taobat", "Halmat Valley", "Neelum River", "Kutton Waterfall"],
-      itinerary: [
-        { day: "Day 1", title: "Departure from Karachi", description: "Begin the journey toward Islamabad by bus or train, with flights available as an optional add-on." },
-        { day: "Day 2", title: "Islamabad arrival", description: "Check in at the Islamabad or Rawalpindi hotel, rest, and prepare for the Kashmir route." },
-        { day: "Day 3", title: "Islamabad to Keran / Sharda", description: "Travel through Muzaffarabad and the Neelum Valley with scenic waterfall and river stops before the overnight stay." },
-        { day: "Day 4", title: "Sharda and Kel", description: "Continue through Upper Neelum, visit Sharda, and travel onward toward Kel for the upper-valley excursion." },
-        { day: "Day 5", title: "Arang Kel trek", description: "Cross by cable car or suspension crossing and hike to Arang Kel, subject to access, before returning to the valley stay." },
-        { day: "Day 6", title: "Taobat Valley excursion", description: "Travel by local 4x4 toward Taobat and Halmat Valley, enjoying the river scenery and highland viewpoints." },
-        { day: "Day 7", title: "Return through Neelum Valley", description: "Begin the return route with scenic stops and an overnight stay according to the confirmed schedule." },
-        { day: "Day 8", title: "Islamabad and onward travel", description: "Complete the Islamabad stay and prepare for the return transport to Karachi." },
-        { day: "Day 9", title: "Arrival and tour completion", description: "Reach Karachi and complete the tour." },
-      ].slice(0, Number.parseInt(duration, 10)),
-    };
-  }
-
-  return {
-    attractions: ["Islamabad", "Balakot", "Naran Valley", "Kunhar River", "Lulusar Lake", "Babusar Top", "Saif-ul-Malook Lake", "Shogran", "Siri Paye"],
-    itinerary: [
-      { day: "Day 1", title: "Departure and Islamabad arrival", description: "Travel toward Islamabad, check in, and prepare for the northern route." },
-      { day: "Day 2", title: "Islamabad to Naran", description: "Drive through Balakot and the Kaghan Valley with scenic stops along the Kunhar River." },
-      { day: "Day 3", title: "Babusar and Lulusar", description: "Visit Lulusar Lake and Babusar Top where open and safe, then return to the valley accommodation." },
-      { day: "Day 4", title: "Saif-ul-Malook and Naran", description: "Take the local jeep route to Saif-ul-Malook, enjoy the lake, and return for evening leisure." },
-      { day: "Day 5", title: "Naran to Shogran", description: "Travel toward Shogran and enjoy the forested meadows and local viewpoints." },
-      { day: "Day 6", title: "Siri Paye excursion", description: "Visit Siri Paye by local jeep where accessible, then return to Shogran for the night." },
-      { day: "Day 7", title: "Return toward Islamabad", description: "Begin the return route with stops along the valley and transfer to Islamabad." },
-      { day: "Day 8", title: "Islamabad and onward travel", description: "Complete the Islamabad stay and continue to Karachi by the selected transport option." },
-      { day: "Day 9", title: "Arrival and tour completion", description: "Reach Karachi and complete the tour." },
-    ].slice(0, Number.parseInt(duration, 10)),
-  };
-}
-
-allPackages.push(
-  ...seasonalTourPackages.map((item) => {
-    const title = item.title;
-    const destinationName = title.replace(/\s*\([^)]*\)$/, "").replace(/^Blossom Special\s*-?\s*/, "").replace(/^\d+\s*Days?\s+tour\s+to\s+/i, "");
-    const routeDetails = getSeasonalRouteDetails(title, item.duration);
-    const image = item.image ?? (/skardu|basho|manthoka/i.test(title)
-      ? "/images/destinations/skardu-1080x1920.webp"
-      : /hunza|naltar/i.test(title)
-        ? "/images/destinations/hunza-custom.webp"
-        : /kashmir|taobat|arang kel/i.test(title)
-          ? "/images/destinations/kashmir.webp"
-          : /naran/i.test(title)
-            ? "/images/destinations/naran-hd.webp"
-            : "/images/destinations/swat-hd.webp");
-
-    return {
-      slug: item.id,
-      title,
-      heroImage: image,
-      homeImage: image,
-      duration: item.duration,
-      departure: item.departure,
-      factsNeedConfirmation: true,
-      transportSummary: "Transport details are not specified in the source listing; confirm them for your requested dates.",
-      summary: `${destinationName} · ${item.duration}. Dates, itinerary, transport, and current availability are confirmed on request.`,
-      description: `${destinationName} · ${item.duration}. Request your dates for confirmed availability and package details.`,
-      overview: `The source listing identifies ${item.routeStops?.join(", ") || destinationName} and the trip duration. It does not specify a day-by-day schedule, transport, or inclusions; confirm those details before booking.`,
-      highlights: item.routeStops ?? [destinationName],
-      itineraryHeading: routeDetails.itinerary.length ? "Day wise plan for this route" : "Detailed itinerary to confirm",
-      itineraryIntro: routeDetails.itinerary.length
-        ? "Check the listed route and confirm the schedule for your travel dates."
-        : "The source listing does not include a day-by-day itinerary. Ask the planner to confirm timing, access, and overnight arrangements for your dates.",
-      attractions: routeDetails.attractions,
-      itinerary: routeDetails.itinerary,
-      includes: item.includes ?? [],
-      excludes: item.excludes ?? [],
-      bookingPolicy: ["Request your preferred dates and group size to confirm availability and current package details."],
-      detailSections: [
-        { title: "Room sharing prices", content: [
-          ...(item.sharingPrices ? [`With Islamabad stays: quad PKR ${item.sharingPrices.quad.toLocaleString()}, triple PKR ${item.sharingPrices.triple.toLocaleString()}, twin PKR ${item.sharingPrices.twin.toLocaleString()}, solo PKR ${item.sharingPrices.solo.toLocaleString()}.`] : []),
-          ...(item.sharingPricesWithoutIslamabadStay ? [`Without Islamabad stays: quad PKR ${item.sharingPricesWithoutIslamabadStay.quad.toLocaleString()}, triple PKR ${item.sharingPricesWithoutIslamabadStay.triple.toLocaleString()}, twin PKR ${item.sharingPricesWithoutIslamabadStay.twin.toLocaleString()}, solo PKR ${item.sharingPricesWithoutIslamabadStay.solo.toLocaleString()}.`] : []),
-        ] },
-        { title: "Route details", content: [`Stops named in the source: ${item.routeStops?.join(", ") || destinationName}.`, "Daily timing, transport, inclusions, and access conditions must be confirmed for the requested dates."] },
-      ],
-      priceWithIslamabadStay: `PKR ${item.pricePerPerson.toLocaleString()}`,
-      priceWithoutIslamabadStay: `PKR ${item.priceWithoutIslamabadStay?.toLocaleString() ?? "Contact us"}`,
-      tourNotes: item.notes ?? [],
-      refundPolicy: ["Ask for cancellation and refund terms applicable to the confirmed itinerary before booking."],
-      terms: ["Route access and stop timing can be affected by weather, road conditions, local guidance, or permissions."],
-      travelerInstruction: ["Confirm transport, accommodation, inclusions, itinerary, and current prices with the planner for your selected dates."],
-      childPolicy: [],
-    };
-  }),
 );
 
 export async function generateStaticParams() {
@@ -586,7 +408,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
             <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Tour Snapshot</p>
             <p className="mt-3 font-serif text-3xl text-stone-900">{pkg.duration}</p>
             <p className="mt-3 text-sm leading-7 text-stone-600">{pkg.description}</p>
-            {pkg.departure ? <p className="mt-4 border-l-2 border-[#fcc000] pl-3 text-sm font-medium leading-6 text-stone-700">{pkg.departure}</p> : null}
+            {pkg.scheduleNote ? <p className="mt-4 border-l-2 border-[#fcc000] pl-3 text-sm font-medium leading-6 text-stone-700">Schedule note: {pkg.scheduleNote}</p> : null}
 
             <div className="mt-5 rounded-[1.25rem] border border-[#fcc000]/30 bg-[#fff8df] p-4">
               <p className="text-[11px] uppercase tracking-[0.26em] text-stone-500">Package Pricing</p>
@@ -655,8 +477,8 @@ export default async function PackagePage({ params }: PackagePageProps) {
                 <p className="mt-2 text-lg font-semibold text-stone-900">{pkg.bestFor ?? "Couples & groups"}</p>
               </div>
               <div className="rounded-[1.25rem] border border-stone-200 bg-stone-50 p-4">
-                <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">Departure</p>
-                <p className="mt-2 text-lg font-semibold text-stone-900">{pkg.departure || "Flexible dates"}</p>
+                <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">Schedule note</p>
+                <p className="mt-2 text-lg font-semibold text-stone-900">{pkg.scheduleNote || "Flexible dates"}</p>
               </div>
             </div>
 

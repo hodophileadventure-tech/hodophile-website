@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl, whatsappUrl } from "@/lib/site";
@@ -25,16 +25,20 @@ export async function generateMetadata({ params }: FeaturedTourPageProps): Promi
     return {};
   }
 
+  const canonicalPath = tour.canonicalPackageId
+    ? `/packages/${tour.canonicalPackageId}`
+    : `/tours/featured/${tour.slug}`;
+
   return {
     title: tour.title,
     description: tour.summary,
     alternates: {
-      canonical: `/tours/featured/${tour.slug}`,
+      canonical: canonicalPath,
     },
     openGraph: {
       title: tour.title,
       description: tour.summary,
-      url: absoluteUrl(`/tours/featured/${tour.slug}`),
+      url: absoluteUrl(canonicalPath),
     },
   };
 }
@@ -42,6 +46,10 @@ export async function generateMetadata({ params }: FeaturedTourPageProps): Promi
 export default async function FeaturedTourPage({ params }: FeaturedTourPageProps) {
   const { slug } = await params;
   const tour = getFeaturedTourBySlug(slug);
+
+  if (tour?.canonicalPackageId) {
+    redirect(`/packages/${tour.canonicalPackageId}`);
+  }
 
   if (!tour) {
     notFound();

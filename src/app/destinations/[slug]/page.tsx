@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
-import { absoluteUrl } from "@/lib/site";
-import { getTourPackagesForDestination } from "@/lib/data/tour-packages";
+import { absoluteUrl, destinationTourPageRedirects } from "@/lib/site";
+import { getTourPackageById, getTourPackagesForDestination } from "@/lib/data/tour-packages";
 import { buildPageSchema } from "@/lib/seo/structured-data";
 
 type DestinationPageProps = {
@@ -33,7 +33,7 @@ const destinationGalleries = {
     ],
     routeSuggestions: [
       { title: "Hunza Valley Tour Packages", href: "/tours/northern-tours/hunza-valley-tour-packages", meta: "Heritage + scenery" },
-      { title: "Skardu & Hunza by Air", href: "/packages/skardu-hunza-air-7-days", meta: "Northerns + premium route" },
+      { journeyId: "skardu-hunza-air-7-days", meta: "Northerns + premium route" },
     ],
     faq: [
       { question: "How many days should I spend in Hunza?", answer: "A 5 to 7 day plan works best for a balanced experience that includes the valley, viewpoints, and travel recovery." },
@@ -60,7 +60,7 @@ const destinationGalleries = {
     ],
     routeSuggestions: [
       { title: "Skardu Valley Tour Packages", href: "/tours/northern-tours/skardu-valley-tour-packages", meta: "Classic Baltistan route" },
-      { title: "Skardu & Deosai by Air", href: "/packages/skardu-deosai-air-3-days", meta: "Quick premium escape" },
+      { journeyId: "skardu-deosai-air-3-days", meta: "Quick premium escape" },
     ],
     faq: [
       { question: "Why is Skardu best with extra time?", answer: "The valley is large and scenic, so the route is more enjoyable when you leave room for slower pace, weather changes, and rest." },
@@ -86,7 +86,7 @@ const destinationGalleries = {
     ],
     routeSuggestions: [
       { title: "Naran Valley Tour Packages", href: "/tours/northern-tours/naran-valley-tour-packages", meta: "Family-friendly mountain getaway" },
-      { title: "Hunza, Skardu & Naran", href: "/packages/hunza-skardu-naran-12-days", meta: "Longer route combination" },
+      { journeyId: "hunza-skardu-naran-12-days", meta: "Longer route combination" },
     ],
     faq: [
       { question: "Is Naran good for a short trip?", answer: "Yes. It is one of the easiest northern destinations to plan for a 3 to 5 day family trip." },
@@ -111,7 +111,7 @@ const destinationGalleries = {
     ],
     routeSuggestions: [
       { title: "Kashmir Valley Tour Packages", href: "/tours/northern-tours/kashmir-valley-tour-packages", meta: "Calm and scenic" },
-      { title: "Kashmir & Shogran", href: "/packages/kashmir-shogran-9-days", meta: "Cultural + mountain route" },
+      { journeyId: "kashmir-shogran-9-days", meta: "Cultural + mountain route" },
     ],
     faq: [
       { question: "Is Kashmir better for couples or families?", answer: "It works well for both, especially when the itinerary focuses on scenic comfort and flexible pacing." },
@@ -137,7 +137,7 @@ const destinationGalleries = {
     ],
     routeSuggestions: [
       { title: "Swat Valley Tour Packages", href: "/tours/northern-tours/swat-valley-tour-packages", meta: "Family + green valley" },
-      { title: "Swat, Kalam & Shogran", href: "/packages/swat-kalam-shogran-10-days", meta: "Longer northern route" },
+      { journeyId: "swat-kalam-shogran-10-days", meta: "Longer northern route" },
     ],
     faq: [
       { question: "Is Swat suitable for a first trip?", answer: "Yes. It is a reliable choice for travelers who want a scenic domestic route without needing extreme mountain logistics." },
@@ -159,7 +159,7 @@ const destinationGalleries = {
       "A better fit for travelers seeking calm, not constant movement",
     ],
     routeSuggestions: [
-      { title: "Skardu, Khaplu & Deosai", href: "/packages/skardu-khaplu-deosai-basho-air-7-days", meta: "Heritage + glacial route" },
+      { journeyId: "skardu-khaplu-deosai-basho-air-7-days", meta: "Heritage + glacial route" },
       { title: "Skardu Valley Tour Packages", href: "/tours/northern-tours/skardu-valley-tour-packages", meta: "Region-level journey" },
     ],
     faq: [
@@ -182,8 +182,8 @@ const destinationGalleries = {
       "Useful as part of a longer northern itinerary",
     ],
     routeSuggestions: [
-      { title: "Kashmir & Shogran", href: "/packages/kashmir-shogran-9-days", meta: "Two-destination route" },
-      { title: "Swat, Kalam & Shogran", href: "/packages/swat-kalam-shogran-10-days", meta: "Green hills + alpine retreat" },
+      { journeyId: "kashmir-shogran-9-days", meta: "Two-destination route" },
+      { journeyId: "swat-kalam-shogran-10-days", meta: "Green hills + alpine retreat" },
     ],
     faq: [
       { question: "Is Shogran a full destination or a stopover?", answer: "It works as both. It is especially enjoyable as a calm base before continuing toward larger northern routes." },
@@ -205,7 +205,7 @@ const destinationGalleries = {
       "Simple, scenic escape without complex mountain logistics",
     ],
     routeSuggestions: [
-      { title: "Ormara Beach Night Camping", href: "/packages/ormara-beach-camping", meta: "Weekend coastal route" },
+      { journeyId: "ormara-beach-camping", meta: "Weekend coastal route" },
       { title: "Bhit Khori weekend packages", href: "/tours/southern-tours/bhit-khori-day-packages", meta: "Nearby coastal alternatives" },
     ],
     faq: [
@@ -262,7 +262,7 @@ const destinationGalleries = {
 };
 
 export async function generateStaticParams() {
-  return Object.keys(destinationGalleries).map((slug) => ({
+  return [...Object.keys(destinationGalleries), ...Object.keys(destinationTourPageRedirects)].map((slug) => ({
     slug,
   }));
 }
@@ -302,6 +302,8 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
   const destination = destinationGalleries[slug as keyof typeof destinationGalleries];
 
   if (!destination) {
+    const redirectPath = destinationTourPageRedirects[slug as keyof typeof destinationTourPageRedirects];
+    if (redirectPath) redirect(redirectPath);
     notFound();
   }
 
@@ -374,16 +376,20 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
           <div className="rounded-[2rem] border border-stone-200 bg-stone-50 p-7">
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-stone-500">Quick links</p>
             <div className="mt-5 space-y-3">
-              {destination.routeSuggestions.map((route) => (
-                <Link
-                  key={route.href}
-                  href={route.href}
+              {destination.routeSuggestions.map((route) => {
+                const linkedPackage = "journeyId" in route && route.journeyId ? getTourPackageById(route.journeyId) : undefined;
+                const href = linkedPackage ? `/packages/${linkedPackage.id}` : "href" in route ? route.href ?? "/tours" : "/tours";
+                const title = linkedPackage?.title ?? ("title" in route ? route.title : "");
+
+                return <Link
+                  key={href}
+                  href={href}
                   className="block rounded-2xl border border-stone-200 bg-white p-4 transition hover:border-[#fcc000]/50 hover:bg-[#fff8db]"
                 >
-                  <p className="font-semibold text-stone-900">{route.title}</p>
+                  <p className="font-semibold text-stone-900">{title}</p>
                   <p className="mt-1 text-sm text-stone-500">{route.meta}</p>
-                </Link>
-              ))}
+                </Link>;
+              })}
             </div>
           </div>
         </section>
@@ -420,7 +426,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
                     </div>
                   </div>
                   <div className="mt-5 space-y-3 text-sm leading-6 text-white/65">
-                    {tourPackage.departure && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Departure</span>{tourPackage.departure}</p>}
+                    {tourPackage.scheduleNote && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Schedule note</span>{tourPackage.scheduleNote}</p>}
                     {tourPackage.transport && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Transport</span>{tourPackage.transport.join("; ")}</p>}
                     {tourPackage.includes && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Includes</span>{tourPackage.includes.join("; ")}</p>}
                     {tourPackage.excludes && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Excludes</span>{tourPackage.excludes.join("; ")}</p>}

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { PageShell } from "@/components/page-shell";
 import { TourLanding } from "@/components/tour-landing";
-import { tourPackages } from "@/lib/data/tour-packages";
+import { getTourPackagesForRegion } from "@/lib/data/tour-packages";
 import { absoluteUrl, destinations, tourMenu } from "@/lib/site";
 
 type RegionPageProps = {
@@ -58,15 +58,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
     notFound();
   }
 
-  const regionalPackages = tourPackages.filter((item) => {
-    if (item.region) {
-      return region === "southern-tours" ? item.region === "southern" : item.region === "northern";
-    }
-
-    const destinationSlugs = item.destinationSlugs ?? [];
-    const isSouthern = destinationSlugs.some((slug) => ["ormara", "gorakh", "moola", "ranikot", "charo"].includes(slug));
-    return region === "southern-tours" ? isSouthern : !isSouthern;
-  });
+  const regionalPackages = getTourPackagesForRegion(region === "southern-tours" ? "southern" : "northern");
 
   return (
     <PageShell wide>

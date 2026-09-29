@@ -23,20 +23,11 @@ export const metadata: Metadata = {
 };
 
 export default function ToursPage() {
-  const getPackageRegion = (tourPackage: (typeof tourPackages)[number]) => {
-    if (tourPackage.region) {
-      return tourPackage.region;
-    }
-
-    const destinationSlugs = tourPackage.destinationSlugs ?? [];
-    return destinationSlugs.some((slug) => ["ormara", "gorakh", "moola", "ranikot", "charo"].includes(slug)) ? "southern" : "northern";
-  };
-
-  const northernJourneyCount = tourPackages.filter((tourPackage) => getPackageRegion(tourPackage) === "northern").length;
-  const southernJourneyCount = tourPackages.filter((tourPackage) => getPackageRegion(tourPackage) === "southern").length;
-  const scheduledJourneys = tourPackages.filter((tourPackage) => (tourPackage.departures?.length ?? 0) > 0);
+  const northernJourneyCount = tourPackages.filter((tourPackage) => tourPackage.region === "northern").length;
+  const southernJourneyCount = tourPackages.filter((tourPackage) => tourPackage.region === "southern").length;
+  const scheduledJourneys = tourPackages.filter((tourPackage) => tourPackage.departures.length > 0);
   const scheduledDepartureCount = scheduledJourneys.reduce(
-    (count, tourPackage) => count + (tourPackage.departures?.length ?? 0),
+    (count, tourPackage) => count + tourPackage.departures.length,
     0,
   );
 
@@ -83,12 +74,12 @@ export default function ToursPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="text-lg font-semibold text-stone-950">{journey.title}</h3>
-                    <p className="mt-1 text-xs uppercase tracking-[0.16em] text-stone-500">{journey.duration} · {journey.departures?.length} departures</p>
+                    <p className="mt-1 text-xs uppercase tracking-[0.16em] text-stone-500">{journey.duration} · {journey.departures.length} departures</p>
                   </div>
                   <Link href={`/packages/${journey.id}`} className="shrink-0 text-xs font-bold uppercase tracking-[0.1em] text-[#8b6b00]">Journey ↗</Link>
                 </div>
                 <ul className="mt-4 space-y-2 border-t border-stone-200 pt-4 text-sm text-stone-700">
-                  {journey.departures?.map((departure) => (
+                  {journey.departures.map((departure) => (
                     <li key={departure.id} className="flex flex-wrap justify-between gap-2">
                       <span>{departure.label}</span>
                       <span className="font-semibold text-stone-950">PKR {departure.pricePerPerson.toLocaleString()}</span>

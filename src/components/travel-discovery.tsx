@@ -16,8 +16,8 @@ type DiscoveryPackage = {
   title: string;
   duration: string;
   pricePerPerson: number;
-  departure?: string;
-  departureAvailability?: "confirmed" | "on-request";
+  scheduleNote?: string;
+  departureAvailability: "confirmed" | "on-request";
   region: Exclude<RegionFilter, "all">;
   notes: string[];
   destinationSlugs: string[];
@@ -49,155 +49,27 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
-function getPackageRegion(tourPackage: (typeof tourPackages)[number]): Exclude<RegionFilter, "all"> {
-  if (tourPackage.region) {
-    return tourPackage.region;
-  }
-
-  const destinationSlugs = tourPackage.destinationSlugs ?? [];
-  return destinationSlugs.some((slug) => ["ormara", "gorakh", "moola", "ranikot", "charo", "bhit", "quetta", "ziyarat"].includes(slug))
-    ? "southern"
-    : "northern";
-}
-
-function getPackageImage(title: string, index = 0) {
-  const skarduVariants = [
-    "/images/destinations/skardu-1080x1920.webp",
-    "/images/destinations/skardu-unsplash.webp",
-    "/images/destinations/featured-skardu-basho.webp",
-    "/images/destinations/editorial/editorial-8.webp",
-  ];
-
-  const hunzaVariants = [
-    "/images/destinations/hunza-custom.webp",
-    "/images/destinations/hunza-unsplash.webp",
-    "/images/destinations/fairy-meadows-unsplash.webp",
-  ];
-
-  const kashmirVariants = [
-    "/images/destinations/kashmir.webp",
-    "/images/destinations/fairy-meadows-unsplash.webp",
-  ];
-
-  const naranVariants = [
-    "/images/destinations/naran-hd.webp",
-    "/images/destinations/naran-unsplash.webp",
-  ];
-
-  const coastalVariants = [
-    "/images/destinations/swat-hd.webp",
-    "/images/destinations/swat-unsplash.webp",
-  ];
-
-  if (/skardu|basho|manthoka|khaplu|astor/i.test(title)) return skarduVariants[index % skarduVariants.length];
-  if (/hunza|naltar|gilgit|fairy/i.test(title)) return hunzaVariants[index % hunzaVariants.length];
-  if (/kashmir|taobat|arang kel/i.test(title)) return kashmirVariants[index % kashmirVariants.length];
-  if (/naran|shogran|kaghan/i.test(title)) return naranVariants[index % naranVariants.length];
-  if (/ormara|charna|bhit|moola|gorakh|quetta|ziyarat/i.test(title)) return coastalVariants[index % coastalVariants.length];
-  return coastalVariants[index % coastalVariants.length];
-}
-
-function buildPackageSummary(tourPackage: (typeof tourPackages)[number]) {
-  const title = tourPackage.title.toLowerCase();
-
-  if (title.includes("skardu") && title.includes("khaplu")) {
-    return "A longer Baltistan circuit pairing Khaplu heritage with Deosai's high plains and Basho's forested valleys.";
-  }
-  if (title.includes("skardu") && title.includes("basho")) {
-    return "Skardu's alpine lakes meet Basho's quieter forest scenery, with Deosai added for high-altitude views.";
-  }
-  if (title.includes("skardu") && title.includes("hunza")) {
-    return "A flight-linked northbound journey connecting Hunza's historic villages with Skardu's broad mountain landscapes.";
-  }
-  if (title.includes("skardu") && title.includes("deosai")) {
-    return "Base in Skardu and cross the Deosai plateau for wide-open highland scenery and a focused short escape.";
-  }
-  if (title.includes("hunza")) {
-    return "Historic Hunza villages and Naltar's glacier-fed lakes shape a slower northbound journey with time for scenic stops.";
-  }
-  if (title.includes("kashmir")) {
-    return "Follow the Neelum Valley through riverside settlements toward Arang Kel and Taobat, subject to current access.";
-  }
-  if (title.includes("swat") && title.includes("shogran")) {
-    return "Join Swat's river valleys with Shogran's forested plateau in a multi-stop trip built around varied scenery.";
-  }
-  if (title.includes("swat")) {
-    return "Explore Swat and Kalam's river valleys, with local excursions paced around road conditions and season.";
-  }
-  if (title.includes("ormara")) {
-    return "Spend the night on the Makran coast with a beachside camp and a weekend rhythm away from the city.";
-  }
-  if (title.includes("gorakh")) {
-    return "Trade the coast for Sindh's highlands on a short Gorakh Hill escape with open plateau viewpoints.";
-  }
-  if (title.includes("moola")) {
-    return "Follow the seasonal canyon route into Moola Chotok, with access and water conditions confirmed before travel.";
-  }
-  if (title.includes("naran")) {
-    return "Connect Naran's lakes and mountain roads with the wider northern itinerary, subject to seasonal pass access.";
-  }
-
-  return tourPackage.notes?.[0] ?? "Flexible domestic progress with a clear route, premium guidance, and smooth travel planning.";
-}
-
-const discoveryImagePool = [
-  "/images/destinations/skardu-1080x1920.webp",
-  "/images/destinations/hunza-custom.webp",
-  "/images/destinations/kashmir.webp",
-  "/images/destinations/naran-hd.webp",
-  "/images/destinations/swat-hd.webp",
-  "/images/destinations/hunza-unsplash.webp",
-  "/images/destinations/skardu-unsplash.webp",
-  "/images/destinations/naran-unsplash.webp",
-  "/images/destinations/swat-unsplash.webp",
-  "/images/destinations/fairy-meadows-unsplash.webp",
-  "/images/destinations/featured-skardu-basho.webp",
-  "/images/editorial/editorial-8.webp",
-];
-
-const routeImageById: Record<string, string> = {
-  "skardu-deosai-air-3-days": "/images/tour-packages/03.webp",
-  "skardu-deosai-basho-air-5-days": "/images/tour-packages/14.webp",
-  "skardu-khaplu-deosai-basho-air-7-days": "/images/tour-packages/21.webp",
-  "skardu-hunza-air-7-days": "/images/destinations/featured-skardu-hunza.webp",
-  "ormara-beach-camping": "/images/tour-packages/25.webp",
-  "swat-kalam-shogran-10-days": "/images/tour-packages/02.webp",
-  "kashmir-shogran-9-days": "/images/tour-packages/06.webp",
-  "hunza-skardu-naran-12-days": "/images/tour-packages/05.webp",
-  "skardu-deosai-naran-10-days": "/images/featured-tours/10days-skardu-deosai.jpg.webp",
-};
-
-const usedPackageImages = new Set<string>();
-
-const packageList: DiscoveryPackage[] = tourPackages.map((tourPackage, index) => {
-  const preferredImage = routeImageById[tourPackage.id] ?? tourPackage.image ?? getPackageImage(tourPackage.title, index);
-  const image = usedPackageImages.has(preferredImage)
-    ? discoveryImagePool.find((candidate) => !usedPackageImages.has(candidate)) ?? preferredImage
-    : preferredImage;
-  usedPackageImages.add(image);
-
-  return {
+const packageList: DiscoveryPackage[] = tourPackages.map((tourPackage) => ({
     id: tourPackage.id,
     title: tourPackage.title,
     duration: tourPackage.duration,
     pricePerPerson: tourPackage.pricePerPerson,
-    departure: tourPackage.departure,
+    scheduleNote: tourPackage.scheduleNote,
     departureAvailability: tourPackage.departureAvailability,
-    region: getPackageRegion(tourPackage),
+    region: tourPackage.region,
     notes: tourPackage.notes ?? [],
-    destinationSlugs: tourPackage.destinationSlugs ?? [],
-    routeStops: tourPackage.routeStops ?? (tourPackage.destinationSlugs ?? []).map(formatDestination),
+    destinationSlugs: tourPackage.destinationSlugs,
+    routeStops: tourPackage.routeStops,
     routeHighlights: tourPackage.routeHighlights ?? [],
     bestFor: tourPackage.bestFor ?? "Custom date journey",
     pace: tourPackage.pace,
-    travelStyles: tourPackage.travelStyles ?? ["family", "tailored"],
-    departures: tourPackage.departures ?? [],
+    travelStyles: tourPackage.travelStyles,
+    departures: tourPackage.departures,
     transport: tourPackage.transport ?? [],
     includes: tourPackage.includes ?? [],
-    image,
-    summary: buildPackageSummary(tourPackage),
-  };
-});
+    image: tourPackage.image,
+    summary: tourPackage.description,
+  }));
 
 function getDurationDays(packageItem: DiscoveryPackage) {
   return Number(packageItem.duration.match(/\d+/)?.[0] ?? 0);
@@ -225,7 +97,7 @@ function getMonthFit(packageItem: DiscoveryPackage, month: string) {
 
   const departureText = (packageItem.departures.length
     ? packageItem.departures.map((departure) => departure.label)
-    : [packageItem.departure ?? ""])
+    : [packageItem.scheduleNote ?? ""])
     .join(" ")
     .toLowerCase();
   const monthPattern = new RegExp(`\\b(${departureMonths.join("|")})\\b`, "g");
@@ -564,7 +436,7 @@ export function TravelDiscoveryCatalog() {
       </div>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1fr_1fr]">
-        <div>
+        <div id="adventure-tours">
           <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Travel style</span>
           <div className="flex flex-wrap gap-2">
             {([
@@ -906,10 +778,10 @@ export function CompareTripsClient() {
                 value: (packageItem: DiscoveryPackage) => packageItem.routeHighlights.join(", ") || "Ask the planner to confirm trip-specific activities",
               },
               {
-                label: "Departures",
+                label: "Schedule note / dates",
                 value: (packageItem: DiscoveryPackage) => packageItem.departures.length
                   ? packageItem.departures.map((departure) => departure.label).join("; ")
-                  : packageItem.departureAvailability === "confirmed" ? packageItem.departure ?? "Dates to confirm" : packageItem.departure ?? "Dates available on request",
+                  : packageItem.scheduleNote ?? "Dates available on request",
               },
             ].map(({ label, value }) => (
               <tr key={label}>

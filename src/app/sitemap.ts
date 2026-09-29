@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { absoluteUrl, allTourRoutes, blogPosts, destinationGalleryRoutes } from "@/lib/site";
-import { featuredTourRoutePaths } from "@/lib/data/featured-tour-cards";
+import { indexableFeaturedTourRoutePaths } from "@/lib/data/featured-tour-cards";
 import { umrahPackages } from "@/lib/data/umrah-packages";
 import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "@/lib/data/premiumDestinations.js";
 import { tourPackages } from "@/lib/data/tour-packages";
@@ -33,7 +33,7 @@ const routes = [...new Set([
   ...umrahPackages.map((pkg) => `/umrah-packages/${pkg.id}`),
   ...packageRoutes,
   ...allTourRoutes,
-  ...featuredTourRoutePaths,
+  ...indexableFeaturedTourRoutePaths,
   ...destinationGalleryRoutes,
 ])];
 

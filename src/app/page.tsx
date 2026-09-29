@@ -10,6 +10,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { HomeQuickLeadForm } from "@/components/home-quick-lead";
 import { FacebookReviewsWidget } from "@/components/facebook-reviews-widget";
 import { TravelDiscoveryCatalog } from "@/components/travel-discovery";
+import { getTourPackageById } from "@/lib/data/tour-packages";
 import { companyStats } from "@/lib/data/company-stats";
 import { absoluteUrl, blogPosts, destinations, whatsappUrl } from "@/lib/site";
 import { buildHomePageSchema } from "@/lib/seo/structured-data";
@@ -183,25 +184,13 @@ export default function Home() {
   ];
 
   const seasonalHighlights = [
-    {
-      title: "Skardu & Hunza",
-      description: "High-altitude escapes for mountain lovers and slow travelers.",
-      href: "/tours/northern-tours/skardu-valley-tour-packages",
-      image: "/images/destinations/skardu-unsplash.webp",
-    },
-    {
-      title: "Kashmir & Arang Kel",
-      description: "Cool winds, valleys, and a leisurely route with scenic stops.",
-      href: "/tours/northern-tours/kashmir-valley-tour-packages",
-      image: "/images/destinations/kashmir.webp",
-    },
-    {
-      title: "Swat & Kalam",
-      description: "Forest roads, emerald valleys, and family-friendly holiday pacing.",
-      href: "/tours/northern-tours/swat-valley-tour-packages",
-      image: "/images/destinations/swat-unsplash.webp",
-    },
-  ];
+    "skardu-hunza-air-7-days",
+    "seasonal-11",
+    "swat-kalam-shogran-10-days",
+  ].flatMap((id) => {
+    const tourPackage = getTourPackageById(id);
+    return tourPackage ? [tourPackage] : [];
+  });
 
   const routeFinderOptions = [
     { title: "Mountain escapes", href: "/tours/northern-tours", subtitle: "Hunza · Skardu · Naran" },
@@ -350,7 +339,7 @@ export default function Home() {
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {seasonalHighlights.map((item) => (
-              <Link key={item.title} href={item.href} className="group overflow-hidden rounded-[1.5rem] border border-stone-200 bg-stone-100 transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/60">
+              <Link key={item.id} href={`/packages/${item.id}`} className="group overflow-hidden rounded-[1.5rem] border border-stone-200 bg-stone-100 transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/60">
                 <div className="relative h-60 overflow-hidden">
                   <img src={item.image} alt={item.title} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                 </div>
