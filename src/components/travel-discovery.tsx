@@ -212,6 +212,65 @@ function includedDetails(packageItem: DiscoveryPackage, pattern: RegExp, fallbac
   return matchingDetails.length ? matchingDetails.join(", ") : fallback;
 }
 
+const departureMonths = [
+  "january", "february", "march", "april", "may", "june",
+  "july", "august", "september", "october", "november", "december",
+];
+
+function getMonthFit(packageItem: DiscoveryPackage, month: string) {
+  if (!month) return "Choose a month to check listed departure dates.";
+  if (packageItem.departureAvailability !== "confirmed" && packageItem.departures.length === 0) {
+    return "Seasonal availability is not specified; request dates to confirm.";
+  }
+
+  const departureText = (packageItem.departures.length
+    ? packageItem.departures.map((departure) => departure.label)
+    : [packageItem.departure ?? ""])
+    .join(" ")
+    .toLowerCase();
+  const monthPattern = new RegExp(`\\b(${departureMonths.join("|")})\\b`, "g");
+  const monthIndexes = [...departureText.matchAll(monthPattern)]
+    .map((match) => departureMonths.indexOf(match[1]));
+  const targetMonth = departureMonths.indexOf(month);
+
+  if (!monthIndexes.length) return "The listed departure has no confirmed month; request dates to confirm.";
+  if (monthIndexes.length === 1 && monthIndexes[0] === targetMonth) {
+    return `A confirmed departure is listed in ${month}.`;
+  }
+
+  const firstMonth = monthIndexes[0];
+  const lastMonth = monthIndexes[monthIndexes.length - 1];
+  const isInWindow = firstMonth <= lastMonth
+    ? targetMonth >= firstMonth && targetMonth <= lastMonth
+    : targetMonth >= firstMonth || targetMonth <= lastMonth;
+
+  return isInWindow
+    ? `A confirmed departure window includes ${month}.`
+    : `No confirmed departure is listed in ${month}; request dates to confirm.`;
+}
+
+function getSimilarTrips(packageItem: DiscoveryPackage) {
+  return packageList
+    .filter((candidate) => candidate.id !== packageItem.id)
+    .map((candidate) => {
+      const sharedDestinations = candidate.destinationSlugs.filter((slug) => packageItem.destinationSlugs.includes(slug));
+      const sharedStyles = candidate.travelStyles.filter(
+        (travelStyle) => travelStyle !== "tailored" && packageItem.travelStyles.includes(travelStyle),
+      );
+      const durationDifference = Math.abs(getDurationDays(candidate) - getDurationDays(packageItem));
+      const score = sharedDestinations.length * 3 + sharedStyles.length + (durationDifference <= 2 ? 1 : 0);
+      const reasons = [
+        ...sharedDestinations.map(formatDestination),
+        ...sharedStyles.slice(0, 1).map((travelStyle) => `${travelStyle} style`),
+      ];
+
+      return { packageItem: candidate, score, reasons };
+    })
+    .filter((match) => match.score > 0)
+    .sort((first, second) => second.score - first.score)
+    .slice(0, 2);
+}
+
 function parseStorageIds(rawValue: string) {
   try {
     const parsedValue = JSON.parse(rawValue);
@@ -343,6 +402,11 @@ export function TravelDiscoveryCatalog() {
   const [minimumBudget, setMinimumBudget] = useState("");
   const [maximumBudget, setMaximumBudget] = useState("");
   const [sort, setSort] = useState<SortOption>("recommended");
+  const [fitStyle, setFitStyle] = useState<TravelStyle | "all">("all");
+  const [fitRegion, setFitRegion] = useState<RegionFilter>("all");
+  const [fitDuration, setFitDuration] = useState<DurationFilter>("all");
+  const [fitBudget, setFitBudget] = useState("");
+  const [fitMonth, setFitMonth] = useState("");
   const compareIds = useStoredIds(STORAGE_KEYS.compare, MAX_COMPARE_ITEMS);
   const wishlistIds = useStoredIds(STORAGE_KEYS.wishlist);
   const [quickCompareSelection, setQuickCompareSelection] = useState<Array<string | "">>(["", "", "", ""]);
@@ -379,6 +443,40 @@ export function TravelDiscoveryCatalog() {
     }
     return filtered;
   }, [duration, maximumBudget, minimumBudget, region, search, sort, style]);
+
+  const fitCriteriaCount = [fitStyle !== "all", fitRegion !== "all", fitDuration !== "all", fitBudget !== "", fitMonth !== ""]
+    .filter(Boolean).length;
+  const fitRecommendations = useMemo(() => {
+    const matchesDuration = (packageItem: DiscoveryPackage) => {
+      const packageDuration = getDurationDays(packageItem);
+      if (fitDuration === "weekend") return packageDuration <= 3;
+      if (fitDuration === "4-7") return packageDuration >= 4 && packageDuration <= 7;
+      if (fitDuration === "8-12") return packageDuration >= 8 && packageDuration <= 12;
+      if (fitDuration === "12-plus") return packageDuration > 12;
+      return true;
+    };
+
+    return packageList
+      .map((packageItem, index) => {
+        const monthText = getMonthFit(packageItem, fitMonth);
+        const monthMatch = fitMonth && /confirmed departure (is listed|window includes)/i.test(monthText);
+        const reasons = [
+          fitStyle !== "all" && packageItem.travelStyles.includes(fitStyle) ? `${fitStyle} travel style` : null,
+          fitRegion !== "all" && packageItem.region === fitRegion ? `${fitRegion} Pakistan` : null,
+          fitDuration !== "all" && matchesDuration(packageItem) ? `${packageItem.duration} duration` : null,
+          fitBudget !== "" && packageItem.pricePerPerson <= Number(fitBudget) ? "within your budget" : null,
+          monthMatch ? `departure listed in ${fitMonth}` : null,
+        ].filter((reason): reason is string => Boolean(reason));
+
+        return { packageItem, index, reasons, monthText, monthMatch };
+      })
+      .sort((first, second) =>
+        second.reasons.length - first.reasons.length ||
+        Number(second.monthMatch) - Number(first.monthMatch) ||
+        first.index - second.index,
+      )
+      .slice(0, 3);
+  }, [fitBudget, fitDuration, fitMonth, fitRegion, fitStyle]);
 
   const toggleWishlist = (id: string) => {
     writeStorageIds(
@@ -458,7 +556,7 @@ export function TravelDiscoveryCatalog() {
         <label className="rounded-[1.4rem] border border-stone-200 bg-white p-3 shadow-[0_12px_24px_rgba(55,55,48,0.04)]">
           <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Sort journeys</span>
           <select value={sort} onChange={(event) => setSort(event.target.value as SortOption)} className="w-full border-0 bg-transparent px-1 py-2 text-sm text-stone-900 focus:outline-none">
-            <option value="recommended">Recommended</option>
+            <option value="recommended">Catalog order</option>
             <option value="price-low">Price: low to high</option>
             <option value="duration-short">Shortest first</option>
           </select>
@@ -508,6 +606,96 @@ export function TravelDiscoveryCatalog() {
           </div>
         </fieldset>
       </div>
+
+      <section className="mt-7 border-y border-stone-300 py-6" aria-labelledby="trip-fit-heading">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">Trip intelligence</p>
+            <h3 id="trip-fit-heading" className="mt-1 font-serif text-2xl text-stone-950">Find journeys that fit your plans</h3>
+          </div>
+          <span className="text-xs text-stone-600">Recommendations use listed route, price, and departure data.</span>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+          <label className="text-xs font-semibold text-stone-600">
+            Travel style
+            <select value={fitStyle} onChange={(event) => setFitStyle(event.target.value as TravelStyle | "all")} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+              <option value="all">Any style</option>
+              <option value="family">Family</option>
+              <option value="couples">Couples</option>
+              <option value="adventure">Adventure</option>
+              <option value="tailored">Tailored</option>
+            </select>
+          </label>
+          <label className="text-xs font-semibold text-stone-600">
+            Region
+            <select value={fitRegion} onChange={(event) => setFitRegion(event.target.value as RegionFilter)} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+              <option value="all">Either region</option>
+              <option value="northern">Northern Pakistan</option>
+              <option value="southern">Southern Pakistan</option>
+            </select>
+          </label>
+          <label className="text-xs font-semibold text-stone-600">
+            Time available
+            <select value={fitDuration} onChange={(event) => setFitDuration(event.target.value as DurationFilter)} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+              <option value="all">Any duration</option>
+              <option value="weekend">Up to 3 days</option>
+              <option value="4-7">4–7 days</option>
+              <option value="8-12">8–12 days</option>
+              <option value="12-plus">More than 12 days</option>
+            </select>
+          </label>
+          <label className="text-xs font-semibold text-stone-600">
+            Budget per person
+            <input type="number" min="0" step="5000" value={fitBudget} onChange={(event) => setFitBudget(event.target.value)} placeholder="No limit" className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900 placeholder:text-stone-400" />
+          </label>
+          <label className="text-xs font-semibold text-stone-600">
+            Season match
+            <select value={fitMonth} onChange={(event) => setFitMonth(event.target.value)} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+              <option value="">Not selected</option>
+              {departureMonths.map((month) => <option key={month} value={month}>{month.charAt(0).toUpperCase() + month.slice(1)}</option>)}
+            </select>
+          </label>
+        </div>
+
+        {fitCriteriaCount ? (
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
+            {fitRecommendations.map(({ packageItem, reasons, monthText }) => (
+              <article key={packageItem.id} className="flex flex-col border-l-2 border-[#fcc000] bg-white py-3 pl-4 pr-3">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#8b6b00]">Fits {reasons.length} of {fitCriteriaCount} preferences</p>
+                <h4 className="mt-1 font-semibold text-stone-950">{packageItem.title}</h4>
+                <p className="mt-1 text-xs font-semibold text-stone-800">
+                  From {formatCurrency(packageItem.pricePerPerson)} per person
+                  {fitBudget && packageItem.pricePerPerson > Number(fitBudget) ? ` · ${formatCurrency(packageItem.pricePerPerson - Number(fitBudget))} above budget` : ""}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-stone-600">{reasons.length ? reasons.join(" · ") : "No selected preferences match this route exactly."}</p>
+                {fitMonth ? <p className="mt-2 text-xs leading-5 text-stone-600">{monthText}</p> : null}
+                <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-4 text-xs font-semibold">
+                  <Link href={`/packages/${packageItem.id}`} className="text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4">View journey</Link>
+                  <Link href={`/make-my-trip?destination=${encodeURIComponent(packageItem.destinationSlugs[0] ?? "")}&inspiration=${encodeURIComponent(packageItem.title)}`} className="text-[#735900] underline underline-offset-4">Plan this route</Link>
+                  <button type="button" onClick={() => toggleWishlist(packageItem.id)} className="text-stone-600 underline underline-offset-4">{wishlistIds.includes(packageItem.id) ? "Saved" : "Save"}</button>
+                  <button type="button" onClick={() => toggleCompare(packageItem.id)} disabled={!compareIds.includes(packageItem.id) && compareIds.length >= MAX_COMPARE_ITEMS} className="text-stone-600 underline underline-offset-4 disabled:cursor-not-allowed disabled:opacity-50">{compareIds.includes(packageItem.id) ? "In compare" : "Compare"}</button>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-4 text-sm text-stone-600">Choose at least one preference to see ranked trips, listed date matches, and similar routes.</p>
+        )}
+
+        {fitCriteriaCount && fitRecommendations[0] ? (
+          <div className="mt-5 border-t border-stone-200 pt-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Similar trips to {fitRecommendations[0].packageItem.title}</p>
+            <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
+              {getSimilarTrips(fitRecommendations[0].packageItem).map(({ packageItem, reasons }) => (
+                <Link key={packageItem.id} href={`/packages/${packageItem.id}`} className="text-sm font-semibold text-stone-800 underline decoration-stone-300 underline-offset-4 hover:decoration-[#fcc000]">
+                  {packageItem.title}<span className="ml-2 text-xs font-normal text-stone-500">{reasons.join(" · ")}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </section>
 
       <div className="mt-7 rounded-[1.6rem] border border-stone-200 bg-white/90 p-4 shadow-[0_18px_40px_rgba(55,55,48,0.04)]">
         <div className="flex flex-wrap items-center justify-between gap-3">

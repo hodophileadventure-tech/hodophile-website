@@ -117,6 +117,7 @@ export function MakeMyTripForm() {
   const router = useRouter();
   const [plannerStep, setPlannerStep] = useState(1);
   const [stepError, setStepError] = useState("");
+  const [plannerSourceMessage, setPlannerSourceMessage] = useState("");
   
   // Form state
   const [tripDate, setTripDate] = useState("");
@@ -316,6 +317,25 @@ export function MakeMyTripForm() {
       setCustomCityNights({});
     }
   }, [selectedPreplannedTrip]);
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const destinationSlug = query.get("destination");
+    const inspiration = query.get("inspiration");
+    if (!inspiration) return;
+
+    const selectedCity = sortedCitiesWithHotels.find(
+      (city) => city.toLowerCase().replace(/\s+/g, "-") === destinationSlug?.toLowerCase(),
+    );
+
+    if (selectedCity) {
+      setSelectedCities([selectedCity]);
+      setPlannerSourceMessage(`${inspiration} selected as your route inspiration. Confirm your dates and trip details below.`);
+      return;
+    }
+
+    setPlannerSourceMessage(`${inspiration} selected as your route inspiration. Choose a supported destination below to continue.`);
+  }, []);
 
   // Smart room selection based on price tier (not exact name matching)
   const selectRoomByCategory = (rooms: any[], category: string): string => {
@@ -1720,6 +1740,11 @@ export function MakeMyTripForm() {
           <div className="pointer-events-none absolute right-[-90px] bottom-[-90px] h-72 w-72 rounded-full bg-[#7f5a00]/10 blur-3xl" />
           <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[#fcc000]/70 to-transparent" />
           <div className="relative isolate overflow-hidden rounded-[28px] bg-[#FCC000] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_12px_30px_rgba(0,0,0,0.05)] ring-1 ring-[#f4d77d]/60 transition-all duration-500 sm:p-10">
+            {plannerSourceMessage ? (
+              <p role="status" className="mb-5 rounded-xl border border-black/15 bg-white/85 px-4 py-3 text-sm font-medium text-stone-900">
+                {plannerSourceMessage}
+              </p>
+            ) : null}
           {/* Progress Bar */}
           <div className="mb-8 rounded-[20px] bg-white/80 backdrop-blur-sm p-6 shadow-[0_8px_24px_rgba(0,0,0,0.1)]">
             <div className="flex items-center justify-between mb-3">
