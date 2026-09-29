@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 import { buildPageSchema } from "@/lib/seo/structured-data";
+import { tourPackages } from "@/lib/data/tour-packages";
 import {
   premiumDestinations,
   readyToBookDestinations,
@@ -25,6 +26,10 @@ type PackageDetail = {
   homeImage: string;
   duration: string;
   departure?: string;
+  bestFor?: string;
+  priceDisplay?: { label: string; value: string; note: string };
+  itineraryHeading?: string;
+  itineraryIntro?: string;
   summary: string;
   description: string;
   overview: string;
@@ -42,7 +47,7 @@ type PackageDetail = {
   terms: string[];
   travelerInstruction: string[];
   childPolicy: string[];
-  meals: { breakfast: string; dinner: string };
+  meals?: { breakfast: string; dinner: string };
 };
 
 const allPackages: PackageDetail[] = [
@@ -210,6 +215,81 @@ const allPackages: PackageDetail[] = [
 
   return customized;
 });
+
+const coreRouteImages: Record<string, string> = {
+  "skardu-deosai-air-3-days": "/images/tour-packages/03.webp",
+  "skardu-deosai-basho-air-5-days": "/images/tour-packages/14.webp",
+  "skardu-khaplu-deosai-basho-air-7-days": "/images/tour-packages/21.webp",
+  "skardu-hunza-air-7-days": "/images/destinations/featured-skardu-hunza.webp",
+  "ormara-beach-camping": "/images/tour-packages/25.webp",
+  "swat-kalam-shogran-10-days": "/images/tour-packages/02.webp",
+  "kashmir-shogran-9-days": "/images/tour-packages/06.webp",
+  "hunza-skardu-naran-12-days": "/images/tour-packages/05.webp",
+  "skardu-deosai-naran-10-days": "/images/featured-tours/10days-skardu-deosai.jpg.webp",
+};
+
+allPackages.push(
+  ...tourPackages
+    .filter((tourPackage) => !tourPackage.id.startsWith("seasonal-"))
+    .map((tourPackage): PackageDetail => {
+      const routeStops = tourPackage.routeStops ?? tourPackage.destinationSlugs;
+      const startingPrice = `PKR ${tourPackage.pricePerPerson.toLocaleString()}`;
+      const image = tourPackage.image ?? coreRouteImages[tourPackage.id] ?? "/images/editorial/editorial-8.webp";
+
+      return {
+        slug: tourPackage.id,
+        title: tourPackage.title,
+        heroImage: image,
+        homeImage: image,
+        duration: tourPackage.duration,
+        departure: tourPackage.departure ?? "Dates available on request",
+        bestFor: tourPackage.bestFor,
+        priceDisplay: {
+          label: "Listed starting rate",
+          value: startingPrice,
+          note: "Room sharing, accommodation, and current availability are confirmed for your requested dates.",
+        },
+        itineraryHeading: "Suggested route outline",
+        itineraryIntro: "These are the listed route stops, not a confirmed day-by-day schedule. The team will confirm daily timing, access, and overnight arrangements for your dates.",
+        summary: `${tourPackage.title} · ${tourPackage.duration}. Request your dates for current availability and a confirmed trip plan.`,
+        description: `${tourPackage.bestFor ?? "A Pakistan journey"} with a listed starting rate of ${startingPrice}; final arrangements are confirmed for your requested dates.`,
+        overview: `This journey is listed across ${routeStops.join(", ")}. Exact daily sequencing, overnight locations, inclusions, and current availability are confirmed with the planning team before booking.`,
+        highlights: [
+          ...(tourPackage.bestFor ? [tourPackage.bestFor] : []),
+          ...(tourPackage.pace ? [`${tourPackage.pace} pace`] : []),
+          ...(tourPackage.routeHighlights ?? []),
+        ],
+        attractions: routeStops,
+        itinerary: routeStops.map((stop, index) => ({
+          day: `Stop ${index + 1}`,
+          title: stop,
+          description: "This stop is part of the listed route. Its day allocation and overnight plan are confirmed for your travel dates.",
+        })),
+        includes: tourPackage.includes ?? [],
+        excludes: tourPackage.excludes ?? [],
+        bookingPolicy: [
+          "Request your preferred dates and group size to confirm current availability.",
+          "Final price, hotel configuration, inclusions, and day-by-day schedule are confirmed before payment.",
+        ],
+        detailSections: [
+          {
+            title: "Route and transport details",
+            content: [
+              `Listed stops: ${routeStops.join(" → ")}.`,
+              ...(tourPackage.transport ?? ["Transport arrangements are confirmed for your dates and selected trip configuration."]),
+            ],
+          },
+        ],
+        priceWithIslamabadStay: startingPrice,
+        priceWithoutIslamabadStay: "Confirm configuration",
+        tourNotes: tourPackage.notes ?? [],
+        refundPolicy: ["The applicable refund terms are shared with your confirmed itinerary and booking before payment."],
+        terms: ["Routes and stop access may change with weather, road conditions, local guidance, or permissions."],
+        travelerInstruction: ["Share your dates, group size, and preferred room configuration so the team can confirm the itinerary and current rate."],
+        childPolicy: [],
+      };
+    }),
+);
 
 function getSeasonalRouteDetails(title: string, duration: string) {
   if (/swat|kalam|malam jabba/i.test(title)) {
@@ -477,7 +557,15 @@ export default async function PackagePage({ params }: PackagePageProps) {
 
             <div className="mt-5 rounded-[1.25rem] border border-[#fcc000]/30 bg-[#fff8df] p-4">
               <p className="text-[11px] uppercase tracking-[0.26em] text-stone-500">Package Pricing</p>
-              <div className="mt-3 space-y-2 text-sm text-stone-700">
+              {pkg.priceDisplay ? (
+                <div className="mt-3 text-sm text-stone-700">
+                  <div className="flex items-center justify-between gap-3">
+                    <span>{pkg.priceDisplay.label}</span>
+                    <span className="font-bold text-stone-900">{pkg.priceDisplay.value}</span>
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-stone-600">{pkg.priceDisplay.note}</p>
+                </div>
+              ) : <div className="mt-3 space-y-2 text-sm text-stone-700">
                 <div className="flex items-center justify-between gap-3">
                   <span>With Islamabad stay</span>
                   <span className="font-bold text-stone-900">{pkg.priceWithIslamabadStay}</span>
@@ -486,7 +574,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
                   <span>Without Islamabad stay</span>
                   <span className="font-bold text-stone-900">{pkg.priceWithoutIslamabadStay}</span>
                 </div>
-              </div>
+              </div>}
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2">
@@ -531,7 +619,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
               </div>
               <div className="rounded-[1.25rem] border border-stone-200 bg-stone-50 p-4">
                 <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">Best for</p>
-                <p className="mt-2 text-lg font-semibold text-stone-900">Couples & groups</p>
+                <p className="mt-2 text-lg font-semibold text-stone-900">{pkg.bestFor ?? "Couples & groups"}</p>
               </div>
               <div className="rounded-[1.25rem] border border-stone-200 bg-stone-50 p-4">
                 <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">Departure</p>
@@ -541,7 +629,13 @@ export default async function PackagePage({ params }: PackagePageProps) {
 
             <div className="mt-6 rounded-[1.5rem] border border-[#fcc000]/25 bg-[#fff8df] p-5">
               <p className="text-[11px] uppercase tracking-[0.24em] text-stone-500">Price transparency</p>
-              <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {pkg.priceDisplay ? (
+                <div className="mt-4 rounded-[1rem] bg-white p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-stone-500">{pkg.priceDisplay.label}</p>
+                  <p className="mt-2 text-2xl font-black text-stone-900">{pkg.priceDisplay.value}</p>
+                  <p className="mt-2 text-sm leading-6 text-stone-600">{pkg.priceDisplay.note}</p>
+                </div>
+              ) : <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <div className="rounded-[1rem] bg-white p-4 shadow-sm">
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">With Islamabad stay</p>
                   <p className="mt-2 text-2xl font-black text-stone-900">{pkg.priceWithIslamabadStay}</p>
@@ -550,7 +644,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
                   <p className="text-xs uppercase tracking-[0.2em] text-stone-500">Without Islamabad stay</p>
                   <p className="mt-2 text-2xl font-black text-stone-900">{pkg.priceWithoutIslamabadStay}</p>
                 </div>
-              </div>
+              </div>}
             </div>
 
             {pkg.attractions?.length ? (
@@ -586,7 +680,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
                   )) : (
                     <li className="flex items-start gap-3">
                       <span className="mt-2 h-2.5 w-2.5 rounded-full bg-[#fcc000]" />
-                      <span>Hotel accommodation and route support according to your selected package.</span>
+                      <span>Current inclusions are confirmed for your requested dates and package configuration.</span>
                     </li>
                   )}
                 </ul>
@@ -615,9 +709,9 @@ export default async function PackagePage({ params }: PackagePageProps) {
           </div>
 
           <div className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8">            <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Itinerary</p>
-            <h2 className="mt-3 font-serif text-3xl text-stone-900">Day wise plan for this route</h2>
+            <h2 className="mt-3 font-serif text-3xl text-stone-900">{pkg.itineraryHeading ?? "Day wise plan for this route"}</h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-stone-600">
-              A clear overview of how the journey flows, from arrival through the best scenic moments and the final return.
+              {pkg.itineraryIntro ?? "A clear overview of how the journey flows, from arrival through the best scenic moments and the final return."}
             </p>
 
             <div className="mt-8">
