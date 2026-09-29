@@ -13,7 +13,7 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "postinstall": "prisma generate || true",
+    "postinstall": "node -e \"try { require('child_process').execSync('npx prisma generate', { stdio: 'inherit', shell: true }); } catch (error) { console.warn('Prisma generate skipped during install:', error.message); }\"",
     "deploy:db": "prisma db push --skip-generate && prisma db seed"
   },
   "prisma": {
