@@ -55,7 +55,7 @@ export default function ToursPage() {
       <section className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Tour catalog highlights">
         {[
           [String(tourPackages.length), "unique journeys"],
-          [String(scheduledDepartureCount), "confirmed departures"],
+          [scheduledDepartureCount ? String(scheduledDepartureCount) : "On request", scheduledDepartureCount ? "confirmed departures" : "custom-date journeys"],
           [String(northernJourneyCount), "northern journeys"],
           [String(southernJourneyCount), "southern journeys"],
         ].map(([value, label]) => (
@@ -69,11 +69,11 @@ export default function ToursPage() {
       <section className="mt-16 rounded-[2rem] border border-stone-200 bg-[#f7f3ea] p-6 shadow-[0_20px_55px_rgba(55,55,48,0.07)] sm:p-8" aria-labelledby="confirmed-departures-heading">
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-stone-300 pb-6">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#8b6b00]">Confirmed dates</p>
-            <h2 id="confirmed-departures-heading" className="mt-3 font-serif text-3xl text-stone-950">Departures, grouped by journey.</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">Only dates with a verified year appear here. Other journeys remain available for custom date requests.</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#8b6b00]">{scheduledDepartureCount ? "Confirmed dates" : "Flexible dates"}</p>
+            <h2 id="confirmed-departures-heading" className="mt-3 font-serif text-3xl text-stone-950">{scheduledDepartureCount ? "Departures, grouped by journey." : "Travel on the dates that work for you."}</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">{scheduledDepartureCount ? "Only dates with a verified year appear here. Other journeys remain available for custom date requests." : "No fixed group dates are confirmed right now. Every journey can be requested around your schedule; our team will confirm current availability and pricing."}</p>
           </div>
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">{scheduledDepartureCount} dates · {scheduledJourneys.length} journeys</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-600">{scheduledDepartureCount ? `${scheduledDepartureCount} dates · ${scheduledJourneys.length} journeys` : `${tourPackages.length} journeys open for date requests`}</span>
         </div>
 
         {scheduledJourneys.length > 0 ? (
@@ -100,8 +100,8 @@ export default function ToursPage() {
           </div>
         ) : (
           <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-dashed border-stone-300 bg-white/70 p-5">
-            <p className="max-w-2xl text-sm leading-6 text-stone-700">No dated departures are currently verified. Choose a journey and request dates from the planning team.</p>
-            <Link href="/make-my-trip" className="inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-5 py-3 text-sm font-semibold text-white transition hover:bg-black">Plan around my dates</Link>
+            <p className="max-w-2xl text-sm leading-6 text-stone-700">Choose a journey and request the dates that suit you. We will confirm availability and the current price with you.</p>
+            <Link href="/make-my-trip" className="inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-5 py-3 text-sm font-semibold text-white transition hover:bg-black">Request my dates</Link>
           </div>
         )}
       </section>

@@ -3,10 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 
 import { tourPackages, type TravelStyle, type TourDeparture } from "@/lib/data/tour-packages";
-import { whatsappUrl } from "@/lib/site";
 
 type RegionFilter = "all" | "northern" | "southern";
 type DurationFilter = "all" | "weekend" | "4-7" | "8-12" | "12-plus";
@@ -22,6 +21,10 @@ type DiscoveryPackage = {
   region: Exclude<RegionFilter, "all">;
   notes: string[];
   destinationSlugs: string[];
+  routeStops: string[];
+  routeHighlights: string[];
+  bestFor: string;
+  pace?: "Fast" | "Moderate" | "Relaxed";
   travelStyles: TravelStyle[];
   departures: TourDeparture[];
   transport: string[];
@@ -34,6 +37,9 @@ const STORAGE_KEYS = {
   compare: "hodophile-compare",
   wishlist: "hodophile-wishlist",
 };
+const MAX_COMPARE_ITEMS = 4;
+const STORAGE_CHANGE_EVENT = "hodophile-storage-change";
+const EMPTY_STORAGE_SNAPSHOT = "[]";
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-PK", {
@@ -180,6 +186,10 @@ const packageList: DiscoveryPackage[] = tourPackages.map((tourPackage, index) =>
     region: getPackageRegion(tourPackage),
     notes: tourPackage.notes ?? [],
     destinationSlugs: tourPackage.destinationSlugs ?? [],
+    routeStops: tourPackage.routeStops ?? (tourPackage.destinationSlugs ?? []).map(formatDestination),
+    routeHighlights: tourPackage.routeHighlights ?? [],
+    bestFor: tourPackage.bestFor ?? "Custom date journey",
+    pace: tourPackage.pace,
     travelStyles: tourPackage.travelStyles ?? ["family", "tailored"],
     departures: tourPackage.departures ?? [],
     transport: tourPackage.transport ?? [],
@@ -202,17 +212,63 @@ function includedDetails(packageItem: DiscoveryPackage, pattern: RegExp, fallbac
   return matchingDetails.length ? matchingDetails.join(", ") : fallback;
 }
 
-function readStorageIds(storageKey: string) {
-  if (typeof window === "undefined") return [];
-
+function parseStorageIds(rawValue: string) {
   try {
-    const rawValue = window.localStorage.getItem(storageKey);
-    if (!rawValue) return [];
     const parsedValue = JSON.parse(rawValue);
     return Array.isArray(parsedValue) ? parsedValue.filter((value): value is string => typeof value === "string") : [];
   } catch {
     return [];
   }
+}
+
+function getStorageSnapshot(storageKey: string) {
+  if (typeof window === "undefined") return EMPTY_STORAGE_SNAPSHOT;
+
+  try {
+    return window.localStorage.getItem(storageKey) ?? EMPTY_STORAGE_SNAPSHOT;
+  } catch {
+    return EMPTY_STORAGE_SNAPSHOT;
+  }
+}
+
+function subscribeToStorage(storageKey: string, onStoreChange: () => void) {
+  if (typeof window === "undefined") return () => {};
+
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === storageKey || event.key === null) onStoreChange();
+  };
+  const handleSameTabChange = (event: Event) => {
+    if (event instanceof CustomEvent && event.detail === storageKey) onStoreChange();
+  };
+
+  window.addEventListener("storage", handleStorage);
+  window.addEventListener(STORAGE_CHANGE_EVENT, handleSameTabChange);
+  return () => {
+    window.removeEventListener("storage", handleStorage);
+    window.removeEventListener(STORAGE_CHANGE_EVENT, handleSameTabChange);
+  };
+}
+
+function writeStorageIds(storageKey: string, ids: string[]) {
+  if (typeof window === "undefined") return;
+
+  const uniqueIds = [...new Set(ids)];
+  const storedIds = storageKey === STORAGE_KEYS.compare ? uniqueIds.slice(0, MAX_COMPARE_ITEMS) : uniqueIds;
+  window.localStorage.setItem(storageKey, JSON.stringify(storedIds));
+  window.dispatchEvent(new CustomEvent(STORAGE_CHANGE_EVENT, { detail: storageKey }));
+}
+
+function useStoredIds(storageKey: string, maximumItems?: number) {
+  const snapshot = useSyncExternalStore(
+    (onStoreChange) => subscribeToStorage(storageKey, onStoreChange),
+    () => getStorageSnapshot(storageKey),
+    () => EMPTY_STORAGE_SNAPSHOT,
+  );
+
+  return useMemo(() => {
+    const ids = parseStorageIds(snapshot);
+    return maximumItems === undefined ? ids : ids.slice(0, maximumItems);
+  }, [maximumItems, snapshot]);
 }
 
 function RouteCard({
@@ -241,76 +297,37 @@ function RouteCard({
           className="object-cover transition duration-700 group-hover:scale-105"
         />
         <span className="absolute left-4 top-4 rounded-full bg-[#fcc000] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#0b0b0b]">
-          {packageItem.region === "northern" ? "Northern" : "Southern"}
+          {packageItem.routeStops[0] ?? (packageItem.region === "northern" ? "Northern" : "Southern")}
         </span>
-        <div className="absolute right-3 top-3 flex gap-2">
-          <button
-            type="button"
-            onClick={() => onToggleWishlist(packageItem.id)}
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold shadow-md backdrop-blur-sm transition ${
-              isWishlistEnabled
-                ? "border-[#1b7a4b] bg-[#1b7a4b] text-white"
-                : "border-white/70 bg-white/90 text-stone-700 hover:border-[#1b7a4b] hover:text-[#1b7a4b]"
-            }`}
-            aria-label={isWishlistEnabled ? `Remove ${packageItem.title} from wishlist` : `Save ${packageItem.title} to wishlist`}
-          >
-            ♥
-          </button>
-          <button
-            type="button"
-            onClick={() => onToggleCompare(packageItem.id)}
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold shadow-md backdrop-blur-sm transition ${
-              isCompareEnabled
-                ? "border-[#9a7600] bg-[#fcc000] text-[#0b0b0b]"
-                : "border-white/70 bg-white/90 text-stone-700 hover:border-[#9a7600] hover:text-[#9a7600]"
-            }`}
-            aria-label={isCompareEnabled ? `Remove ${packageItem.title} from compare` : `Add ${packageItem.title} to compare`}
-          >
-            ⇄
-          </button>
-        </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a7600]">{packageItem.duration}</span>
-                  <span className="text-[10px] uppercase tracking-[0.18em] text-stone-500">{packageItem.destinationSlugs.length} {packageItem.destinationSlugs.length === 1 ? "destination" : "destinations"}</span>
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <div className="flex items-center justify-between gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">
+          <span>{packageItem.duration}</span>
+          {packageItem.pace ? <span>{packageItem.pace} pace</span> : null}
         </div>
 
-        <h3 className="mt-3 font-serif text-[1.9rem] leading-[1.08] text-stone-950">{packageItem.title}</h3>
-        <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600">{packageItem.summary}</p>
+        <h3 className="mt-2 font-serif text-2xl leading-tight text-stone-950">{packageItem.title}</h3>
+        <p className="mt-2 line-clamp-2 text-sm leading-6 text-stone-600">{packageItem.summary}</p>
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          {(packageItem.notes.slice(0, 2).length ? packageItem.notes.slice(0, 2) : ["Flexible departure", "Curated route"]).map((note) => (
-            <span key={note} className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-medium text-stone-700">
-              {note}
-            </span>
-          ))}
-        </div>
-
-        <div className="mt-5 grid grid-cols-2 gap-3 rounded-2xl border border-stone-200 bg-stone-50 p-3">
+        <div className="mt-auto flex items-end justify-between gap-3 pt-4">
           <div>
             <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500">From</p>
-            <p className="mt-1 text-lg font-semibold text-[#9a7600]">{priceText}</p>
+            <p className="mt-1 text-xl font-semibold text-[#9a7600]">{priceText}</p>
           </div>
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500">Best for</p>
-            <p className="mt-1 text-sm font-semibold text-stone-900">{packageItem.region === "northern" ? "Mountain route" : "Coastal escape"}</p>
-          </div>
+          <span className="max-w-[48%] text-right text-xs font-semibold leading-5 text-stone-700">{packageItem.bestFor}</span>
         </div>
 
-        <div className="mt-5 flex items-center justify-between gap-3 border-t border-stone-200 pt-4">
-          <Link href={`/packages/${packageItem.id}`} className="text-sm font-bold uppercase tracking-[0.12em] text-stone-950 transition hover:text-[#9a7600]">
-            View route ↗
+        <div className="mt-4 flex items-center gap-2 border-t border-stone-200 pt-4">
+          <Link href={`/packages/${packageItem.id}`} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#0b0b0b] px-4 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#282828]">
+            View journey
           </Link>
-          <a
-            href={whatsappUrl(`Hi Hodophile, I am interested in ${packageItem.title}. Please share the best current package details.`)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm font-semibold text-[#1f6b4a] transition hover:text-[#9a7600]"
-          >
-            WhatsApp
-          </a>
+          <button type="button" onClick={() => onToggleWishlist(packageItem.id)} title={isWishlistEnabled ? "Remove from saved journeys" : "Save journey"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition ${isWishlistEnabled ? "border-[#1b7a4b] bg-[#1b7a4b] text-white" : "border-stone-300 bg-white text-stone-700 hover:border-[#1b7a4b] hover:text-[#1b7a4b]"}`} aria-label={isWishlistEnabled ? `Remove ${packageItem.title} from wishlist` : `Save ${packageItem.title} to wishlist`}>
+            ♥
+          </button>
+          <button type="button" onClick={() => onToggleCompare(packageItem.id)} title={isCompareEnabled ? "Remove from comparison" : "Add to comparison"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition ${isCompareEnabled ? "border-[#9a7600] bg-[#fcc000] text-[#0b0b0b]" : "border-stone-300 bg-white text-stone-700 hover:border-[#9a7600] hover:text-[#9a7600]"}`} aria-label={isCompareEnabled ? `Remove ${packageItem.title} from compare` : `Add ${packageItem.title} to compare`}>
+            ⇄
+          </button>
         </div>
       </div>
     </article>
@@ -326,19 +343,9 @@ export function TravelDiscoveryCatalog() {
   const [minimumBudget, setMinimumBudget] = useState("");
   const [maximumBudget, setMaximumBudget] = useState("");
   const [sort, setSort] = useState<SortOption>("recommended");
-  const [compareIds, setCompareIds] = useState<string[]>(() => readStorageIds(STORAGE_KEYS.compare));
-  const [wishlistIds, setWishlistIds] = useState<string[]>(() => readStorageIds(STORAGE_KEYS.wishlist));
-  const [quickCompareSelection, setQuickCompareSelection] = useState<Array<string | "">>(["", "", ""]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem(STORAGE_KEYS.compare, JSON.stringify(compareIds));
-  }, [compareIds]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem(STORAGE_KEYS.wishlist, JSON.stringify(wishlistIds));
-  }, [wishlistIds]);
+  const compareIds = useStoredIds(STORAGE_KEYS.compare, MAX_COMPARE_ITEMS);
+  const wishlistIds = useStoredIds(STORAGE_KEYS.wishlist);
+  const [quickCompareSelection, setQuickCompareSelection] = useState<Array<string | "">>(["", "", "", ""]);
 
   const filteredPackages = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -374,35 +381,30 @@ export function TravelDiscoveryCatalog() {
   }, [duration, maximumBudget, minimumBudget, region, search, sort, style]);
 
   const toggleWishlist = (id: string) => {
-    setWishlistIds((currentValues) =>
-      currentValues.includes(id) ? currentValues.filter((value) => value !== id) : [...currentValues, id],
+    writeStorageIds(
+      STORAGE_KEYS.wishlist,
+      wishlistIds.includes(id) ? wishlistIds.filter((value) => value !== id) : [...wishlistIds, id],
     );
   };
 
   const persistCompareSelection = (ids: string[]) => {
-    setCompareIds(ids);
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_KEYS.compare, JSON.stringify(ids));
-    }
+    writeStorageIds(STORAGE_KEYS.compare, ids);
     router.push("/compare");
   };
 
   const handleCompareSubmit = () => {
     const selectedIds = [...new Set(quickCompareSelection.filter((value): value is string => Boolean(value)))];
     if (selectedIds.length === 0) return;
-    persistCompareSelection(selectedIds.slice(0, 3));
+    persistCompareSelection(selectedIds.slice(0, MAX_COMPARE_ITEMS));
   };
 
   const toggleCompare = (id: string) => {
-    setCompareIds((currentValues) => {
-      if (currentValues.includes(id)) {
-        return currentValues.filter((value) => value !== id);
-      }
-      if (currentValues.length >= 3) {
-        return [...currentValues.slice(1), id];
-      }
-      return [...currentValues, id];
-    });
+    if (compareIds.includes(id)) {
+      writeStorageIds(STORAGE_KEYS.compare, compareIds.filter((value) => value !== id));
+      return;
+    }
+    if (compareIds.length >= MAX_COMPARE_ITEMS) return;
+    writeStorageIds(STORAGE_KEYS.compare, [...compareIds, id]);
   };
 
   const comparePackages = compareIds
@@ -511,18 +513,18 @@ export function TravelDiscoveryCatalog() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">Quick compare</p>
-            <h3 className="mt-1 text-lg font-semibold text-stone-950">Select up to three journeys to compare</h3>
+            <h3 className="mt-1 text-lg font-semibold text-stone-950">Select up to four journeys to compare</h3>
           </div>
           <button
             type="button"
-            onClick={() => setQuickCompareSelection(["", "", ""])}
+            onClick={() => setQuickCompareSelection(["", "", "", ""])}
             className="text-xs font-semibold uppercase tracking-[0.13em] text-stone-600 transition hover:text-[#8b6b00]"
           >
             Clear
           </button>
         </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {quickCompareSelection.map((selectedId, index) => (
             <label key={`quick-compare-${index}`} className="rounded-2xl border border-stone-200 bg-stone-50 p-3">
               <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Journey {index + 1}</span>
@@ -566,12 +568,13 @@ export function TravelDiscoveryCatalog() {
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#8b6b00]">Comparison tray</p>
               <h3 className="mt-1 text-lg font-semibold text-stone-950">Selected for side-by-side comparison</h3>
+              <p className="mt-1 text-xs text-stone-600">Up to four journeys. Remove one to make room for another.</p>
             </div>
             <Link href="/compare" className="inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-black">
               View compare
             </Link>
           </div>
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {comparePackages.map((packageItem) => (
               <div key={packageItem.id} className="flex items-center justify-between rounded-2xl border border-[#e7cf74] bg-white/80 p-3">
                 <div>
@@ -641,26 +644,23 @@ export function TravelDiscoveryCatalog() {
 }
 
 export function CompareTripsClient() {
-  const [compareIds, setCompareIds] = useState<string[]>(() => readStorageIds(STORAGE_KEYS.compare));
+  const compareIds = useStoredIds(STORAGE_KEYS.compare, MAX_COMPARE_ITEMS);
 
   const comparePackages = compareIds
     .map((id) => packageList.find((packageItem) => packageItem.id === id))
     .filter((packageItem): packageItem is DiscoveryPackage => Boolean(packageItem));
+  const comparedStops = [...new Set(comparePackages.flatMap((packageItem) => packageItem.routeStops))];
 
   const removeComparedPackage = (id: string) => {
-    const nextIds = compareIds.filter((value) => value !== id);
-    setCompareIds(nextIds);
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_KEYS.compare, JSON.stringify(nextIds));
-    }
+    writeStorageIds(STORAGE_KEYS.compare, compareIds.filter((value) => value !== id));
   };
 
   if (comparePackages.length === 0) {
     return (
       <div className="rounded-[2rem] border border-dashed border-stone-300 bg-[radial-gradient(circle_at_top,_rgba(252,192,0,0.12),_rgba(255,255,255,1)_55%)] p-8 text-center shadow-[0_20px_50px_rgba(55,55,48,0.06)]">
         <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-[#8b6b00]">Compare</p>
-        <p className="mt-3 text-2xl font-semibold text-stone-950">No routes selected for comparison yet.</p>
-        <p className="mt-3 text-sm text-stone-600">Pick up to three tours from the catalog and return here to compare route fit, pace, and pricing.</p>
+        <p className="mt-3 text-2xl font-semibold text-stone-950">No journeys selected yet.</p>
+        <p className="mt-3 text-sm text-stone-600">Choose up to four trips to compare their stops, time away, starting price, and travel style side by side.</p>
         <Link href="/tours" className="mt-6 inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-5 py-3 text-sm font-semibold text-white transition hover:bg-black">
           Browse catalog
         </Link>
@@ -677,7 +677,7 @@ export function CompareTripsClient() {
           <p className="mt-2 text-sm text-stone-600">Compare {comparePackages.length} selected {comparePackages.length === 1 ? "journey" : "journeys"} on the details that shape your trip.</p>
         </div>
         <Link href="/tours" className="text-sm font-semibold text-stone-600 transition hover:text-[#8b6b00]">
-          Add more routes
+          Add more journeys
         </Link>
       </div>
 
@@ -688,9 +688,13 @@ export function CompareTripsClient() {
               <th className="pr-4 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Journey</th>
               {comparePackages.map((packageItem) => (
                 <th key={packageItem.id} className="min-w-[220px] pr-4 align-top">
-                  <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                  <div className="rounded-2xl border border-stone-200 bg-stone-50 p-3 sm:p-4">
+                    <div className="relative mb-3 aspect-[16/9] overflow-hidden rounded-xl bg-stone-200">
+                      <Image src={packageItem.image ?? "/images/destinations/swat-hd.webp"} alt="" fill sizes="(max-width: 768px) 70vw, 220px" className="object-cover" />
+                    </div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8b6b00]">Trip {comparePackages.indexOf(packageItem) + 1}</p>
                     <p className="text-sm font-semibold text-stone-900">{packageItem.title}</p>
-                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-[#8b6b00]">{packageItem.region} · {packageItem.duration}</p>
+                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">{packageItem.duration} · {packageItem.pace ?? "Pace to confirm"}</p>
                     <p className="mt-3 text-lg font-semibold text-[#9a7600]">From {formatCurrency(packageItem.pricePerPerson)}</p>
                     <button type="button" onClick={() => removeComparedPackage(packageItem.id)} className="mt-3 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500 transition hover:text-red-700">Remove</button>
                   </div>
@@ -700,8 +704,9 @@ export function CompareTripsClient() {
           </thead>
           <tbody>
             {[
-              { label: "Destinations", value: (packageItem: DiscoveryPackage) => packageItem.destinationSlugs.map(formatDestination).join(", ") || "Confirm route" },
               { label: "Duration", value: (packageItem: DiscoveryPackage) => packageItem.duration },
+              { label: "Travel pace", value: (packageItem: DiscoveryPackage) => packageItem.pace ?? "To be confirmed" },
+              { label: "Best for", value: (packageItem: DiscoveryPackage) => packageItem.bestFor },
               { label: "Stay", value: (packageItem: DiscoveryPackage) => includedDetails(packageItem, /hotel|accommodation|stay/i, "Stay details to confirm") },
               { label: "Meals", value: (packageItem: DiscoveryPackage) => includedDetails(packageItem, /breakfast|dinner|lunch|meal/i, "Meal plan to confirm") },
               {
@@ -709,19 +714,14 @@ export function CompareTripsClient() {
                 value: (packageItem: DiscoveryPackage) => [...packageItem.transport, ...packageItem.includes.filter((item) => /transport|vehicle|driver|bus|flight/i.test(item))].join(", ") || "Transport details to confirm",
               },
               {
-                label: "Activities",
-                value: (packageItem: DiscoveryPackage) => packageItem.notes.filter((note) => /deosai|basho|khaplu|jeep|hike|trek|bonfire|photography|waterfall|lake/i.test(note)).join(", ") || "See the itinerary for route-specific activities",
+                label: "Highlights",
+                value: (packageItem: DiscoveryPackage) => packageItem.routeHighlights.join(", ") || "Ask the planner to confirm trip-specific activities",
               },
               {
                 label: "Departures",
                 value: (packageItem: DiscoveryPackage) => packageItem.departures.length
                   ? packageItem.departures.map((departure) => departure.label).join("; ")
                   : packageItem.departureAvailability === "confirmed" ? packageItem.departure ?? "Dates to confirm" : packageItem.departure ?? "Dates available on request",
-              },
-              {
-                label: "Budget fit",
-                value: (packageItem: DiscoveryPackage) =>
-                  packageItem.pricePerPerson < 50000 ? "Under PKR 50k" : packageItem.pricePerPerson > 100000 ? "PKR 100k+" : "Mid-range",
               },
             ].map(({ label, value }) => (
               <tr key={label}>
@@ -735,43 +735,66 @@ export function CompareTripsClient() {
                 ))}
               </tr>
             ))}
+            {comparedStops.map((stop) => (
+              <tr key={`stop-${stop}`}>
+                <td className="pr-4 text-sm font-semibold text-stone-900">{stop}</td>
+                {comparePackages.map((packageItem) => {
+                  const includesStop = packageItem.routeStops.includes(stop);
+                  return (
+                    <td key={`${packageItem.id}-stop-${stop}`} className="pr-4 align-top">
+                      <div className={`rounded-2xl border p-3 text-sm font-semibold ${includesStop ? "border-[#c9decf] bg-[#f0f7f2] text-[#1f6b4a]" : "border-stone-200 bg-stone-50 text-stone-400"}`}>
+                        {includesStop ? "Included" : "Not on route"}
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
       <section className="mt-8 border-t border-stone-200 pt-6" aria-labelledby="fit-explanation-heading">
-        <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">A clearer choice</p>
-        <h2 id="fit-explanation-heading" className="mt-2 font-serif text-3xl text-stone-950">Which one fits you?</h2>
+        <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">Route-by-route</p>
+        <h2 id="fit-explanation-heading" className="mt-2 font-serif text-3xl text-stone-950">What’s different?</h2>
         {comparePackages.length > 1 ? (
-          <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {comparePackages.map((packageItem) => {
-              const lowestPrice = Math.min(...comparePackages.map((item) => item.pricePerPerson));
-              const shortestTrip = Math.min(...comparePackages.map(getDurationDays));
-              const longestTrip = Math.max(...comparePackages.map(getDurationDays));
-              const widestRoute = Math.max(...comparePackages.map((item) => item.destinationSlugs.length));
-              const reasons = [
-                packageItem.region === "southern" && comparePackages.some((item) => item.region === "northern") ? "a coastal change of scenery" : null,
-                packageItem.region === "northern" && comparePackages.some((item) => item.region === "southern") ? "a mountain-focused route" : null,
-                packageItem.pricePerPerson === lowestPrice && comparePackages.some((item) => item.pricePerPerson > packageItem.pricePerPerson) ? "the lowest listed starting price" : null,
-                getDurationDays(packageItem) === shortestTrip && comparePackages.some((item) => getDurationDays(item) > getDurationDays(packageItem)) ? "the shortest time away" : null,
-                getDurationDays(packageItem) === longestTrip && comparePackages.some((item) => getDurationDays(item) < getDurationDays(packageItem)) ? "the most time to explore" : null,
-                packageItem.destinationSlugs.length === widestRoute && comparePackages.some((item) => item.destinationSlugs.length < packageItem.destinationSlugs.length) ? "the broadest destination mix" : null,
-              ].filter((reason): reason is string => Boolean(reason));
-              const fitText = reasons.length ? reasons.join(", ") : "its route-specific itinerary and pace";
-
+          <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            {comparePackages.map((packageItem, index) => {
+              const previousPackage = comparePackages[index - 1];
+              const addedStops = previousPackage
+                ? packageItem.routeStops.filter((stop) => !previousPackage.routeStops.includes(stop))
+                : packageItem.routeStops;
+              const removedStops = previousPackage
+                ? previousPackage.routeStops.filter((stop) => !packageItem.routeStops.includes(stop))
+                : [];
+              const durationDifference = previousPackage ? getDurationDays(packageItem) - getDurationDays(previousPackage) : 0;
+              const priceDifference = previousPackage ? packageItem.pricePerPerson - previousPackage.pricePerPerson : 0;
+              const differences = [
+                addedStops.length ? `adds ${addedStops.join(", ")}` : null,
+                removedStops.length ? `does not include ${removedStops.join(", ")}` : null,
+                durationDifference > 0 ? `adds ${durationDifference} ${durationDifference === 1 ? "day" : "days"}` : null,
+                durationDifference < 0 ? `takes ${Math.abs(durationDifference)} fewer days` : null,
+                priceDifference > 0 ? `costs ${formatCurrency(priceDifference)} more` : null,
+                priceDifference < 0 ? `costs ${formatCurrency(Math.abs(priceDifference))} less` : null,
+              ].filter((difference): difference is string => Boolean(difference));
+              const description = previousPackage
+                ? `Compared with ${previousPackage.title}, this journey ${differences.join(" and ") || "keeps a similar duration and price with a different itinerary"}.`
+                : `Trip 1 sets the reference: ${packageItem.duration.toLowerCase()} across ${packageItem.routeStops.join(" and ")}, from ${formatCurrency(packageItem.pricePerPerson)}.`;
               return (
                 <article key={`${packageItem.id}-fit`} className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8b6b00]">Trip {index + 1}</p>
                   <h3 className="font-semibold text-stone-950">{packageItem.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-stone-600">
-                    A {packageItem.duration.toLowerCase()} journey across {packageItem.destinationSlugs.map(formatDestination).join(" and ") || "its planned route"}, starting at {formatCurrency(packageItem.pricePerPerson)}. A good fit if you want {fitText}.
-                  </p>
-                  <Link href="/make-my-trip" className="mt-3 inline-flex text-xs font-bold uppercase tracking-[0.12em] text-[#8b6b00]">Customize this journey ↗</Link>
+                  <p className="mt-2 text-sm leading-6 text-stone-600">{description}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Link href={`/packages/${packageItem.id}`} className="inline-flex min-h-10 items-center justify-center rounded-full bg-[#0b0b0b] px-4 text-xs font-bold uppercase tracking-[0.1em] text-white">View journey</Link>
+                    <Link href="/make-my-trip" className="inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 bg-white px-4 text-xs font-bold uppercase tracking-[0.1em] text-stone-900">Customize trip</Link>
+                  </div>
                 </article>
               );
             })}
           </div>
         ) : (
-          <p className="mt-3 text-sm leading-6 text-stone-600">Add another journey to see the differences in price, time away, and destination mix.</p>
+          <p className="mt-3 text-sm leading-6 text-stone-600">Add at least one more journey to compare its route stops, days, and starting price.</p>
         )}
       </section>
     </div>
@@ -780,25 +803,19 @@ export function CompareTripsClient() {
 
 export function WishlistTripsClient() {
   const router = useRouter();
-  const [wishlistIds, setWishlistIds] = useState<string[]>(() => readStorageIds(STORAGE_KEYS.wishlist));
+  const wishlistIds = useStoredIds(STORAGE_KEYS.wishlist);
 
   const wishlistPackages = wishlistIds
     .map((id) => packageList.find((packageItem) => packageItem.id === id))
     .filter((packageItem): packageItem is DiscoveryPackage => Boolean(packageItem));
 
   const removeFromWishlist = (id: string) => {
-    const nextWishlist = wishlistIds.filter((value) => value !== id);
-    setWishlistIds(nextWishlist);
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_KEYS.wishlist, JSON.stringify(nextWishlist));
-    }
+    writeStorageIds(STORAGE_KEYS.wishlist, wishlistIds.filter((value) => value !== id));
   };
 
   const compareShortlist = () => {
-    const selectedIds = wishlistPackages.slice(0, 3).map((packageItem) => packageItem.id);
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_KEYS.compare, JSON.stringify(selectedIds));
-    }
+    const selectedIds = wishlistPackages.slice(0, MAX_COMPARE_ITEMS).map((packageItem) => packageItem.id);
+    writeStorageIds(STORAGE_KEYS.compare, selectedIds);
     router.push("/compare");
   };
 
@@ -825,7 +842,7 @@ export function WishlistTripsClient() {
         </div>
         <div className="flex flex-wrap gap-2">
           <button type="button" onClick={compareShortlist} className="inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-black">
-            Compare up to 3
+            Compare up to {MAX_COMPARE_ITEMS}
           </button>
           <Link href="/make-my-trip" className="inline-flex items-center justify-center rounded-full border border-stone-300 bg-white px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] text-stone-900 transition hover:border-[#fcc000]">
             Build my trip

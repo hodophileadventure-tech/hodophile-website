@@ -206,6 +206,45 @@ const getDestinationSlugs = (title: string) => {
   return slugs.length ? slugs : ["swat"];
 };
 
+function getSeasonalRouteStops(title: string) {
+  const routeStopMatchers: Array<[RegExp, string]> = [
+    [/skardu/i, "Skardu"],
+    [/hunza/i, "Hunza"],
+    [/naltar/i, "Naltar"],
+    [/deosai/i, "Deosai"],
+    [/basho/i, "Basho"],
+    [/khaplu/i, "Khaplu"],
+    [/manthok/i, "Manthoka"],
+    [/kashmir/i, "Kashmir"],
+    [/arang kel/i, "Arang Kel"],
+    [/taobat/i, "Taobat"],
+    [/naran/i, "Naran"],
+    [/shogran/i, "Shogran"],
+    [/swat/i, "Swat"],
+    [/kalam/i, "Kalam"],
+    [/malam jabba/i, "Malam Jabba"],
+    [/ormara/i, "Ormara Coast"],
+    [/gorakh/i, "Gorakh Hill"],
+    [/moola/i, "Moola Chotok"],
+    [/ranikot/i, "Ranikot"],
+    [/charo/i, "Charo Machi"],
+  ];
+
+  return routeStopMatchers.filter(([pattern]) => pattern.test(title)).map(([, stop]) => stop);
+}
+
+function getSeasonalBestFor(title: string) {
+  if (/skardu/i.test(title) && /khaplu/i.test(title)) return "Full Baltistan circuit";
+  if (/skardu/i.test(title) && /basho/i.test(title)) return "Mountain and forest";
+  if (/kashmir/i.test(title)) return "Valley explorer";
+  if (/ormara/i.test(title)) return "Coastal camping";
+  if (/gorakh/i.test(title)) return "Highland weekend";
+  if (/moola/i.test(title)) return "Canyon adventure";
+  if (/swat|kalam/i.test(title)) return "Families and valleys";
+  if (/hunza/i.test(title)) return "Mountain circuit";
+  return "Scenic escape";
+}
+
 export function isPastDeparture(title: string, referenceDate = new Date()) {
   const dateText = title.match(/\(([^)]*)\)/)?.[1];
   if (!dateText) return false;
@@ -238,6 +277,8 @@ const generatedSeasonalPackages: TourPackage[] = sourcePackages.map((item, index
   id: `seasonal-${index + 1}`,
   title: getPackageDisplayTitle(item.title),
   destinationSlugs: getDestinationSlugs(item.title),
+  routeStops: getSeasonalRouteStops(item.title),
+  bestFor: getSeasonalBestFor(item.title),
   region: /ormara|gorakh|moola|ranikot|charo/i.test(item.title) ? "southern" : "northern",
   image: getPackageImage(item.title),
   duration: item.duration,

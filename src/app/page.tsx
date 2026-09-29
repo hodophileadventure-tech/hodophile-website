@@ -11,7 +11,6 @@ import { HomeQuickLeadForm } from "@/components/home-quick-lead";
 import { FacebookReviewsWidget } from "@/components/facebook-reviews-widget";
 import { TravelDiscoveryCatalog } from "@/components/travel-discovery";
 import { companyStats } from "@/lib/data/company-stats";
-import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, blogPosts, destinations, whatsappUrl } from "@/lib/site";
 import { buildHomePageSchema } from "@/lib/seo/structured-data";
 
@@ -152,20 +151,6 @@ export default function Home() {
     },
   ];
 
-  const packageCards = featuredTourCards.map((tour) => {
-    const [firstPart, rest] = tour.title.split(/,\s+(.+)/);
-
-    return {
-      titleParts: rest ? [firstPart + ",", rest] : [tour.title],
-      name: tour.title,
-      image: tour.homeImage,
-      href: `/tours/featured/${tour.slug}`,
-      duration: tour.duration,
-      priceFrom: tour.priceFrom,
-      summary: tour.summary,
-    };
-  });
-
   const tripStyles = [
     {
       label: "Family Escapes",
@@ -197,7 +182,6 @@ export default function Home() {
     },
   ];
 
-  const topSellingTrips = packageCards.slice(0, 4);
   const seasonalHighlights = [
     {
       title: "Skardu & Hunza",
@@ -349,76 +333,6 @@ export default function Home() {
       </section>
 
       <HomeQuickLeadForm />
-
-      <section className="mt-20 w-full px-5 sm:px-8">
-        <div className="mx-auto max-w-6xl rounded-[2rem] border border-stone-200 bg-[#f7f3ea] p-6 shadow-[0_25px_60px_rgba(15,15,15,0.08)] sm:p-8 lg:p-10">
-          <div className="flex flex-col gap-4 border-b border-stone-300 pb-8 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="eyebrow text-stone-600">Top-selling departures</p>
-              <h2 className="display-serif mt-3 text-4xl font-normal leading-tight text-stone-950 sm:text-5xl">
-                Most loved routes by Pakistan travelers.
-              </h2>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <a
-                href={whatsappUrl("Hi Hodophile, I want the best package for my dates and budget.")}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-full bg-[#1f6b4a] px-5 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white transition hover:-translate-y-0.5"
-              >
-                WhatsApp best price
-              </a>
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
-            <div className="grid gap-4 md:grid-cols-2">
-              {topSellingTrips.map((tour) => (
-                <article key={tour.name} className="group overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_16px_30px_rgba(17,17,17,0.04)] transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/70">
-                  <div className="relative h-44 overflow-hidden bg-stone-100">
-                    <img src={tour.image} alt={tour.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
-                    <span className="absolute left-3 top-3 rounded-full bg-[#fcc000] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-black">
-                      {tour.duration}
-                    </span>
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-center justify-between gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">
-                      <span>{tour.duration}</span>
-                      <span className="text-[#9a7600]">{tour.priceFrom}</span>
-                    </div>
-                    <h3 className="mt-3 text-xl font-semibold leading-6 text-stone-950">{tour.name}</h3>
-                    <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600">{tour.summary}</p>
-                    <Link href={tour.href} className="mt-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-stone-900 transition hover:text-[#9a7600]">
-                      View package <span aria-hidden="true">↗</span>
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            <div className="rounded-[1.75rem] border border-stone-200 bg-[#101010] p-5 text-white shadow-[0_18px_40px_rgba(17,17,17,0.15)]">
-              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#fcc000]">Need help choosing?</p>
-              <h3 className="mt-4 font-serif text-4xl leading-tight text-white">Let our team match the right route to you.</h3>
-              <p className="mt-4 text-sm leading-7 text-white/70">
-                Choose your destination, travel dates, and budget and we will suggest the best-fit Pakistan route.
-              </p>
-              <div className="mt-6 space-y-3">
-                <Link href="/make-my-trip" className="inline-flex w-full items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-semibold text-black transition hover:bg-[#ffd24d]">
-                  Build my trip
-                </Link>
-                <a
-                  href={whatsappUrl("Hi Hodophile, I want a tailored Pakistan holiday plan.")}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
-                >
-                  Chat on WhatsApp
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="mt-20 w-full px-5 sm:px-8">
         <div className="mx-auto max-w-6xl rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_25px_60px_rgba(15,15,15,0.04)] sm:p-8 lg:p-10">
@@ -627,62 +541,6 @@ export default function Home() {
               </div>
             </Link>
           ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mt-24 w-full bg-[#0b0b0b] px-6 py-12 text-white lg:px-10 lg:py-16">
-        <div>
-          <div>
-            <p className="eyebrow">Signature departures</p>
-            <h2 className="display-serif mt-3 text-5xl font-normal leading-tight sm:text-6xl">
-              Journeys with a point of view.
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">
-              Compare top routes at a glance and jump directly into the package that matches your travel style.
-            </p>
-          </div>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {packageCards.map((tour) => (
-              <article key={tour.name} className="noise-surface group flex h-full flex-col overflow-hidden rounded-xl border border-white/70 bg-white/85 text-black shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur-md">
-                <div className="relative h-[240px] overflow-hidden bg-stone-100">
-                  <img
-                    src={tour.image}
-                    alt={tour.name}
-                    loading="lazy"
-                    decoding="async"
-                    sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-105"
-                  />
-                </div>
-                <div className="p-5 flex flex-col justify-between gap-5 flex-1">
-                  <div>
-                    <div className="flex items-center justify-between gap-3 text-[11px] font-bold uppercase tracking-[0.16em] text-stone-500">
-                      <span>{tour.duration}</span>
-                      {tour.priceFrom ? <span className="text-[#9a7600]">{tour.priceFrom}</span> : null}
-                    </div>
-                    <h3 className="mt-4 text-lg font-semibold leading-7 text-black">
-                    {tour.titleParts.length > 1 ? (
-                      <>
-                        <span className="block">{tour.titleParts[0]}</span>
-                        <span className="block">{tour.titleParts[1]}</span>
-                      </>
-                    ) : (
-                      tour.name
-                    )}
-                    </h3>
-                    <p className="mt-3 text-sm leading-6 text-stone-600">{tour.summary}</p>
-                  </div>
-                  <Link
-                    href={tour.href}
-                    className="inline-flex w-full items-center justify-between border-t border-stone-200 pt-4 text-sm font-bold uppercase tracking-[0.14em] !text-black transition hover:text-[#b58900]"
-                  >
-                    View journey <span aria-hidden="true">↗</span>
-                  </Link>
-                </div>
-              </article>
-            ))}
           </div>
         </div>
       </section>
