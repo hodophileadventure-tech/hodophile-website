@@ -395,11 +395,11 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
 
             <div className="relative flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-8">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#fcc000]">Curated departures</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#fcc000]">Curated journeys</p>
                 <h2 className="mt-4 max-w-xl font-serif text-3xl font-normal leading-tight sm:text-4xl">{destination.name} journeys, thoughtfully arranged.</h2>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-white/60">Choose a considered route with transparent pricing, carefully planned transport, and the freedom to travel at your own pace.</p>
               </div>
-              <p className="shrink-0 text-xs uppercase tracking-[0.2em] text-white/45">{packages.length} {packages.length === 1 ? "route" : "routes"} available</p>
+              <p className="shrink-0 text-xs uppercase tracking-[0.2em] text-white/45">{packages.length} {packages.length === 1 ? "journey" : "journeys"} available</p>
             </div>
 
             <div className="relative mt-8 grid gap-5 md:grid-cols-2">

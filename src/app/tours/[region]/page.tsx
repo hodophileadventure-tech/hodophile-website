@@ -109,10 +109,10 @@ export default async function RegionPage({ params }: RegionPageProps) {
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full border border-[#fcc000]/20" />
         <div className="relative flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.32em] text-[#fcc000]">Scheduled departures</p>
-            <h2 className="mt-3 font-serif text-3xl text-white">{regionalPackages.length} {group.label} departures.</h2>
+            <p className="text-xs uppercase tracking-[0.32em] text-[#fcc000]">Journeys</p>
+            <h2 className="mt-3 font-serif text-3xl text-white">{regionalPackages.length} {group.label} journeys.</h2>
           </div>
-          <Link href="/tours" className="text-sm font-semibold text-white/65 transition hover:text-[#fcc000]">View all departures ↗</Link>
+          <Link href="/tours" className="text-sm font-semibold text-white/65 transition hover:text-[#fcc000]">View all journeys ↗</Link>
         </div>
 
         <div className="relative mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">

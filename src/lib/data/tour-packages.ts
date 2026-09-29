@@ -1,5 +1,13 @@
 import { seasonalTourPackages } from "./seasonal-tour-packages";
 
+export type TourDeparture = {
+  id: string;
+  label: string;
+  pricePerPerson: number;
+};
+
+export type TravelStyle = "family" | "couples" | "adventure" | "tailored";
+
 export type TourPackage = {
   id: string;
   title: string;
@@ -17,6 +25,9 @@ export type TourPackage = {
   };
   couplePrice?: number;
   departure?: string;
+  departureAvailability?: "confirmed" | "on-request";
+  departures?: TourDeparture[];
+  travelStyles?: TravelStyle[];
   transport?: string[];
   includes?: string[];
   excludes?: string[];
@@ -25,11 +36,12 @@ export type TourPackage = {
 
 const northernTransport = ["Comfortable transport", "Tour manager", "Bonfire"];
 
-export const tourPackages: TourPackage[] = [
+const coreTourPackages: TourPackage[] = [
   {
     id: "skardu-deosai-air-3-days",
     title: "Skardu & Deosai by Air",
     destinationSlugs: ["skardu"],
+    travelStyles: ["adventure", "couples", "tailored"],
     duration: "3 Days",
     pricePerPerson: 45000,
     couplePrice: 70000,
@@ -41,6 +53,7 @@ export const tourPackages: TourPackage[] = [
     id: "skardu-deosai-basho-air-5-days",
     title: "Skardu, Deosai & Basho by Air",
     destinationSlugs: ["skardu"],
+    travelStyles: ["adventure", "couples", "tailored"],
     duration: "5 Days",
     pricePerPerson: 60000,
     couplePrice: 90000,
@@ -52,6 +65,7 @@ export const tourPackages: TourPackage[] = [
     id: "skardu-khaplu-deosai-basho-air-7-days",
     title: "Skardu, Khaplu, Deosai & Basho by Air",
     destinationSlugs: ["skardu", "khaplu"],
+    travelStyles: ["adventure", "family", "tailored"],
     duration: "7 Days",
     pricePerPerson: 90000,
     couplePrice: 140000,
@@ -63,6 +77,7 @@ export const tourPackages: TourPackage[] = [
     id: "skardu-hunza-air-7-days",
     title: "Skardu & Hunza by Air",
     destinationSlugs: ["skardu", "hunza"],
+    travelStyles: ["family", "couples", "tailored"],
     duration: "7 Days",
     pricePerPerson: 100000,
     couplePrice: 180000,
@@ -74,6 +89,7 @@ export const tourPackages: TourPackage[] = [
     id: "ormara-beach-camping",
     title: "Ormara Beach Night Camping",
     destinationSlugs: ["ormara"],
+    travelStyles: ["adventure", "family", "tailored"],
     duration: "2 Days / 1 Night",
     pricePerPerson: 13500,
     departure: "Every weekend: Saturday morning to Sunday evening",
@@ -83,30 +99,33 @@ export const tourPackages: TourPackage[] = [
     id: "swat-kalam-shogran-10-days",
     title: "Swat, Kalam & Shogran",
     destinationSlugs: ["swat", "shogran"],
+    travelStyles: ["family", "couples", "tailored"],
     duration: "10 Days",
     pricePerPerson: 42000,
     couplePrice: 94000,
     departure: "Every Monday early morning from Islamabad",
     transport: ["Luxury transport", "Land Cruiser"],
     includes: ["2 nights Islamabad hotel stay", "Standard accommodation", "Breakfast and dinner", ...northernTransport, "Basic phone photography"],
-    notes: ["No hidden charges.", "The source listing also showed PKR 37,800 as an alternate price."],
+    notes: ["No hidden charges."],
   },
   {
     id: "kashmir-shogran-9-days",
     title: "Kashmir & Shogran",
     destinationSlugs: ["kashmir", "shogran"],
+    travelStyles: ["family", "couples", "tailored"],
     duration: "9 Days",
     pricePerPerson: 39000,
     couplePrice: 90000,
     departure: "Every Monday early morning from Islamabad",
     transport: ["Luxury transport", "Land Cruiser"],
     includes: ["2 nights Islamabad hotel stay", "Standard accommodation", "Breakfast and dinner", ...northernTransport, "Basic phone photography"],
-    notes: ["No hidden charges.", "The source listing also showed PKR 35,100 as an alternate price."],
+    notes: ["No hidden charges."],
   },
   {
     id: "hunza-skardu-naran-12-days",
     title: "Hunza, Skardu & Naran",
     destinationSlugs: ["hunza", "skardu", "naran"],
+    travelStyles: ["adventure", "family", "tailored"],
     duration: "12 Days",
     pricePerPerson: 68000,
     couplePrice: 155400,
@@ -119,6 +138,7 @@ export const tourPackages: TourPackage[] = [
     id: "skardu-deosai-naran-10-days",
     title: "Skardu, Deosai & Naran",
     destinationSlugs: ["skardu", "naran"],
+    travelStyles: ["adventure", "family", "tailored"],
     duration: "10 Days",
     pricePerPerson: 59500,
     couplePrice: 139000,
@@ -129,7 +149,45 @@ export const tourPackages: TourPackage[] = [
   },
 ];
 
-tourPackages.push(...seasonalTourPackages);
+function normalizeJourneyTitle(title: string) {
+  return title
+    .replace(/^\s*\d+\s*days?\s+tour\s+to\s+/i, "")
+    .replace(/^blossom special\s*-?\s*/i, "")
+    .replace(/\s*\([^)]*\)/g, "")
+    .replace(/\band\b/gi, "&")
+    .replace(/[^a-z0-9]+/gi, " ")
+    .trim()
+    .toLowerCase();
+}
+
+const seasonalJourneys = new Map<string, TourPackage>();
+
+for (const seasonalPackage of seasonalTourPackages) {
+  const journeyKey = `${normalizeJourneyTitle(seasonalPackage.title)}|${seasonalPackage.duration}`;
+  const existingJourney = seasonalJourneys.get(journeyKey);
+  const confirmedDepartures = seasonalPackage.departureAvailability === "confirmed"
+    ? [{
+        id: seasonalPackage.id,
+        label: seasonalPackage.departure ?? "Confirmed dates",
+        pricePerPerson: seasonalPackage.pricePerPerson,
+      }]
+    : [];
+
+  if (existingJourney) {
+    existingJourney.departures = [...(existingJourney.departures ?? []), ...confirmedDepartures];
+    continue;
+  }
+
+  seasonalJourneys.set(journeyKey, {
+    ...seasonalPackage,
+    departures: confirmedDepartures,
+  });
+}
+
+export const tourPackages: TourPackage[] = [
+  ...coreTourPackages,
+  ...seasonalJourneys.values(),
+];
 
 export function getTourPackagesForDestination(destinationSlug: string) {
   return tourPackages.filter((tourPackage) => tourPackage.destinationSlugs.includes(destinationSlug));

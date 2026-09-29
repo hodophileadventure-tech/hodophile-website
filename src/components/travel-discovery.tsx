@@ -5,11 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { tourPackages } from "@/lib/data/tour-packages";
+import { tourPackages, type TravelStyle, type TourDeparture } from "@/lib/data/tour-packages";
 import { whatsappUrl } from "@/lib/site";
 
 type RegionFilter = "all" | "northern" | "southern";
-type BudgetFilter = "all" | "under-50000" | "50000-100000" | "100000-plus";
+type DurationFilter = "all" | "weekend" | "4-7" | "8-12" | "12-plus";
+type SortOption = "recommended" | "price-low" | "duration-short";
 
 type DiscoveryPackage = {
   id: string;
@@ -17,9 +18,14 @@ type DiscoveryPackage = {
   duration: string;
   pricePerPerson: number;
   departure?: string;
+  departureAvailability?: "confirmed" | "on-request";
   region: Exclude<RegionFilter, "all">;
   notes: string[];
   destinationSlugs: string[];
+  travelStyles: TravelStyle[];
+  departures: TourDeparture[];
+  transport: string[];
+  includes: string[];
   image?: string;
   summary: string;
 };
@@ -88,20 +94,41 @@ function getPackageImage(title: string, index = 0) {
 function buildPackageSummary(tourPackage: (typeof tourPackages)[number]) {
   const title = tourPackage.title.toLowerCase();
 
-  if (title.includes("skardu")) {
-    return "Mountain lakes, clear skies, and premium valley stays designed for a relaxed but immersive northern getaway.";
+  if (title.includes("skardu") && title.includes("khaplu")) {
+    return "A longer Baltistan circuit pairing Khaplu heritage with Deosai's high plains and Basho's forested valleys.";
+  }
+  if (title.includes("skardu") && title.includes("basho")) {
+    return "Skardu's alpine lakes meet Basho's quieter forest scenery, with Deosai added for high-altitude views.";
+  }
+  if (title.includes("skardu") && title.includes("hunza")) {
+    return "A flight-linked northbound journey connecting Hunza's historic villages with Skardu's broad mountain landscapes.";
+  }
+  if (title.includes("skardu") && title.includes("deosai")) {
+    return "Base in Skardu and cross the Deosai plateau for wide-open highland scenery and a focused short escape.";
   }
   if (title.includes("hunza")) {
-    return "Historic villages, glacier routes, and scenic stops that are ideal for travelers wanting bigger mountain drama.";
+    return "Historic Hunza villages and Naltar's glacier-fed lakes shape a slower northbound journey with time for scenic stops.";
   }
-  if (title.includes("kashmir") || title.includes("swat")) {
-    return "Softer landscapes and easy pacing make this a strong option for couples, families, and flexible departures.";
+  if (title.includes("kashmir")) {
+    return "Follow the Neelum Valley through riverside settlements toward Arang Kel and Taobat, subject to current access.";
   }
-  if (title.includes("ormara") || title.includes("bhit") || title.includes("charna") || title.includes("moola")) {
-    return "Coastal and canyon-based escapes with beach time, overnight stays, and flexible group-friendly routes.";
+  if (title.includes("swat") && title.includes("shogran")) {
+    return "Join Swat's river valleys with Shogran's forested plateau in a multi-stop trip built around varied scenery.";
   }
-  if (title.includes("deosai") || title.includes("basho") || title.includes("khaplu")) {
-    return "Adventure-led highland routes with remote scenery, elevated viewpoints, and deliberate travel pacing.";
+  if (title.includes("swat")) {
+    return "Explore Swat and Kalam's river valleys, with local excursions paced around road conditions and season.";
+  }
+  if (title.includes("ormara")) {
+    return "Spend the night on the Makran coast with a beachside camp and a weekend rhythm away from the city.";
+  }
+  if (title.includes("gorakh")) {
+    return "Trade the coast for Sindh's highlands on a short Gorakh Hill escape with open plateau viewpoints.";
+  }
+  if (title.includes("moola")) {
+    return "Follow the seasonal canyon route into Moola Chotok, with access and water conditions confirmed before travel.";
+  }
+  if (title.includes("naran")) {
+    return "Connect Naran's lakes and mountain roads with the wider northern itinerary, subject to seasonal pass access.";
   }
 
   return tourPackage.notes?.[0] ?? "Flexible domestic progress with a clear route, premium guidance, and smooth travel planning.";
@@ -122,18 +149,58 @@ const discoveryImagePool = [
   "/images/editorial/editorial-8.webp",
 ];
 
-const packageList: DiscoveryPackage[] = tourPackages.map((tourPackage, index) => ({
-  id: tourPackage.id,
-  title: tourPackage.title,
-  duration: tourPackage.duration,
-  pricePerPerson: tourPackage.pricePerPerson,
-  departure: tourPackage.departure,
-  region: getPackageRegion(tourPackage),
-  notes: tourPackage.notes ?? [],
-  destinationSlugs: tourPackage.destinationSlugs ?? [],
-  image: tourPackage.image ?? getPackageImage(tourPackage.title, index) ?? discoveryImagePool[index % discoveryImagePool.length],
-  summary: buildPackageSummary(tourPackage),
-}));
+const routeImageById: Record<string, string> = {
+  "skardu-deosai-air-3-days": "/images/tour-packages/03.webp",
+  "skardu-deosai-basho-air-5-days": "/images/tour-packages/14.webp",
+  "skardu-khaplu-deosai-basho-air-7-days": "/images/tour-packages/21.webp",
+  "skardu-hunza-air-7-days": "/images/destinations/featured-skardu-hunza.webp",
+  "ormara-beach-camping": "/images/tour-packages/25.webp",
+  "swat-kalam-shogran-10-days": "/images/tour-packages/02.webp",
+  "kashmir-shogran-9-days": "/images/tour-packages/06.webp",
+  "hunza-skardu-naran-12-days": "/images/tour-packages/05.webp",
+  "skardu-deosai-naran-10-days": "/images/featured-tours/10days-skardu-deosai.jpg.webp",
+};
+
+const usedPackageImages = new Set<string>();
+
+const packageList: DiscoveryPackage[] = tourPackages.map((tourPackage, index) => {
+  const preferredImage = routeImageById[tourPackage.id] ?? tourPackage.image ?? getPackageImage(tourPackage.title, index);
+  const image = usedPackageImages.has(preferredImage)
+    ? discoveryImagePool.find((candidate) => !usedPackageImages.has(candidate)) ?? preferredImage
+    : preferredImage;
+  usedPackageImages.add(image);
+
+  return {
+    id: tourPackage.id,
+    title: tourPackage.title,
+    duration: tourPackage.duration,
+    pricePerPerson: tourPackage.pricePerPerson,
+    departure: tourPackage.departure,
+    departureAvailability: tourPackage.departureAvailability,
+    region: getPackageRegion(tourPackage),
+    notes: tourPackage.notes ?? [],
+    destinationSlugs: tourPackage.destinationSlugs ?? [],
+    travelStyles: tourPackage.travelStyles ?? ["family", "tailored"],
+    departures: tourPackage.departures ?? [],
+    transport: tourPackage.transport ?? [],
+    includes: tourPackage.includes ?? [],
+    image,
+    summary: buildPackageSummary(tourPackage),
+  };
+});
+
+function getDurationDays(packageItem: DiscoveryPackage) {
+  return Number(packageItem.duration.match(/\d+/)?.[0] ?? 0);
+}
+
+function formatDestination(slug: string) {
+  return slug.split("-").map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`).join(" ");
+}
+
+function includedDetails(packageItem: DiscoveryPackage, pattern: RegExp, fallback: string) {
+  const matchingDetails = packageItem.includes.filter((item) => pattern.test(item));
+  return matchingDetails.length ? matchingDetails.join(", ") : fallback;
+}
 
 function readStorageIds(storageKey: string) {
   if (typeof window === "undefined") return [];
@@ -207,7 +274,7 @@ function RouteCard({
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-center justify-between gap-3">
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#9a7600]">{packageItem.duration}</span>
-          <span className="text-[10px] uppercase tracking-[0.18em] text-stone-500">{packageItem.destinationSlugs.length} destinations</span>
+                  <span className="text-[10px] uppercase tracking-[0.18em] text-stone-500">{packageItem.destinationSlugs.length} {packageItem.destinationSlugs.length === 1 ? "destination" : "destinations"}</span>
         </div>
 
         <h3 className="mt-3 font-serif text-[1.9rem] leading-[1.08] text-stone-950">{packageItem.title}</h3>
@@ -253,8 +320,12 @@ function RouteCard({
 export function TravelDiscoveryCatalog() {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [style, setStyle] = useState<TravelStyle | "all">("all");
+  const [duration, setDuration] = useState<DurationFilter>("all");
   const [region, setRegion] = useState<RegionFilter>("all");
-  const [budget, setBudget] = useState<BudgetFilter>("all");
+  const [minimumBudget, setMinimumBudget] = useState("");
+  const [maximumBudget, setMaximumBudget] = useState("");
+  const [sort, setSort] = useState<SortOption>("recommended");
   const [compareIds, setCompareIds] = useState<string[]>(() => readStorageIds(STORAGE_KEYS.compare));
   const [wishlistIds, setWishlistIds] = useState<string[]>(() => readStorageIds(STORAGE_KEYS.wishlist));
   const [quickCompareSelection, setQuickCompareSelection] = useState<Array<string | "">>(["", "", ""]);
@@ -272,7 +343,7 @@ export function TravelDiscoveryCatalog() {
   const filteredPackages = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return packageList.filter((packageItem) => {
+    const filtered = packageList.filter((packageItem) => {
       const matchesQuery =
         query.length === 0 ||
         packageItem.title.toLowerCase().includes(query) ||
@@ -280,22 +351,27 @@ export function TravelDiscoveryCatalog() {
         packageItem.summary.toLowerCase().includes(query) ||
         packageItem.notes.some((note) => note.toLowerCase().includes(query));
 
+      const packageDuration = getDurationDays(packageItem);
+      const matchesStyle = style === "all" || packageItem.travelStyles.includes(style);
+      const matchesDuration = duration === "all" ||
+        (duration === "weekend" && packageDuration <= 3) ||
+        (duration === "4-7" && packageDuration >= 4 && packageDuration <= 7) ||
+        (duration === "8-12" && packageDuration >= 8 && packageDuration <= 12) ||
+        (duration === "12-plus" && packageDuration > 12);
       const matchesRegion = region === "all" || packageItem.region === region;
+      const matchesMinimum = minimumBudget === "" || packageItem.pricePerPerson >= Number(minimumBudget);
+      const matchesMaximum = maximumBudget === "" || packageItem.pricePerPerson <= Number(maximumBudget);
 
-      const matchesBudget =
-        budget === "all" ||
-        (budget === "under-50000" && packageItem.pricePerPerson < 50000) ||
-        (budget === "50000-100000" && packageItem.pricePerPerson >= 50000 && packageItem.pricePerPerson <= 100000) ||
-        (budget === "100000-plus" && packageItem.pricePerPerson > 100000);
-
-      return matchesQuery && matchesRegion && matchesBudget;
+      return matchesQuery && matchesStyle && matchesDuration && matchesRegion && matchesMinimum && matchesMaximum;
     });
-  }, [budget, region, search]);
-
-  const recommendedPackages = useMemo(() => {
-    const baseList = filteredPackages.length > 0 ? filteredPackages : packageList;
-    return baseList.slice(0, 3);
-  }, [filteredPackages]);
+    if (sort === "price-low") {
+      return filtered.sort((first, second) => first.pricePerPerson - second.pricePerPerson);
+    }
+    if (sort === "duration-short") {
+      return filtered.sort((first, second) => getDurationDays(first) - getDurationDays(second));
+    }
+    return filtered;
+  }, [duration, maximumBudget, minimumBudget, region, search, sort, style]);
 
   const toggleWishlist = (id: string) => {
     setWishlistIds((currentValues) =>
@@ -312,7 +388,7 @@ export function TravelDiscoveryCatalog() {
   };
 
   const handleCompareSubmit = () => {
-    const selectedIds = quickCompareSelection.filter((value): value is string => Boolean(value));
+    const selectedIds = [...new Set(quickCompareSelection.filter((value): value is string => Boolean(value)))];
     if (selectedIds.length === 0) return;
     persistCompareSelection(selectedIds.slice(0, 3));
   };
@@ -338,68 +414,104 @@ export function TravelDiscoveryCatalog() {
       <div className="flex flex-wrap items-end justify-between gap-4 border-b border-stone-200 pb-7">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.32em] text-[#8b6b00]">Curated discovery</p>
-          <h2 className="mt-3 font-serif text-4xl text-stone-950">Search, compare, and shortlist your next Pakistan route.</h2>
+          <h2 className="mt-3 font-serif text-4xl text-stone-950">Search, compare, and shortlist your next Pakistan journey.</h2>
           <p className="mt-3 max-w-xl text-sm leading-6 text-stone-600">
             Thoughtful escapes for mountain lovers, beach seekers, and travelers who want the right route without the noise.
           </p>
         </div>
         <div className="flex items-center gap-3 text-sm font-medium text-stone-700">
-          <span className="rounded-full border border-[#e5d5a3] bg-[#fffdf8] px-3 py-2 shadow-[0_8px_20px_rgba(122,94,0,0.06)]">{filteredPackages.length} matches</span>
+          <span className="rounded-full border border-[#e5d5a3] bg-[#fffdf8] px-3 py-2 shadow-[0_8px_20px_rgba(122,94,0,0.06)]">{filteredPackages.length} {filteredPackages.length === 1 ? "journey" : "journeys"}</span>
           <Link href="/wishlist" className="rounded-full border border-stone-200 bg-white px-3 py-2 transition hover:border-[#1f6b4a] hover:text-[#1f6b4a]">
             Saved trips ({wishlistIds.length})
           </Link>
         </div>
       </div>
 
-      <div className="mt-7 grid gap-4 lg:grid-cols-[1.4fr_repeat(2,minmax(0,0.8fr))]">
+      <div className="mt-7 grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px_220px]">
         <label className="rounded-[1.4rem] border border-stone-200 bg-white p-3 shadow-[0_12px_24px_rgba(55,55,48,0.04)]">
-          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Search routes</span>
+          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Where do you want to go?</span>
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Try Hunza, Skardu, Kashmir, or beach escapes"
+            placeholder="Search Pakistan destinations"
             className="w-full border-0 bg-transparent px-1 py-2 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none"
           />
         </label>
 
-        <div className="rounded-[1.4rem] border border-stone-200 bg-white p-3 shadow-[0_12px_24px_rgba(55,55,48,0.04)]">
-          <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Region</span>
+        <label className="rounded-[1.4rem] border border-stone-200 bg-white p-3 shadow-[0_12px_24px_rgba(55,55,48,0.04)]">
+          <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Duration</span>
+          <select
+            value={duration}
+            onChange={(event) => setDuration(event.target.value as DurationFilter)}
+            className="w-full border-0 bg-transparent px-1 py-2 text-sm text-stone-900 focus:outline-none"
+          >
+            <option value="all">Any duration</option>
+            <option value="weekend">Weekend</option>
+            <option value="4-7">4–7 days</option>
+            <option value="8-12">8–12 days</option>
+            <option value="12-plus">12+ days</option>
+          </select>
+        </label>
+
+        <label className="rounded-[1.4rem] border border-stone-200 bg-white p-3 shadow-[0_12px_24px_rgba(55,55,48,0.04)]">
+          <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Sort journeys</span>
+          <select value={sort} onChange={(event) => setSort(event.target.value as SortOption)} className="w-full border-0 bg-transparent px-1 py-2 text-sm text-stone-900 focus:outline-none">
+            <option value="recommended">Recommended</option>
+            <option value="price-low">Price: low to high</option>
+            <option value="duration-short">Shortest first</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1fr_1fr]">
+        <div>
+          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Travel style</span>
+          <div className="flex flex-wrap gap-2">
+            {([
+              ["all", "All styles"],
+              ["family", "Family"],
+              ["couples", "Couples"],
+              ["adventure", "Adventure"],
+              ["tailored", "Tailored"],
+            ] as const).map(([value, label]) => (
+              <button key={value} type="button" onClick={() => setStyle(value)} aria-pressed={style === value} className={`rounded-full px-3 py-2 text-xs font-semibold transition ${style === value ? "bg-[#0b0b0b] text-white" : "border border-stone-200 bg-white text-stone-700 hover:border-[#fcc000]"}`}>
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Region</span>
           <div className="flex flex-wrap gap-2">
             {(["all", "northern", "southern"] as const).map((option) => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => setRegion(option)}
-                className={`rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.15em] transition ${
-                  region === option ? "bg-[#0b0b0b] text-white" : "border border-stone-200 bg-stone-50 text-stone-700 hover:border-stone-300"
-                }`}
-              >
+              <button key={option} type="button" onClick={() => setRegion(option)} aria-pressed={region === option} className={`rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.15em] transition ${region === option ? "bg-[#0b0b0b] text-white" : "border border-stone-200 bg-white text-stone-700 hover:border-stone-300"}`}>
                 {option === "all" ? "All" : option}
               </button>
             ))}
           </div>
         </div>
 
-        <label className="rounded-[1.4rem] border border-stone-200 bg-white p-3 shadow-[0_12px_24px_rgba(55,55,48,0.04)]">
-          <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Budget</span>
-          <select
-            value={budget}
-            onChange={(event) => setBudget(event.target.value as BudgetFilter)}
-            className="w-full border-0 bg-transparent px-1 py-2 text-sm text-stone-900 focus:outline-none"
-          >
-            <option value="all">Any budget</option>
-            <option value="under-50000">Under PKR 50,000</option>
-            <option value="50000-100000">PKR 50,000 - 100,000</option>
-            <option value="100000-plus">PKR 100,000+</option>
-          </select>
-        </label>
+        <fieldset>
+          <legend className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Budget · PKR</legend>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-stone-500">
+              Min
+              <input type="number" min="0" step="5000" value={minimumBudget} onChange={(event) => setMinimumBudget(event.target.value)} placeholder="Any" className="mt-1 block w-full bg-transparent text-sm text-stone-900 outline-none placeholder:text-stone-400" />
+            </label>
+            <label className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-stone-500">
+              Max
+              <input type="number" min="0" step="5000" value={maximumBudget} onChange={(event) => setMaximumBudget(event.target.value)} placeholder="Any" className="mt-1 block w-full bg-transparent text-sm text-stone-900 outline-none placeholder:text-stone-400" />
+            </label>
+          </div>
+        </fieldset>
       </div>
 
       <div className="mt-7 rounded-[1.6rem] border border-stone-200 bg-white/90 p-4 shadow-[0_18px_40px_rgba(55,55,48,0.04)]">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">Quick compare</p>
-            <h3 className="mt-1 text-lg font-semibold text-stone-950">Select up to three routes to compare</h3>
+            <h3 className="mt-1 text-lg font-semibold text-stone-950">Select up to three journeys to compare</h3>
           </div>
           <button
             type="button"
@@ -413,7 +525,7 @@ export function TravelDiscoveryCatalog() {
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {quickCompareSelection.map((selectedId, index) => (
             <label key={`quick-compare-${index}`} className="rounded-2xl border border-stone-200 bg-stone-50 p-3">
-              <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Route {index + 1}</span>
+              <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Journey {index + 1}</span>
               <select
                 value={selectedId}
                 onChange={(event) => {
@@ -425,7 +537,7 @@ export function TravelDiscoveryCatalog() {
               >
                 <option value="">Choose a route</option>
                 {packageList.map((route) => (
-                  <option key={route.id} value={route.id}>
+                  <option key={route.id} value={route.id} disabled={quickCompareSelection.some((selected, selectedIndex) => selectedIndex !== index && selected === route.id)}>
                     {route.title}
                   </option>
                 ))}
@@ -479,34 +591,23 @@ export function TravelDiscoveryCatalog() {
         </div>
       )}
 
-      <div className="mt-8 grid gap-4 lg:grid-cols-3">
-        {recommendedPackages.map((packageItem, index) => (
-          <div key={`${packageItem.id}-recommendation`} className="rounded-[1.4rem] border border-stone-200 bg-white p-4 shadow-[0_16px_28px_rgba(55,55,48,0.04)]">
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#9a7600]">
-              {index === 0 ? "Best fit" : index === 1 ? "Popular now" : "New for you"}
-            </p>
-            <h3 className="mt-2 text-xl font-semibold text-stone-950">{packageItem.title}</h3>
-            <p className="mt-2 text-sm leading-6 text-stone-600">{packageItem.summary}</p>
-            <div className="mt-4 flex items-center justify-between border-t border-stone-200 pt-4">
-              <span className="text-lg font-semibold text-[#9a7600]">{formatCurrency(packageItem.pricePerPerson)}</span>
-              <Link href={`/packages/${packageItem.id}`} className="text-xs font-bold uppercase tracking-[0.12em] text-stone-950 transition hover:text-[#9a7600]">
-                Explore ↗
-              </Link>
-            </div>
-          </div>
-        ))}
-      </div>
-
       <div className="mt-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-2xl font-semibold text-stone-950">Route results</h3>
-          {search || region !== "all" || budget !== "all" ? (
+          <div>
+            <h3 className="text-2xl font-semibold text-stone-950">Journey results</h3>
+            <p className="mt-1 text-sm text-stone-600">{filteredPackages.length} {filteredPackages.length === 1 ? "journey" : "journeys"} found</p>
+          </div>
+          {search || style !== "all" || duration !== "all" || region !== "all" || minimumBudget || maximumBudget ? (
             <button
               type="button"
               onClick={() => {
                 setSearch("");
+                setStyle("all");
+                setDuration("all");
                 setRegion("all");
-                setBudget("all");
+                setMinimumBudget("");
+                setMaximumBudget("");
+                setSort("recommended");
               }}
               className="text-sm font-semibold text-stone-600 transition hover:text-[#8b6b00]"
             >
@@ -518,7 +619,7 @@ export function TravelDiscoveryCatalog() {
         {filteredPackages.length === 0 ? (
           <div className="mt-5 rounded-[1.5rem] border border-dashed border-stone-300 bg-white px-5 py-8 text-center">
             <p className="text-lg font-semibold text-stone-900">No trips match this search yet.</p>
-            <p className="mt-2 text-sm text-stone-600">Try a broader search like “Hunza”, “coastal”, or “family travel” to surface more routes.</p>
+            <p className="mt-2 text-sm text-stone-600">Adjust your filters or search another destination to see more journeys.</p>
           </div>
         ) : (
           <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -540,11 +641,19 @@ export function TravelDiscoveryCatalog() {
 }
 
 export function CompareTripsClient() {
-  const [compareIds] = useState<string[]>(() => readStorageIds(STORAGE_KEYS.compare));
+  const [compareIds, setCompareIds] = useState<string[]>(() => readStorageIds(STORAGE_KEYS.compare));
 
   const comparePackages = compareIds
     .map((id) => packageList.find((packageItem) => packageItem.id === id))
     .filter((packageItem): packageItem is DiscoveryPackage => Boolean(packageItem));
+
+  const removeComparedPackage = (id: string) => {
+    const nextIds = compareIds.filter((value) => value !== id);
+    setCompareIds(nextIds);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_KEYS.compare, JSON.stringify(nextIds));
+    }
+  };
 
   if (comparePackages.length === 0) {
     return (
@@ -564,7 +673,8 @@ export function CompareTripsClient() {
       <div className="flex flex-wrap items-end justify-between gap-4 border-b border-stone-200 pb-6">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8b6b00]">Compare</p>
-          <h1 className="mt-3 font-serif text-4xl text-stone-950">Trip shortlist</h1>
+          <h1 className="mt-3 font-serif text-4xl text-stone-950">Compare journeys</h1>
+          <p className="mt-2 text-sm text-stone-600">Compare {comparePackages.length} selected {comparePackages.length === 1 ? "journey" : "journeys"} on the details that shape your trip.</p>
         </div>
         <Link href="/tours" className="text-sm font-semibold text-stone-600 transition hover:text-[#8b6b00]">
           Add more routes
@@ -575,13 +685,14 @@ export function CompareTripsClient() {
         <table className="min-w-full border-separate border-spacing-y-3 text-left">
           <thead>
             <tr>
-              <th className="pr-4 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Route</th>
+              <th className="pr-4 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Journey</th>
               {comparePackages.map((packageItem) => (
                 <th key={packageItem.id} className="min-w-[220px] pr-4 align-top">
                   <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
                     <p className="text-sm font-semibold text-stone-900">{packageItem.title}</p>
-                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-[#8b6b00]">{packageItem.region}</p>
-                    <p className="mt-3 text-lg font-semibold text-[#9a7600]">{formatCurrency(packageItem.pricePerPerson)}</p>
+                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-[#8b6b00]">{packageItem.region} · {packageItem.duration}</p>
+                    <p className="mt-3 text-lg font-semibold text-[#9a7600]">From {formatCurrency(packageItem.pricePerPerson)}</p>
+                    <button type="button" onClick={() => removeComparedPackage(packageItem.id)} className="mt-3 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500 transition hover:text-red-700">Remove</button>
                   </div>
                 </th>
               ))}
@@ -589,16 +700,28 @@ export function CompareTripsClient() {
           </thead>
           <tbody>
             {[
+              { label: "Destinations", value: (packageItem: DiscoveryPackage) => packageItem.destinationSlugs.map(formatDestination).join(", ") || "Confirm route" },
               { label: "Duration", value: (packageItem: DiscoveryPackage) => packageItem.duration },
-              { label: "Departure", value: (packageItem: DiscoveryPackage) => packageItem.departure ?? "Flexible dates" },
+              { label: "Stay", value: (packageItem: DiscoveryPackage) => includedDetails(packageItem, /hotel|accommodation|stay/i, "Stay details to confirm") },
+              { label: "Meals", value: (packageItem: DiscoveryPackage) => includedDetails(packageItem, /breakfast|dinner|lunch|meal/i, "Meal plan to confirm") },
+              {
+                label: "Transport",
+                value: (packageItem: DiscoveryPackage) => [...packageItem.transport, ...packageItem.includes.filter((item) => /transport|vehicle|driver|bus|flight/i.test(item))].join(", ") || "Transport details to confirm",
+              },
+              {
+                label: "Activities",
+                value: (packageItem: DiscoveryPackage) => packageItem.notes.filter((note) => /deosai|basho|khaplu|jeep|hike|trek|bonfire|photography|waterfall|lake/i.test(note)).join(", ") || "See the itinerary for route-specific activities",
+              },
+              {
+                label: "Departures",
+                value: (packageItem: DiscoveryPackage) => packageItem.departures.length
+                  ? packageItem.departures.map((departure) => departure.label).join("; ")
+                  : packageItem.departureAvailability === "confirmed" ? packageItem.departure ?? "Dates to confirm" : packageItem.departure ?? "Dates available on request",
+              },
               {
                 label: "Budget fit",
                 value: (packageItem: DiscoveryPackage) =>
                   packageItem.pricePerPerson < 50000 ? "Under PKR 50k" : packageItem.pricePerPerson > 100000 ? "PKR 100k+" : "Mid-range",
-              },
-              {
-                label: "Best for",
-                value: (packageItem: DiscoveryPackage) => (packageItem.region === "northern" ? "Mountain route" : "Coastal escape"),
               },
             ].map(({ label, value }) => (
               <tr key={label}>
@@ -615,11 +738,48 @@ export function CompareTripsClient() {
           </tbody>
         </table>
       </div>
+
+      <section className="mt-8 border-t border-stone-200 pt-6" aria-labelledby="fit-explanation-heading">
+        <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">A clearer choice</p>
+        <h2 id="fit-explanation-heading" className="mt-2 font-serif text-3xl text-stone-950">Which one fits you?</h2>
+        {comparePackages.length > 1 ? (
+          <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {comparePackages.map((packageItem) => {
+              const lowestPrice = Math.min(...comparePackages.map((item) => item.pricePerPerson));
+              const shortestTrip = Math.min(...comparePackages.map(getDurationDays));
+              const longestTrip = Math.max(...comparePackages.map(getDurationDays));
+              const widestRoute = Math.max(...comparePackages.map((item) => item.destinationSlugs.length));
+              const reasons = [
+                packageItem.region === "southern" && comparePackages.some((item) => item.region === "northern") ? "a coastal change of scenery" : null,
+                packageItem.region === "northern" && comparePackages.some((item) => item.region === "southern") ? "a mountain-focused route" : null,
+                packageItem.pricePerPerson === lowestPrice && comparePackages.some((item) => item.pricePerPerson > packageItem.pricePerPerson) ? "the lowest listed starting price" : null,
+                getDurationDays(packageItem) === shortestTrip && comparePackages.some((item) => getDurationDays(item) > getDurationDays(packageItem)) ? "the shortest time away" : null,
+                getDurationDays(packageItem) === longestTrip && comparePackages.some((item) => getDurationDays(item) < getDurationDays(packageItem)) ? "the most time to explore" : null,
+                packageItem.destinationSlugs.length === widestRoute && comparePackages.some((item) => item.destinationSlugs.length < packageItem.destinationSlugs.length) ? "the broadest destination mix" : null,
+              ].filter((reason): reason is string => Boolean(reason));
+              const fitText = reasons.length ? reasons.join(", ") : "its route-specific itinerary and pace";
+
+              return (
+                <article key={`${packageItem.id}-fit`} className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+                  <h3 className="font-semibold text-stone-950">{packageItem.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-stone-600">
+                    A {packageItem.duration.toLowerCase()} journey across {packageItem.destinationSlugs.map(formatDestination).join(" and ") || "its planned route"}, starting at {formatCurrency(packageItem.pricePerPerson)}. A good fit if you want {fitText}.
+                  </p>
+                  <Link href="/make-my-trip" className="mt-3 inline-flex text-xs font-bold uppercase tracking-[0.12em] text-[#8b6b00]">Customize this journey ↗</Link>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="mt-3 text-sm leading-6 text-stone-600">Add another journey to see the differences in price, time away, and destination mix.</p>
+        )}
+      </section>
     </div>
   );
 }
 
 export function WishlistTripsClient() {
+  const router = useRouter();
   const [wishlistIds, setWishlistIds] = useState<string[]>(() => readStorageIds(STORAGE_KEYS.wishlist));
 
   const wishlistPackages = wishlistIds
@@ -632,6 +792,14 @@ export function WishlistTripsClient() {
     if (typeof window !== "undefined") {
       window.localStorage.setItem(STORAGE_KEYS.wishlist, JSON.stringify(nextWishlist));
     }
+  };
+
+  const compareShortlist = () => {
+    const selectedIds = wishlistPackages.slice(0, 3).map((packageItem) => packageItem.id);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_KEYS.compare, JSON.stringify(selectedIds));
+    }
+    router.push("/compare");
   };
 
   if (wishlistPackages.length === 0) {
@@ -648,9 +816,26 @@ export function WishlistTripsClient() {
   }
 
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-      {wishlistPackages.map((packageItem) => (
-        <article key={packageItem.id} className="overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_15px_32px_rgba(55,55,48,0.05)]">
+    <div>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-stone-200 pb-5">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#8b6b00]">Your shortlist</p>
+          <h1 className="mt-2 font-serif text-3xl text-stone-950">My Shortlist</h1>
+          <p className="mt-1 text-sm text-stone-600">{wishlistPackages.length} saved {wishlistPackages.length === 1 ? "journey" : "journeys"}</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={compareShortlist} className="inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-black">
+            Compare up to 3
+          </button>
+          <Link href="/make-my-trip" className="inline-flex items-center justify-center rounded-full border border-stone-300 bg-white px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] text-stone-900 transition hover:border-[#fcc000]">
+            Build my trip
+          </Link>
+        </div>
+      </div>
+
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {wishlistPackages.map((packageItem) => (
+          <article key={packageItem.id} className="overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_15px_32px_rgba(55,55,48,0.05)]">
           <div className="relative aspect-[4/3]">
             <Image
               src={packageItem.image ?? "/images/destinations/swat-hd.webp"}
@@ -679,8 +864,9 @@ export function WishlistTripsClient() {
               </Link>
             </div>
           </div>
-        </article>
-      ))}
+          </article>
+        ))}
+      </div>
     </div>
   );
 }

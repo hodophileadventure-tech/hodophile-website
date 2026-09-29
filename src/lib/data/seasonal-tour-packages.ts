@@ -156,6 +156,9 @@ function getPackageDisplayTitle(title: string) {
   return title
     .replace(/\s*\([^)]*\)/g, "")
     .replace(/\s*-\s*Second departure$/i, "")
+    .replace(/^\s*Blossom Special\s*-\s*/i, "")
+    .replace(/^\s*\d+\s*Days?\s+tour\s+to\s+/i, "")
+    .replace(/\band\b/gi, "&")
     .trim();
 }
 
@@ -240,6 +243,10 @@ const generatedSeasonalPackages: TourPackage[] = sourcePackages.map((item, index
   duration: item.duration,
   pricePerPerson: item.withIslamabadStay[0],
   priceWithoutIslamabadStay: item.withoutIslamabadStay[0],
+  departureAvailability: getDepartureLabel(item.title) === "Departure dates available on request" ? "on-request" : "confirmed",
+  travelStyles: /camping|gorakh|moola|ranikot|charo|deosai|basho|khaplu/i.test(item.title)
+    ? ["adventure", "family", "tailored"]
+    : ["family", "couples", "tailored"],
   sharingPrices: {
     quad: item.withIslamabadStay[0],
     triple: item.withIslamabadStay[1],
@@ -271,8 +278,6 @@ export const seasonalTourPackages = generatedSeasonalPackages.filter((tourPackag
   const sourceKey = [
     normalizedSourceTitle,
     source.duration,
-    ...source.withIslamabadStay,
-    ...source.withoutIslamabadStay,
   ].join("|");
 
   if (seenDepartures.has(sourceKey)) return false;
