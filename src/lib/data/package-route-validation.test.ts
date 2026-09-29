@@ -42,8 +42,18 @@ test("the canonical list contains exactly the 12 unique journeys with required s
     assert.ok(tourPackage.travelStyles.length > 0);
     assert.ok(Array.isArray(tourPackage.departures));
     if (tourPackage.departureAvailability === "confirmed") assert.ok(tourPackage.departures.length > 0);
-    assert.doesNotMatch(tourPackage.description, /\broute\s+route\b/i);
-    assert.ok(!tourPackage.routeStops.some((stop) => /\broute\s+route\b/i.test(stop)));
+    const renderedJourneyText = [
+      tourPackage.title,
+      tourPackage.description,
+      ...tourPackage.routeStops,
+      ...(tourPackage.routeHighlights ?? []),
+      ...(tourPackage.notes ?? []),
+      ...(tourPackage.scheduleNote ? [tourPackage.scheduleNote] : []),
+    ];
+    assert.ok(
+      renderedJourneyText.every((value) => !/\broute\s+route\b/i.test(value)),
+      `${tourPackage.id} contains a duplicated route suffix`,
+    );
   }
 });
 
