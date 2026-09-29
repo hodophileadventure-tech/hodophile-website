@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
+import { TravelDiscoveryCatalog } from "@/components/travel-discovery";
 import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { seasonalTourPackages } from "@/lib/data/seasonal-tour-packages";
 import { tourPackages } from "@/lib/data/tour-packages";
@@ -81,10 +82,12 @@ export default function ToursPage() {
   const renderDepartureCard = (tourPackage: (typeof seasonalTourPackages)[number], index: number, prefix: string) => (
     <article key={tourPackage.id} className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_16px_40px_rgba(55,55,48,0.08)] transition duration-500 hover:-translate-y-1 hover:border-[#d4aa18] hover:shadow-[0_24px_55px_rgba(55,55,48,0.15)]">
       <div className="relative aspect-[4/3] overflow-hidden bg-stone-200">
-        <img
+        <Image
           src={tourPackage.image ?? getSeasonalPackageImage(tourPackage.title)}
           alt={tourPackage.title}
-          className="block h-full w-full object-cover brightness-105 saturate-110 transition duration-700 group-hover:scale-105 group-hover:brightness-110"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          className="object-cover brightness-105 saturate-110 transition duration-700 group-hover:scale-105 group-hover:brightness-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
         <span className="absolute left-4 top-4 bg-[#fcc000] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#0b0b0b]">
@@ -154,6 +157,8 @@ export default function ToursPage() {
         title="Domestic Pakistan packages built for clear comparisons and stronger search visibility."
         description="Browse grouped routes and destination-first package pages designed for smooth planning and confident booking."
       />
+
+      <TravelDiscoveryCatalog />
 
       <section className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Tour catalog highlights">
         {[

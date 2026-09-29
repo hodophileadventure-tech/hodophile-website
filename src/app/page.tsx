@@ -9,6 +9,7 @@ import TestimonialsCarousel from "@/components/testimonials-carousel";
 import { JsonLd } from "@/components/JsonLd";
 import { HomeQuickLeadForm } from "@/components/home-quick-lead";
 import { FacebookReviewsWidget } from "@/components/facebook-reviews-widget";
+import { TravelDiscoveryCatalog } from "@/components/travel-discovery";
 import { companyStats } from "@/lib/data/company-stats";
 import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, blogPosts, destinations, whatsappUrl } from "@/lib/site";
@@ -281,6 +282,12 @@ export default function Home() {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      <section className="mt-12 w-full px-5 sm:px-8">
+        <div className="mx-auto max-w-6xl">
+          <TravelDiscoveryCatalog />
         </div>
       </section>
 
