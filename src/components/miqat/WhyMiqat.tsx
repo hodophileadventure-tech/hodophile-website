@@ -63,7 +63,7 @@ export function WhyMiqat() {
                 className="rounded-[1.25rem] border border-[#FCC000]/35 bg-[#070707] p-4 shadow-[0_10px_35px_rgba(252,192,0,0.12)] transition duration-300 hover:shadow-[0_16px_45px_rgba(252,192,0,0.2)]"
               >
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#FCC000]/10 text-[#FCC000]">
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#fff5cc] text-[#4d3a00] shadow-[inset_0_0_0_1px_rgba(217,168,29,0.16)]">
                     <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <p className="text-sm font-medium text-white">{feature}</p>

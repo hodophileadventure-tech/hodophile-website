@@ -31,13 +31,6 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  const destinationPackageLinks: Record<string, string> = {
-    Hunza: "/tours/northern-tours/hunza-valley-tour-packages",
-    Skardu: "/tours/northern-tours/skardu-valley-tour-packages",
-    Naran: "/tours/northern-tours/naran-valley-tour-packages",
-    Swat: "/tours/northern-tours/swat-valley-tour-packages",
-  };
-
   const reviews = [
     {
       platform: "Google Reviews",
@@ -203,7 +196,7 @@ export default function Home() {
     <>
       <JsonLd data={buildHomePageSchema()} />
       <PageShell wide>
-      <section className="relative left-1/2 -mt-24 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
+      <section className="relative -mx-4 -mt-24 w-[calc(100%+2rem)] overflow-hidden bg-[#101010] text-white md:-mx-6 md:w-[calc(100%+3rem)] lg:-mx-10 lg:w-[calc(100%+5rem)] xl:-mx-14 xl:w-[calc(100%+7rem)] 2xl:left-1/2 2xl:mx-0 2xl:w-screen 2xl:-translate-x-1/2">
         <div className="relative min-h-[88vh]">
           <video
             poster="/hero-images/hunza.avif"
@@ -216,7 +209,6 @@ export default function Home() {
             className="absolute inset-0 h-full w-full object-cover"
             style={{ display: 'block' }}
           >
-            <source src="/hero-video.webm" type="video/webm" />
             <source src="/hero-video-opt.mp4" type="video/mp4" />
           </video>
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,24,28,0.35)_0%,rgba(18,24,28,0.6)_100%)]" />
@@ -249,7 +241,7 @@ export default function Home() {
 
               <div className="mt-7 flex flex-wrap gap-3 text-[10px] font-bold uppercase tracking-[0.22em] text-white/80">
                 <span className="rounded-full border border-white/20 bg-white/5 px-3 py-2">4.9 rating</span>
-                <span className="rounded-full border border-[#fcc000]/40 bg-[#fcc000]/10 px-3 py-2 text-[#fcc000]">Fast quote</span>
+                <span className="rounded-full border border-[#d9a81d]/60 bg-[#fff5cc] px-3 py-2 text-[#4d3a00] shadow-[inset_0_0_0_1px_rgba(217,168,29,0.18)]">Fast quote</span>
                 <span className="rounded-full border border-white/20 bg-white/5 px-3 py-2">Curated departures</span>
               </div>
             </div>
@@ -366,9 +358,9 @@ export default function Home() {
                 Premium planning, honest pricing, and a smoother journey.
               </h2>
             </div>
-            <div className="flex flex-col items-start gap-2 rounded-full border border-[#fcc000]/30 bg-[#fcc000]/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#fcc000]">
+            <div className="flex flex-col items-start gap-2 rounded-full border border-[#d9a81d]/50 bg-[#fff6d1] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#3f2d00] shadow-[inset_0_0_0_1px_rgba(217,168,29,0.2)]">
               <span>4.9 customer rating</span>
-              <span className="text-[9px] tracking-[0.18em] text-white/80">Verified by real travelers</span>
+              <span className="text-[9px] tracking-[0.18em] text-[#4d3a00]/80">Verified by real travelers</span>
             </div>
           </div>
 
@@ -494,12 +486,12 @@ export default function Home() {
         <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {destinations.slice(0, 4).map((destination) => (
             <Link
-              href={destinationPackageLinks[destination.name] ?? "/destinations"}
-              key={destination.name}
+              href={`/destinations/${destination.slug}`}
+              key={destination.slug}
               className="group relative overflow-hidden bg-[#171717] transition hover:-translate-y-1"
             >
                 <div className="relative h-[30rem] overflow-hidden">
-                {destination.name === "Naran" || destination.name === "Swat" ? (
+                {destination.slug === "naran" || destination.slug === "swat" ? (
                   <img
                     src={destination.image}
                     alt=""
@@ -514,16 +506,16 @@ export default function Home() {
                   alt={destination.name}
                   loading="lazy"
                   decoding="async"
-                  className={`absolute inset-0 h-full w-full transition duration-700 group-hover:scale-105 ${destination.name === "Naran" || destination.name === "Swat" ? "object-contain" : "object-cover"}`}
+                  className={`absolute inset-0 h-full w-full transition duration-700 group-hover:scale-105 ${destination.slug === "naran" || destination.slug === "swat" ? "object-contain" : "object-cover"}`}
                 />
                 <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/55 via-black/15 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-5 text-white">
                   <div className="flex items-end justify-between gap-3">
                     <div>
-                      <p className="text-[11px] uppercase tracking-[0.24em] text-[#fcc000]">{destination.season}</p>
+                      <p className="text-[11px] uppercase tracking-[0.24em] text-[#fcc000]">Best time to visit: {destination.bestTimeToVisit}</p>
                       <h3 className="display-serif mt-2 text-4xl font-normal leading-none">{destination.name}</h3>
                     </div>
-                    <span className="text-xs font-semibold uppercase tracking-[0.12em] text-white/70">{destination.duration}</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.12em] text-white/70">Ideal duration: {destination.idealDuration}</span>
                   </div>
                   <p className="mt-4 max-w-xs text-sm leading-6 text-white/75">{destination.description}</p>
                 </div>
@@ -697,7 +689,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative left-1/2 mt-24 w-screen -translate-x-1/2 overflow-hidden bg-[#fcc000] px-6 py-16 lg:px-16">
+      <section className="relative -mx-4 mt-24 w-[calc(100%+2rem)] overflow-hidden bg-[#fcc000] px-6 py-16 md:-mx-6 md:w-[calc(100%+3rem)] lg:-mx-10 lg:w-[calc(100%+5rem)] lg:px-16 xl:-mx-14 xl:w-[calc(100%+7rem)] 2xl:left-1/2 2xl:mx-0 2xl:w-screen 2xl:-translate-x-1/2">
         <div>
           <div className="mx-auto max-w-5xl overflow-hidden rounded-xl bg-black shadow-[0_24px_70px_rgba(0,0,0,0.22)]">
             <div className="relative bg-black">
