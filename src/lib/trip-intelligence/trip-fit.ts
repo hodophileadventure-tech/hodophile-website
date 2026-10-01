@@ -31,6 +31,10 @@ function tripMatchesDepartureMonth(monthPreference: string, trip: NormalizedTrip
     return false;
   }
 
+  if (trip.blockedDepartureMonths.includes(normalisedMonth)) {
+    return false;
+  }
+
   const departureText = (trip.departureMonths.length ? trip.departureMonths : [trip.departureNote ?? ""])
     .join(" ")
     .toLowerCase();

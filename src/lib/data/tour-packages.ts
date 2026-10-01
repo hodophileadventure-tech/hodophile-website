@@ -36,6 +36,7 @@ export type TourPackage = {
   };
   couplePrice?: number;
   scheduleNote?: string;
+  blockedDepartureMonths?: string[];
   departureAvailability: "confirmed" | "on-request";
   departures: TourDeparture[];
   travelStyles: TravelStyle[];
@@ -277,7 +278,8 @@ export const tourPackages: TourPackage[] = [
     priceWithoutIslamabadStay: 16500,
     sharingPrices: { quad: 16500, triple: 17500, twin: 18500, solo: 18500 },
     sharingPricesWithoutIslamabadStay: { quad: 16500, triple: 17500, twin: 18500, solo: 18500 },
-    scheduleNote: "Departure dates available on request",
+    scheduleNote: "Available on request; October to March departures only.",
+    blockedDepartureMonths: ["april", "may", "june", "july", "august", "september"],
     departureAvailability: "on-request",
     departures: [],
     travelStyles: ["adventure", "family", "tailored"],
@@ -300,7 +302,8 @@ export const tourPackages: TourPackage[] = [
     priceWithoutIslamabadStay: 16000,
     sharingPrices: { quad: 16000, triple: 17000, twin: 18000, solo: 18000 },
     sharingPricesWithoutIslamabadStay: { quad: 16000, triple: 17000, twin: 18000, solo: 18000 },
-    scheduleNote: "Departure dates available on request",
+    scheduleNote: "Available on request; October to March departures only.",
+    blockedDepartureMonths: ["april", "may", "june", "july", "august", "september"],
     departureAvailability: "on-request",
     departures: [],
     travelStyles: ["adventure", "family", "tailored"],

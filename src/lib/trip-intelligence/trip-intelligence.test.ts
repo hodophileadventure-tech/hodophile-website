@@ -233,3 +233,18 @@ test("near matches retain factual mismatch reasons and honest on-request month w
   assert.ok(result.reasons.some((reason) => reason.criterion === "departureMonth" && reason.type === "mismatch"));
   assert.ok(!result.reasons.some((reason) => reason.detail.includes("confirmed departure") && reason.type === "match"));
 });
+
+test("gorakh hill and moola chotok are unavailable in april through september", () => {
+  const blockedMonths = ["april", "may", "june", "july", "august", "september"];
+
+  for (const id of ["seasonal-53", "seasonal-54"]) {
+    const trip = tourPackages.find((candidate) => candidate.id === id);
+    assert.ok(trip, `missing canonical trip ${id}`);
+
+    for (const month of blockedMonths) {
+      const result = calculateTripFit({ departureMonth: month }, trip);
+      assert.equal(result.matchedCriteria.includes("departureMonth"), false, `${id} should not be available in ${month}`);
+      assert.ok(result.reasons.some((reason) => reason.criterion === "departureMonth" && reason.type === "mismatch"));
+    }
+  }
+});

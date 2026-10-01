@@ -30,6 +30,7 @@ export interface NormalizedTrip {
   durationDays: number;
   durationLabel: string;
   departureMonths: string[];
+  blockedDepartureMonths: string[];
   departureAvailability: "confirmed" | "on-request";
   departureNote?: string;
   summary: string;

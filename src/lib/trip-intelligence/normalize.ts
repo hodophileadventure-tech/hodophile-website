@@ -89,6 +89,9 @@ export function normalizeTrip(trip: Partial<TourPackage> & { id: string; title: 
       scheduleNote: trip.scheduleNote,
       departureAvailability: trip.departureAvailability ?? "on-request",
     }),
+    blockedDepartureMonths: Array.isArray(trip.blockedDepartureMonths)
+      ? trip.blockedDepartureMonths.map((month) => normalizeText(month)).filter(Boolean)
+      : [],
     departureAvailability: trip.departureAvailability ?? "on-request",
     departureNote: trip.scheduleNote,
     summary: trip.description ?? "",
