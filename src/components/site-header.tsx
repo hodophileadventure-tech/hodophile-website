@@ -176,7 +176,7 @@ export function SiteHeader() {
       );
     }
 
-    if (item.href === "/destinations") {
+    if (item.href === "/tours") {
       return (
         <div
           key={item.href}
@@ -208,7 +208,7 @@ export function SiteHeader() {
           >
             <div className="grid h-[26rem] max-h-[calc(100vh-7rem)] overflow-hidden rounded-3xl border border-stone-200/50 bg-white/95 backdrop-blur-lg shadow-[0_30px_80px_rgba(0,0,0,0.12)] ring-1 ring-white/20 md:grid-cols-[16rem_minmax(0,1fr)]">
               <div className="min-h-0 overflow-y-auto overscroll-contain border-r border-stone-200/50 bg-stone-50/30 p-4">
-                <p className="mb-4 px-3 text-xs font-bold uppercase tracking-[0.35em] text-yellow-600">Tour Groups</p>
+                <p className="mb-4 px-3 text-xs font-bold uppercase tracking-[0.35em] text-[#8b6b00]">Tour Groups</p>
                 <div className="grid gap-2">
                   {tourMenu.map((group) => {
                     const isActive = activeTourGroup === group.href;
@@ -238,7 +238,7 @@ export function SiteHeader() {
                     <div key={group.href}>
                       <Link
                         href={group.href}
-                        className="text-xs font-bold uppercase tracking-[0.35em] text-yellow-600 transition duration-300 hover:text-yellow-700"
+                        className="text-xs font-bold uppercase tracking-[0.35em] text-[#8b6b00] transition duration-300 hover:text-[#735900]"
                       >
                         {group.label}
                       </Link>

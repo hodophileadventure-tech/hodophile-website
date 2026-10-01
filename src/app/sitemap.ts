@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { absoluteUrl, allTourRoutes, blogPosts, destinationGalleryRoutes } from "@/lib/site";
+import { absoluteUrl, allTourRoutes, blogPosts, destinations } from "@/lib/site";
 import { indexableFeaturedTourRoutePaths } from "@/lib/data/featured-tour-cards";
 import { umrahPackages } from "@/lib/data/umrah-packages";
 import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "@/lib/data/premiumDestinations.js";
@@ -34,7 +34,7 @@ const routes = [...new Set([
   ...packageRoutes,
   ...allTourRoutes,
   ...indexableFeaturedTourRoutePaths,
-  ...destinationGalleryRoutes,
+  ...destinations.map((destination) => `/destinations/${destination.slug}`),
 ])];
 
 export default function sitemap(): MetadataRoute.Sitemap {

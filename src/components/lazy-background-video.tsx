@@ -8,6 +8,8 @@ type LazyBackgroundVideoProps = {
 };
 
 export function LazyBackgroundVideo({ src, poster, className = "", posterAlt = "" }: LazyBackgroundVideoProps) {
+  const videoType = src.toLowerCase().endsWith(".webm") ? "video/webm" : "video/mp4";
+
   return (
     <div className={`relative overflow-hidden w-full h-full ${className}`}>
       <img
@@ -22,11 +24,10 @@ export function LazyBackgroundVideo({ src, poster, className = "", posterAlt = "
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         className="absolute inset-0 h-full w-full object-cover z-0"
       >
-        <source src={src.replace(".mp4", ".webm")} type="video/webm" />
-        <source src={src} type="video/mp4" />
+        <source src={src} type={videoType} />
       </video>
     </div>
   );

@@ -3162,7 +3162,7 @@ export function MakeMyTripForm() {
             <button
               type="submit"
               disabled={isSubmitting || !quotation || isInvalidCombination}
-              className="mt-6 sticky bottom-6 inline-flex w-full items-center justify-center gap-3 rounded-[18px] bg-black px-8 py-5 text-lg font-black text-[#FCC000] shadow-[0_12px_30px_rgba(0,0,0,0.4)] transition duration-300 hover:brightness-110 active:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+              className="mt-6 sticky bottom-6 inline-flex w-full items-center justify-center gap-3 rounded-[18px] bg-black px-8 py-5 text-lg font-black text-[#FCC000] shadow-[0_12px_30px_rgba(0,0,0,0.4)] transition duration-300 hover:brightness-110 active:brightness-95 disabled:cursor-not-allowed disabled:border disabled:border-stone-500 disabled:bg-stone-700 disabled:opacity-100 disabled:shadow-none"
             >
               {isSubmitting ? (
                 <>
@@ -3183,7 +3183,7 @@ export function MakeMyTripForm() {
 
             {plannerStep < 5 && (
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[#f4d77d] bg-white p-3">
-                <button type="button" onClick={handlePlannerBack} disabled={plannerStep === 1} className="rounded-full border border-stone-300 px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500 disabled:cursor-not-allowed disabled:opacity-40">Back</button>
+                <button type="button" onClick={handlePlannerBack} disabled={plannerStep === 1} className="rounded-full border border-stone-300 px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500 disabled:cursor-not-allowed disabled:border-stone-300 disabled:bg-stone-100 disabled:text-stone-600 disabled:opacity-100">Back</button>
                 <button type="button" onClick={handlePlannerContinue} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-[#fcc000] transition hover:brightness-110">Continue <span aria-hidden="true">→</span></button>
               </div>
             )}

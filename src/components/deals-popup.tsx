@@ -27,6 +27,7 @@ export function DealsPopup() {
     setIsOpen(false);
     // Mark popup as closed for this session only
     sessionStorage.setItem("dealsPopupClosedThisSession", "true");
+    window.dispatchEvent(new Event("hodophile:deals-popup-closed"));
   };
 
   if (!isMounted || !isOpen) return null;

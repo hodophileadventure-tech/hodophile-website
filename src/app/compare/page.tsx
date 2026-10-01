@@ -6,13 +6,13 @@ import { absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Compare Pakistan Tour Routes",
-  description: "Compare domestic Pakistan tour routes side by side with a clear overview of pricing, duration, and travel fit.",
+  description: "Compare domestic Pakistan tour packages by listed price, duration, route, and optional fit to your explicit preferences.",
   alternates: {
     canonical: "/compare",
   },
   openGraph: {
     title: "Compare Pakistan Tour Routes",
-    description: "Pick the best match for your travel style using a side-by-side route comparison tool.",
+    description: "Review objective route details and see how selected journeys fit the preferences you choose.",
     url: absoluteUrl("/compare"),
   },
 };

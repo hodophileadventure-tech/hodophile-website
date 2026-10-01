@@ -366,7 +366,7 @@ function QuotationEditContent() {
               <button
                 onClick={handleProceed}
                 disabled={isSubmitting || !quotation}
-                className="px-8 py-3 rounded-[10px] bg-[#fcc000] text-black font-semibold hover:bg-[#fcc000]/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-8 py-3 rounded-[10px] bg-[#fcc000] text-black font-semibold hover:bg-[#fcc000]/90 transition disabled:cursor-not-allowed disabled:bg-stone-200 disabled:text-stone-700 disabled:opacity-100"
               >
                 {isSubmitting ? "Processing..." : "✨ Proceed to Result"}
               </button>

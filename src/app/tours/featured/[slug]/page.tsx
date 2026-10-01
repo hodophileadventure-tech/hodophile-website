@@ -91,7 +91,7 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
 
   return (
     <PageShell wide>
-      <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+      <section className="relative -mx-4 w-[calc(100%+2rem)] overflow-hidden md:-mx-6 md:w-[calc(100%+3rem)] lg:-mx-10 lg:w-[calc(100%+5rem)] xl:-mx-14 xl:w-[calc(100%+7rem)] 2xl:left-1/2 2xl:mx-0 2xl:w-screen 2xl:-translate-x-1/2">
         <div className="relative min-h-[62vh] md:min-h-[68vh]">
           <Image
             src={tour.heroImage}

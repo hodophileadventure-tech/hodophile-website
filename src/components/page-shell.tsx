@@ -8,9 +8,10 @@ type PageShellProps = {
   children: ReactNode;
   wide?: boolean;
   noTopPadding?: boolean;
+  mainClassName?: string;
 };
 
-export function PageShell({ children, wide = false, noTopPadding = false }: PageShellProps) {
+export function PageShell({ children, wide = false, noTopPadding = false, mainClassName = "" }: PageShellProps) {
   const shellWidthClass = wide ? "max-w-[96rem]" : "max-w-7xl";
   const mainPaddingClass = wide ? "px-4 md:px-6 lg:px-10 xl:px-14" : "px-4 md:px-6 lg:px-8";
   const topPaddingClass = noTopPadding ? "pt-0" : "pt-24";
@@ -21,7 +22,7 @@ export function PageShell({ children, wide = false, noTopPadding = false }: Page
         <SiteHeader />
       </div>
 
-      <main className={`mx-auto ${shellWidthClass} pb-20 ${topPaddingClass} ${mainPaddingClass}`}>
+      <main className={`mx-auto ${shellWidthClass} pb-20 ${topPaddingClass} ${mainPaddingClass} ${mainClassName}`}>
         {children}
       </main>
 

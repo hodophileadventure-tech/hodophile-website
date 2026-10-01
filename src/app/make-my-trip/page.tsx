@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function MakeMyTripPage() {
   return (
-    <PageShell wide>
+    <PageShell wide mainClassName="overflow-x-clip">
       <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden py-12 min-h-[calc(100dvh-6rem)]">
         <div className="absolute inset-0">
           <Image

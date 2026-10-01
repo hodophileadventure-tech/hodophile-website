@@ -165,7 +165,7 @@ export function WhyChooseUs() {
         >
           <motion.div variants={introItemVariants} className="inline-flex items-center gap-3 mb-6">
             <div className="h-px w-8 bg-yellow-400" />
-            <p className="text-xs uppercase tracking-[0.35em] text-yellow-600 font-bold">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#8b6b00] font-bold">
               THE HODOPHILE STANDARD
             </p>
             <div className="h-px w-8 bg-yellow-400" />
@@ -229,7 +229,7 @@ export function WhyChooseUs() {
                 <motion.div className="flex-1 flex flex-col" variants={textGroupVariants}>
                   <motion.p
                     variants={textItemVariants}
-                    className="text-xs font-bold uppercase tracking-[0.2em] text-yellow-600 leading-tight mb-3"
+                    className="text-xs font-bold uppercase tracking-[0.2em] text-[#8b6b00] leading-tight mb-3"
                   >
                     {pillar.eyebrow.split("\n").map((line, lineIndex) => (
                       <span key={`${pillar.number}-eyebrow-${lineIndex}`} className="block">

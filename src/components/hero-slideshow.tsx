@@ -180,7 +180,7 @@ export function HeroSlideshow() {
           </Link>
           <Link
             href="/make-my-trip"
-            className="btn-secondary"
+            className="btn-light"
           >
             Plan Your Trip
           </Link>

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { destinations } from "@/lib/site";
 
 const PKR_PER_USD = 283;
 const USD_PRICE_INCREASE = 70;
@@ -9,48 +10,44 @@ function formatJourneyPrice(pkrAmount: number) {
   return `From $${usdAmount.toLocaleString("en-US")}`;
 }
 
-const destinationTiles = [
+type DestinationTilePresentation = {
+  slug?: string;
+  name?: string;
+  description?: string;
+  image?: string;
+  href?: string;
+  span: string;
+  height: string;
+  accent: string;
+};
+
+const destinationTilePresentations: DestinationTilePresentation[] = [
   {
-    name: "Hunza",
-    description: "Towering peaks, apricot valleys, and storied mountain roads.",
-    image: "/hero-images/kamran-ch-unsplash.webp",
-    href: "/destinations/hunza",
+    slug: "hunza",
     span: "md:col-span-7",
     height: "min-h-[26rem]",
     accent: "A timeless mountain escape",
   },
   {
-    name: "Skardu",
-    description: "Lakes, forts, and dramatic glacial scenery in Baltistan.",
-    image: "/hero-images/obaid-awan-unsplash.jpg.webp",
-    href: "/destinations/skardu",
+    slug: "skardu",
     span: "md:col-span-5",
     height: "min-h-[22rem]",
     accent: "High-altitude wonder",
   },
   {
-    name: "Fairy Meadows",
-    description: "Remote alpine meadows framed by iconic mountain views.",
-    image: "/hero-images/hussain-ahmed-unsplash.webp",
-    href: "/destinations/fairy-meadows",
+    slug: "fairy-meadows",
     span: "md:col-span-5",
     height: "min-h-[20rem]",
     accent: "A quiet, cinematic stay",
   },
   {
-    name: "Kashmir",
-    description: "Soft valleys, heritage, and slow days designed for couples and families.",
-    image: "/hero-images/zain-raza-unsplash.webp",
-    href: "/destinations/kashmir",
+    slug: "kashmir",
     span: "md:col-span-7",
     height: "min-h-[22rem]",
     accent: "Gentle landscapes and warm hospitality",
   },
   {
-    name: "Swat & Kalam",
-    description: "Green valleys, pine-lined routes, and restorative mountain air.",
-    image: "/hero-images/hussain-ahmed-unsplash.webp",
-    href: "/destinations/swat",
+    slug: "swat",
     span: "md:col-span-6",
     height: "min-h-[21rem]",
     accent: "A peaceful northern rhythm",
@@ -65,6 +62,18 @@ const destinationTiles = [
     accent: "For the route-seekers",
   },
 ];
+
+const destinationTiles = destinationTilePresentations.map((tile) => {
+  const destination = tile.slug ? destinations.find((item) => item.slug === tile.slug) : undefined;
+
+  return {
+    ...tile,
+    name: destination?.exploreName ?? destination?.name ?? tile.name ?? "",
+    description: destination?.exploreDescription ?? destination?.description ?? tile.description ?? "",
+    image: destination?.exploreImage ?? destination?.image ?? tile.image ?? "",
+    href: destination ? `/destinations/${destination.slug}` : tile.href ?? "/destinations",
+  };
+});
 
 const experienceCards = [
   {
@@ -351,7 +360,7 @@ export function ExplorePakistanPageContent() {
               >
                 <div className="absolute inset-0">
                   <Image
-                    src={tile.name === "Hunza" ? "/hero-images/kamran-ch-unsplash.webp" : tile.image}
+                    src={tile.image}
                     alt={`${tile.name} in Pakistan`}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"

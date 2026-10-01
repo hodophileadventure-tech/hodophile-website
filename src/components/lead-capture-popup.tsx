@@ -23,14 +23,25 @@ export function LeadCapturePopup() {
   // Show popup after 30 seconds (but only once per session)
   useEffect(() => {
     const hasShownPopup = sessionStorage.getItem('leadCapturePopupShown');
-    if (!hasShownPopup) {
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-        sessionStorage.setItem('leadCapturePopupShown', 'true');
-      }, 30000); // 30 seconds
+    if (hasShownPopup) return;
 
-      return () => clearTimeout(timer);
-    }
+    const showPopup = () => {
+      setIsVisible(true);
+      sessionStorage.setItem('leadCapturePopupShown', 'true');
+    };
+
+    const timer = setTimeout(() => {
+      if (sessionStorage.getItem('dealsPopupClosedThisSession')) {
+        showPopup();
+      } else {
+        window.addEventListener('hodophile:deals-popup-closed', showPopup, { once: true });
+      }
+    }, 30000);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('hodophile:deals-popup-closed', showPopup);
+    };
   }, []);
 
   const validateForm = (): boolean => {
@@ -148,7 +159,7 @@ export function LeadCapturePopup() {
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md animate-fade-in px-4">
         <div className="bg-white rounded-lg shadow-2xl overflow-hidden">
           {/* Header with gradient */}
-          <div className="bg-gradient-to-r from-black to-[#FCC000] p-6 relative">
+          <div className="relative border-b-2 border-[#FCC000] bg-black p-6">
             <button
               onClick={handleClose}
               className="absolute top-4 right-4 text-white hover:bg-white/20 p-1 rounded-full transition-colors"
@@ -227,7 +238,7 @@ export function LeadCapturePopup() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-black to-[#FCC000] text-white font-semibold py-2 rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#FCC000] py-2 font-semibold text-black transition-colors duration-300 hover:bg-[#ffd24d] disabled:cursor-not-allowed disabled:bg-stone-200 disabled:text-stone-700 disabled:opacity-100"
               >
                 {isLoading ? (
                   <>

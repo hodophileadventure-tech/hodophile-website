@@ -5,9 +5,11 @@ import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
-import { absoluteUrl } from "@/lib/site";
+import { JourneyActions } from "@/components/travel-discovery";
+import { absoluteUrl, destinationTourPageRedirects, destinations, tourMenu } from "@/lib/site";
 import { buildPageSchema } from "@/lib/seo/structured-data";
 import { tourPackages } from "@/lib/data/tour-packages";
+import { getSimilarTrips } from "@/lib/trip-intelligence";
 import {
   premiumDestinations,
   readyToBookDestinations,
@@ -309,6 +311,21 @@ export default async function PackagePage({ params }: PackagePageProps) {
     notFound();
   }
 
+  const canonicalPackage = tourPackages.find((tourPackage) => tourPackage.id === slug);
+  const destinationLinks = canonicalPackage?.destinationSlugs.flatMap((destinationSlug) => {
+    const destination = destinations.find((item) => item.slug === destinationSlug);
+    if (destination) return [{ name: destination.name, href: `/destinations/${destination.slug}` }];
+
+    const redirectPath = destinationTourPageRedirects[destinationSlug as keyof typeof destinationTourPageRedirects];
+    if (!redirectPath) return [];
+
+    const category = tourMenu.flatMap((group) => group.items).find((item) => item.destinationSlug === destinationSlug);
+    return [{ name: category?.label ?? destinationSlug, href: redirectPath }];
+  }) ?? [];
+  const similarJourneys = canonicalPackage ? getSimilarTrips(canonicalPackage, tourPackages) : [];
+  const plannerDestination = canonicalPackage?.destinationSlugs[0];
+  const plannerHref = `/make-my-trip?${plannerDestination ? `destination=${encodeURIComponent(plannerDestination)}&` : ""}inspiration=${encodeURIComponent(pkg.title)}`;
+
   const travelDetailCards = [
     {
       title: "Accommodation",
@@ -365,7 +382,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
           ],
         })}
       />
-      <PageShell wide>
+      <PageShell wide mainClassName="overflow-x-clip">
       <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
         <div className="relative min-h-[62vh] md:min-h-[68vh]">
           <Image
@@ -456,6 +473,14 @@ export default async function PackagePage({ params }: PackagePageProps) {
                 Back to Destinations
               </Link>
             </div>
+            {canonicalPackage ? (
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-stone-200 pt-4">
+                <JourneyActions packageId={canonicalPackage.id} packageTitle={canonicalPackage.title} />
+                <Link href={plannerHref} className="text-sm font-semibold text-[#735900] underline underline-offset-4">
+                  Customize this route
+                </Link>
+              </div>
+            ) : null}
           </div>
         </aside>
 
@@ -500,6 +525,20 @@ export default async function PackagePage({ params }: PackagePageProps) {
                   <p className="mt-2 text-2xl font-black text-stone-900">{pkg.priceWithoutIslamabadStay}</p>
                 </div>
               </div>}
+
+              {destinationLinks.length > 0 ? (
+                <section className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8" aria-labelledby="route-destinations-heading">
+                  <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Route destinations</p>
+                  <h2 id="route-destinations-heading" className="mt-3 font-serif text-3xl text-stone-900">Explore the places on this journey</h2>
+                  <div className="mt-5 flex flex-wrap gap-3">
+                    {destinationLinks.map((destination) => (
+                      <Link key={destination.href} href={destination.href} className="inline-flex min-h-10 items-center rounded-full border border-stone-300 bg-white px-4 text-sm font-semibold text-stone-800 transition hover:border-[#fcc000] hover:bg-[#fff8df]">
+                        {destination.name}
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
             </div>
 
             {pkg.attractions?.length ? (
@@ -749,6 +788,30 @@ export default async function PackagePage({ params }: PackagePageProps) {
           </div>
         </div>
       </section>
+      {similarJourneys.length > 0 ? (
+        <section className="mt-12 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8" aria-labelledby="similar-journeys-heading">
+          <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Continue exploring</p>
+          <h2 id="similar-journeys-heading" className="mt-3 font-serif text-3xl text-stone-900">Similar journeys</h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {similarJourneys.map(({ trip, reasons }) => {
+              const relatedPackage = tourPackages.find((tourPackage) => tourPackage.id === trip.id);
+              if (!relatedPackage) return null;
+
+              return (
+                <article key={relatedPackage.id} className="rounded-2xl border border-stone-200 bg-stone-50 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">{relatedPackage.duration} · PKR {relatedPackage.pricePerPerson.toLocaleString()} per person</p>
+                  <h3 className="mt-2 font-serif text-2xl text-stone-950">{relatedPackage.title}</h3>
+                  {reasons.length > 0 ? <p className="mt-2 text-sm text-stone-600">{reasons.join(" · ")}</p> : null}
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-stone-200 pt-4">
+                    <Link href={`/packages/${relatedPackage.id}`} className="text-sm font-semibold text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4">View journey</Link>
+                    <JourneyActions packageId={relatedPackage.id} packageTitle={relatedPackage.title} />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
       </PageShell>
     </>
   );

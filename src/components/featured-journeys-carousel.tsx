@@ -163,7 +163,7 @@ export function FeaturedJourneysCarousel({ tours }: FeaturedJourneysCarouselProp
               type="button"
               onClick={handlePrev}
               disabled={activeIndex === 0}
-              className="text-sm uppercase tracking-[0.28em] text-stone-700 transition hover:text-stone-950 disabled:cursor-not-allowed disabled:text-stone-400"
+              className="text-sm uppercase tracking-[0.28em] text-stone-700 transition hover:text-stone-950 disabled:cursor-not-allowed disabled:text-stone-500 disabled:opacity-100"
             >
               ← previous
             </button>
@@ -171,7 +171,7 @@ export function FeaturedJourneysCarousel({ tours }: FeaturedJourneysCarouselProp
               type="button"
               onClick={handleNext}
               disabled={activeIndex === tours.length - 1}
-              className="text-sm uppercase tracking-[0.28em] text-stone-700 transition hover:text-stone-950 disabled:cursor-not-allowed disabled:text-stone-400"
+              className="text-sm uppercase tracking-[0.28em] text-stone-700 transition hover:text-stone-950 disabled:cursor-not-allowed disabled:text-stone-500 disabled:opacity-100"
             >
               next →
             </button>
