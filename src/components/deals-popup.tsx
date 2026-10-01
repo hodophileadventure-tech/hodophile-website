@@ -1,14 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 export function DealsPopup() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
-    
     // Check if user has closed the popup in this session (page load)
     const wasClosedThisSession = sessionStorage.getItem("dealsPopupClosedThisSession");
     
@@ -23,6 +21,21 @@ export function DealsPopup() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+        sessionStorage.setItem("dealsPopupClosedThisSession", "true");
+        window.dispatchEvent(new Event("hodophile:deals-popup-closed"));
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
   const handleClose = () => {
     setIsOpen(false);
     // Mark popup as closed for this session only
@@ -30,7 +43,7 @@ export function DealsPopup() {
     window.dispatchEvent(new Event("hodophile:deals-popup-closed"));
   };
 
-  if (!isMounted || !isOpen) return null;
+  if (!isOpen) return null;
 
   return (
     <>
@@ -43,6 +56,9 @@ export function DealsPopup() {
       {/* Modal */}
       <div className="fixed inset-0 z-[101] flex items-center justify-center overflow-y-auto p-3 sm:p-4">
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Summer Tour 2026 special deals"
           className="relative my-2 flex max-h-[calc(100svh-1.5rem)] w-[min(92vw,32rem)] flex-col overflow-visible rounded-[15px] shadow-2xl animate-in fade-in zoom-in-95 duration-300 sm:my-8 sm:max-h-[calc(100vh-4rem)] sm:w-full sm:max-w-lg"
           onClick={(e) => e.stopPropagation()}
         >
@@ -70,9 +86,12 @@ export function DealsPopup() {
           <div className="min-h-0 max-h-full overflow-x-hidden overflow-y-auto rounded-[15px]">
             {/* Image Container - Scrollable */}
             <div className="w-full bg-black sm:max-h-[80vh]">
-              <img
+              <Image
                 src="/images/summer-tour-2026.webp"
                 alt="Summer Tour 2026 - Special Deals"
+                width={1280}
+                height={720}
+                sizes="(max-width: 640px) 92vw, 32rem"
                 className="block max-h-[calc(100svh-8rem)] w-full object-contain sm:max-h-none sm:object-cover"
               />
             </div>

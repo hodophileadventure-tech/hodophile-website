@@ -227,13 +227,13 @@ export default function Home() {
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link
                   href="/tours"
-                  className="inline-flex items-center rounded-full border border-[#ffc000] bg-[#ffc000] px-6 py-3 text-sm font-semibold !text-[#0b0b0b] shadow-[0_10px_22px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
+                  className="btn-primary"
                 >
                   Explore tours <span aria-hidden="true">↗</span>
                 </Link>
                 <Link
                   href="/make-my-trip"
-                  className="inline-flex items-center rounded-full border border-white/65 bg-black/45 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-black/60"
+                  className="btn-light"
                 >
                   Plan my trip <span aria-hidden="true">↗</span>
                 </Link>
@@ -276,7 +276,7 @@ export default function Home() {
                 Pick the journey that fits your travel mood.
               </h2>
             </div>
-            <Link href="/tours" className="inline-flex items-center justify-center rounded-full border border-stone-300 bg-stone-100 px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] text-stone-900 transition hover:border-[#fcc000] hover:bg-[#fff8df]">
+            <Link href="/tours" className="btn-outline">
               Explore all tours
             </Link>
           </div>
@@ -416,14 +416,14 @@ export default function Home() {
                   Share your dates, destination, and group size and we will suggest the best-fit Pakistan itinerary.
                 </p>
                 <div className="mt-7 space-y-3">
-                  <Link href="/make-my-trip" className="inline-flex w-full items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-semibold text-black transition hover:bg-[#ffd24d]">
+                  <Link href="/make-my-trip" className="btn-primary w-full">
                     Create my itinerary
                   </Link>
                   <a
                     href={whatsappUrl("Hi Hodophile, I want a custom Pakistan tour plan.")}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex w-full items-center justify-center rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                    className="btn-light w-full"
                   >
                     WhatsApp now
                   </a>

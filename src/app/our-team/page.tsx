@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AboutTeamShowcase } from "@/components/about-team-showcase";
+import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 
@@ -22,48 +23,17 @@ export const metadata: Metadata = {
 export default function OurTeamPage() {
   return (
     <PageShell wide>
-      <section className="team-page-hero">
-        <h1 className="sr-only">Our Team at Hodophile Adventures</h1>
-        <div className="team-page-hero-wrap">
-          <img
-            className="team-page-hero-image"
-            src="/images/team/our-team-header.webp"
-            alt=""
-            aria-hidden="true"
-          />
-        </div>
-      </section>
+      <PageHeroImage
+        image="/images/team/our-team-header.webp"
+        imageAlt="Hodophile Adventures travel team"
+        eyebrow="Our Team"
+        title="The people behind the journey."
+        description="Meet the leadership, planning, operations, technology, and creative team behind Hodophile Adventures."
+      />
 
-      <section className="team-page-showcase">
+      <section className="mt-10">
         <AboutTeamShowcase />
       </section>
-
-      <style>{`
-        .team-page-hero {
-          width: 100vw;
-          position: relative;
-          left: 50%;
-          margin-left: -50vw;
-        }
-
-        .team-page-hero-wrap {
-          width: 100%;
-          margin: 0;
-          padding: 0;
-          line-height: 0;
-        }
-
-        .team-page-hero-image {
-          width: 100%;
-          height: auto;
-          display: block;
-          object-fit: contain;
-        }
-
-        .team-page-showcase {
-          margin-top: 4rem;
-        }
-      `}</style>
     </PageShell>
   );
 }

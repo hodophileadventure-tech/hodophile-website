@@ -48,3 +48,12 @@ export interface TripSimilarityResult {
   score: number;
   reasons: string[];
 }
+
+export interface RankedTripRecommendation<T> {
+  trip: T;
+  score: number;
+  summary: string;
+  reasons: MatchReason[];
+  matchedCriteria: string[];
+  destinationKey: string;
+}

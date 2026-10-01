@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import { AboutTeamTabDropdown } from "@/components/about-team-tab-dropdown";
 import { JsonLd } from "@/components/JsonLd";
@@ -36,7 +37,7 @@ export default function AboutUsPage() {
         ],
       })} />
       <PageShell wide>
-      <section className="relative mt-0 mx-auto max-w-full overflow-hidden rounded-[2rem] border-2 border-[#fcc000]">
+      <section className="relative mt-0 mx-auto max-w-full overflow-hidden rounded-[1.5rem] border border-stone-200 shadow-[0_24px_70px_rgba(11,11,11,0.12)]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -63,7 +64,7 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[96rem] rounded-[2rem] border-2 border-[#fcc000] px-6 py-12 lg:px-8 lg:py-16 xl:px-10">
+      <section className="mx-auto max-w-[96rem] rounded-[1.5rem] border border-stone-200 bg-white/70 px-6 py-10 shadow-[0_16px_36px_rgba(55,55,48,0.05)] lg:px-8 lg:py-12 xl:px-10">
         <div className="flex flex-wrap gap-8 lg:gap-12">
           {companyStats.map((stat) => (
             <div key={stat.key}>
@@ -76,7 +77,7 @@ export default function AboutUsPage() {
 
       <AboutTeamTabDropdown />
 
-      <section className="mx-auto mt-8 max-w-[96rem] rounded-[2rem] border-2 border-[#fcc000] px-6 pb-12 lg:px-8 xl:px-10">
+      <section className="mx-auto mt-8 max-w-[96rem] rounded-[1.5rem] border border-stone-200 px-6 pb-10 lg:px-8 xl:px-10">
         <div className="mb-12">
           <div className="mb-4 inline-block rounded-full border border-[#fcc000] bg-[#fcc000]/10 px-4 py-2">
             <span className="text-sm font-semibold uppercase tracking-wide text-[#fcc000]">Learn More</span>
@@ -90,8 +91,8 @@ export default function AboutUsPage() {
           </p>
         </div>
 
-        <div className="space-y-12 rounded-[2rem] border-2 border-[#fcc000]">
-          <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
+        <div className="space-y-8">
+          <section className="rounded-[1.5rem] border border-stone-200 bg-white p-8 shadow-[0_16px_36px_rgba(55,55,48,0.06)]">
             <h3 className="mb-6 font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
               CEO&apos;s Message
             </h3>
@@ -122,8 +123,8 @@ export default function AboutUsPage() {
             </div>
           </section>
 
-          <section className="grid gap-8 rounded-[2rem] border-2 border-[#fcc000] lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="rounded-[2rem] border border-[#fcc000]/20 bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
+          <section className="grid gap-8 rounded-[1.5rem] border border-stone-200 bg-white p-1 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="rounded-[1.25rem] bg-white p-8">
               <div className="mb-6 flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#fcc000]/20 text-2xl">🧭</div>
                 <h3 className="font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
@@ -145,7 +146,7 @@ export default function AboutUsPage() {
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-[2rem] border border-[#fcc000]/20 bg-[#fff8e3] p-6 shadow-sm">
+              <div className="rounded-[1.25rem] border border-[#e6d58f] bg-[#fff8e3] p-6">
                 <div className="mb-3 flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">👁️</div>
                   <h4 className="font-semibold text-stone-900">Vision</h4>
@@ -154,7 +155,7 @@ export default function AboutUsPage() {
                   To become a globally recognized travel brand, trusted for delivering exceptional, affordable, and sustainable travel experiences that inspire unforgettable journeys.
                 </p>
               </div>
-              <div className="rounded-[2rem] border border-[#fcc000]/20 bg-[#fff8e3] p-6 shadow-sm">
+              <div className="rounded-[1.25rem] border border-[#e6d58f] bg-[#fff8e3] p-6">
                 <div className="mb-3 flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fcc000]/20 text-xl">🎯</div>
                   <h4 className="font-semibold text-stone-900">Mission</h4>
@@ -166,7 +167,7 @@ export default function AboutUsPage() {
             </div>
           </section>
 
-          <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
+          <section className="rounded-[1.5rem] border border-stone-200 bg-white p-8 shadow-[0_16px_36px_rgba(55,55,48,0.06)]">
             <div className="mb-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
               <div>
                 <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b76d00]">Local Expertise</p>
@@ -194,9 +195,11 @@ export default function AboutUsPage() {
               </div>
 
               <div className="overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-[#fff8e3] p-3 shadow-[0_22px_50px_-28px_rgba(252,192,0,0.28)]">
-                <img
+                <Image
                   src="/images/editorial/local-expertise-global-standards.webp"
                   alt="Local expertise with global standards"
+                  width={1200}
+                  height={800}
                   className="h-full w-full rounded-[1.5rem] object-cover"
                 />
               </div>
@@ -260,7 +263,7 @@ export default function AboutUsPage() {
             </div>
           </section>
 
-          <section className="rounded-[2rem] border-2 border-[#fcc000] bg-white p-8 shadow-[0_30px_60px_-28px_rgba(252,192,0,0.22)]">
+          <section className="rounded-[1.5rem] border border-stone-200 bg-white p-8 shadow-[0_16px_36px_rgba(55,55,48,0.06)]">
             <h3 className="mb-6 font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
               What Makes Us Unique
             </h3>

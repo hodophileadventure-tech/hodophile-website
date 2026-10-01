@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { PageHeroImage } from "@/components/page-hero-image";
@@ -35,26 +36,20 @@ export default function BlogsPage() {
           <Link
             key={post.title}
             href={`/blogs/${post.slug}`}
-            className="rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur transition hover:-translate-y-1 hover:border-[#fcc000]/50 hover:shadow-lg"
+            className="group overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_16px_36px_rgba(55,55,48,0.06)] transition hover:-translate-y-1 hover:border-[#d9a407]/60 hover:shadow-[0_22px_48px_rgba(55,55,48,0.1)]"
           >
-            <p className="text-sm uppercase tracking-[0.3em] text-[#fcc000]/75">{post.category}</p>
-            <h2 className="mt-4 text-2xl font-semibold">{post.title}</h2>
-            <p className="mt-3 text-sm leading-6 text-stone-600">{post.excerpt}</p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {post.destinations.map((destination) => (
-                <span key={destination} className="rounded-full border border-[#fcc000]/30 bg-[#fcc000]/10 px-3 py-1 text-xs font-medium text-[#8a6a12]">
-                  {destination}
-                </span>
-              ))}
+            <div className="relative aspect-[16/9] overflow-hidden bg-stone-100">
+              <Image src={post.hero ?? "/images/editorial/editorial-2.webp"} alt={post.heroAlt || post.title} fill sizes="(max-width: 1024px) 100vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
             </div>
-            <ul className="mt-5 space-y-2 text-sm leading-6 text-stone-600">
-              {post.highlights.map((highlight) => (
-                <li key={highlight} className="flex gap-2">
-                  <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#fcc000]" />
-                  <span>{highlight}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="p-5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8b6b00]">{post.category}</p>
+              <h2 className="mt-3 font-serif text-2xl leading-tight text-stone-950">{post.title}</h2>
+              <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600">{post.excerpt}</p>
+              <div className="mt-5 flex items-center justify-between gap-3 border-t border-stone-200 pt-4">
+                <span className="text-xs font-semibold text-stone-500">{post.destinations.join(" · ")}</span>
+                <span className="text-xs font-bold uppercase tracking-[0.14em] text-stone-900">Read article ↗</span>
+              </div>
+            </div>
           </Link>
         ))}
       </section>

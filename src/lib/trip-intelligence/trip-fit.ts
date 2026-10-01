@@ -69,6 +69,28 @@ function makeReason(
   return { criterion, type, label, detail };
 }
 
+function getDurationFitScore(durationDays: number, preference: TripPreferences["duration"]): number {
+  if (!preference || preference === "all" || durationDays <= 0) return 0;
+  if (durationMatchesPreference(durationDays, preference)) return 1;
+
+  switch (preference) {
+    case "weekend":
+      return Math.max(0, 1 - (durationDays - 3) / 6);
+    case "4-7": {
+      const distance = durationDays < 4 ? 4 - durationDays : durationDays - 7;
+      return Math.max(0, 1 - distance / 6);
+    }
+    case "8-12": {
+      const distance = durationDays < 8 ? 8 - durationDays : durationDays - 12;
+      return Math.max(0, 1 - distance / 8);
+    }
+    case "12-plus":
+      return Math.min(0.85, durationDays / 12 * 0.85);
+    default:
+      return 0;
+  }
+}
+
 export function calculateTripFit(preferences: TripPreferences, trip: Partial<TourPackage> | NormalizedTrip | undefined): TripFitResult {
   if (!trip) {
     return {
@@ -114,6 +136,7 @@ export function calculateTripFit(preferences: TripPreferences, trip: Partial<Tou
     totalWeight += weight;
 
     let isMatch = false;
+    let matchStrength = 0;
     let label = "";
     let detail = "";
 
@@ -146,17 +169,21 @@ export function calculateTripFit(preferences: TripPreferences, trip: Partial<Tou
       case "duration": {
         if (preferences.duration) {
           isMatch = durationMatchesPreference(normalizedTrip.durationDays, preferences.duration);
-          label = isMatch ? "Duration fit" : "Duration mismatch";
+          matchStrength = getDurationFitScore(normalizedTrip.durationDays, preferences.duration);
+          label = isMatch ? "Duration fit" : matchStrength > 0 ? "Closest duration" : "Duration mismatch";
           detail = isMatch
             ? `${normalizedTrip.durationLabel} matches your selected duration preference.`
-            : `${normalizedTrip.durationLabel} does not match your selected duration preference.`;
+            : `${normalizedTrip.durationLabel} is the closest listed duration to your selected preference.`;
         }
         break;
       }
       case "budget": {
         const numericBudget = Number(preferences.budget ?? 0);
         isMatch = numericBudget > 0 && normalizedTrip.pricePerPerson <= numericBudget;
-        label = isMatch ? "Budget fit" : "Budget mismatch";
+        matchStrength = numericBudget > 0
+          ? Math.min(1, numericBudget / Math.max(normalizedTrip.pricePerPerson, 1))
+          : 0;
+        label = isMatch ? "Budget fit" : matchStrength > 0 ? "Budget stretch" : "Budget mismatch";
         detail = isMatch
           ? `PKR ${normalizedTrip.pricePerPerson.toLocaleString()} is within your budget.`
           : `PKR ${normalizedTrip.pricePerPerson.toLocaleString()} is above your selected budget of PKR ${numericBudget.toLocaleString()}.`;
@@ -165,9 +192,12 @@ export function calculateTripFit(preferences: TripPreferences, trip: Partial<Tou
       case "departureMonth": {
         const month = preferences.departureMonth ?? "";
         isMatch = tripMatchesDepartureMonth(month, normalizedTrip);
+        matchStrength = isMatch ? 1 : 0;
         label = isMatch ? "Departure month fit" : "Departure month mismatch";
         detail = isMatch
-          ? `A confirmed departure or window includes ${month}.`
+          ? normalizedTrip.departureAvailability === "confirmed"
+            ? `A confirmed departure or window includes ${month}.`
+            : `The package schedule note includes ${month}; availability remains on request.`
           : `No confirmed departure is listed for ${month}.`;
         break;
       }
@@ -176,7 +206,14 @@ export function calculateTripFit(preferences: TripPreferences, trip: Partial<Tou
     }
 
     if (isMatch) {
-      matchedWeight += weight;
+      matchStrength = 1;
+    }
+
+    if (matchStrength > 0) {
+      matchedWeight += weight * matchStrength;
+    }
+
+    if (isMatch) {
       matchedCriteria.push(criterion);
       reasons.push(makeReason(criterion, "match", label, detail));
     } else {

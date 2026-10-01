@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore } from "react";
 
 import { tourPackages, type TravelStyle, type TourDeparture } from "@/lib/data/tour-packages";
-import { calculateTripFit, getSimilarTrips as getSimilarTripsFromEngine, getSimilarTripsForSavedTrips, normalizeDestinationSlug, normalizeTrip, type TripPreferences } from "@/lib/trip-intelligence";
+import { calculateTripFit, getSimilarTrips as getSimilarTripsFromEngine, getSimilarTripsForSavedTrips, normalizeDestinationSlug, normalizeTrip, rankTripRecommendations, type TripPreferences } from "@/lib/trip-intelligence";
 
 type RegionFilter = "all" | "northern" | "southern";
 type DurationFilter = "all" | "weekend" | "4-7" | "8-12" | "12-plus";
@@ -111,12 +111,11 @@ function buildTripPreferences(search: string, style: TravelStyle | "all", region
   };
 }
 
-function getPreferenceSummary(score: number, matchedCount: number, selectedCount: number) {
-  if (selectedCount === 0) return "Explore our trips";
-  if (score >= 80) return "Strong match for your preferences";
-  if (score >= 60) return "Good fit for your selected preferences";
-  if (score >= 40) return "Partial match for your current preferences";
-  return "Not a strong match yet";
+function getPreferenceSummary(score: number, matchedCount: number, selectedCount: number, hasMismatch: boolean) {
+  if (selectedCount === 0) return "Suggested starting point";
+  if (!hasMismatch && score >= 75 && matchedCount >= 2) return "Strong match";
+  if (score >= 50 || matchedCount > 0) return "Good fit";
+  return "Worth considering";
 }
 
 function parseStorageIds(rawValue: string) {
@@ -291,6 +290,19 @@ export function TravelDiscoveryCatalog() {
   const wishlistIds = useStoredIds(STORAGE_KEYS.wishlist);
   const [quickCompareSelection, setQuickCompareSelection] = useState<Array<string | "">>(["", "", "", ""]);
 
+  const fitPreferences = useMemo(
+    () => buildTripPreferences(search, style, region, duration, maximumBudget, fitMonth),
+    [duration, fitMonth, maximumBudget, region, search, style],
+  );
+  const fitCriteriaCount = [
+    fitPreferences.destination,
+    fitPreferences.region,
+    fitPreferences.travelStyle,
+    fitPreferences.duration,
+    fitPreferences.budget,
+    fitPreferences.departureMonth,
+  ].filter(Boolean).length;
+
   const filteredPackages = useMemo(() => {
     const query = search.trim().toLowerCase();
 
@@ -315,47 +327,42 @@ export function TravelDiscoveryCatalog() {
 
       return matchesQuery && matchesStyle && matchesDuration && matchesRegion && matchesMinimum && matchesMaximum;
     });
+    if (sort === "recommended" && fitCriteriaCount > 0) {
+      return rankTripRecommendations(fitPreferences, filtered, filtered.length).map((item) => item.trip);
+    }
     if (sort === "price-low") {
       return filtered.sort((first, second) => first.pricePerPerson - second.pricePerPerson);
     }
     if (sort === "duration-short") {
       return filtered.sort((first, second) => getDurationDays(first) - getDurationDays(second));
     }
+    if (sort === "recommended") {
+      return [...filtered].sort((first, second) => first.pricePerPerson - second.pricePerPerson);
+    }
     return filtered;
-  }, [duration, maximumBudget, minimumBudget, region, search, sort, style]);
+  }, [duration, fitCriteriaCount, fitPreferences, maximumBudget, minimumBudget, region, search, sort, style]);
 
-  const fitPreferences = useMemo(
-    () => buildTripPreferences(search, style, region, duration, maximumBudget, fitMonth),
-    [duration, fitMonth, maximumBudget, region, search, style],
-  );
-  const fitCriteriaCount = [
-    fitPreferences.destination,
-    fitPreferences.region,
-    fitPreferences.travelStyle,
-    fitPreferences.duration,
-    fitPreferences.budget,
-    fitPreferences.departureMonth,
-  ].filter(Boolean).length;
+  const recommendationCandidates = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return packageList;
+
+    return packageList.filter((packageItem) =>
+      packageItem.title.toLowerCase().includes(query) ||
+      packageItem.destinationSlugs.some((slug) => slug.toLowerCase().includes(query)) ||
+      packageItem.summary.toLowerCase().includes(query) ||
+      packageItem.notes.some((note) => note.toLowerCase().includes(query)),
+    );
+  }, [search]);
 
   const fitRecommendations = useMemo(() => {
-    if (fitCriteriaCount === 0) {
-      return [];
-    }
-
-    return filteredPackages
-      .map((packageItem) => {
-        const result = calculateTripFit(fitPreferences, packageItem);
-        return {
-          packageItem,
-          score: result.score,
-          summary: result.summary,
-          reasons: result.reasons,
-          matchedCriteria: result.matchedCriteria,
-        };
-      })
-      .sort((first, second) => second.score - first.score || first.packageItem.title.localeCompare(second.packageItem.title))
-      .slice(0, 3);
-  }, [filteredPackages, fitCriteriaCount, fitPreferences]);
+    return rankTripRecommendations(fitPreferences, recommendationCandidates, 3).map(({ trip, score, summary, reasons, matchedCriteria }) => ({
+      packageItem: trip,
+      score,
+      summary,
+      reasons,
+      matchedCriteria,
+    }));
+  }, [fitPreferences, recommendationCandidates]);
 
   const toggleWishlist = (id: string) => {
     writeStorageIds(
@@ -506,18 +513,18 @@ export function TravelDiscoveryCatalog() {
           </label>
         </div>
 
-        {fitCriteriaCount ? (
+        {fitRecommendations.length ? (
           <div className="mt-5 grid gap-4 lg:grid-cols-3">
             {fitRecommendations.map(({ packageItem, score, summary, reasons, matchedCriteria }) => {
               const matchReasons = reasons.filter((reason) => reason.type === "match").slice(0, 3);
               const mismatchReasons = reasons.filter((reason) => reason.type === "mismatch").slice(0, 2);
-              const label = getPreferenceSummary(score, matchedCriteria.length, fitCriteriaCount);
+              const label = getPreferenceSummary(score, matchedCriteria.length, fitCriteriaCount, mismatchReasons.length > 0);
 
               return (
                 <article key={packageItem.id} className="flex flex-col border-l-2 border-[#fcc000] bg-white py-3 pl-4 pr-3">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="rounded-full bg-[#fff6d6] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#7a5d00]">{score}% match</span>
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">{label}</span>
+                    <span className="rounded-full bg-[#fff6d6] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#7a5d00]">{label}</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">{fitCriteriaCount ? "Based on your selections" : "Catalog starting point"}</span>
                   </div>
                   <h4 className="mt-2 font-semibold text-stone-950">{packageItem.title}</h4>
                   <p className="mt-1 text-xs font-semibold text-stone-800">
@@ -535,7 +542,7 @@ export function TravelDiscoveryCatalog() {
                     ) : (
                       <li className="flex items-start gap-2">
                         <span aria-hidden="true" className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-stone-400" />
-                        <span>No selected preference is a strong match yet.</span>
+                        <span>{fitCriteriaCount ? "No selected preference is an exact match yet." : "No preferences selected; use this as a starting point."}</span>
                       </li>
                     )}
                     {mismatchReasons.length > 0 ? (

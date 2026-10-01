@@ -13,7 +13,7 @@ export function PageHeroImage({ image, imageAlt, eyebrow, title, description, im
   return (
     <section className="relative overflow-hidden rounded-[1.5rem] bg-[#101010] shadow-[0_24px_70px_rgba(11,11,11,0.16)]">
       <div className="relative min-h-[22rem] sm:min-h-[24rem]">
-        <Image src={image} alt={imageAlt} fill sizes="100vw" className={imageClassName ?? "object-cover"} />
+        <Image src={image} alt={imageAlt} fill priority sizes="100vw" className={imageClassName ?? "object-cover"} />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,11,11,0.22)_0%,rgba(11,11,11,0.62)_100%)]" />
 
         <div className="relative z-10 flex min-h-[24rem] items-end p-7 sm:min-h-[28rem] sm:p-12 lg:p-16">

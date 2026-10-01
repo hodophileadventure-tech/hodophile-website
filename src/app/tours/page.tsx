@@ -92,7 +92,7 @@ export default function ToursPage() {
         ) : (
           <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-dashed border-stone-300 bg-white/70 p-5">
             <p className="max-w-2xl text-sm leading-6 text-stone-700">Choose a journey and request the dates that suit you. We will confirm availability and the current price with you.</p>
-            <Link href="/make-my-trip" className="inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-5 py-3 text-sm font-semibold text-white transition hover:bg-black">Request my dates</Link>
+            <Link href="/make-my-trip" className="btn-dark">Request my dates</Link>
           </div>
         )}
       </section>
@@ -103,7 +103,7 @@ export default function ToursPage() {
             <p className="text-xs uppercase tracking-[0.32em] text-[#8b6b00]">Need a managed plan?</p>
             <h2 className="mt-3 font-serif text-3xl text-stone-950">Tell us your dates and we will shape the route for you.</h2>
           </div>
-          <Link href="/make-my-trip" className="inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-5 py-3 text-sm font-semibold !text-white transition hover:bg-black">Build my trip</Link>
+          <Link href="/make-my-trip" className="btn-dark">Build my trip</Link>
         </div>
       </section>
 

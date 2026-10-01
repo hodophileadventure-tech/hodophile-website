@@ -36,7 +36,7 @@ export default function DestinationsPage() {
           return (
             <article
               key={destination.name}
-              className="group overflow-hidden rounded-[2rem] border border-black/10 bg-white/90 shadow-[0_24px_45px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_30px_70px_rgba(15,23,42,0.12)]"
+              className="group overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_16px_36px_rgba(55,55,48,0.06)] transition hover:-translate-y-1 hover:border-[#d9a407]/60 hover:shadow-[0_22px_48px_rgba(55,55,48,0.1)]"
             >
               <a href={`/destinations/${destination.slug}`} className="block">
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">

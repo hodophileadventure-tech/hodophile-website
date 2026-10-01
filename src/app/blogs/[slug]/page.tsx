@@ -91,7 +91,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
             <p className="max-w-3xl text-lg leading-8 text-stone-600">{post.intro}</p>
           </div>
 
-          <aside className="rounded-[2rem] border-4 border-[#fcc000] bg-white/85 p-6 shadow-sm">
+          <aside className="rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-[0_16px_36px_rgba(55,55,48,0.06)]">
             <p className="text-sm uppercase tracking-[0.3em] text-[#8a6a12]">Quick facts</p>
             <div className="mt-4 space-y-4 text-sm text-stone-700">
               <div>
@@ -116,7 +116,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
         <div className="mt-10 grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
           <div className="space-y-6">
             {post.sections.map((section) => (
-              <section key={section.heading} className="rounded-[2rem] border-4 border-[#fcc000] bg-white/85 p-6">
+              <section key={section.heading} className="rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-[0_12px_30px_rgba(55,55,48,0.04)]">
                 <h2 className="text-2xl font-semibold tracking-tight text-stone-950">{section.heading}</h2>
                 <div className="mt-4 space-y-4 text-base leading-8 text-stone-600">
                   {section.body.map((paragraph) => (
@@ -128,7 +128,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
           </div>
 
           <div className="space-y-6">
-            <section className="rounded-[2rem] border-4 border-[#fcc000] bg-white/85 p-6">
+            <section className="rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-[0_12px_30px_rgba(55,55,48,0.04)]">
               <h2 className="text-2xl font-semibold tracking-tight text-stone-950">Planning notes</h2>
               <div className="mt-4 space-y-4 text-sm leading-7 text-stone-600">
                 <p>
@@ -140,11 +140,11 @@ export default async function BlogArticlePage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="rounded-[2rem] border-4 border-[#fcc000] bg-white/85 p-6">
+            <section className="rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-[0_12px_30px_rgba(55,55,48,0.04)]">
               <h2 className="text-2xl font-semibold tracking-tight text-stone-950">Frequently asked questions</h2>
               <div className="mt-4 space-y-4">
                 {post.faqs.map((faq) => (
-                  <div key={faq.question} className="rounded-2xl border border-[#fcc000]/30 bg-[#fcc000]/5 p-4">
+                  <div key={faq.question} className="rounded-xl border border-stone-200 bg-stone-50 p-4">
                     <p className="font-semibold text-stone-950">{faq.question}</p>
                     <p className="mt-2 text-sm leading-7 text-stone-600">{faq.answer}</p>
                   </div>
@@ -152,7 +152,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
               </div>
             </section>
 
-            <section className="rounded-[2rem] border-4 border-[#fcc000] bg-white/85 p-6">
+            <section className="rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-[0_12px_30px_rgba(55,55,48,0.04)]">
               <h2 className="text-2xl font-semibold tracking-tight text-stone-950">How to use this guide</h2>
               <p className="mt-4 text-sm leading-7 text-stone-600">
                 Use this article as a planning reference before choosing a tour or building a custom itinerary. The article points out the travel style, timing, and pacing that usually work best for the destination, which helps make the booking process easier and more realistic.

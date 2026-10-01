@@ -4,6 +4,7 @@ import Image from "next/image";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 import { MakeMyTripForm } from "@/components/make-my-trip-form";
+import { TripMakerRecommendations } from "@/components/trip-maker-recommendations";
 
 export const metadata: Metadata = {
   title: "Make My Trip",
@@ -45,6 +46,9 @@ export default function MakeMyTripPage() {
                 <p className="mt-4 text-sm leading-7 text-stone-600 sm:text-base">
                   Share your dates, travel style, and group details. We will tailor a route, hotels, and transport to match your ideal domestic itinerary.
                 </p>
+              </div>
+              <div className="mt-8">
+                <TripMakerRecommendations />
               </div>
               <div className="mt-8">
                 <MakeMyTripForm />

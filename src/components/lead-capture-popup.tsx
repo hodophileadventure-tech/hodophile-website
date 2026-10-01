@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
 
 interface FormData {
@@ -10,6 +11,7 @@ interface FormData {
 }
 
 export function LeadCapturePopup() {
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -20,8 +22,14 @@ export function LeadCapturePopup() {
   });
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
+  const handleClose = () => {
+    setIsVisible(false);
+  };
+
   // Show popup after 30 seconds (but only once per session)
   useEffect(() => {
+    if (pathname === '/make-my-trip') return;
+
     const hasShownPopup = sessionStorage.getItem('leadCapturePopupShown');
     if (hasShownPopup) return;
 
@@ -42,7 +50,18 @@ export function LeadCapturePopup() {
       clearTimeout(timer);
       window.removeEventListener('hodophile:deals-popup-closed', showPopup);
     };
-  }, []);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') handleClose();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isVisible]);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
@@ -124,10 +143,6 @@ export function LeadCapturePopup() {
     }
   };
 
-  const handleClose = () => {
-    setIsVisible(false);
-  };
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -156,7 +171,12 @@ export function LeadCapturePopup() {
       />
 
       {/* Popup */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md animate-fade-in px-4">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="lead-capture-title"
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md animate-fade-in px-4"
+      >
         <div className="bg-white rounded-lg shadow-2xl overflow-hidden">
           {/* Header with gradient */}
           <div className="relative border-b-2 border-[#FCC000] bg-black p-6">
@@ -167,7 +187,7 @@ export function LeadCapturePopup() {
             >
               <X size={24} />
             </button>
-            <h2 className="text-white text-xl font-bold">Exclusive Travel Deals</h2>
+            <h2 id="lead-capture-title" className="text-white text-xl font-bold">Exclusive Travel Deals</h2>
             <p className="text-white/90 text-sm mt-1">Join our community & get special offers</p>
           </div>
 
