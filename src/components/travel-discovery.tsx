@@ -518,19 +518,23 @@ export function TravelDiscoveryCatalog() {
         </fieldset>
       </div>
 
-      <section className="mt-7 border-y border-stone-300 py-6" aria-labelledby="trip-fit-heading">
+      <section className="mt-8 overflow-hidden rounded-[2rem] border border-[#e8d69b] bg-[radial-gradient(circle_at_top_right,_rgba(252,192,0,0.16),_transparent_34%),linear-gradient(145deg,_#fffdf6_0%,_#f6f2e7_100%)] p-5 shadow-[0_24px_60px_rgba(58,46,12,0.09)] sm:p-7" aria-labelledby="trip-fit-heading">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">Trip intelligence</p>
-            <h3 id="trip-fit-heading" className="mt-1 font-serif text-2xl text-stone-950">Find journeys that fit your plans</h3>
+            <p className="inline-flex items-center gap-2 rounded-full border border-[#ead99e] bg-white/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#806000]">
+              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#fcc000] shadow-[0_0_0_3px_rgba(252,192,0,0.18)]" />
+              Trip suggestions
+            </p>
+            <h3 id="trip-fit-heading" className="mt-3 font-serif text-3xl text-stone-950 sm:text-4xl">Your kind of Pakistan journey</h3>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-stone-600">Tell us what matters. We’ll bring the most relevant routes to the top.</p>
           </div>
-          <span className="text-xs text-stone-600">Recommendations use listed route, price, and departure data.</span>
+          <span className="rounded-full border border-stone-200/80 bg-white/75 px-3 py-2 text-xs font-medium text-stone-600">Matched using listed route, price, and departure details</span>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-          <label className="text-xs font-semibold text-stone-600">
+        <div className="mt-6 grid gap-3 rounded-[1.5rem] border border-white/80 bg-white/70 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:grid-cols-2 xl:grid-cols-5">
+          <label className="text-xs font-bold text-stone-700">
             Travel style
-            <select value={fitStyle} onChange={(event) => setFitStyle(event.target.value as TravelStyle | "all")} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+            <select value={fitStyle} onChange={(event) => setFitStyle(event.target.value as TravelStyle | "all")} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
               <option value="all">Any style</option>
               <option value="family">Family</option>
               <option value="couples">Couples</option>
@@ -538,17 +542,17 @@ export function TravelDiscoveryCatalog() {
               <option value="tailored">Tailored</option>
             </select>
           </label>
-          <label className="text-xs font-semibold text-stone-600">
+          <label className="text-xs font-bold text-stone-700">
             Region
-            <select value={fitRegion} onChange={(event) => setFitRegion(event.target.value as RegionFilter)} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+            <select value={fitRegion} onChange={(event) => setFitRegion(event.target.value as RegionFilter)} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
               <option value="all">Either region</option>
               <option value="northern">Northern Pakistan</option>
               <option value="southern">Southern Pakistan</option>
             </select>
           </label>
-          <label className="text-xs font-semibold text-stone-600">
+          <label className="text-xs font-bold text-stone-700">
             Time available
-            <select value={fitDuration} onChange={(event) => setFitDuration(event.target.value as DurationFilter)} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+            <select value={fitDuration} onChange={(event) => setFitDuration(event.target.value as DurationFilter)} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
               <option value="all">Any duration</option>
               <option value="weekend">Up to 3 days</option>
               <option value="4-7">4–7 days</option>
@@ -556,13 +560,13 @@ export function TravelDiscoveryCatalog() {
               <option value="12-plus">More than 12 days</option>
             </select>
           </label>
-          <label className="text-xs font-semibold text-stone-600">
+          <label className="text-xs font-bold text-stone-700">
             Budget per person
-            <input type="number" min="0" step="5000" value={fitBudget} onChange={(event) => setFitBudget(event.target.value)} placeholder="No limit" className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900 placeholder:text-stone-400" />
+            <input type="number" min="0" step="5000" value={fitBudget} onChange={(event) => setFitBudget(event.target.value)} placeholder="No limit" className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm placeholder:text-stone-400 transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30" />
           </label>
-          <label className="text-xs font-semibold text-stone-600">
+          <label className="text-xs font-bold text-stone-700">
             Season match
-            <select value={fitMonth} onChange={(event) => setFitMonth(event.target.value)} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+            <select value={fitMonth} onChange={(event) => setFitMonth(event.target.value)} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
               <option value="">Not selected</option>
               {departureMonths.map((month) => <option key={month} value={month}>{month.charAt(0).toUpperCase() + month.slice(1)}</option>)}
             </select>
@@ -577,52 +581,66 @@ export function TravelDiscoveryCatalog() {
               const label = getPreferenceSummary(score, matchedCriteria.length, fitCriteriaCount);
 
               return (
-                <article key={packageItem.id} className="flex flex-col border-l-2 border-[#fcc000] bg-white py-3 pl-4 pr-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="rounded-full bg-[#fff6d6] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#7a5d00]">{score}% match</span>
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">{label}</span>
+                <article key={packageItem.id} className="group flex flex-col overflow-hidden rounded-[1.6rem] border border-stone-200/90 bg-white shadow-[0_14px_35px_rgba(42,35,13,0.07)] transition duration-500 hover:-translate-y-1 hover:border-[#d8b431] hover:shadow-[0_22px_42px_rgba(42,35,13,0.12)] motion-reduce:transform-none motion-reduce:transition-none">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-stone-200">
+                    <Image
+                      src={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"}
+                      alt={packageItem.title}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 33vw"
+                      className="object-cover transition duration-700 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                    <span className="absolute bottom-3 left-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/85">{packageItem.duration} · {packageItem.region}</span>
+                    <span className="absolute right-3 top-3 rounded-full border border-white/40 bg-[#fcc000] px-3 py-1.5 text-xs font-black text-stone-950 shadow-lg">{score}% match</span>
                   </div>
-                  <h4 className="mt-2 font-semibold text-stone-950">{packageItem.title}</h4>
-                  <p className="mt-1 text-xs font-semibold text-stone-800">
-                    From {formatCurrency(packageItem.pricePerPerson)} per person
-                  </p>
-                  <p className="mt-2 text-xs leading-5 text-stone-600">{summary}</p>
-                  <ul className="mt-3 space-y-1.5 text-xs text-stone-600">
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-stone-100">
+                        <span className="block h-full rounded-full bg-gradient-to-r from-[#e0ae00] to-[#fcc000]" style={{ width: `${score}%` }} />
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#806000]">{label}</span>
+                    </div>
+                    <h4 className="font-serif text-xl leading-tight text-stone-950">{packageItem.title}</h4>
+                    <p className="mt-1 text-xs font-bold text-[#806000]">From {formatCurrency(packageItem.pricePerPerson)} <span className="font-medium text-stone-500">per person</span></p>
+                    <p className="mt-3 text-xs leading-5 text-stone-600">{summary}</p>
+                    <ul className="mt-4 space-y-2 text-xs text-stone-600">
                     {matchReasons.length ? (
                       matchReasons.map((reason) => (
-                        <li key={`${packageItem.id}-${reason.criterion}`} className="flex items-start gap-2">
-                          <span aria-hidden="true" className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-[#1b7a4b]" />
+                        <li key={`${packageItem.id}-${reason.criterion}`} className="flex items-start gap-2 rounded-xl bg-[#f6f3e9] px-3 py-2">
+                          <span aria-hidden="true" className="mt-1 inline-block h-2 w-2 shrink-0 rounded-full bg-[#b38a00]" />
                           <span>{reason.label}</span>
                         </li>
                       ))
                     ) : (
-                      <li className="flex items-start gap-2">
-                        <span aria-hidden="true" className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-stone-400" />
+                      <li className="flex items-start gap-2 rounded-xl bg-stone-50 px-3 py-2">
+                        <span aria-hidden="true" className="mt-1 inline-block h-2 w-2 shrink-0 rounded-full bg-stone-400" />
                         <span>No selected preference is a strong match yet.</span>
                       </li>
                     )}
                     {mismatchReasons.length > 0 ? (
                       mismatchReasons.map((reason) => (
                         <li key={`${packageItem.id}-${reason.criterion}-mismatch`} className="flex items-start gap-2 text-stone-500">
-                          <span aria-hidden="true" className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-stone-400" />
+                          <span aria-hidden="true" className="mt-1 inline-block h-2 w-2 shrink-0 rounded-full bg-stone-300" />
                           <span>{reason.label}</span>
                         </li>
                       ))
                     ) : null}
-                  </ul>
-                  <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-4 text-xs font-semibold">
-                    <Link href={`/packages/${packageItem.id}`} className="text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4">View journey</Link>
-                    <Link href={`/make-my-trip?destination=${encodeURIComponent(packageItem.destinationSlugs[0] ?? "")}&inspiration=${encodeURIComponent(packageItem.title)}`} className="text-[#735900] underline underline-offset-4">Plan this route</Link>
-                    <button type="button" onClick={() => toggleWishlist(packageItem.id)} className="text-stone-600 underline underline-offset-4">{wishlistIds.includes(packageItem.id) ? "Saved" : "Save"}</button>
-                    <button type="button" onClick={() => toggleCompare(packageItem.id)} disabled={!compareIds.includes(packageItem.id) && compareIds.length >= MAX_COMPARE_ITEMS} className="text-stone-600 underline underline-offset-4 disabled:cursor-not-allowed disabled:text-stone-500 disabled:opacity-100">{compareIds.includes(packageItem.id) ? "In compare" : "Compare"}</button>
+                    </ul>
+                    <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-stone-100 pt-4 text-xs font-semibold">
+                      <Link href={`/packages/${packageItem.id}`} className="rounded-sm text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00]">View journey</Link>
+                      <Link href={`/make-my-trip?destination=${encodeURIComponent(packageItem.destinationSlugs[0] ?? "")}&inspiration=${encodeURIComponent(packageItem.title)}`} className="rounded-sm text-[#735900] underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00]">Plan this route</Link>
+                      <button type="button" onClick={() => toggleWishlist(packageItem.id)} className="rounded-sm text-stone-600 underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00]">{wishlistIds.includes(packageItem.id) ? "Saved" : "Save"}</button>
+                      <button type="button" onClick={() => toggleCompare(packageItem.id)} disabled={!compareIds.includes(packageItem.id) && compareIds.length >= MAX_COMPARE_ITEMS} className="rounded-sm text-stone-600 underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00] disabled:cursor-not-allowed disabled:text-stone-500 disabled:opacity-100">{compareIds.includes(packageItem.id) ? "In compare" : "Compare"}</button>
+                    </div>
                   </div>
                 </article>
               );
             })}
           </div>
         ) : (
-          <div className="mt-4 rounded-2xl border border-dashed border-stone-300 bg-white/80 px-4 py-5 text-sm text-stone-600">
-            <p className="font-semibold text-stone-900">Explore our trips</p>
+          <div className="mt-5 rounded-[1.5rem] border border-dashed border-[#d9c275] bg-white/75 px-5 py-6 text-sm text-stone-600">
+            <p className="font-serif text-xl text-stone-950">A better match starts with one detail</p>
             <p className="mt-1">Choose a destination, travel style, duration, budget, or month to see trips matched to your plans.</p>
           </div>
         )}
@@ -641,16 +659,17 @@ export function TravelDiscoveryCatalog() {
         ) : null}
       </section>
 
-      <div className="mt-7 rounded-[1.6rem] border border-stone-200 bg-white/90 p-4 shadow-[0_18px_40px_rgba(55,55,48,0.04)]">
+      <div className="mt-7 rounded-[1.8rem] border border-[#28251c] bg-[radial-gradient(circle_at_top_right,_rgba(252,192,0,0.2),_transparent_32%),linear-gradient(135deg,_#171714,_#29271f)] p-5 text-white shadow-[0_24px_55px_rgba(20,18,12,0.18)] sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">Quick compare</p>
-            <h3 className="mt-1 text-lg font-semibold text-stone-950">Select up to four journeys to compare</h3>
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#ffd84d]">Quick compare</p>
+            <h3 className="mt-1 font-serif text-2xl text-white">Build your side-by-side shortlist</h3>
+            <p className="mt-1 text-sm text-white/65">Select up to four journeys to compare the details that matter.</p>
           </div>
           <button
             type="button"
             onClick={() => setQuickCompareSelection(["", "", "", ""])}
-            className="text-xs font-semibold uppercase tracking-[0.13em] text-stone-600 transition hover:text-[#8b6b00]"
+            className="text-xs font-semibold uppercase tracking-[0.13em] text-white/70 transition hover:text-[#ffd84d]"
           >
             Clear
           </button>
@@ -658,8 +677,8 @@ export function TravelDiscoveryCatalog() {
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {quickCompareSelection.map((selectedId, index) => (
-            <label key={`quick-compare-${index}`} className="rounded-2xl border border-stone-200 bg-stone-50 p-3">
-              <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Journey {index + 1}</span>
+            <label key={`quick-compare-${index}`} className="rounded-2xl border border-white/15 bg-white/[0.07] p-3">
+              <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-[#ffd84d]">Journey {index + 1}</span>
               <select
                 value={selectedId}
                 onChange={(event) => {
@@ -667,7 +686,7 @@ export function TravelDiscoveryCatalog() {
                   nextSelection[index] = event.target.value;
                   setQuickCompareSelection(nextSelection);
                 }}
-                className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-[#fcc000]"
+                className="w-full rounded-xl border border-white/15 bg-[#fdfcf8] px-3 py-2.5 text-sm text-stone-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#fcc000]"
               >
                 <option value="">Choose a route</option>
                 {packageList.map((route) => (
@@ -684,18 +703,18 @@ export function TravelDiscoveryCatalog() {
           <button
             type="button"
             onClick={handleCompareSubmit}
-            className="inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-black"
+            className="inline-flex items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-stone-950 transition hover:bg-[#ffd84d]"
           >
             Compare selected
           </button>
-          <Link href="/compare" className="text-sm font-semibold text-stone-600 transition hover:text-[#8b6b00]">
+          <Link href="/compare" className="text-sm font-semibold text-white/75 transition hover:text-[#ffd84d]">
             Open compare page
           </Link>
         </div>
       </div>
 
       {comparePackages.length > 0 && (
-        <div className="mt-7 rounded-[1.6rem] border border-[#e4c976] bg-[linear-gradient(135deg,_rgba(255,248,223,0.96),_rgba(255,255,255,0.92))] p-4 shadow-[0_18px_40px_rgba(122,94,0,0.06)]">
+        <div className="mt-7 rounded-[1.6rem] border border-[#e4c976] bg-[linear-gradient(135deg,_#fff3c4,_#fffdf7_64%,_#f4efdf)] p-5 shadow-[0_18px_40px_rgba(122,94,0,0.1)]">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#8b6b00]">Comparison tray</p>
@@ -803,11 +822,11 @@ export function CompareTripsClient() {
 
   if (comparePackages.length === 0) {
     return (
-      <div className="rounded-[2rem] border border-dashed border-stone-300 bg-[radial-gradient(circle_at_top,_rgba(252,192,0,0.12),_rgba(255,255,255,1)_55%)] p-8 text-center shadow-[0_20px_50px_rgba(55,55,48,0.06)]">
-        <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-[#8b6b00]">Compare</p>
-        <p className="mt-3 text-2xl font-semibold text-stone-950">No journeys selected yet.</p>
-        <p className="mt-3 text-sm text-stone-600">Choose up to four trips to compare their stops, time away, starting price, and travel style side by side.</p>
-        <Link href="/tours" className="mt-6 inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-5 py-3 text-sm font-semibold text-white transition hover:bg-black">
+      <div className="relative overflow-hidden rounded-[2rem] border border-stone-800 bg-[radial-gradient(circle_at_top_right,_rgba(252,192,0,0.23),_transparent_36%),linear-gradient(135deg,_#11110f,_#29271f)] p-8 text-center shadow-[0_24px_60px_rgba(20,18,12,0.2)]">
+        <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-[#ffd84d]">Your shortlist, side by side</p>
+        <p className="mt-3 font-serif text-3xl text-white">Choose the journey that feels right.</p>
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-white/70">Choose up to four trips to compare their stops, time away, starting price, and travel style side by side.</p>
+        <Link href="/tours" className="mt-6 inline-flex items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-bold text-stone-950 transition hover:bg-[#ffd84d]">
           Browse catalog
         </Link>
       </div>
@@ -815,22 +834,22 @@ export function CompareTripsClient() {
   }
 
   return (
-    <div className="rounded-[2rem] border border-stone-200 bg-[linear-gradient(180deg,_rgba(255,255,255,1),_rgba(248,244,236,1))] p-5 shadow-[0_20px_50px_rgba(55,55,48,0.06)] md:p-8">
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-stone-200 pb-6">
+    <div className="overflow-hidden rounded-[2rem] border border-[#e4d6a8] bg-[linear-gradient(180deg,_#fffdf7,_#f5f1e7)] p-4 shadow-[0_28px_70px_rgba(45,36,12,0.12)] sm:p-6 md:p-8">
+      <div className="relative -mx-4 -mt-4 flex flex-wrap items-end justify-between gap-4 overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_top_right,_rgba(252,192,0,0.25),_transparent_32%),linear-gradient(120deg,_#11110f,_#28261f)] px-5 py-7 sm:-mx-6 sm:-mt-6 sm:px-7 md:-mx-8 md:-mt-8 md:px-9 md:py-9">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#8b6b00]">Compare</p>
-          <h1 className="mt-3 font-serif text-4xl text-stone-950">Compare journeys</h1>
-          <p className="mt-2 text-sm text-stone-600">Compare {comparePackages.length} selected {comparePackages.length === 1 ? "journey" : "journeys"} on the details that shape your trip.</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#ffd84d]">The journey edit</p>
+          <h1 className="mt-3 font-serif text-4xl text-white sm:text-5xl">Compare journeys</h1>
+          <p className="mt-2 text-sm text-white/70">Compare {comparePackages.length} selected {comparePackages.length === 1 ? "journey" : "journeys"} on the details that shape your trip.</p>
         </div>
-        <Link href="/tours" className="text-sm font-semibold text-stone-600 transition hover:text-[#8b6b00]">
+        <Link href="/tours" className="inline-flex min-h-11 items-center rounded-full border border-white/25 px-4 text-sm font-semibold text-white transition hover:border-[#fcc000] hover:text-[#ffd84d]">
           Add more journeys
         </Link>
       </div>
 
-      <section className="mt-7 border-b border-stone-200 pb-7" aria-labelledby="compare-fit-heading">
+      <section className="mt-7 rounded-[1.7rem] border border-[#e8d99f] bg-[radial-gradient(circle_at_top_right,_rgba(252,192,0,0.12),_transparent_35%),#fffdf7] p-5 sm:p-6" aria-labelledby="compare-fit-heading">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">Personal fit</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#806000]">Made for your plans</p>
             <h2 id="compare-fit-heading" className="mt-2 font-serif text-3xl text-stone-950">Your trip fit</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
               Fit uses only preferences you select here. Preferences are not saved, and listed package prices may differ from a custom quotation.
@@ -847,13 +866,13 @@ export function CompareTripsClient() {
           ) : null}
         </div>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-          <label className="text-xs font-semibold text-stone-600">
+        <div className="mt-5 grid gap-3 rounded-2xl border border-[#efe6c9] bg-white/80 p-4 sm:grid-cols-2 xl:grid-cols-5">
+          <label className="text-xs font-bold text-stone-700">
             Destination
             <select
               value={fitPreferences.destination ?? ""}
               onChange={(event) => setFitPreferences((current) => ({ ...current, destination: event.target.value || undefined }))}
-              className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
+              className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]"
             >
               <option value="">Any destination</option>
               {[...new Set(packageList.flatMap((packageItem) => packageItem.destinationSlugs))].sort().map((destination) => (
@@ -861,24 +880,24 @@ export function CompareTripsClient() {
               ))}
             </select>
           </label>
-          <label className="text-xs font-semibold text-stone-600">
+          <label className="text-xs font-bold text-stone-700">
             Region
             <select
               value={fitPreferences.region ?? ""}
               onChange={(event) => setFitPreferences((current) => ({ ...current, region: (event.target.value || undefined) as TripPreferences["region"] }))}
-              className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
+              className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]"
             >
               <option value="">Either region</option>
               <option value="northern">Northern Pakistan</option>
               <option value="southern">Southern Pakistan</option>
             </select>
           </label>
-          <label className="text-xs font-semibold text-stone-600">
+          <label className="text-xs font-bold text-stone-700">
             Travel style
             <select
               value={fitPreferences.travelStyle ?? ""}
               onChange={(event) => setFitPreferences((current) => ({ ...current, travelStyle: (event.target.value || undefined) as TravelStyle | undefined }))}
-              className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
+              className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]"
             >
               <option value="">Any style</option>
               <option value="family">Family</option>
@@ -887,12 +906,12 @@ export function CompareTripsClient() {
               <option value="tailored">Tailored</option>
             </select>
           </label>
-          <label className="text-xs font-semibold text-stone-600">
+          <label className="text-xs font-bold text-stone-700">
             Time available
             <select
               value={fitPreferences.duration ?? ""}
               onChange={(event) => setFitPreferences((current) => ({ ...current, duration: (event.target.value || undefined) as TripPreferences["duration"] }))}
-              className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
+              className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]"
             >
               <option value="">Any duration</option>
               <option value="weekend">Up to 3 days</option>
@@ -901,7 +920,7 @@ export function CompareTripsClient() {
               <option value="12-plus">More than 12 days</option>
             </select>
           </label>
-          <label className="text-xs font-semibold text-stone-600">
+          <label className="text-xs font-bold text-stone-700">
             Budget per person · PKR
             <input
               type="number"
@@ -910,7 +929,7 @@ export function CompareTripsClient() {
               value={fitPreferences.budget ?? ""}
               onChange={(event) => setFitPreferences((current) => ({ ...current, budget: event.target.value === "" ? undefined : Number(event.target.value) }))}
               placeholder="No limit"
-              className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900 placeholder:text-stone-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
+              className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 placeholder:text-stone-400 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]"
             />
           </label>
         </div>
@@ -941,32 +960,36 @@ export function CompareTripsClient() {
         )}
       </section>
 
-      <section className="mt-7" aria-labelledby="objective-comparison-heading">
-        <div className="border-b border-stone-200 pb-5">
-          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">Objective comparison</p>
-          <h2 id="objective-comparison-heading" className="mt-2 font-serif text-3xl text-stone-950">Trip details</h2>
+      <section className="mt-8 overflow-hidden rounded-[1.7rem] border border-stone-200 bg-white/80 p-4 sm:p-6" aria-labelledby="objective-comparison-heading">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-stone-200 pb-5">
+          <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#806000]">The details, side by side</p>
+          <h2 id="objective-comparison-heading" className="mt-2 font-serif text-3xl text-stone-950">Compare the journey details</h2>
           <p className="mt-2 text-sm leading-6 text-stone-600">
             Listed per-person package prices are shown here. A custom quotation is calculated separately and may vary with dates, group size, transport, and accommodation.
           </p>
+          </div>
+          <span className="rounded-full bg-[#fff3c4] px-3 py-2 text-xs font-bold text-[#725600]">{comparePackages.length} journeys selected</span>
         </div>
 
-      <div role="region" aria-label="Objective trip comparison table; scroll horizontally to compare all journeys" tabIndex={0} className="mt-5 overflow-x-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
-        <table className="min-w-full border-separate border-spacing-y-3 text-left">
+      <p className="mt-4 text-xs font-medium text-stone-500 sm:hidden">Swipe across to see every selected journey.</p>
+      <div role="region" aria-label="Objective trip comparison table; scroll horizontally to compare all journeys" tabIndex={0} className="mt-4 overflow-x-auto rounded-2xl [scrollbar-color:#c8a83d_#f2efe6] [scrollbar-width:thin] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]">
+        <table className="min-w-full border-separate border-spacing-y-2 text-left">
           <caption className="sr-only">Objective package details for the selected journeys</caption>
           <thead>
             <tr>
-              <th className="pr-4 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Journey</th>
+              <th className="sticky left-0 z-20 min-w-[145px] bg-white pr-3 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500 sm:min-w-[180px] sm:pr-4">Journey</th>
               {comparePackages.map((packageItem) => (
                 <th key={packageItem.id} className="min-w-[220px] pr-4 align-top">
-                  <div className="rounded-2xl border border-stone-200 bg-stone-50 p-3 sm:p-4">
+                  <div className="overflow-hidden rounded-[1.3rem] border border-[#e8dbb6] bg-[linear-gradient(155deg,_#fffdf7,_#f5f0e1)] p-3 shadow-[0_12px_28px_rgba(50,40,10,0.08)] sm:p-4">
                     <div className="relative mb-3 aspect-[16/9] overflow-hidden rounded-xl bg-stone-200">
                       <Image src={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"} alt="" fill sizes="(max-width: 768px) 70vw, 220px" className="object-cover" />
+                      <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pb-2 pt-7 text-[10px] font-bold uppercase tracking-[0.18em] text-white">Journey {comparePackages.indexOf(packageItem) + 1}</span>
                     </div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8b6b00]">Trip {comparePackages.indexOf(packageItem) + 1}</p>
-                    <p className="text-sm font-semibold text-stone-900">{packageItem.title}</p>
+                    <p className="font-serif text-lg leading-tight text-stone-950">{packageItem.title}</p>
                     <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">{packageItem.duration} · {packageItem.pace ?? "Pace to confirm"}</p>
-                    <p className="mt-3 text-lg font-semibold text-[#9a7600]">From {formatCurrency(packageItem.pricePerPerson)}</p>
-                    <button type="button" onClick={() => removeComparedPackage(packageItem.id)} className="mt-3 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500 transition hover:text-red-700">Remove</button>
+                    <p className="mt-3 text-xl font-bold text-[#806000]">From {formatCurrency(packageItem.pricePerPerson)}</p>
+                    <button type="button" onClick={() => removeComparedPackage(packageItem.id)} className="mt-3 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-stone-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700">Remove journey</button>
                   </div>
                 </th>
               ))}
@@ -998,10 +1021,12 @@ export function CompareTripsClient() {
               },
             ].map(({ label, value }) => (
               <tr key={label}>
-                <td className="pr-4 text-sm font-semibold text-stone-900">{label}</td>
+                <td className="sticky left-0 z-10 min-w-[145px] bg-white pr-3 align-top sm:min-w-[180px] sm:pr-4">
+                  <div className="h-full min-h-12 rounded-xl bg-stone-950 px-3 py-3 text-xs font-bold uppercase tracking-[0.1em] text-[#ffdc58]">{label}</div>
+                </td>
                 {comparePackages.map((packageItem) => (
                   <td key={`${packageItem.id}-${label}`} className="pr-4 align-top">
-                    <div className="rounded-2xl border border-stone-200 p-3 text-sm text-stone-600">
+                    <div className="min-h-12 rounded-xl border border-stone-200 bg-[linear-gradient(135deg,_#fff,_#f8f6ef)] p-3 text-sm leading-6 text-stone-700 shadow-[0_3px_10px_rgba(30,25,10,0.03)] even:bg-[#f8f6ef]">
                       {String(value(packageItem))}
                     </div>
                   </td>
@@ -1010,13 +1035,15 @@ export function CompareTripsClient() {
             ))}
             {comparedStops.map((stop) => (
               <tr key={`stop-${stop}`}>
-                <td className="pr-4 text-sm font-semibold text-stone-900">{stop}</td>
+                <td className="sticky left-0 z-10 min-w-[145px] bg-white pr-3 align-top sm:min-w-[180px] sm:pr-4">
+                  <div className="rounded-xl bg-[#f3ecd5] px-3 py-3 text-sm font-bold text-stone-900">{stop}</div>
+                </td>
                 {comparePackages.map((packageItem) => {
                   const includesStop = packageItem.routeStops.includes(stop);
                   return (
                     <td key={`${packageItem.id}-stop-${stop}`} className="pr-4 align-top">
-                      <div className={`rounded-2xl border p-3 text-sm font-semibold ${includesStop ? "border-[#c9decf] bg-[#f0f7f2] text-[#1f6b4a]" : "border-stone-200 bg-stone-50 text-stone-400"}`}>
-                        {includesStop ? "Included" : "Not on route"}
+                      <div className={`rounded-xl border p-3 text-sm font-semibold ${includesStop ? "border-[#e1ca72] bg-[#fff5cf] text-[#624b00]" : "border-stone-200 bg-stone-50 text-stone-400"}`}>
+                        {includesStop ? "✓ On this route" : "— Not on route"}
                       </div>
                     </td>
                   );
@@ -1027,8 +1054,8 @@ export function CompareTripsClient() {
         </table>
       </div>
 
-      <section className="mt-8 border-t border-stone-200 pt-6" aria-labelledby="fit-explanation-heading">
-        <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8b6b00]">Objective differences</p>
+      <section className="mt-8 rounded-[1.6rem] bg-[linear-gradient(145deg,_#f5f0df,_#fffdf7)] p-5 sm:p-6" aria-labelledby="fit-explanation-heading">
+        <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#806000]">The short version</p>
         <h2 id="fit-explanation-heading" className="mt-2 font-serif text-3xl text-stone-950">What’s different?</h2>
         {comparePackages.length > 1 ? (
           <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -1056,13 +1083,13 @@ export function CompareTripsClient() {
                 ? `Compared with ${previousPackage.title}, this journey ${differences.join(" and ") || "has no differences in compared stop coverage, duration, or listed price"}.`
                 : `Trip 1 sets the reference: ${packageItem.duration.toLowerCase()} across ${packageItem.routeStops.join(" and ")}, listed at ${formatCurrency(packageItem.pricePerPerson)} per person.`;
               return (
-                <article key={`${packageItem.id}-fit`} className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8b6b00]">Trip {index + 1}</p>
-                  <h3 className="font-semibold text-stone-950">{packageItem.title}</h3>
+                <article key={`${packageItem.id}-fit`} className="rounded-[1.35rem] border border-[#e6d8aa] bg-white p-5 shadow-[0_10px_25px_rgba(50,40,10,0.06)]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#806000]">Journey {index + 1}</p>
+                  <h3 className="mt-1 font-serif text-lg text-stone-950">{packageItem.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-stone-600">{description}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href={`/packages/${packageItem.id}`} className="inline-flex min-h-10 items-center justify-center rounded-full bg-[#0b0b0b] px-4 text-xs font-bold uppercase tracking-[0.1em] text-white">View journey</Link>
-                    <Link href="/make-my-trip" className="inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 bg-white px-4 text-xs font-bold uppercase tracking-[0.1em] text-stone-900">Customize trip</Link>
+                    <Link href={`/packages/${packageItem.id}`} className="inline-flex min-h-10 items-center justify-center rounded-full bg-stone-950 px-4 text-xs font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[#343126] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]">View journey</Link>
+                    <Link href="/make-my-trip" className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#e3d7b4] bg-[#fffaf0] px-4 text-xs font-bold uppercase tracking-[0.1em] text-stone-900 transition hover:border-[#c89a00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]">Customize trip</Link>
                   </div>
                 </article>
               );
