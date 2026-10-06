@@ -84,13 +84,8 @@ If needed, redeploy manually:
 
 ## 5. PRISMA MIGRATIONS
 
-### Step 5.1: Run Migrations via Railway Shell
-1. In Railway dashboard, go to your **Next.js service**
-2. Click **Shell** tab
-3. Run:
-   ```bash
-   npx prisma migrate deploy
-   ```
+### Step 5.1: Apply Migrations Automatically
+The Railway start command runs `npx prisma migrate deploy` before starting Next.js. Each deployment applies any pending PostgreSQL migrations, including the `PromoRedemption` table required for promo-code eligibility checks. Confirm the Next.js service is linked to PostgreSQL so Railway provides `DATABASE_URL`.
 
 ### Step 5.2: Seed Database (Optional)
 ```bash

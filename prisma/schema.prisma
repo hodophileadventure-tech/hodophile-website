@@ -6,14 +6,14 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("MONGODB_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ============== DESTINATIONS & LOCATIONS ==============
 
 model Destination {
-  id          String   @id @map("_id") // Format: dest-{slug}
+  id          String   @id // Format: dest-{slug}
   name        String   @unique
   slug        String   @unique
   description String?
@@ -34,7 +34,7 @@ model Destination {
 // ============== HOTELS & ACCOMMODATIONS ==============
 
 model Hotel {
-  id          String   @id @map("_id") // Format: hotel-{city}-{name-slug}
+  id          String   @id // Format: hotel-{city}-{name-slug}
   name        String   @unique
   destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
   destinationId String
@@ -57,7 +57,7 @@ model Hotel {
 }
 
 model HotelRoom {
-  id          String   @id @map("_id") // Format: room-{hotel-id}-{roomtype-slug}
+  id          String   @id // Format: room-{hotel-id}-{roomtype-slug}
   hotel       Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
   hotelId     String
   roomType    String   // e.g., "Single", "Double", "Suite", "Dorm"
@@ -78,7 +78,7 @@ model HotelRoom {
 }
 
 model SeasonalPrice {
-  id        String   @id @map("_id") // Format: season-{roomId}-{season}
+  id        String   @id // Format: season-{roomId}-{season}
   room      HotelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId    String
   season    String   // "peak", "blossom", "off"
@@ -95,7 +95,7 @@ model SeasonalPrice {
 // ============== VEHICLES ==============
 
 model Vehicle {
-  id          String   @id @map("_id") // Format: vehicle-{name-slug}
+  id          String   @id // Format: vehicle-{name-slug}
   name        String   @unique
   type        String   // e.g., "SUV", "Jeep", "Coaster", "Bus"
   capacity    Int      // max passengers
@@ -114,7 +114,7 @@ model Vehicle {
 // ============== PRICING CONFIG ==============
 
 model PricingConfig {
-  id String @id @map("_id") // Format: pricing-config-default
+  id String @id // Format: pricing-config-default
 
   transportBaseMultiplier Float @default(1)
   peakMultiplier          Float @default(1.3)
@@ -130,7 +130,7 @@ model PricingConfig {
 // ============== TOURS & PACKAGES ==============
 
 model Tour {
-  id          String   @id @map("_id") // Format: tour-{slug}
+  id          String   @id // Format: tour-{slug}
   name        String
   slug        String   @unique
   description String?
@@ -158,7 +158,7 @@ model Tour {
 // ============== BOOKINGS & LEADS ==============
 
 model Lead {
-  id          String   @id @map("_id") // Format: lead-{phone}-{timestamp}
+  id          String   @id // Format: lead-{phone}-{timestamp}
   name        String
   phone       String
   email       String?
@@ -182,7 +182,7 @@ model Lead {
 }
 
 model Booking {
-  id          String   @id @map("_id") // Format: booking-{tour}-{date}
+  id          String   @id // Format: booking-{tour}-{date}
   tour        Tour     @relation(fields: [tourId], references: [id])
   tourId      String
   room        HotelRoom @relation(fields: [roomId], references: [id])
@@ -209,7 +209,7 @@ model Booking {
 }
 
 model PromoRedemption {
-  id        String   @id @map("_id")
+  id        String   @id
   code      String
   tourId    String
   createdAt DateTime @default(now())
@@ -220,7 +220,7 @@ model PromoRedemption {
 // ============== REVIEWS & TESTIMONIALS ==============
 
 model Review {
-  id          String   @id @map("_id") // Format: review-{tour}-{date}
+  id          String   @id // Format: review-{tour}-{date}
   name      String
   email     String?
   tourName  String
@@ -239,7 +239,7 @@ model Review {
 // ============== TRANSPORT PRICING ==============
 
 model TransportPricing {
-  id String @id @default(cuid()) @map("_id")
+  id String @id @default(cuid())
   
   // Route and vehicle this pricing applies to
   routeId  String
@@ -264,7 +264,7 @@ model TransportPricing {
 // ============== ROUTES ==============
 
 model Route {
-  id        String   @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid())
   name      String
   slug      String   @unique
   duration  Int
