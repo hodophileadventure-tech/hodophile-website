@@ -7,19 +7,19 @@ import { motion } from "framer-motion";
 const sacredPlaces = [
   {
     title: "Masjid al Haram",
-    image: "/images/umrah/kabah.webp",
+    image: "/images/package-cards/images__umrah__kabah.webp",
   },
   {
     title: "Masjid an Nabawi",
-    image: "/images/umrah/masjid-e-nabvi.webp",
+    image: "/images/package-cards/images__umrah__masjid-e-nabvi.webp",
   },
   {
     title: "Mount Arafat",
-    image: "/images/umrah/kabah-shareef.webp",
+    image: "/images/package-cards/images__umrah__kabah-shareef.webp",
   },
   {
     title: "Jabal al Noor",
-    image: "/images/umrah/masjid-nabvi.webp",
+    image: "/images/package-cards/images__umrah__masjid-nabvi.webp",
   },
 ];
 

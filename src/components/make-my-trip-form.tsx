@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   CalendarDays,
@@ -19,10 +20,10 @@ import {
   Users,
   TriangleAlert,
 } from "lucide-react";
-import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
+import { calculateQuotation, type QuotationBreakdown, type QuotationInput } from "@/lib/pricingEngine";
 import { formatPKR } from "@/lib/currency";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
-import { routes, type Route } from "@/lib/data/routes";
+import { routes, type PackagePricing, type Route, type RouteItineraryDay } from "@/lib/data/routes";
 import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "@/lib/data/routeActivities";
 import { sortedCitiesWithHotels } from "@/lib/data/cities";
 import COMBO_ITINERARIES from "@/lib/data/combo-itineraries";
@@ -30,6 +31,12 @@ import { normalizeComboKey as toCombinationKey } from "@/lib/data/combo-keys";
 import { orderedFeaturedTourCards } from "@/lib/data/featured-tour-cards";
 import { ROUTE_GRAPH, validateRoute } from "@/lib/data/custom-itinerary";
 import { whatsappUrl } from "@/lib/site";
+import { PROMOTIONS } from "@/lib/promotions/promotion-config";
+import type { PromotionSummary, PromoValidationResult } from "@/lib/promotions/promotion-types";
+import { JourneySummary } from "@/components/make-my-trip/journey-summary";
+import { HotelCardPicker } from "@/components/make-my-trip/hotel-card-picker";
+import { RouteVisualizer } from "@/components/make-my-trip/route-visualizer";
+import { TripPlannerProgress } from "@/components/make-my-trip/trip-planner-progress";
 
 // Map featured tours to their corresponding route slugs
 const PREPLANNED_TRIP_MAP: Record<string, string> = {
@@ -78,6 +85,18 @@ const CITY_MINIMUM_DAYS: Record<string, number> = {
   Murree: 2,
   "Nathia Gali": 2,
 };
+const destinationCardDetails: Record<string, { image?: string; description: string }> = {
+  Hunza: { image: "/images/package-cards/images__destinations__hunza-custom.webp", description: "Mountain valleys" },
+  Skardu: { image: "/images/package-cards/images__destinations__skardu.webp", description: "Lakes and highlands" },
+  Naran: { image: "/images/package-cards/images__destinations__naran.webp", description: "Alpine lakes" },
+  Astore: { description: "Remote valley routes" },
+  Kashmir: { image: "/images/package-cards/images__destinations__kashmir.webp", description: "Forests and valleys" },
+  Swat: { image: "/images/package-cards/images__destinations__swat.webp", description: "Green mountain valleys" },
+  "Fairy Meadows": { image: "/images/package-cards/images__destinations__fairy-meadows-unsplash.webp", description: "Alpine meadow journeys" },
+  Shogran: { image: "/images/package-cards/images__honeymoon__naran-shogran.webp", description: "Meadows and mountain views" },
+  "Nathia Gali": { image: "/images/package-cards/images__nathia-ready.webp", description: "Forest-covered hills" },
+  Murree: { image: "/images/package-cards/images__honeymoon__murree-tour.webp", description: "Hill-station escapes" },
+};
 
 function getCityMinimumDays(city: string, startingPointValue: string) {
   const baseDays = CITY_MINIMUM_DAYS[city] ?? 2;
@@ -111,6 +130,36 @@ function isValidCustomRoute(startingPointValue: string, cities: string[]) {
   if (!cities || cities.length === 0) return true;
   const route = getCustomRouteValidationRoute(startingPointValue, cities);
   return validateRoute(route, ROUTE_GRAPH).length === 0;
+}
+
+function getPromotionForTour(tourId: string) {
+  return Object.values(PROMOTIONS).find((promotion) => promotion.eligibleTourIds.includes(tourId));
+}
+
+function RouteItineraryPreview({ days, pricing }: { days?: RouteItineraryDay[]; pricing?: PackagePricing }) {
+  if (!days?.length && !pricing) return null;
+
+  return (
+    <details className="mt-3 rounded-[14px] border border-stone-200 bg-stone-50 p-3">
+      <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.12em] text-stone-800">Day-by-day itinerary</summary>
+      {days?.length ? <div className="mt-3 space-y-3 border-l border-[#fcc000] pl-3">
+        {days.map((day) => (
+          <div key={day.day}>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8b6b00]">{day.day}</p>
+            <p className="mt-1 text-sm font-semibold text-stone-900">{day.title}</p>
+            <p className="mt-1 text-xs leading-5 text-stone-600">{day.description}</p>
+          </div>
+        ))}
+      </div> : null}
+      {pricing ? (
+        <div className="mt-4 border-t border-stone-200 pt-3 text-xs text-stone-700">
+          <p className="font-semibold text-stone-900">Listed package pricing</p>
+          <p className="mt-1">With Islamabad stay: PKR {pricing.quadPerPerson.toLocaleString()} per person Â· PKR {pricing.coupleTotal.toLocaleString()} per couple</p>
+          {pricing.withoutIslamabadStay ? <p className="mt-1">Without Islamabad stay: PKR {pricing.withoutIslamabadStay.quadPerPerson.toLocaleString()} per person Â· PKR {pricing.withoutIslamabadStay.coupleTotal.toLocaleString()} per couple</p> : null}
+        </div>
+      ) : null}
+    </details>
+  );
 }
 
 export function MakeMyTripForm() {
@@ -157,6 +206,12 @@ export function MakeMyTripForm() {
 
   // UI state
   const [quotation, setQuotation] = useState<QuotationBreakdown | null>(null);
+  const [promoInput, setPromoInput] = useState("");
+  const [promoCode, setPromoCode] = useState("");
+  const [promoValidation, setPromoValidation] = useState<PromotionSummary | null>(null);
+  const [promoError, setPromoError] = useState("");
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
+  const promoQuoteRequestRef = useRef(0);
   const [availableHotels, setAvailableHotels] = useState<Hotel[]>([]);
   const [availableRooms, setAvailableRooms] = useState<any[]>([]);
   const [availableVehicles, setAvailableVehicles] = useState<Array<{ name: string; price: number }>>([]);
@@ -449,7 +504,7 @@ export function MakeMyTripForm() {
       room.quad;
 
     if (typeof price === "number" && !Number.isNaN(price) && price > 0) {
-      return `${room.name} — PKR ${price.toLocaleString()} / night`;
+      return `${room.name} â€” PKR ${price.toLocaleString()} / night`;
     }
 
     return room.name;
@@ -683,6 +738,35 @@ export function MakeMyTripForm() {
     : isCustomCitySelection()
     ? CUSTOM_AVAILABLE_VEHICLES
     : [];
+
+  const refreshPromoQuotation = (quotationInput: QuotationInput, requestId: number) => {
+    setQuotation(null);
+    setPromoValidation(null);
+    void fetch("/api/quote/calc", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...quotationInput, promoCode }),
+    })
+      .then(async (response) => ({ response, data: await response.json() }))
+      .then(({ response, data }) => {
+        if (promoQuoteRequestRef.current !== requestId) return;
+        if (!response.ok || !data.success || !data.quotation?.promotion) {
+          setPromoError(data.error || "This promo code could not be applied to the current quote.");
+          setPromoCode("");
+          setPromoValidation(null);
+          return;
+        }
+        setPromoValidation(data.quotation.promotion as PromotionSummary);
+        setQuotation(data.quotation as QuotationBreakdown);
+        setPromoError("");
+      })
+      .catch(() => {
+        if (promoQuoteRequestRef.current !== requestId) return;
+        setPromoError("Unable to refresh the discounted quote. Please try again.");
+        setPromoCode("");
+        setPromoValidation(null);
+      });
+  };
 
   const shouldAutoIncludeIslamabad = (): boolean => {
     if (!isCustomCitySelection()) return false;
@@ -1129,6 +1213,7 @@ export function MakeMyTripForm() {
 
   // Calculate quotation when key fields change
   useEffect(() => {
+    const promoQuoteRequestId = ++promoQuoteRequestRef.current;
     if (tripDate && vehicleName && numberOfRooms > 0 && adults > 0) {
       if (isCustomCitySelection()) {
         if (supportsMultipleHotelsInCustomSingleCity) {
@@ -1235,7 +1320,7 @@ export function MakeMyTripForm() {
           const allStaysSelected = singleCityHotelStays.length > 0 && singleCityHotelStays.every((stay) => stay.hotelId && stay.roomId && stay.nights > 0);
 
           if (allStaysSelected && totalSingleCityNights === singleCityNightCount) {
-            const calc = calculateQuotation({
+            const quotationInput: QuotationInput = {
               routeId,
               vehicleName,
               hotelCategory,
@@ -1249,14 +1334,18 @@ export function MakeMyTripForm() {
               tripDate,
               mandatoryJeepCost,
               travelMode: travelMode as "road" | "air",
-            });
-            setQuotation(calc);
+            };
+            if (promoCode && getPromotionForTour(routeId)) {
+              refreshPromoQuotation(quotationInput, promoQuoteRequestId);
+            } else {
+              setQuotation(calculateQuotation(quotationInput));
+            }
           } else {
             setQuotation(null);
           }
         } else if (hotelId && roomId) {
             // Single-city tour
-            const calc = calculateQuotation({
+            const quotationInput: QuotationInput = {
               routeId,
               vehicleName,
               hotelCategory,
@@ -1269,8 +1358,12 @@ export function MakeMyTripForm() {
               tripDate,
               mandatoryJeepCost,
               travelMode: travelMode as "road" | "air",
-            });
-            setQuotation(calc);
+            };
+            if (promoCode && getPromotionForTour(routeId)) {
+              refreshPromoQuotation(quotationInput, promoQuoteRequestId);
+            } else {
+              setQuotation(calculateQuotation(quotationInput));
+            }
           } else {
             setQuotation(null);
           }
@@ -1278,7 +1371,15 @@ export function MakeMyTripForm() {
     } else {
       setQuotation(null);
     }
-  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode]);
+  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode]);
+
+  useEffect(() => {
+    if (promoCode && !getPromotionForTour(routeId)) {
+      setPromoCode("");
+      setPromoValidation(null);
+      setPromoError("The promo code was removed because this tour is not eligible.");
+    }
+  }, [routeId, promoCode]);
 
   const handleKidsCountChange = (value: number) => {
     setKids(value);
@@ -1289,6 +1390,63 @@ export function MakeMyTripForm() {
     const newAges = [...kidsAges];
     newAges[index] = value;
     setKidsAges(newAges);
+  };
+
+  const handleApplyPromo = async () => {
+    if (!selectedRoute || !getPromotionForTour(routeId)) {
+      setPromoError("This tour does not have an active promotional code.");
+      return;
+    }
+
+    const hotelSelectionsComplete = supportsMultipleHotelsInSingleCity
+      ? singleCityHotelStays.length > 0 && singleCityHotelStays.every((stay) => stay.hotelId && stay.roomId && stay.nights > 0)
+      : Boolean(hotelId && roomId);
+    if (!vehicleName || !hotelSelectionsComplete || !tripDate || adults < 1) {
+      setPromoError("Complete the tour, hotel, room, traveller, and date details before applying this code.");
+      return;
+    }
+
+    setIsApplyingPromo(true);
+    setPromoError("");
+    setPromoValidation(null);
+
+    try {
+      const quotationInput: QuotationInput = {
+        routeId,
+        vehicleName,
+        hotelId: supportsMultipleHotelsInSingleCity ? undefined : hotelId,
+        roomId: supportsMultipleHotelsInSingleCity ? undefined : roomId,
+        hotelCategory,
+        singleCityHotelStays: supportsMultipleHotelsInSingleCity ? singleCityHotelStays : undefined,
+        numberOfRooms,
+        adults,
+        kids,
+        tripDate,
+        travelMode: travelMode as "road" | "air",
+        jeepCount: computedJeepCount,
+        mandatoryJeepCost,
+      };
+      const response = await fetch("/api/promotions/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tourId: routeId, promoCode: promoInput, quotationInput, phone: customerPhone }),
+      });
+      const result = await response.json() as PromoValidationResult;
+
+      if (!response.ok || !result.valid) {
+        setPromoError(result.valid ? "Unable to apply this promo code." : result.error);
+        setPromoCode("");
+        return;
+      }
+
+      setPromoCode(result.code);
+      setPromoValidation(result);
+      setPromoInput(result.code);
+    } catch {
+      setPromoError("Unable to validate this promo code. Please try again.");
+    } finally {
+      setIsApplyingPromo(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -1411,6 +1569,8 @@ export function MakeMyTripForm() {
         customRouteLabel: isCustomCitySelection() ? effectiveSelectedCities.join(" + ") : undefined,
         customerName,
         customerPhone,
+        promoCode: undefined as string | undefined,
+        promotion: undefined as PromotionSummary | undefined,
       };
 
       // Build a concise description for the receipt: package/route, vehicle, hotels, and prices in PKR
@@ -1477,9 +1637,6 @@ export function MakeMyTripForm() {
       // Attach description to quotationData (used by receipt/quotation pages)
       (quotationData as any).description = `${packageText} | Vehicle: ${vehicleText}${hotelsSummary ? ` | Hotels: ${hotelsSummary}` : ''} | ${pricesText}`;
 
-      // Encode data and redirect to edit page
-      const encoded = btoa(JSON.stringify(quotationData));
-
       const response = await fetch("/api/quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1494,6 +1651,7 @@ export function MakeMyTripForm() {
           adults,
           kids,
           kidsAges,
+          promoCode: promoCode || undefined,
           hotelCategory,
           customerName,
           customerPhone,
@@ -1512,6 +1670,19 @@ export function MakeMyTripForm() {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        const serverQuotation = data.quotation as QuotationBreakdown;
+        quotationData.transportCost = serverQuotation.transportCost;
+        quotationData.hotelCost = serverQuotation.hotelCost;
+        quotationData.jeepAddonsCost = serverQuotation.jeepAddonsCost;
+        quotationData.subtotal = serverQuotation.subtotal;
+        quotationData.markupAmount = serverQuotation.markupAmount;
+        quotationData.totalCost = serverQuotation.totalCost + offRouteChargePKR;
+        quotationData.perPersonCost = serverQuotation.perPersonCost + offRouteChargePKR / Math.max(1, adults + kids);
+        quotationData.promoCode = serverQuotation.promotion?.code;
+        quotationData.promotion = serverQuotation.promotion;
+        const serverPricesText = `Total: ${fmt(quotationData.totalCost)} | Per person: ${fmt(quotationData.perPersonCost)}`;
+        (quotationData as any).description = `${packageText} | Vehicle: ${vehicleText}${hotelsSummary ? ` | Hotels: ${hotelsSummary}` : ""} | ${serverPricesText}`;
+        const encoded = btoa(JSON.stringify(quotationData));
         // Redirect to quotation edit page
         router.push(`/quotation-edit?data=${encoded}`);
       } else {
@@ -1527,19 +1698,6 @@ export function MakeMyTripForm() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  // Calculate form completion percentage for progress bar
-  const calculateFormProgress = (): number => {
-    const requiredFields = [customerName, customerPhone, tripDate, startingPoint, vehicleName];
-    const fieldsWithValues = requiredFields.filter(field => field.trim()).length;
-    const hasValidDestination = routeId || effectiveSelectedCities.length > 0;
-    const hasValidHotel = hotelId || (Object.keys(multiCityHotels).length > 0) || (singleCityHotelStays.length > 0 && singleCityHotelStays.some(s => s.hotelId));
-    
-    const totalRequired = 6; // base fields + destination + hotel
-    let validCount = fieldsWithValues + (hasValidDestination ? 1 : 0) + (hasValidHotel ? 1 : 0);
-    
-    return Math.min(100, Math.round((validCount / totalRequired) * 100));
   };
 
   const customerNameValid = customerName.trim().length > 1;
@@ -1615,12 +1773,78 @@ export function MakeMyTripForm() {
   const formProgress = Math.round((progressChecklist.filter(Boolean).length / progressChecklist.length) * 100);
 
   const plannerSteps = [
-    { number: 1, label: "Dates" },
-    { number: 2, label: "Destination" },
-    { number: 3, label: "Travelers" },
-    { number: 4, label: "Preferences" },
-    { number: 5, label: "Quote" },
+    { number: 1, label: "Discover" },
+    { number: 2, label: "Journey" },
+    { number: 3, label: "Travellers" },
+    { number: 4, label: "Stay & transport" },
+    { number: 5, label: "Review" },
   ];
+  const completedPlannerSteps = [
+    tripDateValid && startingPointValid,
+    destinationValid && !isInvalidCombination,
+    adultsValid && numberOfRooms > 0,
+    vehicleValid && hotelSelectionValid,
+    customerNameValid && customerPhoneValid && quotationReady,
+  ];
+
+  const configuredSummaryStops = (() => {
+    let stops: Array<{ name: string; nights?: number }> = [];
+
+    if (isCustomCitySelection()) {
+      stops = effectiveSelectedCities.map((city) => ({
+        name: city,
+        nights: effectiveCustomCityNights[city],
+      }));
+    } else if (selectedRoute) {
+      const multiCity = isMultiCityTour() ? getVisibleMultiCityConfig(routeId) : null;
+      stops = multiCity
+        ? multiCity.cities.map((city, index) => ({ name: city, nights: multiCity.nights[index] }))
+        : [{ name: selectedRoute.city, nights: Math.max(0, selectedRoute.duration - 1) }];
+    }
+
+    const origin = getActualStartingPoint();
+    if (origin && stops.length > 0 && stops[0].name !== origin) {
+      stops = [{ name: origin }, ...stops];
+    }
+
+    return stops;
+  })();
+  const summaryNights = configuredSummaryStops.reduce((total, stop) => total + (stop.nights ?? 0), 0);
+  const summaryDuration = selectedRoute
+    ? `${selectedRoute.duration} days Â· ${summaryNights || Math.max(0, selectedRoute.duration - 1)} nights`
+    : summaryNights > 0
+      ? `${summaryNights + 1} days Â· ${summaryNights} nights`
+      : "";
+  const summaryHotelDetails = (() => {
+    const describeStay = (city: string, hotelId: string, roomId: string) => {
+      const baseCity = city.includes("(") ? city.split("(")[0].trim() : city;
+      const hotel = getHotelsByCity(baseCity).find((item) => item.id === hotelId)
+        ?? availableHotels.find((item) => item.id === hotelId);
+      if (!hotel) return "";
+      return `${city ? `${city}: ` : ""}${hotel.name}${roomId ? ` Â· ${roomId}` : ""}`;
+    };
+
+    if (supportsMultipleHotelsInCustomSingleCity || supportsMultipleHotelsInSingleCity) {
+      const city = selectedCities[0] || selectedRoute?.city || "";
+      return singleCityHotelStays
+        .map((stay) => describeStay(city, stay.hotelId, stay.roomId))
+        .filter(Boolean);
+    }
+
+    if (isCustomCitySelection() || isMultiCityTour()) {
+      const cities = isCustomCitySelection()
+        ? effectiveSelectedCities
+        : getVisibleMultiCityConfig(routeId)?.cities ?? [];
+      return cities
+        .map((city) => {
+          const selection = effectiveMultiCityHotels[city];
+          return selection ? describeStay(city, selection.hotelId, selection.roomId) : "";
+        })
+        .filter(Boolean);
+    }
+
+    return hotelId ? [describeStay(selectedRoute?.city || "", hotelId, roomId)].filter(Boolean) : [];
+  })();
 
   const validatePlannerStep = (step: number): string | null => {
     if (step === 1) {
@@ -1671,7 +1895,24 @@ export function MakeMyTripForm() {
   const journeyLabel = isCustomCitySelection()
     ? effectiveSelectedCities.join(" + ") || "Custom itinerary"
     : selectedRoute?.name || "Your selected route";
-  const journeyWhatsAppMessage = `Hi Hodophile, I'd like to plan a trip to ${journeyLabel} from ${tripDate || "my preferred date"} for ${totalGuests || "my"} travelers. Please share my itinerary and availability.`;
+  const journeyWhatsAppMessage = [
+    "Hi Hodophile, I would like to plan this journey:",
+    `Name: ${customerName || "Not provided"}`,
+    `Phone: ${customerPhone || "Not provided"}`,
+    `Travel date: ${tripDate || "To be confirmed"}`,
+    `Starting point: ${getActualStartingPoint() || "Not selected"}`,
+    `Destinations: ${journeyLabel}`,
+    `Adults: ${adults}`,
+    `Kids: ${kids}${kids > 0 ? ` (ages: ${kidsAges.filter(Boolean).join(", ") || "not provided"})` : ""}`,
+    `Travel mode: ${travelMode === "air" ? "By air" : "By road"}`,
+    `Vehicle: ${vehicleName || "Not selected"}`,
+    `Hotels and rooms: ${summaryHotelDetails.join(" | ") || "Not selected"}`,
+    `Nights: ${configuredSummaryStops.filter((stop) => (stop.nights ?? 0) > 0).map((stop) => `${stop.name} ${stop.nights} night${stop.nights === 1 ? "" : "s"}`).join(" | ") || "To be planned"}`,
+    `Package: ${chosenPackage?.label || selectedRoute?.name || "Custom itinerary"}`,
+    ...(quotation?.promotion ? [`Promo Code: ${quotation.promotion.code}`, `Discount: ${quotation.promotion.discountPercent}%`, `Discount Amount: ${formatPKR(quotation.promotion.discountAmount)}`, `Original Total: ${formatPKR(quotation.promotion.originalPrice)}`] : []),
+    `Estimated quotation: ${quotation ? formatPKR(quotation.totalCost + offRouteChargePKR) : "Pending"}`,
+    `Route notes: ${preplannedRoute?.itinerary || selectedRoute?.itinerary || (usesChilasItinerary ? "Chilas arrival and return stays are included in the custom route." : "No additional route notes listed.")}`,
+  ].join("\n");
 
   useEffect(() => {
     const hasJustGeneratedQuotation = !previousQuotationRef.current && quotation;
@@ -1685,8 +1926,8 @@ export function MakeMyTripForm() {
   }, [quotation]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen py-8 px-6 sm:px-8 lg:px-10 overflow-x-hidden">
-      <div className="w-full make-my-trip-form mx-auto mx-4 sm:mx-0 max-w-full sm:max-w-md md:max-w-2xl lg:max-w-3xl">
+    <div className="flex justify-center items-center min-h-screen overflow-x-hidden px-4 pb-28 pt-8 sm:px-6 lg:px-0">
+      <div className="make-my-trip-form mx-auto w-full max-w-7xl">
         <style>{`
           .make-my-trip-form input,
           .make-my-trip-form select,
@@ -1735,29 +1976,13 @@ export function MakeMyTripForm() {
           .blink-fast { animation: fast-blink 0.6s ease-in-out infinite; }
         `}</style>
 
-        <div className="relative overflow-hidden rounded-[30px] bg-gradient-to-br from-[#fff6d6] via-white to-[#fff1bd] p-[1.5px] shadow-[0_32px_80px_rgba(0,0,0,0.12)] transition-all duration-500">
-          <div className="pointer-events-none absolute left-[-110px] top-[-110px] h-60 w-60 rounded-full bg-[#fcc000]/18 blur-3xl" />
-          <div className="pointer-events-none absolute right-[-90px] bottom-[-90px] h-72 w-72 rounded-full bg-[#7f5a00]/10 blur-3xl" />
-          <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[#fcc000]/70 to-transparent" />
-          <div className="relative isolate overflow-hidden rounded-[28px] bg-[#FCC000] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_12px_30px_rgba(0,0,0,0.05)] ring-1 ring-[#f4d77d]/60 transition-all duration-500 sm:p-10">
+        <div className="relative overflow-hidden border border-white/70 bg-white p-4 shadow-[0_28px_80px_rgba(0,0,0,0.22)] sm:p-7 lg:p-9">
             {plannerSourceMessage ? (
               <p role="status" className="mb-5 rounded-xl border border-black/15 bg-white/85 px-4 py-3 text-sm font-medium text-stone-900">
                 {plannerSourceMessage}
               </p>
             ) : null}
-          {/* Progress Bar */}
-          <div className="mb-8 rounded-[20px] bg-white/80 backdrop-blur-sm p-6 shadow-[0_8px_24px_rgba(0,0,0,0.1)]">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-base font-bold text-black">Form Progress</p>
-              <p className="text-2xl font-black text-[#FCC000]">{formProgress}%</p>
-            </div>
-            <div className="w-full h-3 bg-stone-300 rounded-full overflow-hidden border-2 border-[#FCC000]/30">
-              <div 
-                className="h-full bg-gradient-to-r from-[#FCC000] via-[#FFD247] to-[#FCC000] rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(252,192,0,0.6)]"
-                style={{ width: `${formProgress}%` }}
-              />
-            </div>
-          </div>
+
 
           {/* Celebration Animation */}
           {showCelebration && (
@@ -1767,7 +1992,7 @@ export function MakeMyTripForm() {
                   key={i}
                   className="confetti-piece fixed w-2 h-2 bg-[#fcc000] rounded-full"
                   style={{
-                    left: `${Math.random() * 100}%`,
+                    left: `${((i * 37) % 100)}%`,
                     top: '50%',
                     animationDelay: `${i * 0.1}s`,
                   }}
@@ -1777,12 +2002,12 @@ export function MakeMyTripForm() {
           )}
 
           <div className="mb-6 text-center md:text-left">
-            <p className="text-sm font-bold uppercase tracking-[0.38em] text-black">Craft your own Trip</p>
-            <h2 className="mt-2 font-serif text-3xl leading-snug sm:text-4xl lg:text-5xl font-bold drop-shadow-[0_2px_4px_rgba(255,255,255,0.4)]">
-              <span className="text-black">Your Adventure</span>, <span className="text-black">Your Way</span>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[#8b6b00]">Hodophile Â· Journey builder</p>
+            <h2 className="mt-3 max-w-3xl font-serif text-4xl font-normal leading-[1.02] text-stone-950 sm:text-5xl lg:text-6xl">
+              Design a journey that feels like yours.
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-black font-medium md:mx-0 drop-shadow-[0_1px_2px_rgba(255,255,255,0.3)]">
-              Select your dates, destination, vehicle, and hotel. Get an instant quotation powered by real-time pricing.
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-600 md:mx-0 sm:text-base">
+              Explore routes, tailor your stay, and shape a Pakistan journey with a live estimate at every step.
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2 md:justify-start">
               {/* Honeymoon Gateway Button with Featured Tours Dropdown */}
@@ -1790,9 +2015,9 @@ export function MakeMyTripForm() {
                 <button
                   type="button"
                   onClick={() => setShowHoneymoonDropdown(!showHoneymoonDropdown)}
-                  className="relative inline-flex items-center rounded-full border-4 border-[#fcc000] bg-[#fff7db] px-3 py-1 text-[9px] font-bold uppercase tracking-[0.22em] text-[#8d6500] shadow-sm transition hover:bg-[#fff2c8] blink-fast"
+                  className="relative inline-flex min-h-10 items-center border border-[#e8d7a3] bg-[#fffdf8] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6e5200] transition hover:border-[#fcc000] hover:bg-[#fff9e8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
                 >
-                  💕 Honeymoon Gateway
+                  ðŸ’• Honeymoon Gateway
                 </button>
                 
                 {/* Featured Tours Dropdown */}
@@ -1819,9 +2044,9 @@ export function MakeMyTripForm() {
                 <button
                   type="button"
                   onClick={() => setShowLuxuryDropdown(!showLuxuryDropdown)}
-                  className="relative inline-flex items-center rounded-full border-4 border-[#fcc000] bg-[#fff7db] px-3 py-1 text-[9px] font-bold uppercase tracking-[0.22em] text-[#8d6500] shadow-sm transition hover:bg-[#fff2c8] hover:border-[#fcc000] blink-fast"
+                  className="relative inline-flex min-h-10 items-center border border-[#e8d7a3] bg-[#fffdf8] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6e5200] transition hover:border-[#fcc000] hover:bg-[#fff9e8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
                 >
-                  <span>✨ Luxury Planning</span>
+                  <span>âœ¨ Luxury Planning</span>
                 </button>
                 
                 {/* Dropdown Menu */}
@@ -1845,37 +2070,19 @@ export function MakeMyTripForm() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} noValidate className="grid gap-4">
-            <nav aria-label="Trip builder progress" className="rounded-[20px] bg-white/85 p-4 shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.24em] text-stone-500">Step {plannerStep} of 5</p>
-                  <p className="mt-1 text-lg font-semibold text-stone-950">{plannerSteps[plannerStep - 1].label}</p>
-                </div>
-                <span className="text-sm font-semibold text-[#8d6500]">{formProgress}% complete</span>
-              </div>
-              <ol className="grid grid-cols-5 gap-2">
-                {plannerSteps.map((step) => (
-                  <li key={step.number}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (step.number < plannerStep) {
-                          setStepError("");
-                          setPlannerStep(step.number);
-                        }
-                      }}
-                      disabled={step.number > plannerStep}
-                      className={`flex min-h-14 w-full flex-col items-center justify-center rounded-[12px] border px-1 py-2 text-center transition ${step.number === plannerStep ? "border-[#fcc000] bg-[#fcc000] text-black" : step.number < plannerStep ? "border-[#fcc000]/50 bg-[#fff8df] text-stone-800" : "border-stone-200 bg-stone-50 text-stone-400"}`}
-                    >
-                      <span className="text-sm font-bold">{step.number}</span>
-                      <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.08em]">{step.label}</span>
-                    </button>
-                  </li>
-                ))}
-              </ol>
-              {stepError ? <p role="alert" className="mt-3 rounded-[12px] border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">{stepError}</p> : null}
-            </nav>
+          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_19rem]">
+          <form onSubmit={handleSubmit} noValidate className="grid min-w-0 gap-5">
+            <TripPlannerProgress
+              steps={plannerSteps}
+              currentStep={plannerStep}
+              completion={formProgress}
+              completedSteps={completedPlannerSteps}
+              error={stepError}
+              onSelectStep={(step) => {
+                setStepError("");
+                setPlannerStep(step);
+              }}
+            />
 
             {/* Customer Info */}
             <div hidden={plannerStep !== 5} className="grid grid-cols-1 gap-4 rounded-[24px] border border-[#E8A500] bg-white p-4 shadow-[0_8px_20px_rgba(0,0,0,0.06)] lg:grid-cols-2">
@@ -1924,6 +2131,7 @@ export function MakeMyTripForm() {
                 {preplannedRoute.itinerary && (
                   <p className="text-xs text-stone-600 mt-2 italic">{preplannedRoute.itinerary}</p>
                 )}
+                <RouteItineraryPreview days={preplannedRoute.dayByDayItinerary} pricing={preplannedRoute.packagePricing} />
               </div>
             )}
 
@@ -1984,6 +2192,7 @@ export function MakeMyTripForm() {
                   {preplannedRoute.itinerary && (
                     <p className="text-xs text-stone-600 mt-2 italic">{preplannedRoute.itinerary}</p>
                   )}
+                  <RouteItineraryPreview days={preplannedRoute.dayByDayItinerary} pricing={preplannedRoute.packagePricing} />
                 </div>
               )}
 
@@ -2048,21 +2257,36 @@ export function MakeMyTripForm() {
                 </label>
               )}
 
-              {/* Tour Mode - Always visible */}
-              <label className="grid gap-2 text-sm font-medium text-black">
-                <span className="flex items-center gap-2">
+              <fieldset className="grid gap-2 text-sm font-medium text-black">
+                <legend className="flex items-center gap-2">
                   <PlaneTakeoff className={LABEL_ICON_CLASS} aria-hidden="true" />
-                  <span>Tour Mode *</span>
-                </span>
-                <select
-                  value={travelMode}
-                  onChange={(e) => setTravelMode(e.target.value)}
-                  className="rounded-[15px] border border-[#f4d77d] bg-white px-4 py-3 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                >
-                  {availableTravelModes.includes("road") && <option value="road">By Road</option>}
-                  {availableTravelModes.includes("air") && <option value="air">By Air</option>}
-                </select>
-              </label>
+                  <span>How would you like to arrive? *</span>
+                </legend>
+                <div className="grid gap-3 sm:grid-cols-2" role="group" aria-label="Travel mode">
+                  {([
+                    ["road", "By road", "Overland travel"],
+                    ["air", "By air", "Flight-linked arrival"],
+                  ] as const).filter(([mode]) => availableTravelModes.includes(mode)).map(([mode, title, detail]) => {
+                    const isSelected = travelMode === mode;
+                    return (
+                      <button
+                        key={mode}
+                        type="button"
+                        aria-pressed={isSelected}
+                        onClick={() => setTravelMode(mode)}
+                        className={`flex min-h-16 items-center gap-3 border px-4 py-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isSelected ? "border-[#b98d00] bg-[#fff9e8] ring-1 ring-[#fcc000]/50" : "border-stone-300 bg-white hover:border-[#b98d00]"}`}
+                      >
+                        {mode === "air" ? <PlaneTakeoff className="h-5 w-5 shrink-0 text-[#8b6b00]" aria-hidden="true" /> : <CarFront className="h-5 w-5 shrink-0 text-[#8b6b00]" aria-hidden="true" />}
+                        <span>
+                          <span className="block text-sm font-semibold text-stone-950">{title}</span>
+                          <span className="mt-0.5 block text-xs text-stone-600">{detail}</span>
+                        </span>
+                        {isSelected ? <Check className="ml-auto h-4 w-4 shrink-0 text-[#8b6b00]" aria-hidden="true" /> : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              </fieldset>
             </div>
 
             {/* Individual City Selection - Always visible for private tours */}
@@ -2096,20 +2320,34 @@ export function MakeMyTripForm() {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {sortedCitiesWithHotels.map((city) => {
                   const willAllow = selectedCities.includes(city) || isValidCustomRoute(getActualStartingPoint(), [...selectedCities, city]);
+                  const cardDetails = destinationCardDetails[city];
                   return (
                     <label
                       key={city}
-                      className={`flex items-center gap-2 p-3 rounded-[12px] border transition ${willAllow ? 'border-[#f4d77d] bg-white cursor-pointer hover:bg-[#fffdf3]' : 'border-[#eddba3] bg-[#f6efd4] cursor-not-allowed opacity-60'}`}
+                      className={`group relative isolate flex min-h-28 items-end overflow-hidden border bg-stone-700 transition focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#8b6b00] ${willAllow ? 'cursor-pointer border-stone-300 hover:border-[#fcc000]' : 'cursor-not-allowed border-stone-300 opacity-55'} ${effectiveSelectedCities.includes(city) ? 'ring-2 ring-[#fcc000]' : ''}`}
                       title={willAllow ? undefined : 'Off-route combination'}
                     >
+                      {cardDetails.image ? (
+                        <Image
+                          src={cardDetails.image}
+                          alt=""
+                          fill
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 220px"
+                          className="-z-10 object-cover transition duration-500 group-hover:scale-[1.03]"
+                        />
+                      ) : null}
+                      <span aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-black/85 via-black/30 to-black/5" />
                       <input
                         type="checkbox"
                         checked={effectiveSelectedCities.includes(city)}
                         onChange={() => toggleCitySelection(city)}
                         disabled={!willAllow}
-                        className={`w-4 h-4 ${willAllow ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                        className={`ml-3 mb-3 h-4 w-4 accent-[#fcc000] ${willAllow ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                       />
-                      <span className="text-sm font-medium text-black">{city}</span>
+                      <span className="relative z-10 min-w-0 flex-1 pb-2 pr-2 text-white">
+                        <span className="block text-xs font-semibold leading-tight sm:text-sm">{city}</span>
+                        <span className="mt-1 block text-[9px] leading-tight text-white/80 sm:text-[10px]">{cardDetails.description}</span>
+                      </span>
                     </label>
                   );
                 })}
@@ -2141,42 +2379,53 @@ export function MakeMyTripForm() {
                   )}
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                     {effectiveSelectedCities.map((city) => (
-                      <label key={city} className="grid gap-1 rounded-[12px] border border-[#f4d77d] bg-white p-2 text-black shadow-sm">
-                        <span className="text-[11px] font-semibold uppercase tracking-wide text-[#6e5200]">
-                          {city} nights
+                      <div key={city} className="flex min-h-16 items-center justify-between gap-3 border border-stone-200 bg-[#fffdf8] px-3 py-2 text-stone-950">
+                        <span className="min-w-0">
+                          <span className="block truncate text-[11px] font-semibold uppercase tracking-wide text-stone-800">{city}</span>
+                          <span className="mt-0.5 block text-[10px] text-stone-500">{effectiveCustomCityNights[city] ?? 1} night{(effectiveCustomCityNights[city] ?? 1) === 1 ? "" : "s"}</span>
                         </span>
-                        <input
-                          type="number"
-                          min={1}
-                          value={effectiveCustomCityNights[city] ?? 1}
-                          onChange={(e) =>
-                            setCustomCityNights({
-                              ...customCityNights,
-                              [city]: Math.max(1, parseInt(e.target.value) || 1),
-                            })
-                          }
-                          className="rounded-[8px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                        />
-                      </label>
+                        <div className="flex shrink-0 items-center gap-1">
+                          <button
+                            type="button"
+                            aria-label={`Remove one night in ${city}`}
+                            disabled={(effectiveCustomCityNights[city] ?? 1) <= 1}
+                            onClick={() => setCustomCityNights((current) => ({ ...current, [city]: Math.max(1, (current[city] ?? 1) - 1) }))}
+                            className="h-9 w-9 border border-stone-300 text-lg leading-none text-stone-800 transition hover:border-[#b98d00] disabled:cursor-not-allowed disabled:text-stone-400"
+                          >âˆ’</button>
+                          <span aria-live="polite" className="w-6 text-center text-sm font-semibold tabular-nums">{effectiveCustomCityNights[city] ?? 1}</span>
+                          <button
+                            type="button"
+                            aria-label={`Add one night in ${city}`}
+                            onClick={() => setCustomCityNights((current) => ({ ...current, [city]: (current[city] ?? 1) + 1 }))}
+                            className="h-9 w-9 border border-stone-300 text-lg leading-none text-stone-800 transition hover:border-[#b98d00]"
+                          >+</button>
+                        </div>
+                      </div>
                     ))}
                   </div>
+                  {!isInvalidCombination ? (
+                    <div className="mt-4 border-t border-stone-200 pt-4">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b6b00]">Why this route works</p>
+                      <ul className="mt-2 grid gap-2 text-xs text-stone-700 sm:grid-cols-2">
+                        <li className="flex items-start gap-2"><span aria-hidden="true" className="font-bold text-[#8b6b00]">âœ“</span><span>Selected sequence passes route validation.</span></li>
+                        {usesChilasItinerary ? <li className="flex items-start gap-2"><span aria-hidden="true" className="font-bold text-[#8b6b00]">âœ“</span><span>Chilas arrival and return stays are included.</span></li> : null}
+                        {summaryNights > 0 ? <li className="flex items-start gap-2"><span aria-hidden="true" className="font-bold text-[#8b6b00]">âœ“</span><span>{summaryNights} hotel nights are currently assigned.</span></li> : null}
+                        {vehicleName ? <li className="flex items-start gap-2"><span aria-hidden="true" className="font-bold text-[#8b6b00]">{isVehicleSuitable(vehicleName, totalGuests) ? "âœ“" : "!"}</span><span>{isVehicleSuitable(vehicleName, totalGuests) ? `${vehicleName} fits the current group size.` : `${vehicleName} is not suitable for ${totalGuests} travellers.`}</span></li> : null}
+                      </ul>
+                    </div>
+                  ) : null}
                 </div>
               )}
             </div>
 
             {/* Invalid Combination Alert */}
             {isInvalidCombination && selectedCities.length > 0 && (
-              <div hidden={plannerStep !== 2} className="rounded-[20px] border-2 border-red-400 bg-red-50 p-4 shadow-[0_8px_20px_rgba(255,59,48,0.1)]">
-                <div className="flex gap-3">
-                  <div className="text-red-600 text-xl font-bold flex-shrink-0">⚠️</div>
-                  <div>
-                    <p className="text-sm font-semibold text-red-800 mb-2">
-                      Off-Route Combination Selected
-                    </p>
-                    <p className="text-sm text-red-700 mb-3">
-                      This city combination is off-route and cannot be selected. Remove a city to continue.
-                    </p>
-                  </div>
+              <div hidden={plannerStep !== 2} className="border-l-2 border-[#c49300] bg-[#fffdf8] p-4">
+                <div>
+                  <p className="text-sm font-semibold text-stone-950">This route needs a little adjustment.</p>
+                  <p className="mt-1 text-sm leading-6 text-stone-700">
+                    One or more legs in the selected sequence are not supported by the current route data. Try changing your starting city or removing a stop; enabled destination cards reflect the available route connections.
+                  </p>
                 </div>
               </div>
             )}
@@ -2186,44 +2435,49 @@ export function MakeMyTripForm() {
             </div>
 
             <div hidden={plannerStep !== 4} className="grid gap-4">
-            <label className="grid gap-2 text-sm font-medium text-black">
-              <span className="flex items-center gap-2">
+            <fieldset className="grid gap-3 text-sm font-medium text-black">
+              <legend className="mb-1 flex items-center gap-2">
                 <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
-                <span>Hotel Category *</span>
-              </span>
-              <select
-                value={hotelCategory}
-                onChange={(e) => setHotelCategory(e.target.value)}
-                className="rounded-[15px] border border-[#f4d77d] bg-white px-4 py-3 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-              >
-                <option value="standard">Standard - Budget-Friendly</option>
-                <option value="deluxe">Deluxe - Mid-Range (Recommended)</option>
-                <option value="executive">Executive - Premium</option>
-              </select>
-            </label>
+                <span>Choose your stay category *</span>
+              </legend>
+              <div className="grid gap-2 sm:grid-cols-3" role="group" aria-label="Hotel category">
+                {([
+                  ["standard", "Standard", "Standard room options"],
+                  ["deluxe", "Deluxe", "Deluxe room options"],
+                  ["executive", "Executive", "Executive room options"],
+                ] as const).map(([category, title, detail]) => {
+                  const isSelected = hotelCategory === category;
+                  return (
+                    <button
+                      key={category}
+                      type="button"
+                      aria-pressed={isSelected}
+                      onClick={() => setHotelCategory(category)}
+                      className={`flex min-h-16 items-center justify-between gap-2 border px-3 py-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isSelected ? "border-[#b98d00] bg-[#fff9e8] ring-1 ring-[#fcc000]/50" : "border-stone-300 bg-white hover:border-[#b98d00]"}`}
+                    >
+                      <span>
+                        <span className="block text-xs font-semibold text-stone-950">{title}</span>
+                        <span className="mt-0.5 block text-[10px] text-stone-600">{detail}</span>
+                      </span>
+                      {isSelected ? <Check className="h-4 w-4 shrink-0 text-[#8b6b00]" aria-hidden="true" /> : null}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
 
             {/* Hotel & Vehicle Selection */}
             {isPackageRoute() && !isMultiCityTour() ? (
               <div className="grid gap-4 grid-cols-1 xl:grid-cols-2">
-                <label className="grid gap-2 text-sm font-medium text-black min-w-0">
-                  Select Hotel *
-                  <select
-                    required
-                    value={hotelId}
-                    onChange={(e) => setHotelId(e.target.value)}
-                    disabled={!routeId}
-                    className="rounded-[15px] border border-[#f4d77d] bg-white px-4 py-3 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500 appearance-none w-full"
-                  >
-                    <option value="">
-                      {!routeId ? "Select route first" : availableHotels.length === 0 ? "No hotels available" : "Choose a hotel..."}
-                    </option>
-                    {availableHotels.map((hotel) => (
-                      <option key={hotel.id} value={hotel.id}>
-                        {hotel.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <div className="grid min-w-0 gap-2 text-sm font-medium text-black">
+                  <span>Select Hotel *</span>
+                  <HotelCardPicker
+                    hotels={availableHotels}
+                    selectedHotelId={hotelId}
+                    label="Hotel options for selected route"
+                    onSelect={setHotelId}
+                  />
+                </div>
 
                 <label className="grid gap-2 text-sm font-medium text-black min-w-0 z-50 overflow-hidden">
                   Room Type *
@@ -2270,31 +2524,24 @@ export function MakeMyTripForm() {
                         {city}
                       </p>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
-                        <label className="grid gap-2 text-sm font-medium text-black">
-                          Hotel *
-                          <select
-                            required
-                            value={currentSelection?.hotelId || ""}
-                            onChange={(e) =>
+                        <div className="grid gap-2 text-sm font-medium text-black">
+                          <span>Hotel *</span>
+                          <HotelCardPicker
+                            hotels={hotelsForCity}
+                            selectedHotelId={currentSelection?.hotelId || ""}
+                            label={`${city} hotel options`}
+                            onSelect={(nextHotelId) =>
                               setMultiCityHotels({
                                 ...multiCityHotels,
                                 [city]: {
                                   ...currentSelection,
-                                  hotelId: e.target.value,
+                                  hotelId: nextHotelId,
                                   roomId: "",
                                 },
                               })
                             }
-                            className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                          >
-                            <option value="">Select hotel...</option>
-                            {hotelsForCity.map((hotel) => (
-                              <option key={hotel.id} value={hotel.id}>
-                                {hotel.name}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
+                          />
+                        </div>
 
                         <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
                           Room Type *
@@ -2364,15 +2611,15 @@ export function MakeMyTripForm() {
                           </div>
                         </div>
                         <div className="grid gap-3 grid-cols-1 lg:grid-cols-3">
-                          <label className="grid gap-2 text-sm font-medium text-black">
-                            Hotel *
-                            <select
-                              required
-                              value={stay.hotelId}
-                              onChange={(e) => {
-                                const nextHotelId = e.target.value;
+                          <div className="grid gap-2 text-sm font-medium text-black">
+                            <span>Hotel *</span>
+                            <HotelCardPicker
+                              hotels={availableHotels.filter((hotel) => !selectedLuxuryPackage || hotel.rooms?.some((room) => /executive/i.test(room.name)))}
+                              selectedHotelId={stay.hotelId}
+                              label={`Stay ${index + 1} hotel options`}
+                              onSelect={(nextHotelId) => {
                                 const nextHotel = availableHotels.find((hotel) => hotel.id === nextHotelId);
-                                const roomsToUse = nextHotel && selectedLuxuryPackage ? nextHotel.rooms.filter((r) => /executive/i.test(r.name)) : nextHotel?.rooms || [];
+                                const roomsToUse = nextHotel && selectedLuxuryPackage ? nextHotel.rooms.filter((room) => /executive/i.test(room.name)) : nextHotel?.rooms || [];
                                 const nextRoom = nextHotel ? selectRoomByCategory(roomsToUse, hotelCategory) : "";
                                 setSingleCityHotelStays((current) =>
                                   current.map((currentStay, currentIndex) =>
@@ -2382,18 +2629,8 @@ export function MakeMyTripForm() {
                                   )
                                 );
                               }}
-                              className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                            >
-                              <option value="">Select hotel...</option>
-                              {availableHotels
-                                .filter((h) => !selectedLuxuryPackage || h.rooms?.some((r) => /executive/i.test(r.name)))
-                                .map((hotel) => (
-                                  <option key={hotel.id} value={hotel.id}>
-                                    {hotel.name}
-                                  </option>
-                                ))}
-                            </select>
-                          </label>
+                            />
+                          </div>
 
                           <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
                             Room Type *
@@ -2487,45 +2724,24 @@ export function MakeMyTripForm() {
                         {city}
                       </p>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
-                        <label className="grid gap-2 text-sm font-medium text-black">
-                          Hotel (Executive) *
-                          <select
-                            required
-                            value={currentSelection?.hotelId || ""}
-                            onChange={(e) =>
+                        <div className="grid gap-2 text-sm font-medium text-black">
+                          <span>Executive hotel *</span>
+                          <HotelCardPicker
+                            hotels={hotelsForCity}
+                            selectedHotelId={currentSelection?.hotelId || ""}
+                            label={`${city} executive hotel options`}
+                            onSelect={(nextHotelId) =>
                               setMultiCityHotels({
                                 ...multiCityHotels,
                                 [city]: {
                                   ...currentSelection,
-                                  hotelId: e.target.value,
+                                  hotelId: nextHotelId,
                                   roomId: "",
                                 },
                               })
                             }
-                            className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                          >
-                            <option value="">Select executive hotel...</option>
-                            {hotelsForCity
-                              .sort((a, b) => {
-                                const priceA =
-                                  a.rooms[0]?.price ||
-                                  a.rooms[0]?.peak ||
-                                  (Array.isArray(a.rooms[0]?.high) ? a.rooms[0]?.high?.[0] : a.rooms[0]?.high) ||
-                                  0;
-                                const priceB =
-                                  b.rooms[0]?.price ||
-                                  b.rooms[0]?.peak ||
-                                  (Array.isArray(b.rooms[0]?.high) ? b.rooms[0]?.high?.[0] : b.rooms[0]?.high) ||
-                                  0;
-                                return priceB - priceA;
-                              })
-                              .map((hotel) => (
-                                <option key={hotel.id} value={hotel.id}>
-                                  {hotel.name}
-                                </option>
-                              ))}
-                          </select>
-                        </label>
+                          />
+                        </div>
 
                         <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
                           Room Type (Executive) *
@@ -2596,31 +2812,24 @@ export function MakeMyTripForm() {
                         </p>
                       </div>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
-                        <label className="grid gap-2 text-sm font-medium text-black">
-                          Hotel *
-                          <select
-                            required
-                            value={currentSelection?.hotelId || ""}
-                            onChange={(e) =>
+                        <div className="grid gap-2 text-sm font-medium text-black">
+                          <span>Hotel *</span>
+                          <HotelCardPicker
+                            hotels={hotelsForCity}
+                            selectedHotelId={currentSelection?.hotelId || ""}
+                            label={`${city} hotel options`}
+                            onSelect={(nextHotelId) =>
                               setMultiCityHotels({
                                 ...multiCityHotels,
                                 [city]: {
                                   ...currentSelection,
-                                  hotelId: e.target.value,
+                                  hotelId: nextHotelId,
                                   roomId: "",
                                 },
                               })
                             }
-                            className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                          >
-                            <option value="">Select hotel...</option>
-                            {hotelsForCity.map((hotel) => (
-                              <option key={hotel.id} value={hotel.id}>
-                                {hotel.name}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
+                          />
+                        </div>
 
                         <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
                           Room Type *
@@ -2689,15 +2898,15 @@ export function MakeMyTripForm() {
                           </div>
                         </div>
                         <div className="grid gap-3 grid-cols-1 lg:grid-cols-3">
-                          <label className="grid gap-2 text-sm font-medium text-black">
-                            Hotel *
-                            <select
-                              required
-                              value={stay.hotelId}
-                              onChange={(e) => {
-                                const nextHotelId = e.target.value;
+                          <div className="grid gap-2 text-sm font-medium text-black">
+                            <span>Hotel *</span>
+                            <HotelCardPicker
+                              hotels={availableHotels}
+                              selectedHotelId={stay.hotelId}
+                              label={`Stay ${index + 1} hotel options`}
+                              onSelect={(nextHotelId) => {
                                 const nextHotel = availableHotels.find((hotel) => hotel.id === nextHotelId);
-                                const roomsToUse = nextHotel && selectedLuxuryPackage ? nextHotel.rooms.filter((r) => /executive/i.test(r.name)) : nextHotel?.rooms || [];
+                                const roomsToUse = nextHotel && selectedLuxuryPackage ? nextHotel.rooms.filter((room) => /executive/i.test(room.name)) : nextHotel?.rooms || [];
                                 const nextRoom = nextHotel ? selectRoomByCategory(roomsToUse, hotelCategory) : "";
                                 setSingleCityHotelStays((current) =>
                                   current.map((currentStay, currentIndex) =>
@@ -2707,16 +2916,8 @@ export function MakeMyTripForm() {
                                   )
                                 );
                               }}
-                              className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                            >
-                              <option value="">Select hotel...</option>
-                              {availableHotels.map((hotel) => (
-                                <option key={hotel.id} value={hotel.id}>
-                                  {hotel.name}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
+                            />
+                          </div>
 
                           <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
                             Room Type *
@@ -2820,16 +3021,15 @@ export function MakeMyTripForm() {
                           </div>
                         </div>
                         <div className="grid gap-3 grid-cols-1 lg:grid-cols-3">
-                          <label className="grid gap-2 text-sm font-medium text-black">
-                            Hotel *
-                            <select
-                              required
-                              value={stay.hotelId}
-                              onChange={(e) => {
-                                const nextHotelId = e.target.value;
+                          <div className="grid gap-2 text-sm font-medium text-black">
+                            <span>Hotel *</span>
+                            <HotelCardPicker
+                              hotels={availableHotels}
+                              selectedHotelId={stay.hotelId}
+                              label={`Stay ${index + 1} hotel options`}
+                              onSelect={(nextHotelId) => {
                                 const nextHotel = availableHotels.find((hotel) => hotel.id === nextHotelId);
-                                const roomsToUse = nextHotel && selectedLuxuryPackage ? nextHotel.rooms.filter((r) => /executive/i.test(r.name)) : nextHotel?.rooms || [];
-                                const nextRoom = nextHotel ? selectRoomByCategory(roomsToUse, hotelCategory) : "";
+                                const nextRoom = nextHotel ? selectRoomByCategory(nextHotel.rooms, hotelCategory) : "";
                                 setSingleCityHotelStays((current) =>
                                   current.map((currentStay, currentIndex) =>
                                     currentIndex === index
@@ -2838,16 +3038,8 @@ export function MakeMyTripForm() {
                                   )
                                 );
                               }}
-                              className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                            >
-                              <option value="">Select hotel...</option>
-                              {availableHotels.map((hotel) => (
-                                <option key={hotel.id} value={hotel.id}>
-                                  {hotel.name}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
+                            />
+                          </div>
 
                           <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
                             Room Type *
@@ -2931,31 +3123,24 @@ export function MakeMyTripForm() {
                         {city}
                       </p>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
-                        <label className="grid gap-2 text-sm font-medium text-black">
-                          Hotel *
-                          <select
-                            required
-                            value={currentSelection?.hotelId || ""}
-                            onChange={(e) =>
+                        <div className="grid gap-2 text-sm font-medium text-black">
+                          <span>Hotel *</span>
+                          <HotelCardPicker
+                            hotels={hotelsForCity}
+                            selectedHotelId={currentSelection?.hotelId || ""}
+                            label={`${city} hotel options`}
+                            onSelect={(nextHotelId) =>
                               setMultiCityHotels({
                                 ...multiCityHotels,
                                 [city]: {
                                   ...currentSelection,
-                                  hotelId: e.target.value,
+                                  hotelId: nextHotelId,
                                   roomId: "",
                                 },
                               })
                             }
-                            className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
-                          >
-                            <option value="">Select hotel...</option>
-                            {hotelsForCity.map((hotel) => (
-                              <option key={hotel.id} value={hotel.id}>
-                                {hotel.name}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
+                          />
+                        </div>
 
                         <label className="grid gap-2 text-sm font-medium text-black overflow-hidden">
                           Room Type *
@@ -2992,40 +3177,41 @@ export function MakeMyTripForm() {
               </div>
             ) : null}
 
-            <label className="grid gap-2 text-sm font-medium text-black">
-              <span className="flex items-center gap-2">
+            <fieldset className="grid gap-3 text-sm font-medium text-black">
+              <legend className="mb-1 flex items-center gap-2">
                 <CarFront className={LABEL_ICON_CLASS} aria-hidden="true" />
-                <span>Select Vehicle *</span>
+                <span>Select vehicle *</span>
                 {vehicleValid && <Check className={VALIDATION_ICON_CLASS} aria-hidden="true" />}
-              </span>
-              <select
-                required
-                value={vehicleName}
-                onChange={(e) => setVehicleName(e.target.value)}
-                disabled={!routeId && !isCustomCitySelection()}
-                className="glow-focus rounded-[15px] border border-[#f4d77d] bg-white px-4 py-3 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500"
-              >
-                <option value="">
-                  {!routeId && !isCustomCitySelection() ? "Select destination first" : vehicleOptions.length === 0 ? "No vehicles available" : "Choose a vehicle..."}
-                </option>
-                {vehicleOptions.map((vehicle) => {
-                  const isSuitable = isVehicleSuitable(vehicle.name, totalGuests);
-                  const capacityInfo = getVehicleCapacityInfo(vehicle.name);
-                  return (
-                    <option
-                      key={vehicle.name}
-                      value={vehicle.name}
-                      disabled={!isSuitable}
-                      className={isSuitable ? "" : "text-gray-400"}
-                    >
-                      {vehicle.name}
-                      {capacityInfo ? ` (${capacityInfo})` : ""}
-                      {!isSuitable ? " - Not suitable for your group" : ""}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
+              </legend>
+              {!routeId && !isCustomCitySelection() ? (
+                <p className="text-xs text-stone-500">Choose your destination first to see available vehicles.</p>
+              ) : vehicleOptions.length === 0 ? (
+                <p className="text-xs text-stone-500">No vehicles are listed for this route.</p>
+              ) : (
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3" role="group" aria-label="Vehicle selection">
+                  {vehicleOptions.map((vehicle) => {
+                    const isSuitable = isVehicleSuitable(vehicle.name, totalGuests);
+                    const capacityInfo = getVehicleCapacityInfo(vehicle.name);
+                    const isSelected = vehicleName === vehicle.name;
+                    return (
+                      <button
+                        key={vehicle.name}
+                        type="button"
+                        aria-pressed={isSelected}
+                        disabled={!isSuitable}
+                        onClick={() => setVehicleName(vehicle.name)}
+                        title={!isSuitable ? `Not suitable for ${totalGuests} travellers.` : undefined}
+                        className={`flex min-h-20 flex-col items-start justify-between border p-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] disabled:cursor-not-allowed disabled:bg-stone-100 disabled:text-stone-400 ${isSelected ? "border-[#b98d00] bg-[#fff9e8] ring-1 ring-[#fcc000]/50" : isSuitable ? "border-stone-300 bg-white hover:border-[#b98d00]" : "border-stone-200"}`}
+                      >
+                        <span className="text-xs font-semibold leading-4">{vehicle.name}</span>
+                        {capacityInfo ? <span className="mt-2 text-[10px] text-stone-500">{capacityInfo}</span> : null}
+                        {!isSuitable ? <span className="mt-2 text-[10px] leading-4 text-stone-500">Not suitable for {totalGuests} travellers</span> : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </fieldset>
 
             {/* Vehicle capacity warning */}
             {totalGuests > 4 && (
@@ -3113,18 +3299,75 @@ export function MakeMyTripForm() {
             )}
 
             <div hidden={plannerStep !== 5} className="grid gap-4">
+            {selectedRoute && getPromotionForTour(routeId) ? (
+              <section className="border border-stone-200 bg-[#fffdf8] p-4 sm:p-5" aria-labelledby="promo-code-heading">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p id="promo-code-heading" className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-900">Promo code</p>
+                    <p className="mt-1 text-xs leading-5 text-stone-600">Use {getPromotionForTour(routeId)?.code} for this eligible tour to receive 10% off.</p>
+                  </div>
+                  {promoCode ? <button type="button" onClick={() => { setPromoCode(""); setPromoInput(""); setPromoValidation(null); setPromoError(""); }} className="min-h-9 border border-stone-300 px-3 text-xs font-semibold text-stone-700 hover:border-stone-500">Remove code</button> : null}
+                </div>
+                <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                  <label className="sr-only" htmlFor="journey-promo-code">Promo code</label>
+                  <input
+                    id="journey-promo-code"
+                    value={promoInput}
+                    onChange={(event) => { setPromoInput(event.target.value); setPromoError(""); }}
+                    disabled={Boolean(promoCode) || isApplyingPromo}
+                    placeholder="Enter promo code"
+                    autoComplete="off"
+                    className="min-h-11 min-w-0 flex-1 border border-stone-300 bg-white px-3 text-sm uppercase tracking-[0.08em] text-stone-900 outline-none transition placeholder:normal-case placeholder:tracking-normal focus:border-[#b98d00] focus:ring-2 focus:ring-[#fcc000]/25 disabled:bg-stone-100"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyPromo}
+                    disabled={isApplyingPromo || Boolean(promoCode) || !promoInput.trim()}
+                    className="min-h-11 bg-stone-950 px-5 text-xs font-semibold uppercase tracking-[0.1em] text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300 disabled:text-stone-600"
+                  >
+                    {isApplyingPromo ? "Checking..." : "Apply"}
+                  </button>
+                </div>
+                {promoError ? <p role="alert" className="mt-2 text-xs font-medium text-red-700">{promoError}</p> : null}
+                {promoCode && promoValidation ? (
+                  <div className="mt-4 border-t border-stone-200 pt-3" aria-live="polite">
+                    <p className="text-xs font-semibold text-[#32633e]">Promo code {promoCode} applied - {promoValidation.discountPercent}% off</p>
+                    <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
+                      <div><dt className="text-[10px] uppercase tracking-[0.12em] text-stone-500">Original price</dt><dd className="mt-1 font-medium text-stone-700 line-through">{formatPKR(quotation?.promotion?.originalPrice ?? promoValidation.originalPrice)}</dd></div>
+                      <div><dt className="text-[10px] uppercase tracking-[0.12em] text-stone-500">20% discount</dt><dd className="mt-1 font-semibold text-[#32633e]">âˆ’{formatPKR(quotation?.promotion?.discountAmount ?? promoValidation.discountAmount)}</dd></div>
+                      <div><dt className="text-[10px] uppercase tracking-[0.12em] text-stone-500">Final price</dt><dd className="mt-1 font-bold text-stone-950">{formatPKR(quotation?.promotion?.finalPrice ?? promoValidation.finalPrice)}</dd></div>
+                    </dl>
+                  </div>
+                ) : null}
+                {promoCode && !promoValidation ? <p role="status" className="mt-3 text-xs text-stone-600">Revalidating the discount against your updated trip detailsâ€¦</p> : null}
+              </section>
+            ) : null}
             {quotation ? (
               <section className="rounded-[20px] border border-[#f4d77d] bg-white p-5 shadow-[0_10px_28px_rgba(0,0,0,0.08)]" aria-labelledby="journey-estimate-heading">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#8d6500]">Your estimated journey</p>
-                    <h2 id="journey-estimate-heading" className="mt-2 text-2xl font-semibold text-stone-950">{formatPKR(quotation.totalCost + offRouteChargePKR)}</h2>
-                    <p className="mt-1 text-sm text-stone-600">{formatPKR(quotation.perPersonCost + (offRouteChargePKR / Math.max(1, totalGuests)))} per person · {totalGuests} traveler{totalGuests === 1 ? "" : "s"}</p>
+                    {quotation.promotion ? <p className="mt-2 text-xs font-semibold text-[#32633e]">{quotation.promotion.code} Â· {quotation.promotion.discountPercent}% off</p> : null}
+                    <h2 id="journey-estimate-heading" className="mt-1 text-2xl font-semibold text-stone-950">{formatPKR(quotation.totalCost + offRouteChargePKR)}</h2>
+                    {quotation.promotion ? <p className="mt-1 text-xs text-stone-500 line-through">Original total {formatPKR(quotation.promotion.originalPrice + offRouteChargePKR)}</p> : null}
+                    <p className="mt-1 text-sm text-stone-600">{formatPKR(quotation.perPersonCost + (offRouteChargePKR / Math.max(1, totalGuests)))} per person Â· {totalGuests} traveler{totalGuests === 1 ? "" : "s"}</p>
                   </div>
                   <div className="grid gap-1 text-right text-xs text-stone-600">
                     <span>{journeyLabel}</span>
                     <span>{tripDate || "Date to be confirmed"}</span>
                     <span>{vehicleName || "Vehicle to be selected"}</span>
+                  </div>
+                </div>
+                <div className="mt-5 grid gap-5 border-y border-stone-200 py-5 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+                  <div>
+                    <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-500">Your route</p>
+                    <RouteVisualizer stops={configuredSummaryStops} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-500">Journey notes</p>
+                    <p className="mt-2 text-sm leading-6 text-stone-700">
+                      {preplannedRoute?.itinerary || selectedRoute?.itinerary || "A route summary is shown above. Detailed day-by-day information is not listed for this custom selection."}
+                    </p>
                   </div>
                 </div>
                 <div className="mt-5 grid gap-3 border-t border-stone-200 pt-4 text-sm sm:grid-cols-3">
@@ -3162,7 +3405,7 @@ export function MakeMyTripForm() {
             <button
               type="submit"
               disabled={isSubmitting || !quotation || isInvalidCombination}
-              className="mt-6 sticky bottom-6 inline-flex w-full items-center justify-center gap-3 rounded-[18px] bg-black px-8 py-5 text-lg font-black text-[#FCC000] shadow-[0_12px_30px_rgba(0,0,0,0.4)] transition duration-300 hover:brightness-110 active:brightness-95 disabled:cursor-not-allowed disabled:border disabled:border-stone-500 disabled:bg-stone-700 disabled:opacity-100 disabled:shadow-none"
+              className="mt-2 inline-flex min-h-14 w-full items-center justify-center gap-3 bg-black px-6 py-4 text-lg font-bold text-[#FCC000] shadow-[0_12px_30px_rgba(0,0,0,0.18)] transition duration-300 hover:brightness-110 active:brightness-95 disabled:cursor-not-allowed disabled:border disabled:border-stone-500 disabled:bg-stone-700 disabled:opacity-100 disabled:shadow-none"
             >
               {isSubmitting ? (
                 <>
@@ -3184,18 +3427,34 @@ export function MakeMyTripForm() {
             {plannerStep < 5 && (
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[#f4d77d] bg-white p-3">
                 <button type="button" onClick={handlePlannerBack} disabled={plannerStep === 1} className="rounded-full border border-stone-300 px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500 disabled:cursor-not-allowed disabled:border-stone-300 disabled:bg-stone-100 disabled:text-stone-600 disabled:opacity-100">Back</button>
-                <button type="button" onClick={handlePlannerContinue} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-[#fcc000] transition hover:brightness-110">Continue <span aria-hidden="true">→</span></button>
+                <button type="button" onClick={handlePlannerContinue} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-[#fcc000] transition hover:brightness-110">Continue <span aria-hidden="true">â†’</span></button>
               </div>
             )}
             {plannerStep === 5 && (
-              <button type="button" onClick={handlePlannerBack} className="justify-self-start rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500">← Back to preferences</button>
+              <button type="button" onClick={handlePlannerBack} className="justify-self-start rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500">â† Back to preferences</button>
             )}
           </form>
+          <JourneySummary
+            routeLabel={journeyLabel}
+            stops={configuredSummaryStops}
+            date={tripDate}
+            duration={summaryDuration}
+            guests={totalGuests}
+            hotelDetails={summaryHotelDetails}
+            travelMode={travelMode}
+            hotelCategory={hotelCategory}
+            vehicle={vehicleName}
+            quotation={quotation}
+            priceAdjustment={offRouteChargePKR}
+            onReview={() => {
+              setStepError("");
+              setPlannerStep(5);
+            }}
+          />
+          </div>
           </div>
         </div>
       </div>
-    </div>
   );
 }
-
 

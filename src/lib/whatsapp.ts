@@ -1,14 +1,17 @@
 import type { QuotationBreakdown } from "./pricingEngine";
 import { formatPKR } from "./currency";
+import type { PromotionSummary } from "./promotions/promotion-types";
 
 export interface WhatsAppMessage {
   customerName: string;
   customerPhone: string;
   quotation: QuotationBreakdown;
+  promotion?: PromotionSummary;
 }
 
 export function formatQuotationForWhatsApp(msg: WhatsAppMessage): string {
   const { customerName, customerPhone, quotation } = msg;
+  const promotion = msg.promotion ?? quotation.promotion;
   const { details } = quotation;
 
   const message = `
@@ -33,7 +36,7 @@ export function formatQuotationForWhatsApp(msg: WhatsAppMessage): string {
    - Rental: ${formatPKR(quotation.transportBreakdown?.rentalCost ?? 0)}
    - Toll/Tax: ${formatPKR(quotation.transportBreakdown?.tollTax ?? 0)}
 ${quotation.jeepAddonsCost > 0 ? `🏔️ Jeep Add-ons: ${formatPKR(quotation.jeepAddonsCost)}\n` : ""}
-*Total: ${formatPKR(quotation.totalCost)}*
+${promotion ? `*Original total: ${formatPKR(promotion.originalPrice)}*\n*Promo code ${promotion.code}: ${promotion.discountPercent}% off (-${formatPKR(promotion.discountAmount)})*\n` : ""}*Total: ${formatPKR(quotation.totalCost)}*
 💰 Per Person: ${formatPKR(quotation.perPersonCost)}
 
 Message from Hodophile Website

@@ -32,6 +32,10 @@ interface QuotationRecord {
   markupAmount: number;
   totalCost: number;
   perPersonCost: number;
+  promoCode?: string;
+  discountPercent?: number;
+  discountAmount?: number;
+  originalTotalCost?: number;
 }
 
 export async function saveQuotationToSheet(
@@ -89,6 +93,10 @@ export async function saveQuotationToSheet(
         dataWithTimestamp.markupAmount,
         dataWithTimestamp.totalCost,
         dataWithTimestamp.perPersonCost,
+        dataWithTimestamp.promoCode || "",
+        dataWithTimestamp.discountPercent || 0,
+        dataWithTimestamp.discountAmount || 0,
+        dataWithTimestamp.originalTotalCost || dataWithTimestamp.totalCost,
       ],
     ];
 
@@ -134,6 +142,10 @@ export async function saveQuotationToSheet(
           "Markup",
           "Total Cost",
           "Per Person Cost",
+          "Promo Code",
+          "Discount Percent",
+          "Discount Amount",
+          "Original Total Cost",
         ],
       }),
     });

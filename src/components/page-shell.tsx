@@ -111,7 +111,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-center">Customer Service</h3>
             <div className="mt-5 overflow-hidden rounded-xl bg-white/5 p-3">
               <Image
-                src="/images/footer/service-24-7.webp"
+                src="/images/package-cards/images__footer__service-24-7.webp"
                 alt="24/7 customer service"
                 width={520}
                 height={400}
@@ -154,7 +154,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-center">100% Satisfaction</h3>
             <div className="mt-5 overflow-hidden rounded-xl bg-white/5 p-3">
               <Image
-                src="/images/footer/guarantee.webp"
+                src="/images/package-cards/images__footer__guarantee.webp"
                 alt="100 percent satisfaction guaranteed"
                 width={520}
                 height={460}
@@ -167,13 +167,13 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-left">Our Affiliations</h3>
             <div className="mt-5 flex flex-col gap-6">
               <div className="flex flex-row gap-6 items-center">
-                <div className="relative h-20 w-20 flex-shrink-0">
+                <div className="h-20 w-20 flex-shrink-0">
                   <Image
-                    src="/images/footer/govt-pakistan.webp"
+                    src="/images/package-cards/images__footer__govt-pakistan.webp"
                     alt="Government of Pakistan"
-                    fill
-                    sizes="80px"
-                    className="object-contain"
+                    width={80}
+                    height={80}
+                    className="h-full w-full object-contain"
                   />
                 </div>
                 <div className="text-sm font-semibold text-white/70">
@@ -184,7 +184,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
               <div className="flex flex-row gap-6 items-center justify-start">
                 <div className="h-20 w-20 flex-shrink-0">
                   <Image
-                    src="/images/footer/taap-logo.webp"
+                    src="/images/package-cards/images__footer__taap-logo.webp"
                     alt="TAAP"
                     width={80}
                     height={80}
@@ -193,7 +193,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 </div>
                 <div className="h-20 w-20 flex-shrink-0">
                   <Image
-                    src="/images/footer/pato-logo.webp"
+                    src="/images/package-cards/images__footer__pato-logo.webp"
                     alt="PATO"
                     width={80}
                     height={80}

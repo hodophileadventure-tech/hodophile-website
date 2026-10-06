@@ -3,39 +3,39 @@ import Image from "next/image";
 const corporateClients = [
   {
     name: "Hamdard University",
-    logo: "/images/clients/humdard-university.webp",
+    logo: "/images/package-cards/images__clients__humdard-university.webp",
   },
   {
     name: "Iqra University",
-    logo: "/images/clients/iqra-university.webp",
+    logo: "/images/package-cards/images__clients__iqra-university.webp",
   },
   {
     name: "Baqai Medical University",
-    logo: "/images/clients/baqai.webp",
+    logo: "/images/package-cards/images__clients__baqai.webp",
   },
   {
     name: "HBL DHA Phase 4 Branch",
-    logo: "/images/clients/hbl.webp",
+    logo: "/images/package-cards/images__clients__hbl.webp",
   },
   {
     name: "SMC Flavours and Fragrances",
-    logo: "/images/clients/smc.webp",
+    logo: "/images/package-cards/images__clients__smc.webp",
   },
   {
     name: "Highland Agri Solutions (Hydrabad)",
-    logo: "/images/clients/highland-agri.webp",
+    logo: "/images/package-cards/images__clients__highland-agri.webp",
   },
   {
     name: "Ask Shipping and Logistics Karachi",
-    logo: "/images/clients/ask-shipping.webp",
+    logo: "/images/package-cards/images__clients__ask-shipping.webp",
   },
   {
     name: "GET LISENCED Software House Karachi",
-    logo: "/images/clients/get-lisenced.webp",
+    logo: "/images/package-cards/images__clients__get-lisenced.webp",
   },
   {
     name: "Tapal Tea (Pvt.) Ltd",
-    logo: "/images/clients/tapal.webp",
+    logo: "/images/package-cards/images__clients__tapal.webp",
   },
 ];
 

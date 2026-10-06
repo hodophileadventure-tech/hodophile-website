@@ -7,8 +7,8 @@ export const siteConfig = {
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
     "https://hodophile.pk",
   email: "masood.ahmed@hodophile.pk",
-  phone: "+92337777460",
-  whatsapp: "+923377774460",
+  phone: "+923377777460",
+  whatsapp: "+923377777460",
   location: "Hodophile Adventure, Plot# 111-113C, Dupatta Gali, PECHS, Block2, Tariq Road, Karachi, Pakistan, 75400",
 };
 
@@ -146,303 +146,145 @@ export const destinationTourPageRedirects = {
   moola: "/tours/southern-tours/moola-chotok-packages",
 } as const;
 
+export const destinationGallerySlugs = ["hunza", "skardu", "naran", "kashmir", "swat", "khaplu", "shogran", "ormara"];
+export const destinationGalleryRoutes = destinationGallerySlugs.map((slug) => `/destinations/${slug}`);
+
 export type Destination = {
   slug: string;
   name: string;
   image: string;
-  exploreImage?: string;
-  exploreName?: string;
-  exploreDescription?: string;
   description: string;
-  bestTimeToVisit: string;
-  idealDuration: string;
+  season: string;
+  duration?: string;
   priceFrom?: string;
-  highlights: string[];
-  bestFor: string;
-  journeyStyle: string;
-  tripHighlights: string[];
-  routeGuidance: string[];
-  routeSuggestions: Array<{ title: string; href: string; meta: string }>;
-  images: Array<{ src: string; alt: string }>;
-  faqs: Array<{ question: string; answer: string }>;
 };
 
 export const destinations: Destination[] = [
   {
     slug: "hunza",
     name: "Hunza",
-    image: "/images/destinations/hunza-unsplash.webp",
-    exploreImage: "/hero-images/kamran-ch-unsplash.webp",
-    exploreDescription: "Towering peaks, apricot valleys, and storied mountain roads.",
-    description: "Terraced valleys, dramatic peaks, and scenic stays. Experience the magic of Hunza's alpine beauty.",
-    bestTimeToVisit: "May to October",
-    idealDuration: "5 to 7 days",
+    image: "/images/package-cards/images__destinations__hunza-unsplash.webp",
+    description: "Terraced valleys, dramatic peaks, and heritage villages for scenic slow travel.",
+    season: "May to October",
+    duration: "6 Days",
     priceFrom: "From PKR 95,000",
-    highlights: ["Terraced valleys", "Dramatic peaks", "Alpine beauty", "Scenic stays"],
-    bestFor: "Families, couples, and first-time northern travelers",
-    journeyStyle: "Slow mountain travel with heritage villages and scenic stops.",
-    tripHighlights: [
-      "Karimabad, Baltit Fort, and Eagle's Nest viewpoints",
-      "Comfortable heritage stays with valley-side dining",
-      "Flexible day pacing for photography and rest",
-    ],
-    routeGuidance: ["Heritage + scenery", "Northerns + premium route"],
-    routeSuggestions: [],
-    images: [
-      { src: "/images/destinations/hunza.avif", alt: "Hunza Valley" },
-      { src: "/images/destinations/featured-hunza-naltar.webp", alt: "Hunza Naltar" },
-    ],
-    faqs: [
-      { question: "How many days should I spend in Hunza?", answer: "A 5 to 7 day plan works best for a balanced experience that includes the valley, viewpoints, and travel recovery." },
-      { question: "Is Hunza good for families?", answer: "Yes. It is one of the more comfortable mountain destinations for families when the trip is paced well and hotel choices are clear." },
-    ],
   },
   {
     slug: "skardu",
     name: "Skardu",
-    image: "/images/destinations/skardu-unsplash.webp",
-    exploreImage: "/hero-images/obaid-awan-unsplash.jpg.webp",
-    exploreDescription: "Lakes, forts, and dramatic glacial scenery in Baltistan.",
-    description: "Lakes, forts, and wide alpine views. A premium destination for northern adventures.",
-    bestTimeToVisit: "April to October",
-    idealDuration: "6 to 8 days",
+    image: "/images/package-cards/images__destinations__skardu-unsplash.webp",
+    description: "Alpine lakes, forts, and cinematic mountain routes for immersive northern tours.",
+    season: "April to October",
+    duration: "7 Days",
     priceFrom: "From PKR 120,000",
-    highlights: ["Alpine lakes", "Historic forts", "Mountain views", "Premium routes"],
-    bestFor: "Adventure travelers, photographers, and premium private groups",
-    journeyStyle: "A larger valley that rewards longer planning and slower driving days.",
-    tripHighlights: [
-      "Lake visits, glacier viewpoints, and high-altitude scenery",
-      "Historic fort stops and mountain-side evenings",
-      "Ideal for balanced exploration without rushed transfers",
-    ],
-    routeGuidance: ["Classic Baltistan route", "Quick premium escape"],
-    routeSuggestions: [],
-    images: [
-      { src: "/images/destinations/skardu.webp", alt: "Skardu" },
-      { src: "/images/destinations/featured-skardu-basho.webp", alt: "Skardu Basho" },
-      { src: "/images/destinations/featured-skardu-hunza.webp", alt: "Skardu Hunza" },
-    ],
-    faqs: [
-      { question: "Why is Skardu best with extra time?", answer: "The valley is large and scenic, so the route is more enjoyable when you leave room for slower pace, weather changes, and rest." },
-      { question: "Is Skardu better with a private vehicle?", answer: "For most travelers, yes. It makes route flexibility easier and helps keep the trip comfortable across long scenic segments." },
-    ],
   },
   {
     slug: "naran",
     name: "Naran",
-    image: "/images/destinations/naran-unsplash.webp",
-    description: "Road trips, river views, and summer escapes. Perfect for families and groups.",
-    bestTimeToVisit: "May to September",
-    idealDuration: "3 to 5 days",
+    image: "/images/package-cards/images__destinations__naran-unsplash.webp",
+    description: "River valleys, emerald meadows, and summer road journeys with crisp mountain air.",
+    season: "May to September",
+    duration: "4 Days",
     priceFrom: "From PKR 62,000",
-    highlights: ["River views", "Summer escapes", "Road trips", "Family-friendly"],
-    bestFor: "Families, quick escapes, and road-trip travelers",
-    journeyStyle: "Easy-to-plan mountain holidays with scenic drives and natural valley stops.",
-    tripHighlights: [
-      "Kaghan Valley approach with strong scenic road energy",
-      "Ideal for accessing meadows and valley viewpoints",
-      "Good for shorter domestic holidays and flexible departures",
-    ],
-    routeGuidance: ["Family-friendly mountain getaway", "Longer route combination"],
-    routeSuggestions: [],
-    images: [
-      { src: "/images/destinations/naran.webp", alt: "Naran" },
-      { src: "/images/destinations/naran-saif.webp", alt: "Naran Saif" },
-    ],
-    faqs: [
-      { question: "Is Naran good for a short trip?", answer: "Yes. It is one of the easiest northern destinations to plan for a 3 to 5 day family trip." },
-      { question: "When does it feel best?", answer: "Late spring to early autumn offers the most comfortable road and valley conditions." },
-    ],
   },
   {
     slug: "swat",
     name: "Swat",
-    image: "/images/destinations/swat-unsplash.webp",
-    exploreImage: "/hero-images/hussain-ahmed-unsplash.webp",
-    exploreName: "Swat & Kalam",
-    exploreDescription: "Green valleys, pine-lined routes, and restorative mountain air.",
-    description: "Green hills and peaceful routes. A classic domestic Pakistan tour.",
-    bestTimeToVisit: "April to November",
-    idealDuration: "4 to 6 days",
+    image: "/images/package-cards/images__destinations__swat-unsplash.webp",
+    description: "Pine landscapes and calm valleys tailored for family and group travelers.",
+    season: "April to November",
+    duration: "4 Days",
     priceFrom: "From PKR 58,000",
-    highlights: ["Green hills", "Peaceful routes", "Valley scenery", "Cultural experiences"],
-    bestFor: "Families, culture-first travelers, and soft adventure seekers",
-    journeyStyle: "A balanced valley route with scenic roads, relaxed evenings, and easy family pacing.",
-    tripHighlights: [
-      "Cooler valley views and heritage-rich surroundings",
-      "Great route for comfortable family travel",
-      "Flexible stays for scenic stops and local exploration",
-    ],
-    routeGuidance: ["Family + green valley", "Longer northern route"],
-    routeSuggestions: [],
-    images: [
-      { src: "/images/destinations/swat.webp", alt: "Swat" },
-      { src: "/images/destinations/featured-kalam-malam-jabba.webp", alt: "Swat Kalam" },
-    ],
-    faqs: [
-      { question: "Is Swat suitable for a first trip?", answer: "Yes. It is a reliable choice for travelers who want a scenic domestic route without needing extreme mountain logistics." },
-      { question: "What is the ideal travel season?", answer: "Spring to early autumn generally offers the most comfortable weather and smooth valley travel." },
-    ],
   },
   {
     slug: "fairy-meadows",
     name: "Fairy Meadows",
-    image: "/images/destinations/fairy-meadows-unsplash.webp",
-    exploreImage: "/hero-images/hussain-ahmed-unsplash.webp",
-    exploreDescription: "Remote alpine meadows framed by iconic mountain views.",
-    description: "Remote alpine meadows beneath Nanga Parbat, made for dramatic views and mountain-hike journeys.",
-    bestTimeToVisit: "June to September",
-    idealDuration: "4 to 6 days",
+    image: "/images/package-cards/images__destinations__fairy-meadows-unsplash.webp",
+    description: "Remote alpine meadows with iconic Nanga Parbat views, perfect for camping and mountain-hike journeys.",
+    season: "June to September",
+    duration: "5 Days",
     priceFrom: "From PKR 85,000",
-    highlights: ["Nanga Parbat", "Alpine meadows", "Mountain hikes", "Remote escape"],
-    bestFor: "Adventure travelers and photography-focused groups",
-    journeyStyle: "A remote, photo-driven route that rewards a slower, more deliberate plan.",
-    tripHighlights: [
-      "Remote alpine views under Nanga Parbat",
-      "Strong hiking and landscape appeal",
-      "A better option for travelers seeking a quieter, more remote mountain vibe",
-    ],
-    routeGuidance: [],
-    routeSuggestions: [
-      { title: "Fairy Meadows route planning", href: "/make-my-trip", meta: "Custom mountain itinerary" },
-      { title: "Northern tour collection", href: "/tours", meta: "Compare destination options" },
-    ],
-    images: [{ src: "/images/destinations/fairy-meadows-unsplash.webp", alt: "Fairy Meadows" }],
-    faqs: [
-      { question: "Is Fairy Meadows for first-time travelers?", answer: "It can work, but it is best when the traveler is comfortable with a more remote route and a slower pace." },
-      { question: "What kind of trip works best here?", answer: "A scenic, mountain-focused plan that balances viewpoint time, rest, and fewer daily moves." },
-    ],
   },
   {
     slug: "minimerg",
     name: "Minimerg",
-    image: "/images/destinations/minimerg-kashmir.webp",
-    description: "A remote highland escape into White Peaks and dramatic valleys with a slower mountain rhythm.",
-    bestTimeToVisit: "May to October",
-    idealDuration: "5 to 7 days",
+    image: "/images/package-cards/images__destinations__minimerg-kashmir.webp",
+    description: "A highland escape into Minimerg and White Peaks with dramatic valleys and remote jeep-access adventure.",
+    season: "May to October",
+    duration: "6 Days",
     priceFrom: "From PKR 90,000",
-    highlights: ["White Peaks", "Remote valleys", "Jeep access", "Highland scenery"],
-    bestFor: "Highland adventurers and custom mountain planners",
-    journeyStyle: "A quiet and remote route meant for travelers who value scenery over convenience.",
-    tripHighlights: [
-      "Highland scenery and remote route energy",
-      "More exploratory than classic mainstream stops",
-      "Suitable when travelers want a stronger offbeat experience",
-    ],
-    routeGuidance: [],
-    routeSuggestions: [
-      { title: "Build a custom mountain route", href: "/make-my-trip", meta: "Design your own itinerary" },
-      { title: "Explore all destinations", href: "/destinations", meta: "Browse more routes" },
-    ],
-    images: [{ src: "/images/destinations/minimerg-kashmir.webp", alt: "Minimerg valley" }],
-    faqs: [
-      { question: "Is Minimerg ideal for every traveler?", answer: "Not necessarily. It is better for travelers who want a more remote and less polished route than the larger northern destinations." },
-      { question: "How should it be planned?", answer: "Use extra buffer days and keep the daily route realistic so the trip remains scenic and restful." },
-    ],
   },
   {
     slug: "kashmir",
     name: "Kashmir",
-    image: "/images/destinations/kashmir.webp",
-    exploreImage: "/hero-images/zain-raza-unsplash.webp",
-    exploreDescription: "Soft valleys, heritage, and slow days designed for couples and families.",
-    description: "Soft valleys, clean air, and scenic routes. A calm getaway in nature.",
-    bestTimeToVisit: "April to October",
-    idealDuration: "4 to 6 days",
+    image: "/images/package-cards/images__destinations__kashmir.webp",
+    description: "Soft green hills and elegant getaways designed for couples and private groups.",
+    season: "All Year",
+    duration: "5 Days",
     priceFrom: "From PKR 82,000",
-    highlights: ["Soft valleys", "Clean mountain air", "Scenic routes", "Peaceful getaway"],
-    bestFor: "Couples, relaxed travelers, and scenic group departures",
-    journeyStyle: "A calm valley experience built around comfort, pacing, and scenic quietude.",
-    tripHighlights: [
-      "Mild mountain atmosphere with strong visual depth",
-      "Ideal for a break from fast urban travel",
-      "Comfort-focused stays and leisurely route planning",
-    ],
-    routeGuidance: ["Calm and scenic", "Cultural + mountain route"],
-    routeSuggestions: [],
-    images: [{ src: "/images/destinations/kashmir.webp", alt: "Kashmir" }],
-    faqs: [
-      { question: "Is Kashmir better for couples or families?", answer: "It works well for both, especially when the itinerary focuses on scenic comfort and flexible pacing." },
-      { question: "Does it suit a slower itinerary?", answer: "Yes. Kashmir is especially rewarding when travelers allow time to absorb the valley instead of moving too quickly." },
-    ],
   },
   {
     slug: "khaplu",
     name: "Khaplu",
-    image: "/images/destinations/featured-skardu-basho.webp",
+    image: "/images/package-cards/images__destinations__featured-skardu-basho.webp",
     description: "A quiet Baltistan valley of historic forts, wide mountain views, and peaceful cultural routes.",
-    bestTimeToVisit: "May to October",
-    idealDuration: "5 to 7 days",
+    season: "May to October",
+    duration: "7 Days",
     priceFrom: "From PKR 90,000",
-    highlights: ["Khaplu Palace", "Baltistan culture", "Mountain views", "Quiet routes"],
-    bestFor: "Slow travelers, cultural explorers, and premium route planners",
-    journeyStyle: "A calmer Baltistan route for travelers who prefer low-noise, heritage-filled mountain travel.",
-    tripHighlights: [
-      "Historic setting with strong cultural depth",
-      "Longer valley views and low-traffic mountain days",
-      "A better fit for travelers seeking calm, not constant movement",
-    ],
-    routeGuidance: ["Heritage + glacial route", "Region-level journey"],
-    routeSuggestions: [],
-    images: [{ src: "/images/destinations/featured-skardu-basho.webp", alt: "Khaplu mountain landscape" }],
-    faqs: [
-      { question: "Why travel to Khaplu?", answer: "It offers a quieter, more culturally rich mountain experience than the more famous high-volume stops." },
-      { question: "Is it ideal for a premium trip?", answer: "Yes, especially when travelers want a slower and more refined Baltistan route." },
-    ],
   },
   {
     slug: "shogran",
     name: "Shogran",
-    image: "/images/destinations/naran.webp",
+    image: "/images/package-cards/images__destinations__naran.webp",
     description: "A cool forested hill retreat with meadow views and an easy escape into the Kaghan Valley.",
-    bestTimeToVisit: "May to October",
-    idealDuration: "2 to 4 days",
+    season: "May to October",
+    duration: "9 Days",
     priceFrom: "From PKR 39,000",
-    highlights: ["Forest trails", "Siri Paye", "Meadow views", "Kaghan Valley"],
-    bestFor: "Quick family breaks and alpine getaways",
-    journeyStyle: "Short, comfortable mountain breaks built around nature, rest, and scenic weather.",
-    tripHighlights: [
-      "Cool climate and forest-side overnight stays",
-      "Simple route structure for easier planning",
-      "Useful as part of a longer northern itinerary",
-    ],
-    routeGuidance: ["Two-destination route", "Green hills + alpine retreat"],
-    routeSuggestions: [],
-    images: [{ src: "/images/destinations/naran.webp", alt: "Shogran valley landscape" }],
-    faqs: [
-      { question: "Is Shogran a full destination or a stopover?", answer: "It works as both. It is especially enjoyable as a calm base before continuing toward larger northern routes." },
-      { question: "Does it suit a short break?", answer: "Yes. It is one of the easier mountain destinations to plan for a weekend or short family trip." },
-    ],
   },
   {
     slug: "ormara",
     name: "Ormara",
-    image: "/images/tour-packages/25.webp",
+    image: "/images/package-cards/images__editorial__editorial-4.webp",
     description: "A relaxed Makran coast escape for beachside camping, open sea views, and slow weekend travel.",
-    bestTimeToVisit: "October to March",
-    idealDuration: "2 to 3 days",
+    season: "October to March",
+    duration: "2 Days / 1 Night",
     priceFrom: "From PKR 13,500",
-    highlights: ["Beach camping", "Makran coast", "Sea views", "Weekend escape"],
-    bestFor: "Weekend travelers, families, and coastal-seeking groups",
-    journeyStyle: "A coastal route designed for relaxed travel, sea air, and simple logistics.",
-    tripHighlights: [
-      "Open coast, cliffs, and beachside evenings",
-      "Easy-to-plan weekend route for southern Pakistan travelers",
-      "Simple, scenic escape without complex mountain logistics",
-    ],
-    routeGuidance: ["Weekend coastal route"],
-    routeSuggestions: [
-      { title: "Bhit Khori weekend packages", href: "/tours/southern-tours/bhit-khori-day-packages", meta: "Nearby coastal alternatives" },
-    ],
-    images: [{ src: "/images/tour-packages/25.webp", alt: "Ormara beachside camp" }],
-    faqs: [
-      { question: "Is Ormara more of a beach or camping destination?", answer: "It is mainly a beach and camping-style escape, so it works best for travelers who like a relaxed coastal plan." },
-      { question: "When is the best time to visit?", answer: "Late autumn to early spring is usually the most comfortable time for sea-side travel and scenic nights." },
-    ],
   },
 ];
 
-export const destinationDetailSlugs = destinations.map((destination) => destination.slug);
+export type DestinationHighlight = {
+  name: string;
+  bestFor: string;
+  season: string;
+};
+
+export const destinationHighlights: DestinationHighlight[] = [
+  {
+    name: "Hunza",
+    bestFor: "Mountain scenery and heritage stays",
+    season: "May to October",
+  },
+  {
+    name: "Skardu",
+    bestFor: "Alpine lakes and dramatic landscapes",
+    season: "April to October",
+  },
+  {
+    name: "Naran",
+    bestFor: "Road trips, rivers, and family travel",
+    season: "May to September",
+  },
+  {
+    name: "Swat",
+    bestFor: "Green valleys and relaxed domestic tours",
+    season: "April to November",
+  },
+  {
+    name: "Islamabad",
+    bestFor: "City stopovers and private transfers",
+    season: "All year",
+  },
+];
 
 export type BlogPost = {
   slug: string;
@@ -514,7 +356,7 @@ export const blogPosts: BlogPost[] = [
           "May through October is the most reliable window for scenic travel, with summer offering the easiest conditions for families and first-time visitors.",
       },
     ],
-    hero: "/images/destinations/hunza-custom.webp",
+    hero: "/images/package-cards/images__destinations__hunza-custom.webp",
     heroAlt: "Hunza valley mountains",
   },
   {
@@ -566,7 +408,7 @@ export const blogPosts: BlogPost[] = [
           "Yes, especially when the trip is planned with comfortable transport, well-timed breaks, and hotel coordination that keeps the group settled after the long drive.",
       },
     ],
-    hero: "/images/destinations/skardu.webp",
+    hero: "/images/package-cards/images__destinations__skardu.webp",
     heroAlt: "Skardu lakes and mountains",
   },
   {
@@ -618,7 +460,7 @@ export const blogPosts: BlogPost[] = [
           "Yes. It pairs well with Shogran, Kaghan, and other northern route combinations when the total trip length is planned realistically.",
       },
     ],
-    hero: "/images/destinations/naran-hd.webp",
+    hero: "/images/package-cards/images__destinations__naran-hd.webp",
     heroAlt: "Naran valley and lake",
   },
   {
@@ -670,7 +512,7 @@ export const blogPosts: BlogPost[] = [
           "Because the route becomes more efficient and balanced when combined with nearby northern destinations like Hunza or Skardu.",
       },
     ],
-    hero: "/images/editorial/editorial-3.webp",
+    hero: "/images/package-cards/images__editorial__editorial-3.webp",
     heroAlt: "Astore and Fairy Meadows landscape",
   },
   {
@@ -722,7 +564,7 @@ export const blogPosts: BlogPost[] = [
           "Yes. They are among the easiest destinations to shape into a quiet couple-friendly getaway.",
       },
     ],
-    hero: "/images/destinations/kashmir.webp",
+    hero: "/images/package-cards/images__destinations__kashmir.webp",
     heroAlt: "Kashmir valley",
   },
   {
@@ -774,7 +616,7 @@ export const blogPosts: BlogPost[] = [
           "Yes, but it works best when the route is kept realistic and the number of stops is limited.",
       },
     ],
-    hero: "/images/nathia-ready.webp",
+    hero: "/images/package-cards/images__nathia-ready.webp",
     heroAlt: "Murree hills",
   },
   {
@@ -833,7 +675,7 @@ export const blogPosts: BlogPost[] = [
           "Gulberg is usually better for comfort and easier driving, while Old Lahore is closer to heritage sites. For a weekend escape, Gulberg or DHA is a safer choice for most travelers.",
       },
     ],
-    hero: "/images/editorial/editorial-1.webp",
+    hero: "/images/package-cards/images__editorial__editorial-1.webp",
     heroAlt: "Lahore urban trip",
   },
   {
@@ -892,7 +734,7 @@ export const blogPosts: BlogPost[] = [
           "Yes. The city is one of the easiest capital destinations for families because it has calmer roads and easier hotel choices.",
       },
     ],
-    hero: "/images/editorial/editorial-2.webp",
+    hero: "/images/package-cards/images__editorial__editorial-2.webp",
     heroAlt: "Islamabad travel guide",
   },
   {
@@ -951,7 +793,7 @@ export const blogPosts: BlogPost[] = [
           "Seven to nine days is the best range for reaching Chitral, visiting the Kalash Valley, and returning without rush.",
       },
     ],
-    hero: "/images/editorial/editorial-3.webp",
+    hero: "/images/package-cards/images__editorial__editorial-3.webp",
     heroAlt: "Chitral valley travel",
   },
   {
@@ -1010,7 +852,7 @@ export const blogPosts: BlogPost[] = [
           "Seven to ten days gives a comfortable minimum for the main northern highlights.",
       },
     ],
-    hero: "/images/editorial/editorial-4.webp",
+    hero: "/images/package-cards/images__editorial__editorial-4.webp",
     heroAlt: "Gilgit-Baltistan trip",
   },
   {
@@ -1069,7 +911,7 @@ export const blogPosts: BlogPost[] = [
           "Yes, when the itinerary is arranged with a reliable local operator and comfortable accommodation.",
       },
     ],
-    hero: "/images/editorial/editorial-5.webp",
+    hero: "/images/package-cards/images__editorial__editorial-5.webp",
     heroAlt: "Thar desert travel",
   },
   {
@@ -1128,7 +970,7 @@ export const blogPosts: BlogPost[] = [
           "Four to six days is a good range if the trip includes nearby lakes and highland villages.",
       },
     ],
-    hero: "/images/editorial/editorial-6.webp",
+    hero: "/images/package-cards/images__editorial__editorial-6.webp",
     heroAlt: "Quetta landscape",
   },
   {
@@ -1187,7 +1029,7 @@ export const blogPosts: BlogPost[] = [
           "Three to five days gives enough time for the road and a relaxation stretch by the beach.",
       },
     ],
-    hero: "/images/editorial/editorial-7.webp",
+    hero: "/images/package-cards/images__editorial__editorial-7.webp",
     heroAlt: "Coastal beach escape",
   },
   {
@@ -1246,7 +1088,7 @@ export const blogPosts: BlogPost[] = [
           "Yes, with the right planning and comfortable accommodation.",
       },
     ],
-    hero: "/images/editorial/editorial-8.webp",
+    hero: "/images/package-cards/images__editorial__editorial-8.webp",
     heroAlt: "Winter Naran road trip",
   },
   {
@@ -1305,7 +1147,7 @@ export const blogPosts: BlogPost[] = [
           "Rainproof layers, quick-dry clothing, and good walking shoes are essential.",
       },
     ],
-    hero: "/images/editorial/editorial-1.webp",
+    hero: "/images/package-cards/images__editorial__editorial-1.webp",
     heroAlt: "Monsoon valley travel",
   },
   {
@@ -1364,7 +1206,7 @@ export const blogPosts: BlogPost[] = [
           "Yes, especially for couples who want a more dramatic mountain experience.",
       },
     ],
-    hero: "/images/editorial/editorial-2.webp",
+    hero: "/images/package-cards/images__editorial__editorial-2.webp",
     heroAlt: "Mountain honeymoon travel",
   },
   {
@@ -1423,7 +1265,7 @@ export const blogPosts: BlogPost[] = [
           "Keep individual travel days under six hours when possible, with plenty of stops.",
       },
     ],
-    hero: "/images/editorial/editorial-3.webp",
+    hero: "/images/package-cards/images__editorial__editorial-3.webp",
     heroAlt: "Family travel in mountains",
   },
   {
@@ -1482,7 +1324,7 @@ export const blogPosts: BlogPost[] = [
           "Private transport is often the best value for groups because it saves time and lets the itinerary stay flexible.",
       },
     ],
-    hero: "/images/editorial/editorial-4.webp",
+    hero: "/images/package-cards/images__editorial__editorial-4.webp",
     heroAlt: "Budget travel Pakistan",
   },
   {
@@ -1541,7 +1383,7 @@ export const blogPosts: BlogPost[] = [
           "Yes, but keep the number of destinations moderate so the experience stays relaxing.",
       },
     ],
-    hero: "/images/editorial/editorial-5.webp",
+    hero: "/images/package-cards/images__editorial__editorial-5.webp",
     heroAlt: "Luxury mountain hotel",
   },
   {
@@ -1600,7 +1442,7 @@ export const blogPosts: BlogPost[] = [
           "Yes, but changes are easier when the itinerary is still in the early planning phase.",
       },
     ],
-    hero: "/images/editorial/editorial-6.webp",
+    hero: "/images/package-cards/images__editorial__editorial-6.webp",
     heroAlt: "Custom travel planning",
   },
   {
@@ -1659,7 +1501,7 @@ export const blogPosts: BlogPost[] = [
           "Compare route quotes and ask about included fuel, driver allowance, and return logistics.",
       },
     ],
-    hero: "/images/editorial/editorial-7.webp",
+    hero: "/images/package-cards/images__editorial__editorial-7.webp",
     heroAlt: "Travel transport guide",
   },
   {
@@ -1718,7 +1560,7 @@ export const blogPosts: BlogPost[] = [
           "It can be on higher routes, so travel slowly and stay hydrated.",
       },
     ],
-    hero: "/images/editorial/editorial-8.webp",
+    hero: "/images/package-cards/images__editorial__editorial-8.webp",
     heroAlt: "Travel packing guide",
   },
   {
@@ -1777,7 +1619,7 @@ export const blogPosts: BlogPost[] = [
           "Yes, if you want sharp landscape shots and evening portraits.",
       },
     ],
-    hero: "/images/editorial/editorial-1.webp",
+    hero: "/images/package-cards/images__editorial__editorial-1.webp",
     heroAlt: "Mountain photography travel",
   },
   {
@@ -1836,7 +1678,7 @@ export const blogPosts: BlogPost[] = [
           "Yes. Many trips pair heritage cities with nearby natural destinations for a balanced experience.",
       },
     ],
-    hero: "/images/editorial/editorial-2.webp",
+    hero: "/images/package-cards/images__editorial__editorial-2.webp",
     heroAlt: "Heritage travel Pakistan",
   },
   {
@@ -1895,7 +1737,7 @@ export const blogPosts: BlogPost[] = [
           "Yes, festival periods often sell out faster than regular travel dates.",
       },
     ],
-    hero: "/images/editorial/editorial-3.webp",
+    hero: "/images/package-cards/images__editorial__editorial-3.webp",
     heroAlt: "Festival travel Pakistan",
   },
   {
@@ -1954,7 +1796,7 @@ export const blogPosts: BlogPost[] = [
           "They are better for travelers who already have some comfort with mountain logistics.",
       },
     ],
-    hero: "/images/editorial/editorial-4.webp",
+    hero: "/images/package-cards/images__editorial__editorial-4.webp",
     heroAlt: "Offbeat northern travel",
   },
 ];

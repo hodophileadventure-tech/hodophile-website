@@ -3,6 +3,21 @@ export interface VehiclePrice {
   price: number;
 }
 
+export interface RouteItineraryDay {
+  day: string;
+  title: string;
+  description: string;
+}
+
+export interface PackagePricing {
+  quadPerPerson: number;
+  coupleTotal: number;
+  withoutIslamabadStay?: {
+    quadPerPerson: number;
+    coupleTotal: number;
+  };
+}
+
 export interface Route {
   id: string;
   name: string;
@@ -14,6 +29,8 @@ export interface Route {
   minimumDays: number;
   vehicles: VehiclePrice[];
   itinerary?: string; // For multi-city tours
+  dayByDayItinerary?: RouteItineraryDay[];
+  packagePricing?: PackagePricing;
 }
 
 export const routes: Route[] = [
@@ -26,6 +43,21 @@ export const routes: Route[] = [
     direction: "ISB to ISB",
     city: "Skardu",
     minimumDays: 8,
+    packagePricing: {
+      quadPerPerson: 49700,
+      coupleTotal: 115900,
+      withoutIslamabadStay: { quadPerPerson: 46700, coupleTotal: 109900 },
+    },
+    dayByDayItinerary: [
+      { day: "Day 1", title: "Islamabad to Chilas / Naran", description: "Pick up participants from Islamabad and travel via Hazara Motorway. Stop for breakfast at Balakot and at Kiwai Waterfall before reaching Chilas or Naran for dinner and the night stay." },
+      { day: "Day 2", title: "Chilas / Naran to Hunza", description: "Travel toward Hunza with stops at Sohni Waterfall, Moon Restaurant if time allows, Lulusar Lake, Babusar Top, 3 Mountains Junction, and Rakaposhi View Point. Check in at Hunza, then visit Baltit Fort and Karimabad Bazaar." },
+      { day: "Day 3", title: "Khunjerab Pass and Upper Hunza", description: "Travel to Khunjerab Pass with stops at Attabad Lake, Passu Cones, and Hussaini Suspension Bridge. Activities at Attabad Lake such as boating and jet skiing are self-paid, then return to Hunza for the night." },
+      { day: "Day 4", title: "Hunza to Skardu", description: "Travel approximately seven hours toward Skardu with stops at Jaglot JSR and Astak Nala. On arrival, visit Shangrila Resort, check in, and stay overnight in Skardu." },
+      { day: "Day 5", title: "Kharmang, Shigar and Sarfaranga", description: "Visit Manthoka Waterfall, Shigar Fort, and Sarfaranga Cold Desert. Quad bikes, jeep safari, and horse riding are available as self-paid activities. Return to Skardu for dinner and the night stay." },
+      { day: "Day 6", title: "Deosai or Basho Valley", description: "Travel by 4x4 Jeep toward Deosai or Basho Valley with stops at Sadpara Lake, Bara Pani, and Kala Pani. Reach Sheosar Lake, spend leisure time there, and return to Skardu." },
+      { day: "Day 7", title: "Skardu to Naran Valley", description: "Depart for Naran Valley and revisit any points missed earlier. Check in for the night stay as arranged by the confirmed itinerary." },
+      { day: "Day 8", title: "Saif-ul-Malook to Islamabad", description: "Visit Jheel Saif-ul-Malook, then depart for Islamabad with a stop at Kiwai Waterfall. Reach Islamabad, where services end." },
+    ],
     vehicles: [
       { name: "Toyota Corolla", price: 155000 },
       { name: "Honda BRV", price: 179000 },
@@ -45,6 +77,11 @@ export const routes: Route[] = [
     direction: "ISB to ISB",
     city: "Hunza",
     minimumDays: 6,
+    packagePricing: {
+      quadPerPerson: 43000,
+      coupleTotal: 103000,
+      withoutIslamabadStay: { quadPerPerson: 40000, coupleTotal: 97000 },
+    },
     vehicles: [
       { name: "Toyota Corolla", price: 118000 },
       { name: "Honda BRV", price: 136000 },
@@ -62,6 +99,14 @@ export const routes: Route[] = [
     direction: "ISB to ISB",
     city: "Skardu",
     minimumDays: 6,
+    dayByDayItinerary: [
+      { day: "Day 1", title: "Islamabad to Chilas", description: "Pick up participants in Islamabad and depart at 5:00 AM. Travel toward Chilas with stops at Kiwai Waterfall, Lulusar Lake, and Babusar Top. Dinner and night stay in Chilas." },
+      { day: "Day 2", title: "Chilas to Skardu", description: "Depart after breakfast with stops at 3 Mountains Junction and Astak Nala. Reach Skardu Valley, visit Shangrila Resort, check in, and stay overnight." },
+      { day: "Day 3", title: "Kharmang, Shigar and Sarfaranga", description: "Visit Manthoka Waterfall, Shigar Fort, and Sarfaranga Cold Desert. Quad bike, jeep safari, and horse riding activities are self-paid. Return to Skardu for dinner and the night stay." },
+      { day: "Day 4", title: "Basho or Deosai Valley", description: "Travel by 4x4 Prado toward Basho or Deosai Valley with stops at Sadpara Lake, Bara Pani, and Kala Pani. Spend leisure time at Sheosar Lake before returning to Skardu." },
+      { day: "Day 5", title: "Skardu to Naran Valley", description: "Depart for Naran Valley and revisit any points missed earlier. Reach the valley, check in, and stay overnight as arranged." },
+      { day: "Day 6", title: "Saif-ul-Malook to Islamabad", description: "Visit Jheel Saif-ul-Malook, then depart for Islamabad with a stop at Kiwai Waterfall. Reach Islamabad, where services end." },
+    ],
     vehicles: [
       { name: "Toyota Corolla", price: 118000 },
       { name: "Honda BRV", price: 136000 },

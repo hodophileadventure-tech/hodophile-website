@@ -5,6 +5,12 @@ import { sendWhatsAppNotification, logQuotationNotification } from "@/lib/whatsa
 import { saveQuotationToSheet } from "@/lib/googleSheets";
 import { getRouteById } from "@/lib/data/routes";
 import { getHotelById } from "@/lib/data/hotels";
+import { applyPromotionToQuotation, validatePromoCode } from "@/lib/promotions/promotion-service";
+import {
+  createPromotionRedemption,
+  isPromotionRedemptionConflict,
+} from "@/lib/promotions/promotion-redemption";
+import { normalizePromotionPhone } from "@/lib/promotions/promotion-phone";
 
 interface QuoteRequestBody extends QuotationInput {
   customerName: string;
@@ -13,6 +19,7 @@ interface QuoteRequestBody extends QuotationInput {
   tourType: string;
   kidsAges?: string[];
   hotelCategory?: string;
+  promoCode?: string;
 }
 
 function getMissingFields(body: QuoteRequestBody) {
@@ -29,6 +36,13 @@ function getMissingFields(body: QuoteRequestBody) {
 }
 
 function buildValidationError(body: QuoteRequestBody) {
+  if (typeof body.customerName !== "string" || typeof body.customerPhone !== "string") {
+    return "Please provide a valid name and phone number.";
+  }
+  if (body.promoCode !== undefined && typeof body.promoCode !== "string") {
+    return "Please provide a valid promo code.";
+  }
+
   const integerFields = ["numberOfRooms", "adults", "kids"] as const;
   for (const field of integerFields) {
     const value = body[field];
@@ -147,7 +161,7 @@ export async function POST(request: NextRequest) {
     const canonicalVehicle = getVehicleRate(body.vehicleName)?.name || body.vehicleName;
 
     // Calculate quotation (now async)
-    const quotation = await calculateQuotation({
+    let quotation = await calculateQuotation({
       routeId: body.routeId,
       vehicleName: canonicalVehicle,
       hotelId: body.hotelId,
@@ -171,6 +185,36 @@ export async function POST(request: NextRequest) {
         { error: "Unable to calculate quotation. Please check your selections." },
         { status: 400 }
       );
+    }
+
+    const appliedPromotion = body.promoCode?.trim()
+      ? validatePromoCode(body.promoCode, body.routeId, quotation.totalCost)
+      : undefined;
+    if (appliedPromotion && !appliedPromotion.valid) {
+      return NextResponse.json({ error: appliedPromotion.error }, { status: 400 });
+    }
+    if (appliedPromotion?.valid) {
+      quotation = applyPromotionToQuotation(quotation, appliedPromotion, body.adults + (body.kids || 0));
+
+      const phone = normalizePromotionPhone(body.customerPhone);
+      if (!phone) {
+        return NextResponse.json(
+          { error: "Enter a valid phone number to use this promo code." },
+          { status: 400 },
+        );
+      }
+
+      try {
+        await createPromotionRedemption(phone, appliedPromotion.code, body.routeId);
+      } catch (error) {
+        if (isPromotionRedemptionConflict(error)) {
+          return NextResponse.json(
+            { error: "This phone number has already used a promo code." },
+            { status: 409 },
+          );
+        }
+        throw error;
+      }
     }
 
     // Get route and hotel names for the sheet
@@ -244,6 +288,10 @@ export async function POST(request: NextRequest) {
       markupAmount: quotation.markupAmount,
       totalCost: quotation.totalCost,
       perPersonCost: quotation.perPersonCost,
+      promoCode: quotation.promotion?.code,
+      discountPercent: quotation.promotion?.discountPercent,
+      discountAmount: quotation.promotion?.discountAmount,
+      originalTotalCost: quotation.promotion?.originalPrice,
     });
 
     if (!sheetSaveResult.success) {
@@ -271,6 +319,7 @@ export async function POST(request: NextRequest) {
       customerName: body.customerName,
       customerPhone: body.customerPhone,
       quotation,
+      promotion: quotation.promotion,
     });
 
     // Fallback: log if WhatsApp not configured
@@ -279,6 +328,7 @@ export async function POST(request: NextRequest) {
         customerName: body.customerName,
         customerPhone: body.customerPhone,
         quotation,
+        promotion: quotation.promotion,
       });
     }
 

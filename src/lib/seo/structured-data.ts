@@ -32,7 +32,7 @@ export function buildOrganizationSchema() {
     "@type": "Organization",
     name: siteConfig.name,
     url: siteConfig.siteUrl,
-    logo: absoluteSchemaUrl("/logo.webp"),
+    logo: absoluteSchemaUrl("/images/package-cards/logo.webp"),
     description: normalizeText(siteConfig.description) ?? undefined,
     email: normalizeText(siteConfig.email) ?? undefined,
     telephone: normalizeText(siteConfig.phone) ?? undefined,

@@ -4,8 +4,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 const places = [
-  { title: "Masjid Al Haram", image: "/images/umrah/kabah.webp" },
-  { title: "Masjid An Nabawi", image: "/images/umrah/masjid-e-nabvi.webp" },
+  { title: "Masjid Al Haram", image: "/images/package-cards/images__umrah__kabah.webp" },
+  { title: "Masjid An Nabawi", image: "/images/package-cards/images__umrah__masjid-e-nabvi.webp" },
 ];
 
 export function SacredPlaces() {

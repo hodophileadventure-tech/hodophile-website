@@ -17,7 +17,7 @@ export function CTASection() {
       >
         <div className="relative h-[24rem] sm:h-[28rem]">
           <Image
-            src="/images/umrah/kabah-shareef.webp"
+            src="/images/package-cards/images__umrah__kabah-shareef.webp"
             alt="Pilgrims near the Kaaba"
             fill
             sizes="100vw"

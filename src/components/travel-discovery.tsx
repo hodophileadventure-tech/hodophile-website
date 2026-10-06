@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore } from "react";
 
 import { tourPackages, type TravelStyle, type TourDeparture } from "@/lib/data/tour-packages";
-import { calculateTripFit, getSimilarTrips as getSimilarTripsFromEngine, getSimilarTripsForSavedTrips, normalizeDestinationSlug, normalizeTrip, rankTripRecommendations, type TripPreferences } from "@/lib/trip-intelligence";
+import { calculateTripFit, getSimilarTrips as getSimilarTripsFromEngine, getSimilarTripsForSavedTrips, normalizeTrip, type TripPreferences } from "@/lib/trip-intelligence";
 
 type RegionFilter = "all" | "northern" | "southern";
 type DurationFilter = "all" | "weekend" | "4-7" | "8-12" | "12-plus";
@@ -41,6 +41,18 @@ const STORAGE_KEYS = {
 const MAX_COMPARE_ITEMS = 4;
 const STORAGE_CHANGE_EVENT = "hodophile-storage-change";
 const EMPTY_STORAGE_SNAPSHOT = "[]";
+const destinationCardImages: Record<string, string> = {
+  hunza: "/images/package-cards/images__package-cards__kamran-ch-unsplash.webp",
+  skardu: "/images/package-cards/images__package-cards__obaid-awan-unsplash.jpg.webp",
+  "fairy-meadows": "/images/package-cards/images__package-cards__hussain-ahmed-unsplash.webp",
+  kashmir: "/images/package-cards/images__package-cards__zain-raza-unsplash.webp",
+  swat: "/images/package-cards/images__package-cards__hussain-ahmed-unsplash.webp",
+  deosai: "/images/package-cards/images__package-cards__kamran-ch-unsplash.webp",
+  gilgit: "/images/package-cards/images__package-cards__kamran-ch-unsplash.webp",
+  ormara: "/images/package-cards/images__package-cards__25.webp",
+  gorakh: "/images/package-cards/images__package-cards__27.webp",
+  moola: "/images/package-cards/images__package-cards__28.webp",
+};
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-PK", {
@@ -68,7 +80,9 @@ const packageList: DiscoveryPackage[] = tourPackages.map((tourPackage) => ({
     departures: tourPackage.departures,
     transport: tourPackage.transport ?? [],
     includes: tourPackage.includes ?? [],
-    image: tourPackage.image,
+    image: tourPackage.destinationSlugs
+      .map((slug) => destinationCardImages[slug])
+      .find(Boolean) ?? tourPackage.image,
     summary: tourPackage.description,
   }));
 
@@ -78,12 +92,6 @@ function getDurationDays(packageItem: DiscoveryPackage) {
 
 function formatDestination(slug: string) {
   return slug.split("-").map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`).join(" ");
-}
-
-function buildPlannerHref(packageItem: Pick<DiscoveryPackage, "title" | "destinationSlugs">) {
-  const query = new URLSearchParams({ inspiration: packageItem.title });
-  if (packageItem.destinationSlugs[0]) query.set("destination", packageItem.destinationSlugs[0]);
-  return `/make-my-trip?${query.toString()}`;
 }
 
 function includedDetails(packageItem: DiscoveryPackage, pattern: RegExp, fallback: string) {
@@ -96,26 +104,24 @@ const departureMonths = [
   "july", "august", "september", "october", "november", "december",
 ];
 
-function buildTripPreferences(search: string, style: TravelStyle | "all", region: RegionFilter, duration: DurationFilter, maximumBudget: string, fitMonth: string): TripPreferences {
-  const normalizedDestination = normalizeDestinationSlug(search);
-  const destination = packageList
-    .flatMap((packageItem) => packageItem.destinationSlugs)
-    .find((slug) => slug === normalizedDestination);
+function buildTripPreferences(search: string, fitStyle: TravelStyle | "all", fitRegion: RegionFilter, fitDuration: DurationFilter, fitBudget: string, fitMonth: string): TripPreferences {
+  const destination = search.trim() || undefined;
   return {
     destination,
-    region: region === "all" ? undefined : region,
-    travelStyle: style === "all" ? undefined : style,
-    duration: duration === "all" ? undefined : duration,
-    budget: maximumBudget ? Number(maximumBudget) : undefined,
+    region: fitRegion === "all" ? undefined : fitRegion,
+    travelStyle: fitStyle === "all" ? undefined : fitStyle,
+    duration: fitDuration === "all" ? undefined : fitDuration,
+    budget: fitBudget ? Number(fitBudget) : undefined,
     departureMonth: fitMonth || undefined,
   };
 }
 
-function getPreferenceSummary(score: number, matchedCount: number, selectedCount: number, hasMismatch: boolean) {
-  if (selectedCount === 0) return "Suggested starting point";
-  if (!hasMismatch && score >= 75 && matchedCount >= 2) return "Strong match";
-  if (score >= 50 || matchedCount > 0) return "Good fit";
-  return "Worth considering";
+function getPreferenceSummary(score: number, matchedCount: number, selectedCount: number) {
+  if (selectedCount === 0) return "Explore our trips";
+  if (score >= 80) return "Strong match for your preferences";
+  if (score >= 60) return "Good fit for your selected preferences";
+  if (score >= 40) return "Partial match for your current preferences";
+  return "Not a strong match yet";
 }
 
 function parseStorageIds(rawValue: string) {
@@ -180,33 +186,43 @@ function useStoredIds(storageKey: string, maximumItems?: number) {
 export function JourneyActions({ packageId, packageTitle }: { packageId: string; packageTitle: string }) {
   const wishlistIds = useStoredIds(STORAGE_KEYS.wishlist);
   const compareIds = useStoredIds(STORAGE_KEYS.compare, MAX_COMPARE_ITEMS);
-  const isSaved = wishlistIds.includes(packageId);
-  const isCompared = compareIds.includes(packageId);
+  const isWishlistEnabled = wishlistIds.includes(packageId);
+  const isCompareEnabled = compareIds.includes(packageId);
+
+  const toggleWishlist = () => {
+    if (typeof window === "undefined") return;
+    writeStorageIds(STORAGE_KEYS.wishlist, isWishlistEnabled ? wishlistIds.filter((value) => value !== packageId) : [...wishlistIds, packageId]);
+  };
+
+  const toggleCompare = () => {
+    if (typeof window === "undefined") return;
+
+    if (isCompareEnabled) {
+      writeStorageIds(STORAGE_KEYS.compare, compareIds.filter((value) => value !== packageId));
+      return;
+    }
+
+    if (compareIds.length >= MAX_COMPARE_ITEMS) return;
+    writeStorageIds(STORAGE_KEYS.compare, [...compareIds, packageId]);
+  };
 
   return (
     <div className="flex items-center gap-2">
       <button
         type="button"
-        onClick={() => writeStorageIds(STORAGE_KEYS.wishlist, isSaved ? wishlistIds.filter((id) => id !== packageId) : [...wishlistIds, packageId])}
-        aria-label={isSaved ? `Remove ${packageTitle} from wishlist` : `Save ${packageTitle} to wishlist`}
-        title={isSaved ? "Remove from saved journeys" : "Save journey"}
-        className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isSaved ? "border-[#1b7a4b] bg-[#1b7a4b] text-white" : "border-stone-300 bg-white text-stone-700 hover:border-[#1b7a4b] hover:text-[#1b7a4b]"}`}
+        onClick={toggleWishlist}
+        title={isWishlistEnabled ? "Remove from saved journeys" : "Save journey"}
+        className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isWishlistEnabled ? "border-[#1b7a4b] bg-[#1b7a4b] text-white" : "border-stone-300 bg-white text-stone-700 hover:border-[#1b7a4b] hover:text-[#1b7a4b]"}`}
+        aria-label={isWishlistEnabled ? `Remove ${packageTitle} from wishlist` : `Save ${packageTitle} to wishlist`}
       >
         ♥
       </button>
       <button
         type="button"
-        onClick={() => {
-          if (isCompared) {
-            writeStorageIds(STORAGE_KEYS.compare, compareIds.filter((id) => id !== packageId));
-          } else if (compareIds.length < MAX_COMPARE_ITEMS) {
-            writeStorageIds(STORAGE_KEYS.compare, [...compareIds, packageId]);
-          }
-        }}
-        disabled={!isCompared && compareIds.length >= MAX_COMPARE_ITEMS}
-        aria-label={isCompared ? `Remove ${packageTitle} from compare` : `Add ${packageTitle} to compare`}
-        title={isCompared ? "Remove from comparison" : "Add to comparison"}
-        className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] disabled:cursor-not-allowed disabled:opacity-50 ${isCompared ? "border-[#9a7600] bg-[#fcc000] text-[#0b0b0b]" : "border-stone-300 bg-white text-stone-700 hover:border-[#9a7600] hover:text-[#9a7600]"}`}
+        onClick={toggleCompare}
+        title={isCompareEnabled ? "Remove from comparison" : "Add to comparison"}
+        className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isCompareEnabled ? "border-[#9a7600] bg-[#fcc000] text-[#0b0b0b]" : "border-stone-300 bg-white text-stone-700 hover:border-[#9a7600] hover:text-[#9a7600]"}`}
+        aria-label={isCompareEnabled ? `Remove ${packageTitle} from compare` : `Add ${packageTitle} to compare`}
       >
         ⇄
       </button>
@@ -216,9 +232,17 @@ export function JourneyActions({ packageId, packageTitle }: { packageId: string;
 
 function RouteCard({
   packageItem,
+  isWishlistEnabled,
+  isCompareEnabled,
+  onToggleWishlist,
+  onToggleCompare,
   relatedContext,
 }: {
   packageItem: DiscoveryPackage;
+  isWishlistEnabled: boolean;
+  isCompareEnabled: boolean;
+  onToggleWishlist: (id: string) => void;
+  onToggleCompare: (id: string) => void;
   relatedContext?: { savedTripTitle: string; reasons: string[] };
 }) {
   const priceText = formatCurrency(packageItem.pricePerPerson);
@@ -227,7 +251,7 @@ function RouteCard({
     <article className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_12px_30px_rgba(55,55,48,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/60 hover:shadow-[0_20px_40px_rgba(55,55,48,0.12)]">
       <div className="relative aspect-[4/3] overflow-hidden bg-stone-200">
         <Image
-          src={packageItem.image ?? "/images/destinations/swat-hd.webp"}
+          src={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"}
           alt={packageItem.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
@@ -269,7 +293,12 @@ function RouteCard({
           <Link href={`/packages/${packageItem.id}`} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#0b0b0b] px-4 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#282828] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
             View journey
           </Link>
-          <JourneyActions packageId={packageItem.id} packageTitle={packageItem.title} />
+          <button type="button" onClick={() => onToggleWishlist(packageItem.id)} title={isWishlistEnabled ? "Remove from saved journeys" : "Save journey"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isWishlistEnabled ? "border-[#1b7a4b] bg-[#1b7a4b] text-white" : "border-stone-300 bg-white text-stone-700 hover:border-[#1b7a4b] hover:text-[#1b7a4b]"}`} aria-label={isWishlistEnabled ? `Remove ${packageItem.title} from wishlist` : `Save ${packageItem.title} to wishlist`}>
+            ♥
+          </button>
+          <button type="button" onClick={() => onToggleCompare(packageItem.id)} title={isCompareEnabled ? "Remove from comparison" : "Add to comparison"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isCompareEnabled ? "border-[#9a7600] bg-[#fcc000] text-[#0b0b0b]" : "border-stone-300 bg-white text-stone-700 hover:border-[#9a7600] hover:text-[#9a7600]"}`} aria-label={isCompareEnabled ? `Remove ${packageItem.title} from compare` : `Add ${packageItem.title} to compare`}>
+            ⇄
+          </button>
         </div>
       </div>
     </article>
@@ -285,23 +314,14 @@ export function TravelDiscoveryCatalog() {
   const [minimumBudget, setMinimumBudget] = useState("");
   const [maximumBudget, setMaximumBudget] = useState("");
   const [sort, setSort] = useState<SortOption>("recommended");
+  const [fitStyle, setFitStyle] = useState<TravelStyle | "all">("all");
+  const [fitRegion, setFitRegion] = useState<RegionFilter>("all");
+  const [fitDuration, setFitDuration] = useState<DurationFilter>("all");
+  const [fitBudget, setFitBudget] = useState("");
   const [fitMonth, setFitMonth] = useState("");
   const compareIds = useStoredIds(STORAGE_KEYS.compare, MAX_COMPARE_ITEMS);
   const wishlistIds = useStoredIds(STORAGE_KEYS.wishlist);
   const [quickCompareSelection, setQuickCompareSelection] = useState<Array<string | "">>(["", "", "", ""]);
-
-  const fitPreferences = useMemo(
-    () => buildTripPreferences(search, style, region, duration, maximumBudget, fitMonth),
-    [duration, fitMonth, maximumBudget, region, search, style],
-  );
-  const fitCriteriaCount = [
-    fitPreferences.destination,
-    fitPreferences.region,
-    fitPreferences.travelStyle,
-    fitPreferences.duration,
-    fitPreferences.budget,
-    fitPreferences.departureMonth,
-  ].filter(Boolean).length;
 
   const filteredPackages = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -327,42 +347,47 @@ export function TravelDiscoveryCatalog() {
 
       return matchesQuery && matchesStyle && matchesDuration && matchesRegion && matchesMinimum && matchesMaximum;
     });
-    if (sort === "recommended" && fitCriteriaCount > 0) {
-      return rankTripRecommendations(fitPreferences, filtered, filtered.length).map((item) => item.trip);
-    }
     if (sort === "price-low") {
       return filtered.sort((first, second) => first.pricePerPerson - second.pricePerPerson);
     }
     if (sort === "duration-short") {
       return filtered.sort((first, second) => getDurationDays(first) - getDurationDays(second));
     }
-    if (sort === "recommended") {
-      return [...filtered].sort((first, second) => first.pricePerPerson - second.pricePerPerson);
-    }
     return filtered;
-  }, [duration, fitCriteriaCount, fitPreferences, maximumBudget, minimumBudget, region, search, sort, style]);
+  }, [duration, maximumBudget, minimumBudget, region, search, sort, style]);
 
-  const recommendationCandidates = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    if (!query) return packageList;
-
-    return packageList.filter((packageItem) =>
-      packageItem.title.toLowerCase().includes(query) ||
-      packageItem.destinationSlugs.some((slug) => slug.toLowerCase().includes(query)) ||
-      packageItem.summary.toLowerCase().includes(query) ||
-      packageItem.notes.some((note) => note.toLowerCase().includes(query)),
-    );
-  }, [search]);
+  const fitPreferences = useMemo(
+    () => buildTripPreferences(search, fitStyle, fitRegion, fitDuration, fitBudget, fitMonth),
+    [fitBudget, fitDuration, fitMonth, fitRegion, fitStyle, search],
+  );
+  const fitCriteriaCount = [
+    fitPreferences.destination,
+    fitPreferences.region,
+    fitPreferences.travelStyle,
+    fitPreferences.duration,
+    fitPreferences.budget,
+    fitPreferences.departureMonth,
+  ].filter(Boolean).length;
 
   const fitRecommendations = useMemo(() => {
-    return rankTripRecommendations(fitPreferences, recommendationCandidates, 3).map(({ trip, score, summary, reasons, matchedCriteria }) => ({
-      packageItem: trip,
-      score,
-      summary,
-      reasons,
-      matchedCriteria,
-    }));
-  }, [fitPreferences, recommendationCandidates]);
+    if (fitCriteriaCount === 0) {
+      return [];
+    }
+
+    return packageList
+      .map((packageItem) => {
+        const result = calculateTripFit(fitPreferences, packageItem);
+        return {
+          packageItem,
+          score: result.score,
+          summary: result.summary,
+          reasons: result.reasons,
+          matchedCriteria: result.matchedCriteria,
+        };
+      })
+      .sort((first, second) => second.score - first.score || first.packageItem.title.localeCompare(second.packageItem.title))
+      .slice(0, 3);
+  }, [fitCriteriaCount, fitPreferences]);
 
   const toggleWishlist = (id: string) => {
     writeStorageIds(
@@ -435,7 +460,7 @@ export function TravelDiscoveryCatalog() {
             <option value="weekend">Weekend</option>
             <option value="4-7">4–7 days</option>
             <option value="8-12">8–12 days</option>
-            <option value="12-plus">13+ days</option>
+            <option value="12-plus">12+ days</option>
           </select>
         </label>
 
@@ -502,10 +527,41 @@ export function TravelDiscoveryCatalog() {
           <span className="text-xs text-stone-600">Recommendations use listed route, price, and departure data.</span>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(16rem,0.8fr)] sm:items-end">
-          <p className="text-sm leading-6 text-stone-600">Fit candidates use the current search, style, region, duration, and budget filters. A maximum budget is scored as a per-person ceiling; month checks use listed package schedule data.</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
           <label className="text-xs font-semibold text-stone-600">
-            Departure month
+            Travel style
+            <select value={fitStyle} onChange={(event) => setFitStyle(event.target.value as TravelStyle | "all")} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+              <option value="all">Any style</option>
+              <option value="family">Family</option>
+              <option value="couples">Couples</option>
+              <option value="adventure">Adventure</option>
+              <option value="tailored">Tailored</option>
+            </select>
+          </label>
+          <label className="text-xs font-semibold text-stone-600">
+            Region
+            <select value={fitRegion} onChange={(event) => setFitRegion(event.target.value as RegionFilter)} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+              <option value="all">Either region</option>
+              <option value="northern">Northern Pakistan</option>
+              <option value="southern">Southern Pakistan</option>
+            </select>
+          </label>
+          <label className="text-xs font-semibold text-stone-600">
+            Time available
+            <select value={fitDuration} onChange={(event) => setFitDuration(event.target.value as DurationFilter)} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
+              <option value="all">Any duration</option>
+              <option value="weekend">Up to 3 days</option>
+              <option value="4-7">4–7 days</option>
+              <option value="8-12">8–12 days</option>
+              <option value="12-plus">More than 12 days</option>
+            </select>
+          </label>
+          <label className="text-xs font-semibold text-stone-600">
+            Budget per person
+            <input type="number" min="0" step="5000" value={fitBudget} onChange={(event) => setFitBudget(event.target.value)} placeholder="No limit" className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900 placeholder:text-stone-400" />
+          </label>
+          <label className="text-xs font-semibold text-stone-600">
+            Season match
             <select value={fitMonth} onChange={(event) => setFitMonth(event.target.value)} className="mt-1 block min-h-11 w-full rounded-lg border border-stone-300 bg-white px-3 text-sm text-stone-900">
               <option value="">Not selected</option>
               {departureMonths.map((month) => <option key={month} value={month}>{month.charAt(0).toUpperCase() + month.slice(1)}</option>)}
@@ -513,18 +569,18 @@ export function TravelDiscoveryCatalog() {
           </label>
         </div>
 
-        {fitRecommendations.length ? (
+        {fitCriteriaCount ? (
           <div className="mt-5 grid gap-4 lg:grid-cols-3">
             {fitRecommendations.map(({ packageItem, score, summary, reasons, matchedCriteria }) => {
               const matchReasons = reasons.filter((reason) => reason.type === "match").slice(0, 3);
               const mismatchReasons = reasons.filter((reason) => reason.type === "mismatch").slice(0, 2);
-              const label = getPreferenceSummary(score, matchedCriteria.length, fitCriteriaCount, mismatchReasons.length > 0);
+              const label = getPreferenceSummary(score, matchedCriteria.length, fitCriteriaCount);
 
               return (
                 <article key={packageItem.id} className="flex flex-col border-l-2 border-[#fcc000] bg-white py-3 pl-4 pr-3">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="rounded-full bg-[#fff6d6] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#7a5d00]">{label}</span>
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">{fitCriteriaCount ? "Based on your selections" : "Catalog starting point"}</span>
+                    <span className="rounded-full bg-[#fff6d6] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#7a5d00]">{score}% match</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">{label}</span>
                   </div>
                   <h4 className="mt-2 font-semibold text-stone-950">{packageItem.title}</h4>
                   <p className="mt-1 text-xs font-semibold text-stone-800">
@@ -542,24 +598,21 @@ export function TravelDiscoveryCatalog() {
                     ) : (
                       <li className="flex items-start gap-2">
                         <span aria-hidden="true" className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-stone-400" />
-                        <span>{fitCriteriaCount ? "No selected preference is an exact match yet." : "No preferences selected; use this as a starting point."}</span>
+                        <span>No selected preference is a strong match yet.</span>
                       </li>
                     )}
                     {mismatchReasons.length > 0 ? (
                       mismatchReasons.map((reason) => (
                         <li key={`${packageItem.id}-${reason.criterion}-mismatch`} className="flex items-start gap-2 text-stone-500">
                           <span aria-hidden="true" className="mt-1 inline-block h-1.5 w-1.5 rounded-full bg-stone-400" />
-                          <span>
-                            {reason.label}
-                            <span className="block font-normal leading-5">{reason.detail}</span>
-                          </span>
+                          <span>{reason.label}</span>
                         </li>
                       ))
                     ) : null}
                   </ul>
                   <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-4 text-xs font-semibold">
                     <Link href={`/packages/${packageItem.id}`} className="text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4">View journey</Link>
-                    <Link href={buildPlannerHref(packageItem)} className="text-[#735900] underline underline-offset-4">Plan this route</Link>
+                    <Link href={`/make-my-trip?destination=${encodeURIComponent(packageItem.destinationSlugs[0] ?? "")}&inspiration=${encodeURIComponent(packageItem.title)}`} className="text-[#735900] underline underline-offset-4">Plan this route</Link>
                     <button type="button" onClick={() => toggleWishlist(packageItem.id)} className="text-stone-600 underline underline-offset-4">{wishlistIds.includes(packageItem.id) ? "Saved" : "Save"}</button>
                     <button type="button" onClick={() => toggleCompare(packageItem.id)} disabled={!compareIds.includes(packageItem.id) && compareIds.length >= MAX_COMPARE_ITEMS} className="text-stone-600 underline underline-offset-4 disabled:cursor-not-allowed disabled:text-stone-500 disabled:opacity-100">{compareIds.includes(packageItem.id) ? "In compare" : "Compare"}</button>
                   </div>
@@ -679,7 +732,7 @@ export function TravelDiscoveryCatalog() {
             <h3 className="text-2xl font-semibold text-stone-950">Journey results</h3>
             <p className="mt-1 text-sm text-stone-600">{filteredPackages.length} {filteredPackages.length === 1 ? "journey" : "journeys"} found</p>
           </div>
-          {search || style !== "all" || duration !== "all" || region !== "all" || minimumBudget || maximumBudget || fitMonth ? (
+          {search || style !== "all" || duration !== "all" || region !== "all" || minimumBudget || maximumBudget ? (
             <button
               type="button"
               onClick={() => {
@@ -689,7 +742,6 @@ export function TravelDiscoveryCatalog() {
                 setRegion("all");
                 setMinimumBudget("");
                 setMaximumBudget("");
-                setFitMonth("");
                 setSort("recommended");
               }}
               className="text-sm font-semibold text-stone-600 transition hover:text-[#8b6b00]"
@@ -710,6 +762,10 @@ export function TravelDiscoveryCatalog() {
               <RouteCard
                 key={packageItem.id}
                 packageItem={packageItem}
+                isWishlistEnabled={wishlistIds.includes(packageItem.id)}
+                isCompareEnabled={compareIds.includes(packageItem.id)}
+                onToggleWishlist={toggleWishlist}
+                onToggleCompare={toggleCompare}
               />
             ))}
           </div>
@@ -749,7 +805,7 @@ export function CompareTripsClient() {
     return (
       <div className="rounded-[2rem] border border-dashed border-stone-300 bg-[radial-gradient(circle_at_top,_rgba(252,192,0,0.12),_rgba(255,255,255,1)_55%)] p-8 text-center shadow-[0_20px_50px_rgba(55,55,48,0.06)]">
         <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-[#8b6b00]">Compare</p>
-        <h1 className="mt-3 text-2xl font-semibold text-stone-950">No journeys selected yet.</h1>
+        <p className="mt-3 text-2xl font-semibold text-stone-950">No journeys selected yet.</p>
         <p className="mt-3 text-sm text-stone-600">Choose up to four trips to compare their stops, time away, starting price, and travel style side by side.</p>
         <Link href="/tours" className="mt-6 inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-5 py-3 text-sm font-semibold text-white transition hover:bg-black">
           Browse catalog
@@ -766,16 +822,9 @@ export function CompareTripsClient() {
           <h1 className="mt-3 font-serif text-4xl text-stone-950">Compare journeys</h1>
           <p className="mt-2 text-sm text-stone-600">Compare {comparePackages.length} selected {comparePackages.length === 1 ? "journey" : "journeys"} on the details that shape your trip.</p>
         </div>
-        <div className="flex flex-wrap items-center gap-4">
-          {comparePackages[0] ? (
-            <Link href={buildPlannerHref(comparePackages[0])} className="text-sm font-semibold text-[#735900] underline underline-offset-4">
-              Plan this journey
-            </Link>
-          ) : null}
-          <Link href="/tours" className="text-sm font-semibold text-stone-600 transition hover:text-[#8b6b00]">
-            Add more journeys
-          </Link>
-        </div>
+        <Link href="/tours" className="text-sm font-semibold text-stone-600 transition hover:text-[#8b6b00]">
+          Add more journeys
+        </Link>
       </div>
 
       <section className="mt-7 border-b border-stone-200 pb-7" aria-labelledby="compare-fit-heading">
@@ -911,7 +960,7 @@ export function CompareTripsClient() {
                 <th key={packageItem.id} className="min-w-[220px] pr-4 align-top">
                   <div className="rounded-2xl border border-stone-200 bg-stone-50 p-3 sm:p-4">
                     <div className="relative mb-3 aspect-[16/9] overflow-hidden rounded-xl bg-stone-200">
-                      <Image src={packageItem.image ?? "/images/destinations/swat-hd.webp"} alt="" fill sizes="(max-width: 768px) 70vw, 220px" className="object-cover" />
+                      <Image src={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"} alt="" fill sizes="(max-width: 768px) 70vw, 220px" className="object-cover" />
                     </div>
                     <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#8b6b00]">Trip {comparePackages.indexOf(packageItem) + 1}</p>
                     <p className="text-sm font-semibold text-stone-900">{packageItem.title}</p>
@@ -1013,7 +1062,7 @@ export function CompareTripsClient() {
                   <p className="mt-2 text-sm leading-6 text-stone-600">{description}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Link href={`/packages/${packageItem.id}`} className="inline-flex min-h-10 items-center justify-center rounded-full bg-[#0b0b0b] px-4 text-xs font-bold uppercase tracking-[0.1em] text-white">View journey</Link>
-                    <Link href={buildPlannerHref(packageItem)} className="inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 bg-white px-4 text-xs font-bold uppercase tracking-[0.1em] text-stone-900">Customize trip</Link>
+                    <Link href="/make-my-trip" className="inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 bg-white px-4 text-xs font-bold uppercase tracking-[0.1em] text-stone-900">Customize trip</Link>
                   </div>
                 </article>
               );
@@ -1031,6 +1080,7 @@ export function CompareTripsClient() {
 export function WishlistTripsClient() {
   const router = useRouter();
   const wishlistIds = useStoredIds(STORAGE_KEYS.wishlist);
+  const compareIds = useStoredIds(STORAGE_KEYS.compare, MAX_COMPARE_ITEMS);
 
   const wishlistPackages = wishlistIds
     .map((id) => packageList.find((packageItem) => packageItem.id === id))
@@ -1046,6 +1096,22 @@ export function WishlistTripsClient() {
 
   const removeFromWishlist = (id: string) => {
     writeStorageIds(STORAGE_KEYS.wishlist, wishlistIds.filter((value) => value !== id));
+  };
+
+  const toggleWishlist = (id: string) => {
+    writeStorageIds(
+      STORAGE_KEYS.wishlist,
+      wishlistIds.includes(id) ? wishlistIds.filter((value) => value !== id) : [...wishlistIds, id],
+    );
+  };
+
+  const toggleCompare = (id: string) => {
+    if (compareIds.includes(id)) {
+      writeStorageIds(STORAGE_KEYS.compare, compareIds.filter((value) => value !== id));
+      return;
+    }
+    if (compareIds.length >= MAX_COMPARE_ITEMS) return;
+    writeStorageIds(STORAGE_KEYS.compare, [...compareIds, id]);
   };
 
   const compareShortlist = () => {
@@ -1090,7 +1156,7 @@ export function WishlistTripsClient() {
           <article key={packageItem.id} className="overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_15px_32px_rgba(55,55,48,0.05)]">
           <div className="relative aspect-[4/3]">
             <Image
-              src={packageItem.image ?? "/images/destinations/swat-hd.webp"}
+              src={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"}
               alt={packageItem.title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
@@ -1111,14 +1177,9 @@ export function WishlistTripsClient() {
             <p className="mt-3 text-sm leading-6 text-stone-600">{packageItem.summary}</p>
             <div className="mt-4 flex items-center justify-between border-t border-stone-200 pt-4">
               <span className="text-lg font-semibold text-[#9a7600]">{formatCurrency(packageItem.pricePerPerson)}</span>
-              <div className="flex items-center gap-3">
-                <Link href={buildPlannerHref(packageItem)} className="text-xs font-bold uppercase tracking-[0.12em] text-[#735900] underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
-                  Plan route
-                </Link>
-                <Link href={`/packages/${packageItem.id}`} className="text-xs font-bold uppercase tracking-[0.12em] text-stone-950 transition hover:text-[#9a7600] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
-                  View route ↗
-                </Link>
-              </div>
+              <Link href={`/packages/${packageItem.id}`} className="text-xs font-bold uppercase tracking-[0.12em] text-stone-950 transition hover:text-[#9a7600] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
+                View route ↗
+              </Link>
             </div>
           </div>
           </article>
@@ -1137,6 +1198,10 @@ export function WishlistTripsClient() {
               <RouteCard
                 key={packageItem.id}
                 packageItem={packageItem}
+                isWishlistEnabled={wishlistIds.includes(packageItem.id)}
+                isCompareEnabled={compareIds.includes(packageItem.id)}
+                onToggleWishlist={toggleWishlist}
+                onToggleCompare={toggleCompare}
                 relatedContext={{ savedTripTitle, reasons }}
               />
             ))}

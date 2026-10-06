@@ -208,6 +208,15 @@ model Booking {
   @@index([status])
 }
 
+model PromoRedemption {
+  id        String   @id @map("_id")
+  code      String
+  tourId    String
+  createdAt DateTime @default(now())
+
+  @@index([code])
+}
+
 // ============== REVIEWS & TESTIMONIALS ==============
 
 model Review {

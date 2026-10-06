@@ -22,42 +22,33 @@ export const metadata: Metadata = {
 
 export default function MakeMyTripPage() {
   return (
-    <PageShell wide mainClassName="overflow-x-clip">
-      <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden py-12 min-h-[calc(100dvh-6rem)]">
-        <div className="absolute inset-0">
+    <PageShell wide noTopPadding mainClassName="overflow-x-clip !px-0">
+      <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#0b0b0b] text-white">
+        <div className="relative min-h-[25rem] sm:min-h-[29rem]">
           <Image
-            src="/images/editorial/make-my-trip-bg.webp"
-            alt="Scenic Pakistan travel background"
+            src="/images/package-cards/images__editorial__make-my-trip-bg.webp"
+            alt=""
             fill
             priority
             sizes="100vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(12,12,12,0.68)_0%,rgba(12,12,12,0.42)_52%,rgba(252,192,0,0.16)_100%)]" />
-        </div>
-
-        <div className="relative mx-auto flex min-h-[calc(100dvh-6rem)] w-full max-w-6xl items-center justify-center px-4 py-8 sm:px-6 lg:px-8 xl:px-10">
-          <div className="relative w-full rounded-[3rem] border border-white/30 bg-white/95 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.18)] backdrop-blur-lg sm:p-8 lg:p-10">
-            <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(252,192,0,0.18),transparent)]" />
-            <div className="relative z-10">
-              <div className="mx-auto max-w-3xl text-center">
-                <p className="text-xs uppercase tracking-[0.35em] text-stone-700">Plan your custom trip</p>
-                <h1 className="mt-3 text-3xl font-semibold text-stone-950 sm:text-4xl">Create a premium journey across Pakistan with expert route planning.</h1>
-                <p className="mt-4 text-sm leading-7 text-stone-600 sm:text-base">
-                  Share your dates, travel style, and group details. We will tailor a route, hotels, and transport to match your ideal domestic itinerary.
-                </p>
-              </div>
-              <div className="mt-8">
-                <TripMakerRecommendations />
-              </div>
-              <div className="mt-8">
-                <MakeMyTripForm />
-              </div>
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.76)_0%,rgba(0,0,0,0.44)_58%,rgba(0,0,0,0.12)_100%)]" />
+          <div className="relative mx-auto flex min-h-[25rem] w-full max-w-[96rem] items-end px-5 pb-12 pt-20 sm:min-h-[29rem] sm:px-8 sm:pb-16 lg:px-14">
+            <div className="max-w-4xl">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[#ffd84d]">Hodophile Adventures · Pakistan</p>
+              <h1 className="mt-4 max-w-4xl font-serif text-5xl font-normal leading-[0.98] sm:text-6xl lg:text-7xl">Your journey, designed around you.</h1>
+              <p className="mt-5 max-w-2xl text-sm leading-7 text-white/85 sm:text-base">
+                Start with the feeling, shape the route, and refine every detail with local travel expertise.
+              </p>
             </div>
           </div>
         </div>
       </section>
-
+      <div className="mx-auto max-w-[96rem] space-y-12 px-4 pb-12 pt-8 sm:px-6 lg:px-10 lg:pt-12 xl:px-14">
+        <TripMakerRecommendations />
+        <MakeMyTripForm />
+      </div>
     </PageShell>
   );
 }

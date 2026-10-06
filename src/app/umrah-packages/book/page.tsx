@@ -30,7 +30,7 @@ export default function UmrahBookingPage() {
     >
       <PageShell wide noTopPadding>
         <PageHeroImage
-          image="/images/miqat/miqat-booking-header.webp"
+          image="/images/package-cards/images__miqat__miqat-booking-header.webp"
           imageAlt="MIQAT by Hodophile Umrah booking form"
           imageClassName="object-contain object-center"
           eyebrow="MIQAT Booking"

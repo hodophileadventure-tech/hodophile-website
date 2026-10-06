@@ -24,7 +24,7 @@ export default function DestinationsPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-4.webp"
+        image="/images/package-cards/images__editorial__editorial-4.webp"
         imageAlt="Mountain valley with river"
         eyebrow="Destinations"
         title="The routes travelers search most when planning domestic Pakistan journeys."
@@ -49,11 +49,11 @@ export default function DestinationsPage() {
                   />
                 </div>
                 <div className="p-6">
-                  <p className="text-sm uppercase tracking-[0.3em] text-[#8b6b00]">Best time to visit: {destination.bestTimeToVisit}</p>
+                  <p className="text-sm uppercase tracking-[0.3em] text-[#8b6b00]">Best time to visit: {destination.season}</p>
                   <h2 className="mt-3 text-2xl font-semibold tracking-tight text-stone-950">{destination.name}</h2>
                   <p className="mt-3 text-sm leading-7 text-stone-600">{destination.description}</p>
                   <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-stone-200 pt-4 text-sm text-stone-700">
-                    <span>Ideal duration: {destination.idealDuration}</span>
+                    {destination.duration ? <span>Ideal duration: {destination.duration}</span> : null}
                     {destination.priceFrom && <span className="font-semibold text-stone-900">{destination.priceFrom}</span>}
                   </div>
                 </div>

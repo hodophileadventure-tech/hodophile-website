@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 import { PageShell } from "@/components/page-shell";
-import { absoluteUrl, whatsappUrl } from "@/lib/site";
-import { featuredTourCards, featuredTourRoutePaths, getFeaturedTourBySlug } from "@/lib/data/featured-tour-cards";
+import { absoluteUrl } from "@/lib/site";
+import { featuredTourRoutePaths, getFeaturedTourBySlug } from "@/lib/data/featured-tour-cards";
 
 type FeaturedTourPageProps = {
   params: Promise<{ slug: string }>;
@@ -25,20 +25,16 @@ export async function generateMetadata({ params }: FeaturedTourPageProps): Promi
     return {};
   }
 
-  const canonicalPath = tour.canonicalPackageId
-    ? `/packages/${tour.canonicalPackageId}`
-    : `/tours/featured/${tour.slug}`;
-
   return {
     title: tour.title,
     description: tour.summary,
     alternates: {
-      canonical: canonicalPath,
+      canonical: `/tours/featured/${tour.slug}`,
     },
     openGraph: {
       title: tour.title,
       description: tour.summary,
-      url: absoluteUrl(canonicalPath),
+      url: absoluteUrl(`/tours/featured/${tour.slug}`),
     },
   };
 }
@@ -47,51 +43,13 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
   const { slug } = await params;
   const tour = getFeaturedTourBySlug(slug);
 
-  if (tour?.canonicalPackageId) {
-    redirect(`/packages/${tour.canonicalPackageId}`);
-  }
-
   if (!tour) {
     notFound();
   }
 
-  const travelDetailCards = [
-    {
-      title: "Hotel plan",
-      text: "Rooms are arranged on the selected sharing basis with standard, deluxe, or executive options available depending on the route and season. Final hotel selection is confirmed after we match your room type, dates, and group size.",
-    },
-    {
-      title: "Vehicle details",
-      text: "The route uses a suitable private vehicle based on the group size and terrain, with AC, luggage space, and 4x4 access reviewed before confirmation for mountain segments.",
-    },
-    {
-      title: "Good to know",
-      text: "Road closures, weather shifts, and local conditions can change the exact route timing. We keep the itinerary flexible so your trip remains comfortable and safe.",
-    },
-  ];
-
-  const faqs = [
-    {
-      question: "What is included in the price?",
-      answer: "The package normally includes accommodation, transport, route planning, and standard meals listed in the itinerary. Personal shopping, optional activities, and entrance fees are separate unless clearly stated.",
-    },
-    {
-      question: "Can the route be customized?",
-      answer: "Yes. We can adjust hotel category, room sharing, route length, and vehicle selection to suit your budget and travel style before final confirmation.",
-    },
-    {
-      question: "What if the weather changes?",
-      answer: "Northern Pakistan travel is weather-sensitive. In case of landslides or road closures, we revise the plan to the safest available route and keep the travel experience as smooth as possible.",
-    },
-    {
-      question: "How do I book this tour?",
-      answer: "Send your preferred dates and room-sharing preference via WhatsApp or the inquiry form, and our team will confirm the availability, pricing, and next steps.",
-    },
-  ];
-
   return (
     <PageShell wide>
-      <section className="relative -mx-4 w-[calc(100%+2rem)] overflow-hidden md:-mx-6 md:w-[calc(100%+3rem)] lg:-mx-10 lg:w-[calc(100%+5rem)] xl:-mx-14 xl:w-[calc(100%+7rem)] 2xl:left-1/2 2xl:mx-0 2xl:w-screen 2xl:-translate-x-1/2">
+      <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
         <div className="relative min-h-[62vh] md:min-h-[68vh]">
           <Image
             src={tour.heroImage}
@@ -111,14 +69,6 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
             <p className="mt-5 max-w-3xl text-sm leading-7 text-white/85 sm:text-base">
               {tour.summary}
             </p>
-            <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-white/85">
-              <span><strong className="text-white">Duration</strong> {tour.duration}</span>
-              {tour.priceFrom ? <span><strong className="text-white">From</strong> {tour.priceFrom}</span> : null}
-            </div>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/contact-us" className="inline-flex rounded-full bg-[#fcc000] px-5 py-3 text-sm font-semibold !text-black transition hover:-translate-y-0.5 hover:bg-[#ffd24d]">Reserve my seat</Link>
-              <a href={whatsappUrl(`Hi Hodophile, I'm interested in ${tour.title}. Please share availability and booking details.`)} target="_blank" rel="noopener noreferrer" className="inline-flex rounded-full border border-white/60 bg-black/30 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-[#fcc000] hover:text-[#fcc000]">WhatsApp an expert</a>
-            </div>
           </div>
         </div>
       </section>
@@ -151,10 +101,6 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
                 </span>
               ))}
             </div>
-            <div className="mt-6 grid grid-cols-2 gap-3 border-t border-stone-200 pt-5 text-sm">
-              <div><p className="text-xs uppercase tracking-[0.18em] text-stone-500">Duration</p><p className="mt-1 font-semibold text-stone-900">{tour.duration}</p></div>
-              {tour.priceFrom ? <div><p className="text-xs uppercase tracking-[0.18em] text-stone-500">Starting from</p><p className="mt-1 font-semibold text-stone-900">{tour.priceFrom}</p></div> : null}
-            </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/contact-us"
@@ -162,14 +108,6 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
               >
                 Request This Tour
               </Link>
-              <a
-                href={whatsappUrl(`Hi Hodophile, I'm interested in ${tour.title}. Please share availability and booking details.`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex rounded-full border border-[#557a63] px-5 py-3 text-sm font-semibold text-[#31563f] transition hover:bg-[#edf5ef]"
-              >
-                Ask on WhatsApp
-              </a>
               <Link
                 href="/tours"
                 className="inline-flex rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-800 transition hover:border-stone-400 hover:text-stone-900"
@@ -219,19 +157,6 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
                   </div>
                 </div>
               ) : null}
-            </div>
-
-            <div className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] md:p-8">
-              <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Travel details</p>
-              <h2 className="mt-3 font-serif text-3xl text-stone-900">Everything you need to know before booking</h2>
-              <div className="mt-6 grid gap-4 md:grid-cols-3">
-                {travelDetailCards.map((card) => (
-                  <div key={card.title} className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5">
-                    <p className="text-sm font-semibold text-stone-900">{card.title}</p>
-                    <p className="mt-3 text-sm leading-7 text-stone-600">{card.text}</p>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {(tour.pricingGroups?.length || tour.childPolicy?.length || tour.meals) && (
@@ -382,32 +307,6 @@ export default async function FeaturedTourPage({ params }: FeaturedTourPageProps
                 ))}
               </div>
             ) : null}
-
-            <div className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm md:p-8">
-              <p className="text-xs uppercase tracking-[0.32em] text-stone-500">FAQs</p>
-              <h2 className="mt-3 font-serif text-3xl text-stone-900">Common questions before you book</h2>
-              <div className="mt-6 space-y-4">
-                {faqs.map((item) => (
-                  <details key={item.question} className="rounded-[1.25rem] border border-stone-200 bg-stone-50 p-4">
-                    <summary className="cursor-pointer text-sm font-semibold text-stone-900">{item.question}</summary>
-                    <p className="mt-3 text-sm leading-7 text-stone-600">{item.answer}</p>
-                  </details>
-                ))}
-              </div>
-            </div>
-
-            <section className="mt-8 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm md:p-8" aria-labelledby="related-journeys-heading">
-              <p className="text-xs uppercase tracking-[0.32em] text-stone-500">You may also like</p>
-              <h2 id="related-journeys-heading" className="mt-3 font-serif text-3xl text-stone-900">More journeys worth considering</h2>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                {featuredTourCards.filter((relatedTour) => relatedTour.slug !== tour.slug).slice(0, 3).map((relatedTour) => (
-                  <Link key={relatedTour.slug} href={`/tours/featured/${relatedTour.slug}`} className="group flex gap-4 border border-stone-200 p-3 transition hover:border-[#fcc000]">
-                    <Image src={relatedTour.homeImage} alt={relatedTour.title} width={96} height={96} className="h-24 w-24 shrink-0 object-cover" />
-                    <span><strong className="block text-sm leading-6 text-stone-900 group-hover:text-[#9a7600]">{relatedTour.title}</strong><small className="mt-2 block text-xs text-stone-500">{relatedTour.duration} · {relatedTour.priceFrom ?? "Contact for pricing"}</small></span>
-                  </Link>
-                ))}
-              </div>
-            </section>
           </div>
 
           <div className="mt-8 rounded-[2rem] border border-[#fcc000] bg-[#fff8df] p-6 shadow-sm md:p-8">

@@ -14,7 +14,7 @@ export function MiqatHero() {
       >
         <video
           className="h-full w-full object-cover"
-          poster="/images/umrah/kabah.webp"
+          poster="/images/package-cards/images__umrah__kabah.webp"
           autoPlay
           muted
           loop

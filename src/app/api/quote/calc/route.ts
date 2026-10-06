@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { calculateQuotation, type QuotationInput } from "@/lib/pricingEngine";
+import { applyPromotionToQuotation, validatePromoCode } from "@/lib/promotions/promotion-service";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = (await request.json()) as QuotationInput;
+    const body = (await request.json()) as QuotationInput & { promoCode?: unknown };
 
     const missingFields = [
       !body.routeId && "routeId",
@@ -23,7 +24,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const quotation = await calculateQuotation(body);
+    const { promoCode, ...quotationInput } = body;
+    let quotation = await calculateQuotation(quotationInput);
     if (!quotation) {
       return NextResponse.json(
         {
@@ -32,6 +34,14 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       );
+    }
+
+    if (typeof promoCode === "string" && promoCode.trim()) {
+      const promotion = validatePromoCode(promoCode, quotationInput.routeId, quotation.totalCost);
+      if (!promotion.valid) {
+        return NextResponse.json(promotion, { status: 400 });
+      }
+      quotation = applyPromotionToQuotation(quotation, promotion, quotationInput.adults + quotationInput.kids);
     }
 
     return NextResponse.json({ success: true, quotation });

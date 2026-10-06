@@ -28,10 +28,10 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/logo.webp", type: "image/webp" },
+      { url: "/images/package-cards/favicon.ico", sizes: "any" },
+      { url: "/images/package-cards/logo.webp", type: "image/webp" },
     ],
-    apple: "/logo.webp",
+    apple: "/images/package-cards/logo.webp",
   },
   openGraph: {
     type: "website",

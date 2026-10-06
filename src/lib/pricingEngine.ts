@@ -7,6 +7,7 @@ import { getVehicleRate } from "./data/vehicleRates";
 import { currentFuelPrices } from "./data/fuel";
 import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "./data/routeActivities";
 import type { Room } from "./data/hotels";
+import type { PromotionSummary } from "./promotions/promotion-types";
 
 export interface QuotationInput {
   routeId: string;
@@ -41,6 +42,7 @@ export interface QuotationBreakdown {
   markupAmount: number; // applied profit margin based on subtotal tier
   totalCost: number;
   perPersonCost: number;
+  promotion?: PromotionSummary;
   details: {
     route: string;
     vehicle: string;

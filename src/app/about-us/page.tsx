@@ -41,7 +41,7 @@ export default function AboutUsPage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url(/images/editorial/about-us-hero.webp)",
+            backgroundImage: "url(/images/package-cards/images__editorial__about-us-hero.webp)",
           }}
         />
 
@@ -196,7 +196,7 @@ export default function AboutUsPage() {
 
               <div className="overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-[#fff8e3] p-3 shadow-[0_22px_50px_-28px_rgba(252,192,0,0.28)]">
                 <Image
-                  src="/images/editorial/local-expertise-global-standards.webp"
+                  src="/images/package-cards/images__editorial__local-expertise-global-standards.webp"
                   alt="Local expertise with global standards"
                   width={1200}
                   height={800}

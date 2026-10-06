@@ -45,7 +45,7 @@ async function main() {
         bestSeason: 'June-September',
         elevation: 1500,
         difficulty: 'moderate',
-        image: '/images/destinations/hunza.avif',
+        image: '/images/package-cards/images__destinations__hunza.avif',
       },
     }),
     prisma.destination.upsert({

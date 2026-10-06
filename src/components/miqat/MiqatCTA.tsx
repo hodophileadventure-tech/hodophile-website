@@ -17,7 +17,7 @@ export function MiqatCTA() {
       >
         <div className="relative h-[70vh] min-h-[32rem]">
           <Image
-            src="/images/umrah/kabah-shareef.webp"
+            src="/images/package-cards/images__umrah__kabah-shareef.webp"
             alt="Makkah night"
             fill
             sizes="100vw"

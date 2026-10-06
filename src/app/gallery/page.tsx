@@ -6,14 +6,14 @@ import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 
 const galleryImages = [
-  { src: "/images/destinations/skardu.webp", alt: "Skardu landscape", caption: "Skardu" },
-  { src: "/images/destinations/naran-saif.webp", alt: "Naran landscape", caption: "Naran" },
-  { src: "/images/destinations/swat.webp", alt: "Swat landscape", caption: "Swat" },
-  { src: "/images/destinations/kashmir.webp", alt: "Kashmir landscape", caption: "Kashmir" },
-  { src: "/images/editorial/editorial-3.webp", alt: "Northern valley", caption: "Valley views" },
-  { src: "/images/editorial/editorial-5.webp", alt: "Mountain route", caption: "Scenic roads" },
-  { src: "/images/editorial/editorial-6.webp", alt: "Travel in highlands", caption: "Highland escapes" },
-  { src: "/images/editorial/editorial-8.webp", alt: "Cinematic landscape", caption: "Cinematic Pakistan" },
+  { src: "/images/package-cards/images__destinations__skardu.webp", alt: "Skardu landscape", caption: "Skardu" },
+  { src: "/images/package-cards/images__destinations__naran-saif.webp", alt: "Naran landscape", caption: "Naran" },
+  { src: "/images/package-cards/images__destinations__swat.webp", alt: "Swat landscape", caption: "Swat" },
+  { src: "/images/package-cards/images__destinations__kashmir.webp", alt: "Kashmir landscape", caption: "Kashmir" },
+  { src: "/images/package-cards/images__editorial__editorial-3.webp", alt: "Northern valley", caption: "Valley views" },
+  { src: "/images/package-cards/images__editorial__editorial-5.webp", alt: "Mountain route", caption: "Scenic roads" },
+  { src: "/images/package-cards/images__editorial__editorial-6.webp", alt: "Travel in highlands", caption: "Highland escapes" },
+  { src: "/images/package-cards/images__editorial__editorial-8.webp", alt: "Cinematic landscape", caption: "Cinematic Pakistan" },
 ];
 
 export const metadata: Metadata = {
@@ -34,7 +34,7 @@ export default function GalleryPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-2.webp"
+        image="/images/package-cards/images__editorial__editorial-2.webp"
         imageAlt="Panoramic destination view"
         eyebrow="Gallery"
         title="Scenic Pakistan destinations presented through cinematic visual storytelling."

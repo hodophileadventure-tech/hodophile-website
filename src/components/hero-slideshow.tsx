@@ -15,35 +15,35 @@ type Slide = {
 
 const slides: Slide[] = [
   {
-    src: "/hero-images/hunza.avif",
+    src: "/images/package-cards/hero-images__hunza.avif",
     label: "Hunza",
     slug: "hunza",
     headline: "Experience Alpine\nMagic",
     description: "Terraced valleys, dramatic peaks, and premium stays curated for the discerning traveler.",
   },
   {
-    src: "/hero-images/skurdu.webp",
+    src: "/images/package-cards/hero-images__skurdu.webp",
     label: "Skardu",
     slug: "skardu",
     headline: "Discover Crystal\nLakes",
     description: "Alpine lakes, ancient forts, and panoramic views for the ultimate luxury retreat.",
   },
   {
-    src: "/hero-images/Naran.webp",
+    src: "/images/package-cards/hero-images__Naran.webp",
     label: "Naran",
     slug: "naran",
     headline: "Mountain Roads\nUnwind",
     description: "Scenic routes, river escapes, and perfect family moments in nature's embrace.",
   },
   {
-    src: "/hero-images/kashmir.webp",
+    src: "/images/package-cards/hero-images__kashmir.webp",
     label: "Kashmir",
     slug: "kashmir",
     headline: "Paradise\nAwaits",
     description: "Serene valleys, pristine air, and curated experiences in the crown jewel of Pakistan.",
   },
   {
-    src: "/hero-images/Sawat.webp",
+    src: "/images/package-cards/hero-images__Sawat.webp",
     label: "Swat",
     slug: "swat",
     headline: "Valley of\nSerenity",

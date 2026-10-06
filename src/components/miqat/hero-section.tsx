@@ -22,7 +22,7 @@ export function HeroSection() {
       className="relative -mx-4 min-h-[85vh] overflow-hidden px-4 pb-16 pt-24 md:-mx-6 md:px-6 lg:-mx-10 lg:px-10 xl:-mx-14 xl:px-14"
       aria-labelledby="miqat-hero-heading"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[url('/images/umrah/islamic-pattern.svg')] bg-[length:320px_320px] bg-repeat opacity-[0.03]" />
+      <div className="pointer-events-none absolute inset-0 bg-[url('/images/package-cards/images__umrah__islamic-pattern.svg')] bg-[length:320px_320px] bg-repeat opacity-[0.03]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(201,162,39,0.17),transparent_38%),radial-gradient(circle_at_85%_80%,rgba(15,81,50,0.12),transparent_35%)]" />
 
       <div className="relative mx-auto grid min-h-[76vh] max-w-[92rem] items-center gap-12 lg:grid-cols-[1.02fr_0.98fr]">
@@ -77,7 +77,7 @@ export function HeroSection() {
           <div className="relative overflow-hidden rounded-[2rem] border border-[#0F5132]/10 bg-white p-2 shadow-[0_22px_60px_rgba(15,81,50,0.15)]">
             <motion.div style={{ y: imageY }} className="relative h-[24rem] overflow-hidden rounded-[1.5rem] sm:h-[32rem]">
               <Image
-                src="/images/umrah/kabah.webp"
+                src="/images/package-cards/images__umrah__kabah.webp"
                 alt="Kaaba in Masjid al Haram"
                 fill
                 priority

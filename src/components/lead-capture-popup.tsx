@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { X } from 'lucide-react';
 
 interface FormData {
@@ -11,7 +10,6 @@ interface FormData {
 }
 
 export function LeadCapturePopup() {
-  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -22,46 +20,18 @@ export function LeadCapturePopup() {
   });
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
-  const handleClose = () => {
-    setIsVisible(false);
-  };
-
   // Show popup after 30 seconds (but only once per session)
   useEffect(() => {
-    if (pathname === '/make-my-trip') return;
-
     const hasShownPopup = sessionStorage.getItem('leadCapturePopupShown');
-    if (hasShownPopup) return;
+    if (!hasShownPopup) {
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+        sessionStorage.setItem('leadCapturePopupShown', 'true');
+      }, 30000); // 30 seconds
 
-    const showPopup = () => {
-      setIsVisible(true);
-      sessionStorage.setItem('leadCapturePopupShown', 'true');
-    };
-
-    const timer = setTimeout(() => {
-      if (sessionStorage.getItem('dealsPopupClosedThisSession')) {
-        showPopup();
-      } else {
-        window.addEventListener('hodophile:deals-popup-closed', showPopup, { once: true });
-      }
-    }, 30000);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('hodophile:deals-popup-closed', showPopup);
-    };
-  }, [pathname]);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') handleClose();
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isVisible]);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
@@ -143,6 +113,10 @@ export function LeadCapturePopup() {
     }
   };
 
+  const handleClose = () => {
+    setIsVisible(false);
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -171,15 +145,10 @@ export function LeadCapturePopup() {
       />
 
       {/* Popup */}
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="lead-capture-title"
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md animate-fade-in px-4"
-      >
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md animate-fade-in px-4">
         <div className="bg-white rounded-lg shadow-2xl overflow-hidden">
           {/* Header with gradient */}
-          <div className="relative border-b-2 border-[#FCC000] bg-black p-6">
+          <div className="bg-gradient-to-r from-black to-[#FCC000] p-6 relative">
             <button
               onClick={handleClose}
               className="absolute top-4 right-4 text-white hover:bg-white/20 p-1 rounded-full transition-colors"
@@ -187,7 +156,7 @@ export function LeadCapturePopup() {
             >
               <X size={24} />
             </button>
-            <h2 id="lead-capture-title" className="text-white text-xl font-bold">Exclusive Travel Deals</h2>
+            <h2 className="text-white text-xl font-bold">Exclusive Travel Deals</h2>
             <p className="text-white/90 text-sm mt-1">Join our community & get special offers</p>
           </div>
 
@@ -258,7 +227,7 @@ export function LeadCapturePopup() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#FCC000] py-2 font-semibold text-black transition-colors duration-300 hover:bg-[#ffd24d] disabled:cursor-not-allowed disabled:bg-stone-200 disabled:text-stone-700 disabled:opacity-100"
+                className="w-full bg-gradient-to-r from-black to-[#FCC000] text-white font-semibold py-2 rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>

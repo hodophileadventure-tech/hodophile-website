@@ -23,7 +23,7 @@ export default function ContactUsPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-3.webp"
+        image="/images/package-cards/images__editorial__editorial-3.webp"
         imageAlt="Scenic mountains at sunset"
         eyebrow="Contact Us"
         title="Share your destination and we will shape the route around your travel goals."

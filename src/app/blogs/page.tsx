@@ -24,7 +24,7 @@ export default function BlogsPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/editorial/editorial-2.webp"
+        image="/images/package-cards/images__editorial__editorial-2.webp"
         imageAlt="Valley road through mountains"
         eyebrow="Blogs"
         title="Travel stories and practical guides for better domestic trip planning."
@@ -39,7 +39,7 @@ export default function BlogsPage() {
             className="group overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_16px_36px_rgba(55,55,48,0.06)] transition hover:-translate-y-1 hover:border-[#d9a407]/60 hover:shadow-[0_22px_48px_rgba(55,55,48,0.1)]"
           >
             <div className="relative aspect-[16/9] overflow-hidden bg-stone-100">
-              <Image src={post.hero ?? "/images/editorial/editorial-2.webp"} alt={post.heroAlt || post.title} fill sizes="(max-width: 1024px) 100vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
+              <Image src={post.hero ?? "/images/package-cards/images__editorial__editorial-2.webp"} alt={post.heroAlt || post.title} fill sizes="(max-width: 1024px) 100vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
             </div>
             <div className="p-5">
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8b6b00]">{post.category}</p>

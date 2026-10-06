@@ -28,7 +28,7 @@ const honeymoonPackages = [
     duration: "4 Days / 3 Nights",
     detail: "Ushu forests, Mahodand Lake excursion, and relaxed valley pacing.",
     price: "PKR 120,000",
-    image: "/images/honeymoon/swat-valley-deluxe.webp",
+    image: "/images/package-cards/images__honeymoon__swat-valley-deluxe.webp",
   },
   {
     slug: "naran-babusar-4days",
@@ -36,7 +36,7 @@ const honeymoonPackages = [
     duration: "4 Days / 3 Nights",
     detail: "Kaghan Valley highlights: Saif-ul-Malook, Lulusar, and Babusar Top.",
     price: "PKR 120,000",
-    image: "/images/honeymoon/naran-babusar.webp",
+    image: "/images/package-cards/images__honeymoon__naran-babusar.webp",
   },
   {
     slug: "kashmir-arangkel-5days",
@@ -44,7 +44,7 @@ const honeymoonPackages = [
     duration: "5 Days / 4 Nights",
     detail: "Neelum Valley route to Kel and the hill-meadow of Arang Kel.",
     price: "PKR 150,000",
-    image: "/images/honeymoon/ratti-gali-lake.webp",
+    image: "/images/package-cards/images__honeymoon__ratti-gali-lake.webp",
   },
   ...Object.values(additionalHoneymoonPackages),
 ];
@@ -53,7 +53,7 @@ export default function HoneymoonPackagesPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/honeymoon/hero.webp"
+        image="/images/package-cards/images__honeymoon__hero.webp"
         imageAlt="Honeymoon header"
         eyebrow="Honeymoon Packages"
         title="Curated honeymoon journeys for scenic, private, and memorable travel."

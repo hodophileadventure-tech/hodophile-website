@@ -79,6 +79,49 @@ function QuotationEditContent() {
 
     const useSingleCitySplitStay = Array.isArray(quotationData.singleCityHotelStays) && quotationData.singleCityHotelStays.length > 0;
 
+    if (typeof quotationData.promoCode === "string" && quotationData.promoCode) {
+      let isCurrent = true;
+      const quoteInput = {
+        routeId: quotationData.routeId,
+        vehicleName,
+        hotelId: quotationData.hotelId,
+        roomId: quotationData.roomType,
+        hotelCategory: quotationData.hotelCategory,
+        singleCityHotelStays: useSingleCitySplitStay ? singleCityHotelStays : undefined,
+        multiCityHotels: useSingleCitySplitStay ? undefined : multiCityHotels,
+        multiCityNights: useSingleCitySplitStay ? undefined : customCityNights,
+        customCities: quotationData.customCities,
+        customRouteLabel: quotationData.customRouteLabel,
+        travelMode: quotationData.travelMode,
+        numberOfRooms: quotationData.numberOfRooms,
+        adults: quotationData.adults,
+        kids: quotationData.kids,
+        tripDate: quotationData.tripDate,
+      };
+
+      void fetch("/api/quote/calc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...quoteInput, promoCode: quotationData.promoCode }),
+      })
+        .then(async (response) => ({ response, data: await response.json() }))
+        .then(({ response, data }) => {
+          if (!isCurrent) return;
+          if (!response.ok || !data.success) {
+            setQuotation(null);
+            return;
+          }
+          setQuotation(data.quotation as QuotationBreakdown);
+        })
+        .catch(() => {
+          if (isCurrent) setQuotation(null);
+        });
+
+      return () => {
+        isCurrent = false;
+      };
+    }
+
     const updatedQuotation = calculateQuotation({
       routeId: quotationData.routeId,
       vehicleName,
@@ -103,18 +146,50 @@ function QuotationEditContent() {
   const handleProceed = async () => {
     setIsSubmitting(true);
     try {
+      let authoritativeQuotation = quotation;
+      if (quotationData?.promoCode) {
+        const response = await fetch("/api/quote/calc", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            routeId: quotationData.routeId,
+            vehicleName,
+            hotelId: quotationData.hotelId,
+            roomId: quotationData.roomType,
+            hotelCategory: quotationData.hotelCategory,
+            singleCityHotelStays: isSingleCitySplitStay ? singleCityHotelStays : undefined,
+            multiCityHotels: isSingleCitySplitStay ? undefined : multiCityHotels,
+            multiCityNights: isSingleCitySplitStay ? undefined : customCityNights,
+            customCities: quotationData.customCities,
+            customRouteLabel: quotationData.customRouteLabel,
+            numberOfRooms: quotationData.numberOfRooms,
+            adults: quotationData.adults,
+            kids: quotationData.kids,
+            tripDate: quotationData.tripDate,
+            travelMode: quotationData.travelMode,
+            promoCode: quotationData.promoCode,
+          }),
+        });
+        const responseData = await response.json();
+        if (!response.ok || !responseData.success) {
+          throw new Error(responseData.error || "Unable to revalidate this promo code.");
+        }
+        authoritativeQuotation = responseData.quotation as QuotationBreakdown;
+      }
+
       const updatedData = {
         ...quotationData,
         multiCityNights: customCityNights,
         multiCityHotels,
         vehicleName,
-        transportCost: quotation?.transportCost,
-        hotelCost: quotation?.hotelCost,
-        jeepAddonsCost: quotation?.jeepAddonsCost,
-        subtotal: quotation?.subtotal,
-        markupAmount: quotation?.markupAmount,
-        totalCost: quotation?.totalCost,
-        perPersonCost: quotation?.perPersonCost,
+        transportCost: authoritativeQuotation?.transportCost,
+        hotelCost: authoritativeQuotation?.hotelCost,
+        jeepAddonsCost: authoritativeQuotation?.jeepAddonsCost,
+        subtotal: authoritativeQuotation?.subtotal,
+        markupAmount: authoritativeQuotation?.markupAmount,
+        totalCost: authoritativeQuotation?.totalCost,
+        perPersonCost: authoritativeQuotation?.perPersonCost,
+        promotion: authoritativeQuotation?.promotion,
         singleCityHotelStays,
         travelMode: quotationData?.travelMode,
       };
@@ -349,6 +424,13 @@ function QuotationEditContent() {
                 <p className="font-serif text-5xl text-[#fcc000] font-bold">
                   {formatPKR(quotation.totalCost)}
                 </p>
+                {quotation.promotion ? (
+                  <div className="mx-auto mt-4 max-w-sm border-t border-[#fcc000]/30 pt-3 text-left text-sm">
+                    <p className="font-semibold text-green-800">{quotation.promotion.code} · {quotation.promotion.discountPercent}% off</p>
+                    <div className="mt-2 flex justify-between gap-3 text-stone-600"><span>Original total</span><span className="line-through">{formatPKR(quotation.promotion.originalPrice)}</span></div>
+                    <div className="mt-1 flex justify-between gap-3 font-semibold text-green-800"><span>Discount</span><span>−{formatPKR(quotation.promotion.discountAmount)}</span></div>
+                  </div>
+                ) : null}
                 <p className="text-stone-600 text-sm mt-3">
                   Per Person: {formatPKR(quotation.perPersonCost || 0)}
                 </p>

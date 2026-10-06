@@ -24,7 +24,7 @@ export default function OurTeamPage() {
   return (
     <PageShell wide>
       <PageHeroImage
-        image="/images/team/our-team-header.webp"
+        image="/images/package-cards/images__team__our-team-header.webp"
         imageAlt="Hodophile Adventures travel team"
         eyebrow="Our Team"
         title="The people behind the journey."

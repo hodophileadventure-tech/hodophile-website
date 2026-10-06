@@ -29,11 +29,11 @@ function resolveItem(region: string, slug: string) {
 
 function getPackageImage(slug: string) {
   const normalized = slug.toLowerCase();
-  if (normalized.includes("hunza")) return "/images/destinations/hunza-custom.webp";
-  if (normalized.includes("skardu")) return "/images/destinations/skardu-1080x1920.webp";
-  if (normalized.includes("astor")) return "/images/destinations/hunza-custom.webp";
-  if (normalized.includes("naran") || normalized.includes("kaghan")) return "/images/destinations/naran-hd.webp";
-  if (normalized.includes("swat")) return "/images/destinations/swat-hd.webp";
+  if (normalized.includes("hunza")) return "/images/package-cards/images__destinations__hunza-custom.webp";
+  if (normalized.includes("skardu")) return "/images/package-cards/images__destinations__skardu-1080x1920.webp";
+  if (normalized.includes("astor")) return "/images/package-cards/images__destinations__hunza-custom.webp";
+  if (normalized.includes("naran") || normalized.includes("kaghan")) return "/images/package-cards/images__destinations__naran-hd.webp";
+  if (normalized.includes("swat")) return "/images/package-cards/images__destinations__swat-hd.webp";
   if (
     normalized.includes("kashmir") ||
     normalized.includes("beach") ||
@@ -45,9 +45,9 @@ function getPackageImage(slug: string) {
     normalized.includes("gorakh") ||
     normalized.includes("quetta")
   ) {
-    return "/images/destinations/kashmir.webp";
+    return "/images/package-cards/images__destinations__kashmir.webp";
   }
-  return destinations[0]?.image ?? "/images/destinations/hunza.avif";
+  return destinations[0]?.image ?? "/images/package-cards/images__destinations__hunza.avif";
 }
 
 export async function generateStaticParams() {

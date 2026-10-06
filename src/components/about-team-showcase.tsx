@@ -12,15 +12,15 @@ type TeamProfile = {
 const teamProfiles: readonly TeamProfile[] = [
   { id: "sana", name: "Sana Masood", role: "Chief Executive Officer" },
   { id: "masood", name: "Masood Ahmed", role: "Managing Director" },
-  { id: "israr", name: "Israr Ahmed Siddiqui", image: "/images/team/israar.webp", role: "Director Corporate" },
+  { id: "israr", name: "Israr Ahmed Siddiqui", image: "/images/package-cards/images__team__israar.webp", role: "Director Corporate" },
   { id: "yashar", name: "Yashar Ahmed Siddiqui", role: "HR" },
-  { id: "maaz", name: "Maaz Ahmed Siddiqui", image: "/images/team/maaz.webp", role: "Operations Executive" },
-  { id: "qasim", name: "Qasim Ateeque", image: "/images/team/qasim.webp", role: "Software Engineer" },
-  { id: "altamash", name: "Altamash Ali", image: "/images/team/ALTAMASH ALI.webp", role: "Travel Consultant" },
-  { id: "sameer", name: "Sameer Khan", image: "/images/team/sameer (1).webp", role: "Video Editor" },
-  { id: "areeba", name: "Areeba Siddique", image: "/images/team/areeba.webp", role: "Content Creator" },
-  { id: "sikandar", name: "Sikandar Abbas", image: "/images/team/sikander.webp", role: "Tour Manager" },
-  { id: "emran", name: "Emraan Nadeem", image: "/images/team/imran.webp", role: "Tour Manager" },
+  { id: "maaz", name: "Maaz Ahmed Siddiqui", image: "/images/package-cards/images__team__maaz.webp", role: "Operations Executive" },
+  { id: "qasim", name: "Qasim Ateeque", image: "/images/package-cards/images__team__qasim.webp", role: "Software Engineer" },
+  { id: "altamash", name: "Altamash Ali", image: "/images/package-cards/images__team__ALTAMASH-ALI.webp", role: "Travel Consultant" },
+  { id: "sameer", name: "Sameer Khan", image: "/images/package-cards/images__team__sameer--1-.webp", role: "Video Editor" },
+  { id: "areeba", name: "Areeba Siddique", image: "/images/package-cards/images__team__areeba.webp", role: "Content Creator" },
+  { id: "sikandar", name: "Sikandar Abbas", image: "/images/package-cards/images__team__sikander.webp", role: "Tour Manager" },
+  { id: "emran", name: "Emraan Nadeem", image: "/images/package-cards/images__team__imran.webp", role: "Tour Manager" },
 ] as const;
 
 function getMember(id: string) {

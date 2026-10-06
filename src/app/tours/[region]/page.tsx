@@ -17,9 +17,9 @@ function findGroupByRegion(region: string) {
 
 function getRegionImage(region: string) {
   if (region === "southern-tours") {
-    return "/images/destinations/kashmir.webp";
+    return "/images/package-cards/images__destinations__kashmir.webp";
   }
-  return destinations[0]?.image ?? "/images/destinations/hunza.avif";
+  return destinations[0]?.image ?? "/images/package-cards/images__destinations__hunza.avif";
 }
 
 export async function generateStaticParams() {

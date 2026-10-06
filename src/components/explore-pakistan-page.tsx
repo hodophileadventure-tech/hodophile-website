@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { destinations } from "@/lib/site";
 
 const PKR_PER_USD = 283;
 const USD_PRICE_INCREASE = 70;
@@ -10,44 +9,48 @@ function formatJourneyPrice(pkrAmount: number) {
   return `From $${usdAmount.toLocaleString("en-US")}`;
 }
 
-type DestinationTilePresentation = {
-  slug?: string;
-  name?: string;
-  description?: string;
-  image?: string;
-  href?: string;
-  span: string;
-  height: string;
-  accent: string;
-};
-
-const destinationTilePresentations: DestinationTilePresentation[] = [
+const destinationTiles = [
   {
-    slug: "hunza",
+    name: "Hunza",
+    description: "Towering peaks, apricot valleys, and storied mountain roads.",
+    image: "/images/package-cards/hero-images__kamran-ch-unsplash.webp",
+    href: "/destinations/hunza",
     span: "md:col-span-7",
     height: "min-h-[26rem]",
     accent: "A timeless mountain escape",
   },
   {
-    slug: "skardu",
+    name: "Skardu",
+    description: "Lakes, forts, and dramatic glacial scenery in Baltistan.",
+    image: "/images/package-cards/hero-images__obaid-awan-unsplash.jpg.webp",
+    href: "/destinations/skardu",
     span: "md:col-span-5",
     height: "min-h-[22rem]",
     accent: "High-altitude wonder",
   },
   {
-    slug: "fairy-meadows",
+    name: "Fairy Meadows",
+    description: "Remote alpine meadows framed by iconic mountain views.",
+    image: "/images/package-cards/hero-images__hussain-ahmed-unsplash.webp",
+    href: "/destinations/fairy-meadows",
     span: "md:col-span-5",
     height: "min-h-[20rem]",
     accent: "A quiet, cinematic stay",
   },
   {
-    slug: "kashmir",
+    name: "Kashmir",
+    description: "Soft valleys, heritage, and slow days designed for couples and families.",
+    image: "/images/package-cards/hero-images__zain-raza-unsplash.webp",
+    href: "/destinations/kashmir",
     span: "md:col-span-7",
     height: "min-h-[22rem]",
     accent: "Gentle landscapes and warm hospitality",
   },
   {
-    slug: "swat",
+    name: "Swat & Kalam",
+    description: "Green valleys, pine-lined routes, and restorative mountain air.",
+    image: "/images/package-cards/hero-images__hussain-ahmed-unsplash.webp",
+    href: "/destinations/swat",
     span: "md:col-span-6",
     height: "min-h-[21rem]",
     accent: "A peaceful northern rhythm",
@@ -55,7 +58,7 @@ const destinationTilePresentations: DestinationTilePresentation[] = [
   {
     name: "Deosai & Gilgit",
     description: "Plateaus, glacier roads, and unforgettable high-country journeys.",
-    image: "/hero-images/kamran-ch-unsplash.webp",
+    image: "/images/package-cards/hero-images__kamran-ch-unsplash.webp",
     href: "/destinations",
     span: "md:col-span-6",
     height: "min-h-[21rem]",
@@ -63,48 +66,36 @@ const destinationTilePresentations: DestinationTilePresentation[] = [
   },
 ];
 
-const destinationTiles = destinationTilePresentations.map((tile) => {
-  const destination = tile.slug ? destinations.find((item) => item.slug === tile.slug) : undefined;
-
-  return {
-    ...tile,
-    name: destination?.exploreName ?? destination?.name ?? tile.name ?? "",
-    description: destination?.exploreDescription ?? destination?.description ?? tile.description ?? "",
-    image: destination?.exploreImage ?? destination?.image ?? tile.image ?? "",
-    href: destination ? `/destinations/${destination.slug}` : tile.href ?? "/destinations",
-  };
-});
-
 const experienceCards = [
   {
     title: "Mountain Escapes",
     description: "Wake up surrounded by some of the world’s most dramatic landscapes.",
-    image: "/hero-images/kamran-ch-unsplash.webp",
+    image: "/images/package-cards/hero-images__kamran-ch-unsplash.webp",
   },
   {
     title: "Adventure & Trekking",
     description: "Go beyond the usual routes and experience Pakistan on foot.",
-    image: "/hero-images/obaid-awan-unsplash.jpg.webp",
+    image: "/images/package-cards/hero-images__obaid-awan-unsplash.jpg.webp",
   },
   {
     title: "Cultural Journeys",
     description: "Discover centuries of history, traditions and living heritage.",
-    image: "/hero-images/zain-raza-unsplash.webp",
+    image: "/images/package-cards/hero-images__zain-raza-unsplash.webp",
   },
   {
     title: "Luxury Escapes",
     description: "Thoughtfully planned journeys with comfort, privacy and exceptional service.",
-    image: "/hero-images/hussain-ahmed-unsplash.webp",
+    image: "/images/package-cards/hero-images__hussain-ahmed-unsplash.webp",
   },
   {
     title: "Private Journeys",
     description: "Your dates. Your pace. Your route.",
-    image: "/hero-images/kamran-ch-unsplash.webp",
+    image: "/images/package-cards/hero-images__kamran-ch-unsplash.webp",
   },
   {
     title: "Honeymoon & Romantic Escapes",
     description: "Private moments in some of Pakistan’s most breathtaking destinations.",
-    image: "/hero-images/obaid-awan-unsplash.jpg.webp",
+    image: "/images/package-cards/hero-images__obaid-awan-unsplash.jpg.webp",
   },
 ];
 
@@ -115,7 +106,7 @@ const journeyCards = [
     route: "Kashmir, Arangkel & Taobat",
     description: "A standard group tour from Karakorum through Islamabad into Kashmir, Taobat, and Arangkel.",
     href: "/tours",
-    image: "/hero-images/zain-raza-unsplash.webp",
+    image: "/images/package-cards/hero-images__zain-raza-unsplash.webp",
     pricePkr: 37500,
   },
   {
@@ -124,7 +115,7 @@ const journeyCards = [
     route: "Skardu, Shigar & Shangrila",
     description: "A rugged Skardu route with Shangrila, Shigar Fort, Sarfaranga Cold Desert, and Deosai.",
     href: "/tours",
-    image: "/hero-images/obaid-awan-unsplash.jpg.webp",
+    image: "/images/package-cards/hero-images__obaid-awan-unsplash.jpg.webp",
     pricePkr: 39000,
   },
   {
@@ -133,7 +124,7 @@ const journeyCards = [
     route: "Naran, Hunza, Skardu",
     description: "Naran, Hunza, Skardu, and Deosai combined into a bold northern journey.",
     href: "/tours",
-    image: "/hero-images/kamran-ch-unsplash.webp",
+    image: "/images/package-cards/hero-images__kamran-ch-unsplash.webp",
     pricePkr: 46700,
   },
   {
@@ -142,7 +133,7 @@ const journeyCards = [
     route: "Naran, Hunza & Naltar",
     description: "A refreshing northern route with Naran Valley, Hunza heritage, and alpine Naltar lakes.",
     href: "/tours",
-    image: "/hero-images/hussain-ahmed-unsplash.webp",
+    image: "/images/package-cards/hero-images__hussain-ahmed-unsplash.webp",
     pricePkr: 39000,
   },
 ];
@@ -266,7 +257,7 @@ export function ExplorePakistanPageContent() {
       <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-stone-950">
         <div className="absolute inset-0">
           <Image
-            src="/hero-images/kamran-ch-unsplash.webp"
+            src="/images/package-cards/hero-images__kamran-ch-unsplash.webp"
             alt="Snow-capped mountain valley in Pakistan"
             fill
             priority
@@ -312,7 +303,7 @@ export function ExplorePakistanPageContent() {
           <div className="grid items-center gap-0 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="relative min-h-[360px] overflow-hidden">
               <Image
-                src="/hero-images/zain-raza-unsplash.webp"
+                src="/images/package-cards/hero-images__zain-raza-unsplash.webp"
                 alt="Snowy mountain range in Pakistan"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -360,7 +351,7 @@ export function ExplorePakistanPageContent() {
               >
                 <div className="absolute inset-0">
                   <Image
-                    src={tile.image}
+                    src={tile.name === "Hunza" ? "/images/package-cards/hero-images__kamran-ch-unsplash.webp" : tile.image}
                     alt={`${tile.name} in Pakistan`}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
@@ -436,7 +427,7 @@ export function ExplorePakistanPageContent() {
               >
                 <div className="relative h-[270px] overflow-hidden">
                   <Image
-                    src={journey.route.includes("Skardu") ? "/hero-images/zain-raza-unsplash.webp" : journey.route.includes("Naran") ? "/hero-images/Naran.webp" : "/hero-images/kamran-ch-unsplash.webp"}
+                    src={journey.route.includes("Skardu") ? "/images/package-cards/hero-images__zain-raza-unsplash.webp" : journey.route.includes("Naran") ? "/images/package-cards/hero-images__Naran.webp" : "/images/package-cards/hero-images__kamran-ch-unsplash.webp"}
                     alt={`${journey.route} in Pakistan`}
                     fill
                     sizes="(max-width: 1024px) 100vw, 25vw"
@@ -530,7 +521,7 @@ export function ExplorePakistanPageContent() {
           <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="relative min-h-[340px] overflow-hidden">
               <Image
-                src="/hero-images/obaid-awan-unsplash.jpg.webp"
+                src="/images/package-cards/hero-images__obaid-awan-unsplash.jpg.webp"
                 alt="Pakistan mountain route at golden hour"
                 fill
                 sizes="(max-width: 1024px) 100vw, 60vw"
@@ -626,7 +617,7 @@ export function ExplorePakistanPageContent() {
         <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] border border-stone-200 bg-stone-900">
           <div className="absolute inset-0">
             <Image
-              src="/hero-images/hussain-ahmed-unsplash.webp"
+              src="/images/package-cards/hero-images__hussain-ahmed-unsplash.webp"
               alt="Pakistan mountain landscape waiting to be explored"
               fill
               sizes="100vw"

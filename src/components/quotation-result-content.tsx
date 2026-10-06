@@ -15,20 +15,59 @@ export function QuotationResultContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const quotationData = searchParams.get("data");
-      if (!quotationData) {
+    let isCurrent = true;
+    const loadQuotation = async () => {
+      try {
+        const quotationData = searchParams.get("data");
+        if (!quotationData) {
+          router.push("/make-my-trip");
+          return;
+        }
+        const decoded = JSON.parse(atob(quotationData));
+        if (typeof decoded.promoCode === "string" && decoded.promoCode) {
+          const response = await fetch("/api/quote/calc", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              routeId: decoded.routeId,
+              vehicleName: decoded.vehicleName,
+              hotelId: decoded.hotelId,
+              roomId: decoded.roomType,
+              hotelCategory: decoded.hotelCategory,
+              singleCityHotelStays: decoded.singleCityHotelStays,
+              multiCityHotels: decoded.multiCityHotels,
+              multiCityNights: decoded.multiCityNights,
+              customCities: decoded.customCities,
+              customRouteLabel: decoded.customRouteLabel,
+              travelMode: decoded.travelMode,
+              numberOfRooms: decoded.numberOfRooms,
+              adults: decoded.adults,
+              kids: decoded.kids,
+              tripDate: decoded.tripDate,
+              promoCode: decoded.promoCode,
+            }),
+          });
+          const result = await response.json();
+          if (!response.ok || !result.success) {
+            router.push("/make-my-trip");
+            return;
+          }
+          if (isCurrent) setQuotation({ ...decoded, ...result.quotation });
+        } else if (isCurrent) {
+          setQuotation(decoded);
+        }
+      } catch (error) {
+        console.error("Failed to parse quotation data:", error);
         router.push("/make-my-trip");
-        return;
+      } finally {
+        if (isCurrent) setLoading(false);
       }
-      const decoded = JSON.parse(atob(quotationData));
-      setQuotation(decoded);
-    } catch (error) {
-      console.error("Failed to parse quotation data:", error);
-      router.push("/make-my-trip");
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    void loadQuotation();
+    return () => {
+      isCurrent = false;
+    };
   }, [searchParams, router]);
 
   if (loading) {
@@ -58,6 +97,7 @@ export function QuotationResultContent() {
   const markupAmount = quotation.markupAmount ?? 0;
   const perPersonPrice = quotation.perPersonCost ?? 0;
   const totalAmount = quotation.totalCost ?? 0;
+  const promotion = quotation.promotion as { code: string; discountPercent: number; discountAmount: number; originalPrice: number } | undefined;
   const inclusionList = [
     "Transport by selected vehicle",
     "Hotel accommodation as quoted",
@@ -136,11 +176,24 @@ export function QuotationResultContent() {
     });
   }
 
+  if (promotion) {
+    items.push({
+      item: "Promo discount",
+      description: `${promotion.code} · ${promotion.discountPercent}% off original quotation`,
+      unitPrice: "",
+      quantity: "",
+      amount: -promotion.discountAmount,
+    });
+  }
+
   const quoteNumber = quotation.quoteNumber || `Q${Date.now().toString().slice(-6)}`;
   const quoteDate = new Date().toLocaleDateString("en-GB");
 
   const handleWhatsApp = () => {
-    const message = `Hi Hodophile, I would like to confirm the quotation for ${routeName}. Quote number: ${quoteNumber}. Please share the final trip details and next steps.`;
+    const promoDetails = promotion
+      ? ` Promo code ${promotion.code} applied: ${promotion.discountPercent}% off. Original total ${formatPKR(promotion.originalPrice)}, discount ${formatPKR(promotion.discountAmount)}, final total ${formatPKR(totalAmount)}.`
+      : "";
+    const message = `Hi Hodophile, I would like to confirm the quotation for ${routeName}. Quote number: ${quoteNumber}.${promoDetails} Please share the final trip details and next steps.`;
     window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
   };
 
@@ -151,7 +204,7 @@ export function QuotationResultContent() {
           <div className="flex flex-wrap items-center justify-between gap-6 border-b border-stone-200 pb-6 print:gap-3 print:pb-3">
             <div className="flex items-center gap-4 print:gap-2">
               <div className="h-20 w-20 overflow-hidden rounded-3xl bg-white p-3 shadow-sm print:h-12 print:w-12 print:rounded-xl print:p-1">
-                <Image src="/logo-transparent.webp" alt="Hodophile Adventures logo" width={80} height={80} className="h-full w-full object-contain" />
+                <Image src="/images/package-cards/logo-transparent.webp" alt="Hodophile Adventures logo" width={80} height={80} className="h-full w-full object-contain" />
               </div>
               <div>
                 <h1 className="text-4xl font-black uppercase tracking-[0.12em] text-stone-950 print:text-xl">Hodophile Adventures</h1>
@@ -305,6 +358,18 @@ export function QuotationResultContent() {
                   <span className="font-semibold print:text-[11px]">Trip subtotal</span>
                   <span className="font-bold text-stone-900 print:text-[11px]">{formatPKR(totalBeforeAddOns)}</span>
                 </div>
+                {promotion ? (
+                  <>
+                    <div className="flex justify-between bg-stone-50 p-3 rounded-lg border border-stone-200 print:p-2 print:rounded-md print:text-[11px]">
+                      <span className="font-semibold print:text-[11px]">Original total</span>
+                      <span className="font-bold text-stone-700 line-through print:text-[11px]">{formatPKR(promotion.originalPrice)}</span>
+                    </div>
+                    <div className="flex justify-between bg-green-50 p-3 rounded-lg border border-green-200 print:p-2 print:rounded-md print:text-[11px]">
+                      <span className="font-semibold text-green-800 print:text-[11px]">{promotion.code} · {promotion.discountPercent}% discount</span>
+                      <span className="font-bold text-green-800 print:text-[11px]">−{formatPKR(promotion.discountAmount)}</span>
+                    </div>
+                  </>
+                ) : null}
               </div>
             </div>
           </div>

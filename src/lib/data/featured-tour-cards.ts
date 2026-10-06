@@ -123,8 +123,8 @@ const distinctFeaturedTourCards: FeaturedTourCard[] = [
   {
     slug: "skardu-deosai",
     title: "10 Days Skardu, Shigar & Shangrila",
-    homeImage: "/images/featured-tours/skardu-deosai.jpg.webp",
-    heroImage: "/images/destinations/skardu.webp",
+    homeImage: "/images/package-cards/images__featured-tours__skardu-deosai.jpg.webp",
+    heroImage: "/images/package-cards/images__destinations__skardu.webp",
     duration: "10 Days / 7 Nights",
     priceFrom: "Rs. 39,000",
     summary: "A rugged Skardu route with Shangrila, Shigar Fort, Sarfranga Cold Desert, and Deosai.",
@@ -321,8 +321,8 @@ const distinctFeaturedTourCards: FeaturedTourCard[] = [
   {
     slug: "hunza-naltar",
     title: "10 Days Naran, Hunza & Naltar",
-    homeImage: "/images/featured-tours/hunza-naltar.jpg.webp",
-    heroImage: "/images/destinations/naltar-valley-pakistan.webp",
+    homeImage: "/images/package-cards/images__featured-tours__hunza-naltar.jpg.webp",
+    heroImage: "/images/package-cards/images__destinations__naltar-valley-pakistan.webp",
     duration: "10 Days / 9 Nights",
     priceFrom: "Rs. 39,000",
     summary: "A refreshing northern route with Naran Valley, Hunza heritage, and alpine Naltar lakes.",

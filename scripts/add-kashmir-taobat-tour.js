@@ -34,7 +34,7 @@ async function main() {
     slug,
     description:
       'Embark on a 9-day journey exploring Kashmir, Taobat and ArangKel with scenic meadows, lakes and jeep rides to ArangKel.',
-    image: '/images/destinations/kashmir.jpg',
+    image: '/images/package-cards/images__destinations__kashmir.webp',
     duration: 9,
     destinationId: dest.id,
     vehicleId: vehicle.id,
