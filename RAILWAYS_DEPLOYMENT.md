@@ -84,8 +84,10 @@ If needed, redeploy manually:
 
 ## 5. PRISMA MIGRATIONS
 
-### Step 5.1: Apply Migrations Automatically
-The Railway start command runs `npx prisma migrate deploy` before starting Next.js. Each deployment applies any pending PostgreSQL migrations, including the `PromoRedemption` table required for promo-code eligibility checks. Confirm the Next.js service is linked to PostgreSQL so Railway provides `DATABASE_URL`.
+### Step 5.1: Promo Redemption Table
+The Railway start command creates the `PromoRedemption` table and its index if they do not already exist, then starts Next.js. This preserves existing tables and data. The PostgreSQL service must be linked so Railway provides `DATABASE_URL`.
+
+The existing database needs to be baselined before running the full Prisma migration history with `npx prisma migrate deploy`; do not run that command against a non-empty, unbaselined database.
 
 ### Step 5.2: Seed Database (Optional)
 ```bash

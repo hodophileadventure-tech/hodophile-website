@@ -1,4 +1,4 @@
-CREATE TABLE "PromoRedemption" (
+CREATE TABLE IF NOT EXISTS "PromoRedemption" (
     "id" TEXT NOT NULL,
     "code" TEXT NOT NULL,
     "tourId" TEXT NOT NULL,
@@ -7,4 +7,4 @@ CREATE TABLE "PromoRedemption" (
     CONSTRAINT "PromoRedemption_pkey" PRIMARY KEY ("id")
 );
 
-CREATE INDEX "PromoRedemption_code_idx" ON "PromoRedemption"("code");
+CREATE INDEX IF NOT EXISTS "PromoRedemption_code_idx" ON "PromoRedemption"("code");

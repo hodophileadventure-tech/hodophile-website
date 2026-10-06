@@ -7,7 +7,7 @@
     "restartPolicyType": "on_failure",
     "restartPolicyMaxRetries": 5,
     "numReplicas": 1,
-    "startCommand": "npx prisma migrate deploy && next start -H 0.0.0.0 -p ${PORT:-3000}",
+    "startCommand": "node scripts/ensure-promo-redemption.cjs && next start -H 0.0.0.0 -p ${PORT:-3000}",
     "healthcheckPath": "/",
     "healthcheckTimeout": 30
   },
