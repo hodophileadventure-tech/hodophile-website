@@ -514,58 +514,31 @@ export default function BeyondPakistanPage() {
         })}
       />
       <div className="-mx-4 overflow-hidden md:-mx-6 lg:-mx-10 xl:-mx-14">
-        <section className="relative isolate min-h-[min(780px,calc(100svh-var(--site-header-height)))] overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:min-h-0 lg:px-14 lg:py-10">
-          <div className="pointer-events-none absolute -right-40 -top-48 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
-          <div className="relative mx-auto grid w-full max-w-7xl gap-9 lg:min-h-[min(720px,calc(100svh-var(--site-header-height)))] lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-12">
-            <div className="group/hero absolute inset-0 z-0 overflow-hidden lg:relative lg:col-start-2 lg:row-start-1 lg:h-[min(660px,calc(100svh-var(--site-header-height)-40px))] lg:min-h-[34rem] lg:overflow-hidden lg:rounded-[1.25rem] lg:border lg:border-white/10">
-              <Image
-                src="/images/international/dubai-thailand.png"
-                alt="Dubai and Thailand holiday highlights"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 55vw"
-                className="object-cover transition duration-1000 group-hover/hero:scale-[1.03]"
-              />
-              <video
-                className="absolute inset-0 h-full w-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                poster="/images/international/dubai-thailand.png"
-                aria-hidden="true"
-              >
-                <source src="/videos/beyond-pakistan.mp4" type="video/mp4" />
-              </video>
-              <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(0,0,0,0.92)_0%,rgba(0,0,0,0.72)_55%,rgba(0,0,0,0.22)_100%)] lg:bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_15%,rgba(0,0,0,0.02)_42%,rgba(0,0,0,0.72)_100%)]" />
-              <div className="absolute inset-x-0 top-0 hidden items-center justify-between p-5 sm:p-7 lg:flex">
-                <span className="rounded-full border border-white/30 bg-black/25 px-3.5 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
-                  A two-country escape
-                </span>
-                <span className="font-[var(--font-display)] text-sm tracking-[0.18em] text-white">
-                  01 <span className="text-[#FCC000]">/ 06</span>
-                </span>
-              </div>
-              <div className="absolute inset-x-0 bottom-0 hidden items-end justify-between gap-5 p-6 sm:p-8 lg:flex">
-                <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/70">
-                    City lights. Island mornings.
-                  </p>
-                  <p className="mt-2 font-[var(--font-display)] text-3xl text-white sm:text-4xl">
-                    Dubai <span className="text-[#FCC000]">+</span> Thailand
-                  </p>
-                </div>
-                <a
-                  href="#dubai-thailand"
-                  aria-label="Explore the Dubai and Thailand journey"
-                  className="mb-1 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/50 text-lg text-white transition hover:border-[#FCC000] hover:bg-[#FCC000] hover:text-black"
-                >
-                  ↘
-                </a>
-              </div>
-            </div>
-            <div className="relative z-10 flex flex-col justify-center py-3 lg:py-10">
+        <section className="relative isolate flex min-h-[min(780px,calc(100svh-var(--site-header-height)))] items-center overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
+          <Image
+            src="/images/international/dubai-thailand.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="absolute inset-0 -z-20 object-cover"
+          />
+          <video
+            className="absolute inset-0 -z-20 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/images/international/dubai-thailand.png"
+            aria-hidden="true"
+          >
+            <source src="/videos/beyond-pakistan.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 -z-10 bg-[linear-gradient(105deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.62)_52%,rgba(0,0,0,0.22)_100%),linear-gradient(0deg,rgba(0,0,0,0.42),transparent_48%)]" />
+          <div className="pointer-events-none absolute -right-40 -top-48 -z-10 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
+          <div className="relative mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
+            <div className="flex flex-col justify-center py-3 lg:py-10">
               <p className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.34em] text-[#FCC000]">
                 <span className="h-px w-10 bg-[#FCC000]" />
                 International journeys by Hodophile
@@ -595,26 +568,27 @@ export default function BeyondPakistanPage() {
                 </a>
               </div>
 
-              <div className="mt-11 grid max-w-xl grid-cols-3 border-t border-white/15 pt-5">
+            </div>
+
+            <div className="grid max-w-md grid-cols-3 gap-x-4 border-t border-white/20 pt-5 sm:gap-x-6 lg:mb-2 lg:max-w-none lg:grid-cols-1 lg:gap-y-5 lg:border-l lg:border-t-0 lg:border-[#FCC000]/60 lg:pl-6 lg:pt-0">
                 <div>
                   <p className="font-[var(--font-display)] text-2xl text-white sm:text-3xl">06</p>
-                  <p className="mt-1 text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-white/55 sm:text-[0.65rem]">
+                  <p className="mt-1 text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-white/70 sm:text-[0.65rem]">
                     Curated journeys
                   </p>
                 </div>
-                <div className="border-l border-white/15 pl-4 sm:pl-6">
+                <div className="border-l border-white/25 pl-4 sm:pl-6 lg:border-l-0 lg:pl-0">
                   <p className="font-[var(--font-display)] text-2xl text-white sm:text-3xl">PKR 170K</p>
-                  <p className="mt-1 text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-white/55 sm:text-[0.65rem]">
+                  <p className="mt-1 text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-white/70 sm:text-[0.65rem]">
                     Listed starting fare
                   </p>
                 </div>
-                <div className="border-l border-white/15 pl-4 sm:pl-6">
+                <div className="border-l border-white/25 pl-4 sm:pl-6 lg:border-l-0 lg:pl-0">
                   <p className="font-[var(--font-display)] text-2xl text-white sm:text-3xl">One team</p>
-                  <p className="mt-1 text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-white/55 sm:text-[0.65rem]">
+                  <p className="mt-1 text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-white/70 sm:text-[0.65rem]">
                     From planning to return
                   </p>
                 </div>
-              </div>
             </div>
           </div>
         </section>
