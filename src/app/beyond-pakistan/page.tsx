@@ -1,416 +1,715 @@
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl, whatsappUrl } from "@/lib/site";
 import { buildPageSchema } from "@/lib/seo/structured-data";
 
-type OfferRegion = "caucasus" | "mediterranean" | "asia" | "visa";
+type PackageSection = {
+  title: string;
+  items: string[];
+};
 
-type InternationalOffer = {
+type InternationalPackage = {
   id: string;
   name: string;
-  region: OfferRegion;
-  category: string;
+  region: string;
   duration: string;
-  dates: string;
-  travelers: string;
-  price?: string;
-  priceUnit?: string;
-  image: string;
-  imageAlt: string;
+  departure: string;
+  price: string;
+  image?: string;
+  imageAlt?: string;
+  artwork?: {
+    title: string;
+    route: string;
+  };
   summary: string;
-  availability: string;
   highlights: string[];
-  includes: string[];
+  sections: PackageSection[];
+  note?: string;
 };
 
-const offers: InternationalOffer[] = [
+const internationalPackages: InternationalPackage[] = [
   {
-    id: "baku-caspian-afterglow",
-    name: "Caspian Afterglow",
-    region: "caucasus",
-    category: "Baku group journey",
-    duration: "6 nights / 7 days",
-    dates: "20-26 July; year not stated",
-    travelers: "12 adults",
-    price: "PKR 315,000",
-    priceUnit: "per person",
-    image: "/images/package-cards/images__international__baku.webp",
-    imageAlt: "Baku waterfront architecture beside the Caspian Sea",
-    summary: "A week in Baku pairing the old city and modern skyline with day trips to Gabala, Shahdag, Absheron, and Gobustan.",
-    availability: "Year was not supplied; confirm current departure dates and rates.",
-    highlights: ["Qafqaz Hotel Baku, 4-star", "Standard double room", "English-speaking guide"],
-    includes: ["Six nights with daily breakfast", "FlyDubai itinerary as quoted", "Sprinter transfers and tours", "Gabala and Shahdag cable cars", "Baku, Absheron, and Gobustan tour tickets", "12 standard Azerbaijan visas"],
+    id: "dubai-thailand",
+    name: "Dubai + Thailand",
+    region: "United Arab Emirates · Thailand",
+    duration: "9 days · 8 nights",
+    departure: "25 Oct & 15 Nov · year to be confirmed",
+    price: "PKR 385,000",
+    image: "/images/international/dubai-thailand.png",
+    imageAlt: "Dubai and Thailand holiday highlights",
+    summary:
+      "A two-country escape combining Bangkok temples and island time with Dubai city highlights and an evening desert safari.",
+    highlights: ["4-star stays", "Thailand & Dubai e-visas", "Desert safari with BBQ dinner"],
+    sections: [
+      {
+        title: "Included",
+        items: [
+          "Airport meet and greet, pre-travel guidance, and 24/7 travel assistance",
+          "4-star hotels with daily breakfast and double, twin, or triple sharing",
+          "Thailand e-visa and Dubai e-visa",
+          "Airport, hotel, and sightseeing transportation",
+        ],
+      },
+      {
+        title: "Experiences",
+        items: [
+          "Bangkok temples tour with Gems Gallery",
+          "Coral Island speedboat tour with lunch",
+          "Dubai city tour with photo stops, including Dubai Mall and the Fountain Show",
+          "Desert safari with BBQ dinner and entertainment",
+        ],
+      },
+      {
+        title: "Flights & pricing",
+        items: [
+          "Karachi – Dubai – Bangkok – Dubai – Karachi",
+          "Adult: PKR 385,000 per person on double, twin, or triple sharing",
+          "Child with bed (6–12): PKR 365,000 · child without bed (2–6): PKR 295,000",
+          "Infant (1–23 months): PKR 110,000",
+        ],
+      },
+    ],
+    note: "Departure years were not included in the supplied package details. Confirm dates and live pricing before booking.",
   },
   {
-    id: "baku-family-caspian",
-    name: "Baku, Together",
-    region: "caucasus",
-    category: "Baku family escape",
-    duration: "4 hotel nights; 8-13 July 2026",
-    dates: "8-13 July 2026",
-    travelers: "2 adults + 2 children",
-    price: "PKR 280,000 adult / PKR 210,000 child",
-    priceUnit: "per person",
-    image: "/images/package-cards/images__international__baku.webp",
-    imageAlt: "Baku waterfront architecture beside the Caspian Sea",
-    summary: "A family Baku stay with city highlights, Shahdag, and the Absheron Peninsula, with flights and e-visas listed in the offer.",
-    availability: "The supplied departure has passed; ask for the next available dates.",
-    highlights: ["Qafqaz Baku City Hotel, 4-star", "Standard double + baby cot", "Shahdag cable car"],
-    includes: ["Return FlyDubai flights as listed", "Four hotel nights with breakfast", "Airport transfers and sedan transport", "Baku city, Shahdag, and Absheron tours", "Azerbaijan e-visas", "Listed entrance tickets"],
+    id: "china",
+    name: "The Amazing China",
+    region: "China",
+    duration: "Duration not specified",
+    departure: "30 Oct & 30 Nov · year to be confirmed",
+    price: "PKR 595,000",
+    image: "/images/international/china.png",
+    imageAlt: "China holiday highlights",
+    summary:
+      "A city-led China itinerary spanning Beijing and Shanghai, from the Great Wall and Forbidden City to the Bund and Huangpu River.",
+    highlights: ["4-star hotels", "China visa invitation letter", "Meals and sightseeing included"],
+    sections: [
+      {
+        title: "Accommodation & travel",
+        items: [
+          "4-star hotels, double or twin bedding, and complimentary water bottles",
+          "China visa with an invitation letter from a Chinese company",
+          "Thai Airways, Emirates, Qatar Airways, or a similar airline",
+          "Airport and sightseeing transportation",
+          "Daily breakfast, lunches, and dinners",
+        ],
+      },
+      {
+        title: "Sightseeing",
+        items: [
+          "Tiananmen Square, Forbidden City, Jingshan Park, and Nanluoguxiang Alley",
+          "Mutianyu Great Wall with cable car and shuttle bus",
+          "Olympic Bird’s Nest Stadium (outside view)",
+          "Yuyuan, Chenghuangmiao, Nanjing Road, and the Bund",
+          "Huangpu River Cruise, Oriental Pearl Tower, Wukang Road, and Tianzifang",
+        ],
+      },
+      {
+        title: "Pricing",
+        items: [
+          "Adult: PKR 595,000 per person on double or triple sharing",
+          "Child (6–12): PKR 570,000 · child without bed (2–6): PKR 495,000",
+          "Infant (1–23 months): PKR 145,000",
+          "The supplied sheet quotes a USD exchange rate of 280",
+        ],
+      },
+    ],
+    note: "The source does not state the departure year or trip duration. Confirm both, along with the final flight routing, before booking.",
   },
   {
-    id: "turkey-between-two-seas",
-    name: "Between Two Seas",
-    region: "mediterranean",
-    category: "Istanbul + Antalya",
-    duration: "7 nights / 8 days",
-    dates: "20-27 July 2026",
-    travelers: "2 adults",
-    price: "PKR 280,000",
-    priceUnit: "per person",
-    image: "/images/package-cards/images__international__istanbul.webp",
-    imageAlt: "Ferry crossing the Bosphorus with Istanbul's historic skyline",
-    summary: "An Istanbul and Antalya stay with a Bosphorus dinner cruise and a guided Princess Island day.",
-    availability: "The supplied departure has passed; ask for the next available dates.",
-    highlights: ["Istanbul + Antalya", "Daily breakfast", "Bosphorus dinner cruise"],
-    includes: ["Ramada by Wyndham Istanbul Taksim", "Best Western Plus Khan Hotel, Antalya", "Intercity transport tickets", "Airport transfers", "Tours and local tour transport", "Princess Island ferry and guide"],
+    id: "vietnam",
+    name: "Vietnam Grand Tour",
+    region: "Vietnam",
+    duration: "11 days",
+    departure: "15 Oct & 15 Nov · year to be confirmed",
+    price: "PKR 550,000",
+    image: "/images/international/vietnam.png",
+    imageAlt: "Vietnam holiday highlights",
+    summary:
+      "A multi-stop journey through Hanoi, Ha Long Bay, Da Nang, Hoi An, Phu Quoc, and Saigon, with an overnight cruise and domestic flights.",
+    highlights: ["4-star hotels", "Ha Long Bay overnight cruise", "Domestic flights and tours"],
+    sections: [
+      {
+        title: "Included",
+        items: [
+          "International and domestic flights, Vietnam e-visa, hotels, tours, and transfers",
+          "4-star hotels with daily breakfast, complimentary water, and double or twin bedding",
+          "Extra bed may be a mattress or sofa bed",
+          "Syrena Cruise for two days, with all cruise meals",
+          "Airport and sightseeing transportation",
+        ],
+      },
+      {
+        title: "Route highlights",
+        items: [
+          "Hanoi city sights, then Hoa Lu and a boat ride through Tam Coc in Ninh Binh",
+          "Ha Long Bay overnight cruise, Surprise Cave, Titov Island, and Luon Cave",
+          "Da Nang, Ba Na Hills, the Golden Bridge, Coconut Forest, and Hoi An Ancient Town",
+          "Phu Quoc’s VinWonders and Safari, followed by Cu Chi Tunnels and Saigon city sights",
+        ],
+      },
+      {
+        title: "Flights & pricing",
+        items: [
+          "Karachi or Lahore to Hanoi and return from Saigon via Dubai on Emirates",
+          "Domestic flights are listed for Hanoi–Da Nang, Da Nang–Phu Quoc, and Phu Quoc–Saigon",
+          "Adult: PKR 550,000 · child (6–12): PKR 510,000",
+          "Child without bed (2–6): PKR 390,000 · infant (1–23 months): PKR 170,000",
+        ],
+      },
+      {
+        title: "Day-by-day outline",
+        items: [
+          "Day 1: Arrive in Hanoi and visit Hoan Kiem Lake, Tran Quoc Pagoda, Train Street, and Dong Xuan Market",
+          "Day 2: Ninh Binh, Hoa Lu, and Tam Coc",
+          "Days 3–4: Ha Long Bay overnight cruise, then onward to Da Nang",
+          "Days 5–6: Ba Na Hills and Golden Bridge; Coconut Forest and Hoi An",
+          "Days 7–9: Fly to Phu Quoc, visit VinWonders and Safari, then continue to Saigon",
+          "Day 10: Cu Chi Tunnels and Saigon city sights",
+          "Day 11: Depart for home",
+        ],
+      },
+    ],
+    note: "The supplied itinerary conflicts on the Da Nang–Phu Quoc flight and overnight locations for days 7–9. Ask for a corrected day-by-day itinerary before confirming.",
   },
   {
-    id: "malaysia-straits-to-shoreline",
-    name: "Straits to Shoreline",
-    region: "asia",
-    category: "Langkawi + Kuala Lumpur",
-    duration: "6 nights / 7 days",
-    dates: "21-28 July 2026",
-    travelers: "12 adults",
-    price: "PKR 370,000",
-    priceUnit: "per person",
-    image: "/images/package-cards/images__international__langkawi.webp",
-    imageAlt: "Green Langkawi island rising above the blue Andaman Sea",
-    summary: "A two-stop Malaysia group holiday combining Langkawi's island tours with Kuala Lumpur and Genting Highlands.",
-    availability: "The supplied departure has passed; ask for the next available dates.",
-    highlights: ["3 nights Langkawi + 3 nights Kuala Lumpur", "Batik Air return flights", "12-person group"],
-    includes: ["Return Batik Air flights with 20 kg baggage as listed", "Nadias Hotel Cenang Beach Langkawi", "Grand Mercure Bukit Bintang Kuala Lumpur", "Daily breakfast", "Airport transfers and private transportation", "Kuala Lumpur, Genting, Batu Caves, and Langkawi tours"],
+    id: "thailand-malaysia-sri-lanka",
+    name: "Thailand · Malaysia · Sri Lanka",
+    region: "Thailand · Malaysia · Sri Lanka",
+    duration: "Duration not specified",
+    departure: "26 Oct · year to be confirmed",
+    price: "PKR 399,000",
+    image: "/images/international/thailand-malaysia-sri-lanka.png",
+    imageAlt: "Thailand, Malaysia, and Sri Lanka holiday highlights",
+    summary:
+      "A three-country group departure pairing Colombo and Kuala Lumpur with Bangkok, Genting Highlands, and Coral Island.",
+    highlights: ["3- and 4-star hotels", "Three e-visas", "Genting cable car & Coral Island"],
+    sections: [
+      {
+        title: "Included",
+        items: [
+          "Airport meet and greet, pre-travel guidance, and 24/7 travel assistance",
+          "3- or 4-star hotels, daily breakfast, and double, twin, or triple sharing",
+          "Malaysia and Thailand e-visas; Sri Lanka e-visa (listed as 48-hour processing)",
+          "Airport, hotel, and sightseeing transportation",
+        ],
+      },
+      {
+        title: "Experiences",
+        items: [
+          "Colombo and Kuala Lumpur city tours",
+          "Genting Highlands full-day tour with return cable car",
+          "Batu Caves photo stop",
+          "Bangkok temples tour with Gems Gallery",
+          "Coral Island speedboat tour with lunch",
+        ],
+      },
+      {
+        title: "Flights & pricing",
+        items: [
+          "SriLankan Airlines routing is listed via Colombo, Kuala Lumpur, and Bangkok; Kuala Lumpur–Bangkok on a domestic airline",
+          "Adult: PKR 399,000 per person on double or triple sharing",
+          "Child with bed (6–12): PKR 379,000 · child without bed (2–6): PKR 325,000",
+          "Infant (1–23 months): PKR 110,000",
+        ],
+      },
+    ],
+    note: "The departure year, duration, and exact flight sequence are not clear in the supplied details. Confirm the final itinerary and price before booking.",
   },
   {
-    id: "malaysia-bali-thailand-tri-nation",
-    name: "Three Countries, One Journey",
-    region: "asia",
-    category: "Malaysia + Bali + Thailand",
-    duration: "12 days",
-    dates: "Departure 12 July; year not stated",
-    travelers: "6 adults; 2 triple-sharing rooms",
-    image: "/images/package-cards/images__international__bali.webp",
-    imageAlt: "Green rice terraces and Mount Agung in Bali at dawn",
-    summary: "A multi-country itinerary split across Malaysia, Bali, and Thailand, with four days allocated to each country.",
-    availability: "Year, exact city route, and current departure dates need confirmation.",
-    highlights: ["4 days per country", "Return air tickets", "Hotels with breakfast"],
-    includes: ["Return air tickets", "Visa as stated in the offer", "Hotel accommodation with breakfast", "Dinner", "Transportation and transfers"],
+    id: "istanbul-antalya",
+    name: "Istanbul + Antalya",
+    region: "Türkiye",
+    duration: "6 days · 5 nights",
+    departure: "25 Sep 2026 · listed departure has passed",
+    price: "PKR 295,000*",
+    image: "/images/international/istanbul-antalya.png",
+    imageAlt: "Istanbul and Antalya holiday highlights",
+    summary:
+      "An Istanbul and Antalya escape listed in the supplied package sheet, pending a corrected itinerary and current quote.",
+    highlights: ["Istanbul + Antalya", "6 days / 5 nights", "Request updated departure"],
+    sections: [
+      {
+        title: "Details to confirm",
+        items: [
+          "The sheet lists a 6-day, 5-night Istanbul + Antalya package and a starting figure of PKR 295,000",
+          "The listed departure date, 25 September 2026, has passed",
+          "The remaining accommodation, visa, flight, and sightseeing text describes Baku and Umrah travel rather than Türkiye",
+          "The detailed sharing prices also conflict with the headline starting figure",
+        ],
+      },
+    ],
+    note: "The price and inclusions are not reliable enough to present as a current offer. Request a corrected Türkiye itinerary, new dates, and written quotation.",
   },
   {
-    id: "antalya-coast-and-current",
-    name: "Antalya: Coast & Current",
-    region: "mediterranean",
-    category: "Antalya touring package",
-    duration: "Dates and duration to be confirmed",
-    dates: "Not supplied",
-    travelers: "Ask for current group options",
-    price: "PKR 280,000",
-    priceUnit: "per person; reconfirm inclusions",
-    image: "/images/package-cards/images__international__istanbul.webp",
-    imageAlt: "Turkish coastal-city travel inspiration",
-    summary: "An Antalya offer listing a city cruise, waterfalls, rafting, sightseeing, accommodation, and transfers.",
-    availability: "The source did not specify travel dates, duration, hotel, or flight details.",
-    highlights: ["Antalya city tour", "Cruise and waterfalls", "Rafting adventure"],
-    includes: ["Hotel accommodation with daily breakfast", "Intercity transport tickets", "Airport transfers", "Tours and excursions as mentioned", "Tour transportation and sightseeing"],
-  },
-  {
-    id: "kuala-lumpur-thailand-two-shores",
-    name: "Two Capitals, Two Shores",
-    region: "asia",
-    category: "Kuala Lumpur + Pattaya + Bangkok",
-    duration: "8 nights / 9 days",
-    dates: "1-9 August; year not stated",
-    travelers: "1 person",
-    price: "PKR 300,000",
-    priceUnit: "per person",
-    image: "/images/package-cards/images__international__bangkok.webp",
-    imageAlt: "White marble temple architecture in Bangkok",
-    summary: "A solo-friendly route with city stays in Kuala Lumpur, Pattaya, and Bangkok, plus cable cars, island hopping, and a dinner cruise.",
-    availability: "Year was not supplied; confirm dates, flights, and visa documentation requirements.",
-    highlights: ["3 nights Kuala Lumpur", "2 nights Pattaya", "3 nights Bangkok"],
-    includes: ["Hotel stays with breakfast", "Visa on documentation basis", "Genting Highlands and Kuala Lumpur tours", "Pattaya island-hopping tour", "Chao Phraya dinner cruise", "Tours and transfers"],
-  },
-  {
-    id: "malaysia-island-highlands-edit",
-    name: "The Island & Highlands Edit",
-    region: "asia",
-    category: "Langkawi + Genting + Kuala Lumpur",
-    duration: "8 nights / 9 days as supplied",
-    dates: "27 July-7 August 2026",
-    travelers: "2 guests stated; room allocation needs confirmation",
+    id: "uzbekistan",
+    name: "Uzbekistan Promo",
+    region: "Uzbekistan",
+    duration: "5 days · 4 nights",
+    departure: "Every Sunday from Karachi",
     price: "PKR 170,000",
-    priceUnit: "per person",
-    image: "/images/package-cards/images__international__langkawi.webp",
-    imageAlt: "Langkawi island and sea viewed from above",
-    summary: "A Malaysia stay spanning Langkawi, Genting Highlands, and Kuala Lumpur, with theme-park, cable-car, and city excursions.",
-    availability: "The date span, stated duration, and room count conflict in the supplied offer; reconfirm before booking.",
-    highlights: ["Langkawi + Genting + Kuala Lumpur", "Breakfast included", "Sunway Lagoon tickets listed"],
-    includes: ["Hotel accommodation", "Daily breakfast", "Private airport transfers", "Tours and entrance tickets as mentioned", "Genting cable car tickets", "Taxes and service charges; tourism tax excluded"],
-  },
-  {
-    id: "thailand-four-shores",
-    name: "Four Shores of Thailand",
-    region: "asia",
-    category: "Phuket + Krabi + Pattaya + Bangkok",
-    duration: "8 nights / 9 days",
-    dates: "Not supplied",
-    travelers: "Ask for current group options",
-    price: "PKR 200,000",
-    priceUnit: "per person",
-    image: "/images/package-cards/images__international__bangkok.webp",
-    imageAlt: "Ornate marble temple in Bangkok, Thailand",
-    summary: "A four-city Thailand circuit with island excursions, local sightseeing, and a Chao Phraya dinner cruise.",
-    availability: "Price and travel dates were not included in the supplied offer.",
-    highlights: ["2 nights each in four cities", "Phi Phi + Four Islands tours", "Bangkok temples and dinner cruise"],
-    includes: ["Thailand tourist visa", "Eight hotel nights", "Daily breakfast", "Airport transfers", "Tours as mentioned"],
-  },
-  {
-    id: "dubai-family-visa",
-    name: "UAE Family Visa Assistance",
-    region: "visa",
-    category: "Visa service; not a tour package",
-    duration: "30-day visa application",
-    dates: "Application timing to be confirmed",
-    travelers: "Eligible family members only",
-    price: "PKR 110,000",
-    priceUnit: "per person",
-    image: "/images/package-cards/images__international__dubai.webp",
-    imageAlt: "Burj Khalifa above Dubai's illuminated skyline",
-    summary: "A UAE family-visa service described as a done-base family visa and offered only to trusted clients.",
-    availability: "Eligibility and visa approval are not guaranteed; confirm current requirements with the team.",
-    highlights: ["Husband and wife", "Parents with children under 18", "Trusted clients only"],
-    includes: ["Application support for eligible family members", "Passport pages, CNIC, recent photo, and FRC listed as required documents"],
-  },
-  {
-    id: "malaysia-family-island-skyline",
-    name: "Island & Skyline: A Family Escape",
-    region: "asia",
-    category: "Malaysia family journey",
-    duration: "8 nights / 9 days",
-    dates: "4-12 September 2026",
-    travelers: "2 adults + 1 child",
-    image: "/images/package-cards/images__international__langkawi.webp",
-    imageAlt: "Langkawi island framed by sea and green hills",
-    summary: "A family stay split between Langkawi and Kuala Lumpur with island tours, a city visit, and Genting Highlands.",
-    availability: "The supplied departure has passed; price was not included. Request a refreshed family quote.",
-    highlights: ["4 nights Langkawi + 4 nights Kuala Lumpur", "Family accommodation", "Malaysia e-visa listed"],
-    includes: ["Intercity flights", "Hotel accommodation with breakfast", "Malaysia e-visa", "Airport transfers", "Langkawi island hopping and grand tour", "Kuala Lumpur and Genting tours"],
-  },
-  {
-    id: "bali-island-stillness",
-    name: "Bali in Stillness",
-    region: "asia",
-    category: "Seminyak + Ubud",
-    duration: "6 days / 5 nights as supplied",
-    dates: "1-8 October 2026",
-    travelers: "5 adults; 2 rooms",
-    price: "PKR 375,000",
-    priceUnit: "per person; PKR 1,875,000 total for 5 adults",
-    image: "/images/package-cards/images__international__bali.webp",
-    imageAlt: "Bali rice terraces beneath Mount Agung at sunrise",
-    summary: "A Seminyak and Ubud stay with Uluwatu, Nusa Penida, Kintamani, rice terraces, and waterfall touring.",
-    availability: "Confirm the date span against the five hotel nights listed before booking.",
-    highlights: ["3 nights Seminyak + 2 nights Ubud", "Breakfast included", "Nusa Penida day tour"],
-    includes: ["Batik Air flights as listed", "Ramada Seminyak and Ubud Raya Villa", "Watersports and Uluwatu visit", "West Nusa Penida tour with lunch", "Ubud touring and airport transfer"],
-  },
-  {
-    id: "bangkok-city-of-gold",
-    name: "Bangkok, After Dark",
-    region: "asia",
-    category: "Bangkok solo stay",
-    duration: "Dates and duration to be confirmed",
-    dates: "24 October-1 November; year not stated",
-    travelers: "1 adult",
-    price: "PKR 200,000",
-    priceUnit: "total package price as supplied",
-    image: "/images/package-cards/images__international__bangkok.webp",
-    imageAlt: "Bangkok's white marble temple framed by decorative stonework",
-    summary: "A Bangkok city stay with Safari World, Siam Amazing Park, and an evening Chao Phraya cruise.",
-    availability: "Year and duration were not supplied; confirm the single-traveler total and availability.",
-    highlights: ["KC Place Hotel Pratunam", "Breakfast included", "Thailand e-visa listed"],
-    includes: ["Hotel accommodation", "Daily breakfast", "Airport transfers", "Safari World and Marine Park with lunch", "Siam Amazing Park with lunch and rides", "Chao Phraya Princess dinner cruise"],
-  },
-  {
-    id: "thailand-city-to-coast",
-    name: "Thailand: City to Coast",
-    region: "asia",
-    category: "Bangkok + Pattaya + Phuket",
-    duration: "Dates and duration to be confirmed",
-    dates: "Hotel dates listed as 1-11 October; year not stated",
-    travelers: "2 adults + 1 infant",
-    price: "PKR 365,000",
-    priceUnit: "per person",
-    image: "/images/package-cards/images__international__bangkok.webp",
-    imageAlt: "Bangkok temple architecture for a Thailand city and coast itinerary",
-    summary: "A Thailand stay across Bangkok, Pattaya, and Phuket with island tours, wildlife attractions, temples, and a dinner cruise.",
-    availability: "Year, exact duration, flight arrangements, and infant pricing need confirmation.",
-    highlights: ["Three hotel stops", "Phi Phi + James Bond Island tours", "Safari World and city sightseeing"],
-    includes: ["Airport transfers", "Hotel accommodation", "Tours as listed", "National park fees listed separately are excluded"],
+    image: "/images/international/uzbekistan.png",
+    imageAlt: "Uzbekistan holiday highlights",
+    summary:
+      "A short Tashkent escape with a city tour, landmark architecture, and a mix of private airport transfers and shared sightseeing.",
+    highlights: ["4-star hotels", "Centrum Airways", "Tashkent city tour"],
+    sections: [
+      {
+        title: "Included",
+        items: [
+          "Airport meet and greet, pre-travel guidance, hotel accommodation, tours, and transfers",
+          "4-star hotels with double or triple bedrooms and daily breakfast",
+          "Uzbekistan sticker visa",
+          "Centrum Airways international tickets: Karachi–Tashkent–Karachi",
+          "Tashkent return airport transfers on a private basis; city tour on a shared basis",
+        ],
+      },
+      {
+        title: "Tashkent sightseeing",
+        items: [
+          "Panoramic views from the TV Tower",
+          "Minor Mosque and Monument of Courage",
+          "Kosmonavtiar Station and Chorsu Bazaar",
+          "Hazrati Imam Complex",
+        ],
+      },
+      {
+        title: "Pricing",
+        items: ["PKR 170,000 per person, as quoted in the supplied package details"],
+      },
+    ],
+    note: "Confirm Sunday availability, visa requirements, flight schedule, and current pricing before booking.",
   },
 ];
 
-const regions: { id: OfferRegion; label: string; intro: string }[] = [
-  { id: "caucasus", label: "Caucasus", intro: "Caspian city breaks, family escapes, and architecture-rich itineraries." },
-  { id: "mediterranean", label: "Mediterranean", intro: "Turkey stays blending historic cities, coastal time, and guided touring." },
-  { id: "asia", label: "Asia-Pacific", intro: "Island stays, Southeast Asian city pairings, and multi-country journeys." },
-  { id: "visa", label: "Visa Services", intro: "A separate application-support service; visa approval is always subject to the relevant authorities." },
-];
+const pageTitle = "Beyond Pakistan | International Holiday Packages";
+const pageDescription =
+  "Explore curated international holiday packages from Pakistan, with departures to Dubai, Thailand, China, Vietnam, Sri Lanka, Türkiye, and Uzbekistan.";
 
 export const metadata: Metadata = {
-  title: "Beyond Pakistan | International Holiday Packages",
-  description: "Explore curated international holiday packages from Pakistan, including Baku, Turkey, Malaysia, Bali, Thailand, and Dubai visa assistance.",
-  alternates: { canonical: "/beyond-pakistan" },
+  title: pageTitle,
+  description: pageDescription,
+  alternates: {
+    canonical: "/beyond-pakistan",
+  },
   openGraph: {
-    title: "Beyond Pakistan | International Holiday Packages",
-    description: "Thoughtfully arranged international journeys for Pakistani travelers.",
+    title: pageTitle,
+    description: pageDescription,
     url: absoluteUrl("/beyond-pakistan"),
+    images: ["/images/international/dubai-thailand.png"],
   },
 };
 
-function OfferCard({ offer }: { offer: InternationalOffer }) {
-  const inquiry = `Hello Hodophile, please share current dates, availability, and a confirmed quote for ${offer.name}.`;
-
+function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number }) {
   return (
-    <article id={offer.id} className="group flex h-full scroll-mt-28 flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-[0_16px_40px_rgba(25,22,16,0.07)] transition duration-300 hover:-translate-y-1 hover:border-[#d9a407]/60 hover:shadow-[0_24px_55px_rgba(25,22,16,0.12)]">
-      <div className="relative aspect-[16/10] overflow-hidden bg-stone-200">
-        <Image src={offer.image} alt={offer.imageAlt} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10" />
-        <span className="absolute left-4 top-4 rounded-full border border-white/50 bg-black/35 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-sm">{offer.category}</span>
-        <span className="absolute bottom-4 left-4 text-xs font-medium text-white/90">{offer.duration}</span>
+    <article
+      id={pkg.id}
+      className="group scroll-mt-28 overflow-hidden rounded-[1.25rem] border border-[#e4dece] bg-[#fffefa] shadow-[0_18px_55px_rgba(20,18,12,0.06)] transition duration-500 hover:-translate-y-1 hover:border-[#c7a32a] hover:shadow-[0_28px_70px_rgba(20,18,12,0.12)]"
+    >
+      <div className="relative h-72 overflow-hidden bg-[#161616] sm:h-[22rem]">
+        {pkg.image ? (
+          <Image
+            src={pkg.image}
+            alt={pkg.imageAlt ?? ""}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover transition duration-1000 group-hover:scale-[1.06]"
+          />
+        ) : (
+          <div className="absolute inset-0 overflow-hidden bg-[#141923]">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_20%,rgba(206,170,75,0.3),transparent_35%),linear-gradient(135deg,#111723,#2b3140_62%,#71603f)]" />
+            <div className="absolute -right-14 top-8 h-64 w-64 rounded-full border border-white/10 transition duration-700 group-hover:scale-110" />
+            <div className="absolute right-2 top-20 h-48 w-48 rounded-full border border-white/10" />
+            <div className="absolute inset-x-8 top-[43%] h-px bg-gradient-to-r from-transparent via-[#FCC000]/70 to-transparent" />
+            <div className="absolute inset-x-8 top-[43%] h-20 -translate-y-1/2 border-x border-[#FCC000]/20" />
+            <div className="absolute inset-x-0 top-8 text-center font-[var(--font-display)] text-[0.62rem] uppercase tracking-[0.42em] text-white/45">
+              A Hodophile route
+            </div>
+            <div className="absolute inset-x-7 top-1/2 -translate-y-1/2 text-center">
+              <p className="font-[var(--font-display)] text-3xl leading-tight text-white sm:text-4xl">
+                {pkg.artwork?.title}
+              </p>
+              <p className="mx-auto mt-3 max-w-sm text-[0.62rem] uppercase leading-5 tracking-[0.2em] text-white/55">
+                {pkg.artwork?.route}
+              </p>
+            </div>
+          </div>
+        )}
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.26)_0%,transparent_28%,rgba(0,0,0,0.05)_48%,rgba(0,0,0,0.82)_100%)]" />
+        <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 sm:p-6">
+          <span className="rounded-full border border-white/30 bg-black/25 px-3.5 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
+            {pkg.region}
+          </span>
+          <span className="font-[var(--font-display)] text-sm tracking-[0.18em] text-white/80">
+            {String(index + 1).padStart(2, "0")} <span className="text-[#FCC000]">/ 06</span>
+          </span>
+        </div>
+        <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/70">{pkg.duration}</p>
+          <h3 className="mt-2 font-[var(--font-display)] text-4xl leading-[1.02] tracking-[-0.02em] sm:text-[2.8rem]">
+            {pkg.name}
+          </h3>
+          <p className="mt-3 text-sm font-medium text-white/85">
+            From <span className="text-[#FCC000]">{pkg.price}</span>
+          </p>
+        </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <h3 className="font-serif text-2xl leading-tight text-stone-950">{offer.name}</h3>
-        <p className="mt-3 text-sm leading-6 text-stone-600">{offer.summary}</p>
+      <div className="p-6 sm:p-8">
+        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#806700]">
+          The journey
+        </p>
+        <p className="mt-3 text-[0.96rem] leading-7 text-stone-600">{pkg.summary}</p>
 
-        <dl className="mt-5 grid grid-cols-2 gap-x-3 gap-y-4 border-y border-stone-200 py-4 text-xs">
-          <div>
-            <dt className="uppercase tracking-[0.12em] text-stone-500">Dates</dt>
-            <dd className="mt-1.5 font-medium leading-5 text-stone-800">{offer.dates}</dd>
-          </div>
-          <div>
-            <dt className="uppercase tracking-[0.12em] text-stone-500">Travelers</dt>
-            <dd className="mt-1.5 font-medium leading-5 text-stone-800">{offer.travelers}</dd>
-          </div>
-          <div className="col-span-2">
-            <dt className="uppercase tracking-[0.12em] text-stone-500">Availability</dt>
-            <dd className="mt-1.5 leading-5 text-stone-700">{offer.availability}</dd>
-          </div>
-        </dl>
+        <ul className="mt-6 flex flex-wrap gap-2">
+          {pkg.highlights.map((highlight) => (
+            <li
+              key={highlight}
+              className="rounded-full border border-stone-200 bg-[#f8f6f0] px-3.5 py-2 text-xs font-medium text-stone-700"
+            >
+              {highlight}
+            </li>
+          ))}
+        </ul>
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          {offer.highlights.map((highlight) => <span key={highlight} className="rounded-full bg-[#f6f3ea] px-3 py-1.5 text-xs text-stone-700">{highlight}</span>)}
-        </div>
-
-        <details className="mt-5 border-t border-stone-200 pt-4">
-          <summary className="cursor-pointer text-sm font-semibold text-stone-800 marker:text-[#9a7600]">View listed inclusions</summary>
-          <ul className="mt-3 grid gap-2 text-sm leading-5 text-stone-600">
-            {offer.includes.map((item) => <li key={item} className="flex gap-2"><span className="text-[#9a7600]" aria-hidden="true">+</span><span>{item}</span></li>)}
-          </ul>
+        <details className="group/details mt-7 border-t border-stone-200 pt-5">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-stone-900 marker:content-none">
+            <span className="transition group-open/details:text-[#806700]">Discover the details</span>
+            <span
+              aria-hidden="true"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-300 text-lg transition group-open/details:rotate-45 group-open/details:border-[#c69a00]"
+            >
+              +
+            </span>
+          </summary>
+          <div className="mt-6 space-y-6">
+            <div className="flex items-start justify-between gap-5 border-l-2 border-[#c69a00] bg-[#f8f6f0] px-4 py-3">
+              <div>
+                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-stone-500">
+                  Departure
+                </p>
+                <p className="mt-1 text-sm font-medium leading-6 text-stone-800">{pkg.departure}</p>
+              </div>
+              <div className="shrink-0 text-right">
+                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-stone-500">
+                  Listed from
+                </p>
+                <p className="mt-1 font-[var(--font-display)] text-xl text-stone-950">{pkg.price}</p>
+              </div>
+            </div>
+            {pkg.sections.map((section, sectionIndex) => (
+              <section key={section.title}>
+                <div className="flex items-center gap-3">
+                  <span className="font-[var(--font-display)] text-sm text-[#b08b16]">
+                    {String(sectionIndex + 1).padStart(2, "0")}
+                  </span>
+                  <h4 className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-stone-800">
+                    {section.title}
+                  </h4>
+                </div>
+                <ul className="mt-3 space-y-2.5 pl-7">
+                  {section.items.map((item) => (
+                    <li key={item} className="flex gap-3 text-sm leading-6 text-stone-600">
+                      <span aria-hidden="true" className="mt-[0.65rem] h-1 w-1 shrink-0 rounded-full bg-[#c69a00]" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+            {pkg.note ? (
+              <p className="rounded-xl border border-[#e9dba9] bg-[#fff9e5] px-4 py-3.5 text-sm leading-6 text-stone-700">
+                <span className="font-semibold text-[#6e590d]">A note before you go: </span>
+                {pkg.note}
+              </p>
+            ) : null}
+          </div>
         </details>
 
-        <div className="mt-auto pt-5">
-          <div className="flex min-h-14 items-end justify-between gap-3 border-t border-stone-200 pt-4">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-500">Package price</p>
-              <p className="mt-1 text-lg font-bold text-stone-950">{offer.price ?? "Request a quote"}</p>
-              {offer.priceUnit ? <p className="mt-0.5 text-xs text-stone-500">{offer.priceUnit}</p> : null}
-            </div>
-            <a href={whatsappUrl(inquiry)} target="_blank" rel="noopener noreferrer" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#0b0b0b] px-4 py-3 text-xs font-semibold !text-white transition hover:bg-[#292929] hover:!text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d9a407]">
-              Enquire
-            </a>
-          </div>
+        <div className="mt-6 flex flex-col gap-3 border-t border-stone-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs leading-5 text-stone-500">
+            Dates and fares confirmed with our team
+          </p>
+          <a
+            href={whatsappUrl(`Hi Hodophile, I would like to request this tour: ${pkg.name}. Please share the current dates, availability, and booking details.`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-3 rounded-full bg-[#11110f] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#FCC000] hover:text-black"
+          >
+            Request this tour
+            <span aria-hidden="true" className="text-base text-[#FCC000] transition group-hover:text-black">↗</span>
+          </a>
         </div>
       </div>
     </article>
   );
 }
 
+function JourneyPlanning() {
+  const steps = [
+    {
+      number: "01",
+      title: "Find your somewhere",
+      description: "Choose a journey that feels right for your dates, pace, and travel party.",
+    },
+    {
+      number: "02",
+      title: "Make it yours",
+      description: "We’ll confirm the latest itinerary, availability, inclusions, and fare with you.",
+    },
+    {
+      number: "03",
+      title: "Set off with clarity",
+      description: "Travel with the details agreed in advance and a team ready to assist.",
+    },
+  ];
+
+  return (
+    <section className="bg-[#f4f1eb] px-5 py-16 sm:px-8 lg:px-14 lg:py-24">
+      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#806700]">
+            From here to there
+          </p>
+          <h2 className="mt-4 max-w-md font-[var(--font-display)] text-4xl leading-[1.08] tracking-[-0.025em] text-stone-950 sm:text-5xl">
+            The details matter. We make room for the wonder.
+          </h2>
+          <p className="mt-5 max-w-md text-sm leading-7 text-stone-600">
+            Every departure has its own particulars. We help you understand them before you decide,
+            so the experience can begin with confidence.
+          </p>
+        </div>
+        <ol className="divide-y divide-stone-300 border-y border-stone-300">
+          {steps.map((step) => (
+            <li key={step.number} className="grid gap-3 py-6 sm:grid-cols-[3.5rem_1fr] sm:gap-5">
+              <span className="font-[var(--font-display)] text-2xl text-[#b08b16]">{step.number}</span>
+              <div>
+                <h3 className="font-[var(--font-display)] text-2xl text-stone-950">{step.title}</h3>
+                <p className="mt-2 max-w-xl text-sm leading-6 text-stone-600">{step.description}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
 export default function BeyondPakistanPage() {
   return (
-    <PageShell wide>
-      <JsonLd data={buildPageSchema({
-        title: "Beyond Pakistan | International Holiday Packages",
-        description: "Curated international holiday packages from Pakistan.",
-        url: "/beyond-pakistan",
-        breadcrumbs: [
-          { name: "Home", url: "/" },
-          { name: "Beyond Pakistan", url: "/beyond-pakistan" },
-        ],
-      })} />
-
-      <section className="relative left-1/2 h-[66svh] min-h-[31rem] max-h-[42rem] w-screen -translate-x-1/2 overflow-hidden bg-stone-950">
-        <Image src="/images/package-cards/images__international__baku.webp" alt="Baku's waterfront skyline on the Caspian Sea" fill priority sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,8,8,0.76)_0%,rgba(8,8,8,0.36)_60%,rgba(8,8,8,0.12)_100%)]" />
-        <div className="relative z-10 mx-auto flex h-full max-w-[96rem] flex-col justify-end px-5 pb-10 pt-24 text-white sm:px-8 sm:pb-14 lg:px-14">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#fcc000]">International journeys by Hodophile</p>
-          <h1 className="mt-4 max-w-4xl font-serif text-5xl leading-[0.98] sm:text-6xl lg:text-7xl">Beyond Pakistan</h1>
-          <p className="mt-5 max-w-2xl text-sm leading-7 text-white/85 sm:text-base">From the Caspian coast to Southeast Asia, discover considered journeys with flights, stays, and experiences brought together by one local team.</p>
-          <a href="#journeys" className="mt-7 inline-flex w-fit items-center border-b border-[#fcc000] pb-2 text-sm font-semibold text-white transition hover:text-[#fcc000]">Explore international packages</a>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 pb-3 pt-10 sm:px-6 lg:px-8" aria-label="International collection overview">
-        <div className="grid gap-4 border-b border-stone-200 pb-8 sm:grid-cols-[1fr_auto] sm:items-end">
-          <div className="max-w-3xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-[#8b6b00]">A wider world, thoughtfully planned</p>
-            <h2 className="mt-3 font-serif text-3xl leading-tight text-stone-950 sm:text-4xl">Choose a journey that feels like yours.</h2>
-            <p className="mt-3 text-sm leading-6 text-stone-600">Browse the international offers currently shared with our team. Dates and rates are subject to availability; some source details need reconfirmation before booking.</p>
-          </div>
-          <p className="text-sm font-medium text-stone-600"><span className="text-2xl font-semibold text-stone-950">{offers.length}</span> curated offers</p>
-        </div>
-        <nav aria-label="International package regions" className="flex flex-wrap gap-2 pt-5">
-          {regions.map((region) => <a key={region.id} href={`#${region.id}`} className="rounded-full border border-stone-300 px-4 py-2 text-xs font-semibold text-stone-700 transition hover:border-[#d9a407] hover:bg-[#fff8df] hover:text-stone-950">{region.label}</a>)}
-        </nav>
-      </section>
-
-      <div id="journeys" className="mx-auto max-w-7xl px-4 pb-16 pt-7 sm:px-6 lg:px-8">
-        {regions.map((region) => {
-          const regionOffers = offers.filter((offer) => offer.region === region.id);
-          if (regionOffers.length === 0) return null;
-
-          return (
-            <section key={region.id} id={region.id} className="scroll-mt-28 py-8" aria-labelledby={`${region.id}-heading`}>
-              <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-stone-200 pb-5">
+    <PageShell wide noTopPadding>
+      <JsonLd
+        data={buildPageSchema({
+          title: pageTitle,
+          description: pageDescription,
+          url: "/beyond-pakistan",
+          breadcrumbs: [
+            { name: "Home", url: "/" },
+            { name: "Beyond Pakistan", url: "/beyond-pakistan" },
+          ],
+        })}
+      />
+      <div className="-mx-4 overflow-hidden md:-mx-6 lg:-mx-10 xl:-mx-14">
+        <section className="relative isolate min-h-[min(780px,calc(100svh-var(--site-header-height)))] overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:min-h-0 lg:px-14 lg:py-10">
+          <div className="pointer-events-none absolute -right-40 -top-48 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
+          <div className="relative mx-auto grid w-full max-w-7xl gap-9 lg:min-h-[min(720px,calc(100svh-var(--site-header-height)))] lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-12">
+            <div className="group/hero absolute inset-0 z-0 overflow-hidden lg:relative lg:col-start-2 lg:row-start-1 lg:h-[min(660px,calc(100svh-var(--site-header-height)-40px))] lg:min-h-[34rem] lg:overflow-hidden lg:rounded-[1.25rem] lg:border lg:border-white/10">
+              <Image
+                src="/images/international/dubai-thailand.png"
+                alt="Dubai and Thailand holiday highlights"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 55vw"
+                className="object-cover transition duration-1000 group-hover/hero:scale-[1.03]"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(0,0,0,0.92)_0%,rgba(0,0,0,0.72)_55%,rgba(0,0,0,0.22)_100%)] lg:bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_15%,rgba(0,0,0,0.02)_42%,rgba(0,0,0,0.72)_100%)]" />
+              <div className="absolute inset-x-0 top-0 hidden items-center justify-between p-5 sm:p-7 lg:flex">
+                <span className="rounded-full border border-white/30 bg-black/25 px-3.5 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
+                  A two-country escape
+                </span>
+                <span className="font-[var(--font-display)] text-sm tracking-[0.18em] text-white">
+                  01 <span className="text-[#FCC000]">/ 06</span>
+                </span>
+              </div>
+              <div className="absolute inset-x-0 bottom-0 hidden items-end justify-between gap-5 p-6 sm:p-8 lg:flex">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[#8b6b00]">{regionOffers.length} {regionOffers.length === 1 ? "offer" : "offers"}</p>
-                  <h2 id={`${region.id}-heading`} className="mt-2 font-serif text-3xl text-stone-950">{region.label}</h2>
-                  <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">{region.intro}</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/70">
+                    City lights. Island mornings.
+                  </p>
+                  <p className="mt-2 font-[var(--font-display)] text-3xl text-white sm:text-4xl">
+                    Dubai <span className="text-[#FCC000]">+</span> Thailand
+                  </p>
+                </div>
+                <a
+                  href="#dubai-thailand"
+                  aria-label="Explore the Dubai and Thailand journey"
+                  className="mb-1 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/50 text-lg text-white transition hover:border-[#FCC000] hover:bg-[#FCC000] hover:text-black"
+                >
+                  ↘
+                </a>
+              </div>
+            </div>
+            <div className="relative z-10 flex flex-col justify-center py-3 lg:py-10">
+              <p className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.34em] text-[#FCC000]">
+                <span className="h-px w-10 bg-[#FCC000]" />
+                International journeys by Hodophile
+              </p>
+              <h1 className="mt-6 font-[var(--font-display)] text-6xl leading-[0.94] tracking-[-0.04em] sm:text-7xl lg:text-[6rem] xl:text-[6.5rem]">
+                Beyond
+                <span className="mt-2 block text-[#FCC000]">Pakistan.</span>
+              </h1>
+              <p className="mt-7 max-w-xl text-base leading-8 text-white/75 sm:text-lg">
+                Thoughtfully arranged escapes across Asia and beyond, with clear inclusions,
+                considered details, and a Hodophile team beside you from departure to return.
+              </p>
+              <div className="mt-9 flex flex-wrap gap-3">
+                <a
+                  href="#packages"
+                  className="inline-flex items-center justify-center rounded-full bg-[#FCC000] px-6 py-3.5 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:bg-[#ffda4d]"
+                >
+                  Explore the collection
+                </a>
+                <a
+                  href={whatsappUrl("Hi Hodophile, I would like help choosing an international holiday package.")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center rounded-full border border-white/35 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur transition hover:border-[#FCC000] hover:text-[#FCC000]"
+                >
+                  Speak with our team
+                </a>
+              </div>
+
+              <div className="mt-11 grid max-w-xl grid-cols-3 border-t border-white/15 pt-5">
+                <div>
+                  <p className="font-[var(--font-display)] text-2xl text-white sm:text-3xl">06</p>
+                  <p className="mt-1 text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-white/55 sm:text-[0.65rem]">
+                    Curated journeys
+                  </p>
+                </div>
+                <div className="border-l border-white/15 pl-4 sm:pl-6">
+                  <p className="font-[var(--font-display)] text-2xl text-white sm:text-3xl">PKR 170K</p>
+                  <p className="mt-1 text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-white/55 sm:text-[0.65rem]">
+                    Listed starting fare
+                  </p>
+                </div>
+                <div className="border-l border-white/15 pl-4 sm:pl-6">
+                  <p className="font-[var(--font-display)] text-2xl text-white sm:text-3xl">One team</p>
+                  <p className="mt-1 text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-white/55 sm:text-[0.65rem]">
+                    From planning to return
+                  </p>
                 </div>
               </div>
-              <div className="grid items-stretch gap-5 md:grid-cols-2 xl:grid-cols-3">
-                {regionOffers.map((offer) => <OfferCard key={offer.id} offer={offer} />)}
-              </div>
-            </section>
-          );
-        })}
-      </div>
-
-      <section className="mb-12 border-y border-stone-200 bg-[#f4f1e9] px-5 py-10 sm:px-8 lg:py-12">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="max-w-2xl">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#8b6b00]">Your dates, your pace</p>
-            <h2 className="mt-2 font-serif text-3xl text-stone-950">Have another destination in mind?</h2>
-            <p className="mt-2 text-sm leading-6 text-stone-600">Tell us where you would like to go and our team can confirm current availability, inclusions, and a written quote.</p>
+            </div>
           </div>
-          <Link href="/contact-us" className="inline-flex w-fit items-center rounded-full bg-[#0b0b0b] px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800">Plan an international trip</Link>
-        </div>
-      </section>
+        </section>
+
+        <section className="relative overflow-hidden border-y border-white/10 bg-[#0b0b0b] px-5 py-8 text-white sm:px-8 lg:px-14">
+          <div className="absolute -right-24 -top-36 h-72 w-72 rounded-full bg-[#FCC000]/10 blur-3xl" />
+          <div className="relative mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="shrink-0">
+              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.26em] text-[#FCC000]">
+                A world of possibility
+              </p>
+              <p className="mt-1 font-[var(--font-display)] text-2xl text-white">Where will you go?</p>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/60 sm:gap-x-6">
+              {["Dubai", "Bangkok", "Beijing", "Vietnam", "Kuala Lumpur", "Istanbul", "Tashkent"].map(
+                (destination, index) => (
+                  <span key={destination} className="inline-flex items-center gap-4">
+                    {index > 0 ? <span aria-hidden="true" className="h-1 w-1 rounded-full bg-[#FCC000]" /> : null}
+                    {destination}
+                  </span>
+                ),
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section id="packages" className="scroll-mt-20 bg-[#f4f1eb] px-5 py-16 sm:px-8 lg:px-14 lg:py-28">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-8 border-b border-stone-300 pb-9 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
+              <div className="max-w-3xl">
+                <p className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-[#806700]">
+                  <span className="h-px w-8 bg-[#b08b16]" />
+                  The Hodophile collection
+                </p>
+                <h2 className="mt-4 font-[var(--font-display)] text-5xl leading-[1.02] tracking-[-0.03em] text-stone-950 sm:text-6xl">
+                  Not just places.
+                  <span className="block text-[#a17c0c]">Ways to feel them.</span>
+                </h2>
+              </div>
+              <div className="flex items-end justify-between gap-8 lg:max-w-xs">
+                <p className="text-sm leading-7 text-stone-600">
+                  Six distinct journeys, each with its own pace, character, and story.
+                </p>
+                <span className="shrink-0 font-[var(--font-display)] text-4xl text-stone-400">
+                  06<span className="text-lg text-[#b08b16]"> / 06</span>
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-10 grid gap-7 md:grid-cols-2 xl:gap-8">
+              {internationalPackages.map((pkg, index) => (
+                <PackageCard key={pkg.id} pkg={pkg} index={index} />
+              ))}
+            </div>
+
+            <div className="mt-10 flex flex-col gap-3 border-t border-stone-300 pt-6 text-xs leading-6 text-stone-500 sm:flex-row sm:items-start sm:justify-between sm:gap-10">
+              <p className="max-w-3xl">
+                Departure dates and prices are subject to change without prior notice. Package
+                inclusions, visa requirements, airline schedules, and final booking terms must be
+                reconfirmed in writing before payment.
+              </p>
+              <p className="shrink-0 font-semibold uppercase tracking-[0.16em] text-stone-600">
+                Travel well. Travel considered.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <JourneyPlanning />
+
+        <section className="relative overflow-hidden bg-[#090909] px-5 py-16 text-white sm:px-8 lg:px-14 lg:py-24">
+          <div className="absolute -right-20 -top-32 h-80 w-80 rounded-full bg-[#FCC000]/10 blur-3xl" />
+          <div className="absolute -bottom-48 left-1/4 h-72 w-72 rounded-full bg-[#FCC000]/[0.06] blur-3xl" />
+          <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(130deg,rgba(255,255,255,0.07),rgba(255,255,255,0.015)_55%,rgba(252,192,0,0.08))] px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-16">
+            <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div className="max-w-3xl">
+                <p className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-[#FCC000]">
+                  <span className="h-px w-8 bg-[#FCC000]" />
+                  Your next chapter
+                </p>
+                <h2 className="mt-4 font-[var(--font-display)] text-4xl leading-[1.05] tracking-[-0.025em] sm:text-5xl lg:text-6xl">
+                  The world is closer
+                  <span className="text-[#FCC000]"> than it feels.</span>
+                </h2>
+                <p className="mt-5 max-w-xl text-sm leading-7 text-white/60 sm:text-base">
+                  Tell us what you are dreaming of. We’ll help you check current dates, availability,
+                  and the right package for your travel party.
+                </p>
+              </div>
+              <Link
+                href={whatsappUrl("Hi Hodophile, I would like to plan an international holiday.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex shrink-0 items-center justify-center gap-3 rounded-full bg-[#FCC000] px-7 py-4 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:bg-[#ffda4d]"
+              >
+                Plan with Hodophile
+                <span aria-hidden="true" className="text-lg">↗</span>
+              </Link>
+            </div>
+            <div className="mt-10 flex items-center gap-4 border-t border-white/10 pt-5 text-[0.62rem] font-medium uppercase tracking-[0.2em] text-white/35">
+              <span>Hodophile Adventures</span>
+              <span aria-hidden="true" className="h-px flex-1 bg-white/10" />
+              <span>Go beyond</span>
+            </div>
+          </div>
+        </section>
+      </div>
     </PageShell>
   );
 }
