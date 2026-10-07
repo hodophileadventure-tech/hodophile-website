@@ -308,7 +308,7 @@ function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number 
   return (
     <article
       id={pkg.id}
-      className="group scroll-mt-28 overflow-hidden rounded-[1.25rem] border border-[#e4dece] bg-[#fffefa] shadow-[0_18px_55px_rgba(20,18,12,0.06)] transition duration-500 hover:-translate-y-1 hover:border-[#c7a32a] hover:shadow-[0_28px_70px_rgba(20,18,12,0.12)]"
+      className="group scroll-mt-28 overflow-hidden rounded-[1.25rem] border border-[#d4b34d]/25 bg-[#fffefa] shadow-[0_22px_60px_rgba(0,0,0,0.2)] transition duration-500 hover:-translate-y-1 hover:border-[#c7a32a] hover:shadow-[0_30px_75px_rgba(0,0,0,0.36)]"
     >
       <div className="relative h-72 overflow-hidden bg-[#161616] sm:h-[22rem]">
         {pkg.image ? (
@@ -615,42 +615,47 @@ export default function BeyondPakistanPage() {
           </div>
         </section>
 
-        <section id="packages" className="scroll-mt-20 bg-[#f4f1eb] px-5 py-16 sm:px-8 lg:px-14 lg:py-28">
+        <section id="packages" className="relative isolate scroll-mt-20 overflow-hidden bg-[#0b0b0b] px-5 py-16 text-white sm:px-8 lg:px-14 lg:py-24">
+          <div className="pointer-events-none absolute -left-48 top-12 -z-10 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
+          <div className="pointer-events-none absolute -right-48 top-[38%] -z-10 h-[38rem] w-[38rem] rounded-full bg-[#b47b12]/[0.09] blur-3xl" />
           <div className="mx-auto max-w-7xl">
-            <div className="grid gap-8 border-b border-stone-300 pb-9 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
+            <div className="relative grid gap-8 border-y border-[#FCC000]/25 py-8 sm:py-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16 lg:py-12">
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FCC000]/65 to-transparent" />
               <div className="max-w-3xl">
-                <p className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-[#806700]">
-                  <span className="h-px w-8 bg-[#b08b16]" />
+                <p className="inline-flex items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.34em] text-[#FCC000]">
+                  <span className="h-px w-10 bg-[#FCC000]" />
                   The Hodophile collection
+                  <span className="h-px w-10 bg-[#FCC000]/45" />
                 </p>
-                <h2 className="mt-4 font-[var(--font-display)] text-5xl leading-[1.02] tracking-[-0.03em] text-stone-950 sm:text-6xl">
+                <h2 className="mt-5 font-[var(--font-display)] text-5xl leading-[0.98] tracking-[-0.035em] text-white sm:text-6xl lg:text-7xl">
                   Not just places.
-                  <span className="block text-[#a17c0c]">Ways to feel them.</span>
+                  <span className="mt-2 block text-[#FCC000]">Ways to feel them.</span>
                 </h2>
               </div>
-              <div className="flex items-end justify-between gap-8 lg:max-w-xs">
-                <p className="text-sm leading-7 text-stone-600">
+              <div className="flex items-center justify-between gap-8 lg:max-w-sm lg:justify-end lg:gap-6">
+                <p className="max-w-[15rem] text-sm leading-7 text-white/65">
                   Six distinct journeys, each with its own pace, character, and story.
                 </p>
-                <span className="shrink-0 font-[var(--font-display)] text-4xl text-stone-400">
-                  06<span className="text-lg text-[#b08b16]"> / 06</span>
-                </span>
+                <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full border border-[#FCC000]/45 bg-[#FCC000]/[0.06] shadow-[0_0_42px_rgba(252,192,0,0.08)] sm:h-24 sm:w-24">
+                  <span className="font-[var(--font-display)] text-3xl leading-none text-[#FCC000] sm:text-4xl">06</span>
+                  <span className="mt-1 text-[0.52rem] font-semibold uppercase tracking-[0.18em] text-white/55">Journeys</span>
+                </div>
               </div>
             </div>
 
-            <div className="mt-10 grid gap-7 md:grid-cols-2 xl:gap-8">
+            <div className="mt-8 grid gap-6 md:grid-cols-2 xl:mt-10 xl:gap-8">
               {internationalPackages.map((pkg, index) => (
                 <PackageCard key={pkg.id} pkg={pkg} index={index} />
               ))}
             </div>
 
-            <div className="mt-10 flex flex-col gap-3 border-t border-stone-300 pt-6 text-xs leading-6 text-stone-500 sm:flex-row sm:items-start sm:justify-between sm:gap-10">
+            <div className="mt-9 flex flex-col gap-3 border-t border-white/15 pt-6 text-xs leading-6 text-white/50 sm:flex-row sm:items-start sm:justify-between sm:gap-10">
               <p className="max-w-3xl">
                 Departure dates and prices are subject to change without prior notice. Package
                 inclusions, visa requirements, airline schedules, and final booking terms must be
                 reconfirmed in writing before payment.
               </p>
-              <p className="shrink-0 font-semibold uppercase tracking-[0.16em] text-stone-600">
+              <p className="shrink-0 font-semibold uppercase tracking-[0.16em] text-[#FCC000]/75">
                 Travel well. Travel considered.
               </p>
             </div>
