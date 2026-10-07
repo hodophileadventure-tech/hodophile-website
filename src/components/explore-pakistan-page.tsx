@@ -1,13 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const PKR_PER_USD = 283;
-const USD_PRICE_INCREASE = 70;
-
-function formatJourneyPrice(pkrAmount: number) {
-  const usdAmount = Math.round(pkrAmount / PKR_PER_USD + USD_PRICE_INCREASE);
-  return `From $${usdAmount.toLocaleString("en-US")}`;
-}
+import { whatsappUrl } from "@/lib/site";
 
 const destinationTiles = [
   {
@@ -101,40 +95,52 @@ const experienceCards = [
 
 const journeyCards = [
   {
-    duration: "9 Days",
-    nights: "8 Nights",
-    route: "Kashmir, Arangkel & Taobat",
-    description: "A standard group tour from Karakorum through Islamabad into Kashmir, Taobat, and Arangkel.",
-    href: "/tours",
-    image: "/images/package-cards/hero-images__zain-raza-unsplash.webp",
-    pricePkr: 37500,
+    duration: "8 days",
+    route: "Hunza & Skardu",
+    description: "An eight-day northern Pakistan journey bringing Hunza and Skardu together.",
+    image: "/images/pakistan-journeys/hunza-skardu.png",
   },
   {
-    duration: "10 Days",
-    nights: "7 Nights",
-    route: "Skardu, Shigar & Shangrila",
-    description: "A rugged Skardu route with Shangrila, Shigar Fort, Sarfaranga Cold Desert, and Deosai.",
-    href: "/tours",
-    image: "/images/package-cards/hero-images__obaid-awan-unsplash.jpg.webp",
-    pricePkr: 39000,
+    duration: "6 days",
+    route: "Skardu & Basho",
+    description: "A six-day escape pairing Skardu with the mountain scenery of Basho.",
+    image: "/images/pakistan-journeys/skardu-basho.png",
   },
   {
-    duration: "12 Days",
-    nights: "11 Nights",
-    route: "Naran, Hunza, Skardu",
-    description: "Naran, Hunza, Skardu, and Deosai combined into a bold northern journey.",
-    href: "/tours",
-    image: "/images/package-cards/hero-images__kamran-ch-unsplash.webp",
-    pricePkr: 46700,
+    duration: "6 days",
+    route: "Skardu & Khaplu",
+    description: "Discover Skardu and Khaplu together on a six-day Baltistan journey.",
+    image: "/images/pakistan-journeys/skardu-khaplu.png",
   },
   {
-    duration: "10 Days",
-    nights: "9 Nights",
-    route: "Naran, Hunza & Naltar",
-    description: "A refreshing northern route with Naran Valley, Hunza heritage, and alpine Naltar lakes.",
-    href: "/tours",
-    image: "/images/package-cards/hero-images__hussain-ahmed-unsplash.webp",
-    pricePkr: 39000,
+    duration: "7 days",
+    route: "Kashmir & Shogran",
+    description: "A seven-day mountain getaway combining Kashmir and Shogran.",
+    image: "/images/pakistan-journeys/kashmir-shogran.png",
+  },
+  {
+    duration: "7 days",
+    route: "Kashmir & Swat",
+    description: "A seven-day journey connecting the valleys of Kashmir and Swat.",
+    image: "/images/pakistan-journeys/kashmir-swat.png",
+  },
+  {
+    duration: "6 days",
+    route: "Swat & Shogran",
+    description: "A six-day northern escape across Swat and Shogran.",
+    image: "/images/pakistan-journeys/swat-shogran.png",
+  },
+  {
+    duration: "3 days",
+    route: "Swat, Kalam & Malam Jabba",
+    description: "A three-day short break through Swat, Kalam, and Malam Jabba.",
+    image: "/images/pakistan-journeys/swat-kalam-malam-jabba.png",
+  },
+  {
+    duration: "3 days",
+    route: "Kashmir",
+    description: "A three-day getaway to enjoy the landscapes and relaxed pace of Kashmir.",
+    image: "/images/pakistan-journeys/kashmir.png",
   },
 ];
 
@@ -410,58 +416,80 @@ export function ExplorePakistanPageContent() {
         </div>
       </section>
 
-      <section className="px-4 py-6 sm:px-6 lg:px-10 xl:px-14">
+      <section className="relative isolate left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#0b0b0b] px-5 py-16 text-white sm:px-8 lg:px-14 lg:py-24">
+        <div className="pointer-events-none absolute -left-48 top-12 -z-10 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
+        <div className="pointer-events-none absolute -right-48 top-[38%] -z-10 h-[38rem] w-[38rem] rounded-full bg-[#b47b12]/[0.09] blur-3xl" />
         <div className="mx-auto max-w-7xl">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="eyebrow !text-stone-600">Curated Journeys</p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-stone-950 sm:text-4xl">Journeys Worth Taking</h2>
+          <div className="relative grid gap-8 border-y border-[#FCC000]/25 py-8 sm:py-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16 lg:py-12">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FCC000]/65 to-transparent" />
+            <div className="max-w-3xl">
+              <p className="inline-flex items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.34em] text-[#FCC000]">
+                <span className="h-px w-10 bg-[#FCC000]" />
+                Curated Pakistan journeys
+                <span className="h-px w-10 bg-[#FCC000]/45" />
+              </p>
+              <h2 className="mt-5 font-[var(--font-display)] text-5xl leading-[0.98] tracking-[-0.035em] text-white sm:text-6xl lg:text-7xl">
+                Find your way north.
+                <span className="mt-2 block text-[#FCC000]">Make it your own.</span>
+              </h2>
+            </div>
+            <div className="flex items-center justify-between gap-8 lg:max-w-sm lg:justify-end lg:gap-6">
+              <p className="max-w-[15rem] text-sm leading-7 text-white/65">
+                Eight ways to experience Pakistan, with time to take in every turn.
+              </p>
+              <div className="flex h-20 w-20 shrink-0 flex-col items-center justify-center rounded-full border border-[#FCC000]/45 bg-[#FCC000]/[0.06] shadow-[0_0_42px_rgba(252,192,0,0.08)] sm:h-24 sm:w-24">
+                <span className="font-[var(--font-display)] text-3xl leading-none text-[#FCC000] sm:text-4xl">08</span>
+                <span className="mt-1 text-[0.52rem] font-semibold uppercase tracking-[0.18em] text-white/55">Journeys</span>
+              </div>
             </div>
           </div>
 
-          <div className="mt-8 grid gap-4 xl:grid-cols-4 lg:grid-cols-2">
-            {journeyCards.map((journey) => (
+          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:mt-10 xl:gap-8">
+            {journeyCards.map((journey, index) => (
               <article
                 key={journey.route}
-                className="group overflow-hidden rounded-[1.75rem] border border-stone-200 bg-[#f3f0eb] shadow-[0_18px_55px_rgba(15,23,42,0.04)]"
+                className="group overflow-hidden rounded-[1.25rem] border border-[#d4b34d]/25 bg-[#141414] shadow-[0_22px_60px_rgba(0,0,0,0.2)] transition duration-500 hover:-translate-y-1 hover:border-[#c7a32a] hover:shadow-[0_30px_75px_rgba(0,0,0,0.36)]"
               >
-                <div className="relative h-[270px] overflow-hidden">
+                <div className="relative h-64 overflow-hidden bg-[#161616] sm:h-[19rem]">
                   <Image
-                    src={journey.route.includes("Skardu") ? "/images/package-cards/hero-images__zain-raza-unsplash.webp" : journey.route.includes("Naran") ? "/images/package-cards/hero-images__Naran.webp" : "/images/package-cards/hero-images__kamran-ch-unsplash.webp"}
+                    src={journey.image}
                     alt={`${journey.route} in Pakistan`}
                     fill
-                    sizes="(max-width: 1024px) 100vw, 25vw"
-                    className="object-cover transition duration-700 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition duration-1000 group-hover:scale-[1.05]"
                   />
-                </div>
-
-                <div className="flex h-[calc(100%-270px)] flex-col justify-between p-4 sm:p-5">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-500">
-                      <span>{journey.duration} / {journey.nights}</span>
-                      <span className="text-[#9a7600]">{formatJourneyPrice(journey.pricePkr)}</span>
-                    </div>
-                    <h3 className="mt-4 text-[2rem] font-semibold leading-[1.05] tracking-[-0.06em] text-stone-950">
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.3)_0%,transparent_34%,rgba(0,0,0,0.82)_100%)]" />
+                  <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 sm:p-6">
+                    <span className="rounded-full border border-white/30 bg-black/30 px-3.5 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
+                      Pakistan · Private journey
+                    </span>
+                    <span className="font-[var(--font-display)] text-sm tracking-[0.18em] text-white">
+                      {String(index + 1).padStart(2, "0")} <span className="text-[#FCC000]">/ 08</span>
+                    </span>
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
+                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/75">{journey.duration}</p>
+                    <h3 className="mt-2 font-[var(--font-display)] text-3xl leading-[1.02] tracking-[-0.02em] sm:text-4xl">
                       {journey.route}
                     </h3>
-                    <p className="mt-3 text-sm leading-6 text-stone-600">{journey.description}</p>
                   </div>
+                </div>
 
-                  <div className="mt-5">
-                    <Link
-                      href={journey.href}
-                      className="inline-flex items-center rounded-full bg-[#fcc000] px-4 py-3 text-sm font-semibold text-stone-900 transition duration-300 hover:-translate-y-0.5 hover:bg-[#ffd24d]"
-                    >
-                      Contact us
-                    </Link>
-                  </div>
+                <div className="flex flex-col justify-between gap-6 p-6 sm:flex-row sm:items-center sm:p-8">
+                  <p className="max-w-lg text-sm leading-7 text-white/65">{journey.description}</p>
+                  <a
+                    href={whatsappUrl(`Hi Hodophile, I am interested in the ${journey.route} ${journey.duration} journey in Pakistan. Please share the current itinerary, dates, availability, and quote.`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center justify-center gap-3 rounded-full bg-[#FCC000] px-5 py-3.5 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:bg-[#ffda4d]"
+                  >
+                    Request this journey
+                    <span aria-hidden="true" className="text-base">↗</span>
+                  </a>
                 </div>
               </article>
             ))}
           </div>
-          <p className="mx-auto mt-4 max-w-7xl px-1 text-xs leading-5 text-stone-500">
-            USD prices use a planning rate of PKR 283 per USD and include a $70 increase per journey. Final pricing is confirmed with your itinerary.
-          </p>
         </div>
       </section>
 
