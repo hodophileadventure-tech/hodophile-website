@@ -526,6 +526,18 @@ export default function BeyondPakistanPage() {
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 className="object-cover transition duration-1000 group-hover/hero:scale-[1.03]"
               />
+              <video
+                className="absolute inset-0 h-full w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                poster="/images/international/dubai-thailand.png"
+                aria-hidden="true"
+              >
+                <source src="/videos/beyond-pakistan.mp4" type="video/mp4" />
+              </video>
               <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(0,0,0,0.92)_0%,rgba(0,0,0,0.72)_55%,rgba(0,0,0,0.22)_100%)] lg:bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_15%,rgba(0,0,0,0.02)_42%,rgba(0,0,0,0.72)_100%)]" />
               <div className="absolute inset-x-0 top-0 hidden items-center justify-between p-5 sm:p-7 lg:flex">
                 <span className="rounded-full border border-white/30 bg-black/25 px-3.5 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
