@@ -52,8 +52,8 @@ export default function ToursPage() {
                 Domestic journeys by Hodophile
               </p>
               <h1 className="mt-6 font-[var(--font-display)] text-6xl leading-[0.94] tracking-[-0.04em] sm:text-7xl lg:text-[6rem] xl:text-[6.5rem]">
-                Pakistan,
-                <span className="mt-2 block text-[#FCC000]">beautifully found.</span>
+                Find your
+                <span className="mt-2 block text-[#FCC000]">next journey.</span>
               </h1>
               <p className="mt-7 max-w-xl text-base leading-8 text-white/75 sm:text-lg">
                 Thoughtfully planned escapes across Pakistan, with considered routes, clear details, and a local team beside you.

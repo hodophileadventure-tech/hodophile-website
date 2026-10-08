@@ -6,9 +6,21 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore } from "react";
 
 import type { RouteItineraryDay } from "@/lib/data/routes";
-import { tourPackages, type TravelStyle, type TourDeparture } from "@/lib/data/tour-packages";
+import { tourPackages, type TourExperience, type TravelStyle, type TourDeparture } from "@/lib/data/tour-packages";
 import { tourDiscoveryIdeas } from "@/lib/data/tour-discovery-ideas";
-import { calculateTripFit, getSimilarTrips as getSimilarTripsFromEngine, getSimilarTripsForSavedTrips, normalizeTrip, type TripPreferences } from "@/lib/trip-intelligence";
+import { calculateTripFit, getSimilarTripsForSavedTrips, normalizeTrip, type TripPreferences } from "@/lib/trip-intelligence";
+import {
+  createTripBudgetRanges,
+  calculateTripMatch,
+  rankTripMatches,
+  TRIP_MATCH_DURATIONS,
+  TRIP_MATCH_EXPERIENCES,
+  TRIP_MATCH_MOODS,
+  TRIP_MATCH_MONTHS,
+  TRIP_MATCH_SEASONS,
+  TRIP_MATCH_WEIGHTS,
+  type TripMatchPreferences,
+} from "@/lib/trip-intelligence";
 
 type RegionFilter = "all" | "northern" | "southern";
 type DurationFilter = "all" | "weekend" | "4-7" | "8-12" | "12-plus";
@@ -31,6 +43,7 @@ type DiscoveryPackage = {
   bestFor?: string;
   pace?: "Fast" | "Moderate" | "Relaxed";
   travelStyles: TravelStyle[];
+  experiences: TourExperience[];
   departures: TourDeparture[];
   transport: string[];
   includes: string[];
@@ -81,6 +94,7 @@ const packageList: DiscoveryPackage[] = [
     bestFor: tourPackage.bestFor,
     pace: tourPackage.pace,
     travelStyles: tourPackage.travelStyles,
+    experiences: tourPackage.experiences,
     departures: tourPackage.departures,
     transport: tourPackage.transport ?? [],
     includes: tourPackage.includes ?? [],
@@ -92,7 +106,6 @@ const packageList: DiscoveryPackage[] = [
     scheduleNote: "Dates, itinerary details, and current price to confirm",
     departureAvailability: "on-request",
     notes: [],
-    routeHighlights: [],
     departures: [],
     transport: [],
     includes: [],
@@ -112,31 +125,6 @@ function formatDestination(slug: string) {
 function includedDetails(packageItem: DiscoveryPackage, pattern: RegExp, fallback: string) {
   const matchingDetails = packageItem.includes.filter((item) => pattern.test(item));
   return matchingDetails.length ? matchingDetails.join(", ") : fallback;
-}
-
-const departureMonths = [
-  "january", "february", "march", "april", "may", "june",
-  "july", "august", "september", "october", "november", "december",
-];
-
-function buildTripPreferences(search: string, fitStyle: TravelStyle | "all", fitRegion: RegionFilter, fitDuration: DurationFilter, fitBudget: string, fitMonth: string): TripPreferences {
-  const destination = search.trim() || undefined;
-  return {
-    destination,
-    region: fitRegion === "all" ? undefined : fitRegion,
-    travelStyle: fitStyle === "all" ? undefined : fitStyle,
-    duration: fitDuration === "all" ? undefined : fitDuration,
-    budget: fitBudget ? Number(fitBudget) : undefined,
-    departureMonth: fitMonth || undefined,
-  };
-}
-
-function getPreferenceSummary(score: number, matchedCount: number, selectedCount: number) {
-  if (selectedCount === 0) return "Explore our trips";
-  if (score >= 80) return "Strong match for your preferences";
-  if (score >= 60) return "Good fit for your selected preferences";
-  if (score >= 40) return "Partial match for your current preferences";
-  return "Not a strong match yet";
 }
 
 function parseStorageIds(rawValue: string) {
@@ -252,6 +240,7 @@ function RouteCard({
   onToggleWishlist,
   onToggleCompare,
   relatedContext,
+  matchScore,
 }: {
   packageItem: DiscoveryPackage;
   isWishlistEnabled: boolean;
@@ -259,6 +248,7 @@ function RouteCard({
   onToggleWishlist: (id: string) => void;
   onToggleCompare: (id: string) => void;
   relatedContext?: { savedTripTitle: string; reasons: string[] };
+  matchScore?: number;
 }) {
   const priceText = listedPrice(packageItem);
 
@@ -275,6 +265,11 @@ function RouteCard({
         <span className="absolute left-4 top-4 rounded-full bg-[#fcc000] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#0b0b0b]">
           {packageItem.routeStops[0] ?? (packageItem.region === "northern" ? "Northern" : "Southern")}
         </span>
+        {matchScore !== undefined ? (
+          <span className="absolute right-4 top-4 rounded-full border border-white/50 bg-stone-950/85 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white backdrop-blur">
+            {matchScore}% match
+          </span>
+        ) : null}
       </div>
 
       <div className="flex flex-1 flex-col p-4 sm:p-5">
@@ -284,7 +279,22 @@ function RouteCard({
         </div>
 
         <h3 className="mt-2 font-serif text-2xl leading-tight text-stone-950">{packageItem.title}</h3>
-        <p className="mt-2 line-clamp-2 text-sm leading-6 text-stone-600">{packageItem.summary}</p>
+        <div className="mt-3">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-stone-500">Why you’ll love it</p>
+          <p className="mt-1 line-clamp-2 text-sm leading-6 text-stone-600">{packageItem.summary}</p>
+        </div>
+        {packageItem.routeHighlights.length ? (
+          <div className="mt-3">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-stone-500">Trip highlights</p>
+            <ul className="mt-1 flex flex-wrap gap-1.5">
+              {packageItem.routeHighlights.slice(0, 3).map((highlight) => (
+                <li key={`${packageItem.id}-${highlight}`} className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-medium text-stone-700">
+                  <span aria-hidden="true" className="mr-1 text-[#9a7600]">✦</span>{highlight}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         {relatedContext ? (
           <div className="mt-3 border-l border-[#fcc000] pl-3">
             <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">Related to {relatedContext.savedTripTitle}</p>
@@ -301,7 +311,10 @@ function RouteCard({
             <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500">{packageItem.pricePerPerson === undefined ? "Pricing" : "From"}</p>
             <p className="mt-1 text-xl font-semibold text-[#9a7600]">{priceText}</p>
           </div>
-          <span className="max-w-[48%] text-right text-xs font-semibold leading-5 text-stone-700">{packageItem.bestFor ?? "Not specified"}</span>
+          <span className="max-w-[48%] text-right text-xs leading-5 text-stone-600">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-stone-500">Best for</span>
+            <span className="font-semibold text-stone-800">{packageItem.bestFor ?? "Not specified"}</span>
+          </span>
         </div>
 
         <div className="mt-4 flex items-center gap-2 border-t border-stone-200 pt-4">
@@ -320,6 +333,255 @@ function RouteCard({
   );
 }
 
+function TripMatchPanel({
+  journeys,
+  answers,
+  onAnswersChange,
+  isComplete,
+  onComplete,
+}: {
+  journeys: DiscoveryPackage[];
+  answers: TripMatchPreferences;
+  onAnswersChange: (answers: TripMatchPreferences) => void;
+  isComplete: boolean;
+  onComplete: (complete: boolean) => void;
+}) {
+  const [step, setStep] = useState(0);
+  const budgetRanges = createTripBudgetRanges(
+    journeys.flatMap((journey) => journey.pricePerPerson === undefined ? [] : [journey.pricePerPerson]),
+  );
+  const results = useMemo(
+    () => isComplete ? rankTripMatches(journeys, answers) : [],
+    [answers, isComplete, journeys],
+  );
+  const stepTitles = ["Your travel mood", "Time away", "What you want to experience", "Your budget", "When to go"];
+  const selectedSeason = TRIP_MATCH_SEASONS.find((season) =>
+    season.value === answers.season || season.months.includes(answers.month ?? ""),
+  );
+
+  const toggleMood = (mood: TripMatchPreferences["moods"][number]) => {
+    onAnswersChange({
+      ...answers,
+      moods: answers.moods.includes(mood)
+        ? answers.moods.filter((selected) => selected !== mood)
+        : [...answers.moods, mood],
+    });
+  };
+
+  const toggleExperience = (experience: TourExperience) => {
+    onAnswersChange({
+      ...answers,
+      experiences: answers.experiences.includes(experience)
+        ? answers.experiences.filter((selected) => selected !== experience)
+        : [...answers.experiences, experience],
+    });
+  };
+
+  const advance = () => {
+    if (step < stepTitles.length - 1) {
+      setStep((current) => current + 1);
+      return;
+    }
+    onComplete(true);
+  };
+
+  return (
+    <section className="mt-8 overflow-hidden rounded-[2rem] border border-[#FCC000]/25 bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.11),transparent_35%),linear-gradient(135deg,#171715,#0d0d0c_62%,#18150b)] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:p-7 lg:p-8" aria-labelledby="trip-match-heading">
+      <div className="flex flex-wrap items-start justify-between gap-5">
+        <div className="max-w-2xl">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#FCC000]/30 bg-[#FCC000]/[0.07] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#FCC000]">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#FCC000]" />
+            Five-step guide
+          </p>
+          <h3 id="trip-match-heading" className="mt-3 font-[var(--font-display)] text-3xl text-white sm:text-4xl">Your journey, matched to you.</h3>
+          <p className="mt-2 text-sm leading-6 text-white/65">
+            Choose what matters to you. We’ll match it to real journeys and explain the fit.
+          </p>
+        </div>
+        {isComplete ? (
+          <button
+            type="button"
+            onClick={() => {
+              onComplete(false);
+              setStep(0);
+            }}
+            className="min-h-11 rounded-full border border-white/20 px-4 text-sm font-semibold text-white transition hover:border-[#FCC000]/70 hover:text-[#FCC000] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000]"
+          >
+            Change answers
+          </button>
+        ) : (
+          <span className="rounded-full border border-white/10 bg-black/20 px-3 py-2 text-xs font-medium text-white/60">
+            Step {step + 1} of {stepTitles.length}
+          </span>
+        )}
+      </div>
+
+      {!isComplete ? (
+        <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-black/25 p-4 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <h4 className="text-base font-semibold text-white sm:text-lg">{stepTitles[step]}</h4>
+            <span className="text-xs text-white/45">{String(step + 1).padStart(2, "0")} / 05</span>
+          </div>
+          <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-label="Trip Match progress" aria-valuemin={1} aria-valuemax={stepTitles.length} aria-valuenow={step + 1}>
+            <div className="h-full rounded-full bg-[#FCC000] transition-[width]" style={{ width: `${(step + 1) / stepTitles.length * 100}%` }} />
+          </div>
+
+          {step === 0 ? (
+            <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {TRIP_MATCH_MOODS.map((option) => {
+                const selected = answers.moods.includes(option.value);
+                return (
+                  <button key={option.value} type="button" aria-pressed={selected} onClick={() => toggleMood(option.value)} className={`min-h-[4.5rem] rounded-2xl border p-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-white" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
+                    <span className="flex items-center justify-between gap-2 text-sm font-semibold">
+                      <span className="flex items-center gap-2"><span aria-hidden="true" className="text-base text-[#FCC000]">{option.icon}</span>{option.label}</span>
+                      <span aria-hidden="true" className={`flex h-5 w-5 items-center justify-center rounded-full border text-[10px] ${selected ? "border-[#FCC000] bg-[#FCC000] text-stone-950" : "border-white/30 text-transparent"}`}>✓</span>
+                    </span>
+                    <span className="mt-1 block text-xs text-white/45">{option.description}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+
+          {step === 1 ? (
+            <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {TRIP_MATCH_DURATIONS.map((option) => {
+                const selected = answers.duration === option.value;
+                return (
+                  <button key={option.value} type="button" aria-pressed={selected} onClick={() => onAnswersChange({ ...answers, duration: selected ? undefined : option.value })} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-[#FCC000]" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+
+          {step === 2 ? (
+            <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {TRIP_MATCH_EXPERIENCES.map((option) => {
+                const selected = answers.experiences.includes(option.value);
+                return (
+                  <button key={option.value} type="button" aria-pressed={selected} onClick={() => toggleExperience(option.value)} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-[#FCC000]" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
+                    <span className="flex items-center justify-center gap-2"><span aria-hidden="true" className="text-base text-[#FCC000]">{option.icon}</span>{option.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
+
+          {step === 3 ? (
+            <div className="mt-5 grid gap-2 sm:grid-cols-3">
+              {budgetRanges.map((range) => {
+                const selected = answers.budget?.id === range.id;
+                return (
+                  <button key={range.id} type="button" aria-pressed={selected} onClick={() => onAnswersChange({ ...answers, budget: selected ? undefined : range })} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-[#FCC000]" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
+                    {range.label}
+                  </button>
+                );
+              })}
+              {budgetRanges.length === 0 ? <p className="text-sm text-white/60">There are no currently listed prices to build a budget range.</p> : null}
+            </div>
+          ) : null}
+
+          {step === 4 ? (
+            <div>
+              <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {TRIP_MATCH_SEASONS.map((season) => {
+                  const selected = answers.season === season.value;
+                  return (
+                    <button key={season.value} type="button" aria-pressed={selected} onClick={() => onAnswersChange({ ...answers, season: selected ? undefined : season.value, month: undefined })} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-[#FCC000]" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
+                      {season.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <label className="mt-3 block max-w-sm text-xs font-semibold text-white/70">
+                Or choose an exact month
+                <select
+                  value={answers.month ?? ""}
+                  onChange={(event) => {
+                    const month = TRIP_MATCH_MONTHS.find((option) => option.value === event.target.value);
+                    onAnswersChange({ ...answers, month: month?.value, season: month?.season });
+                  }}
+                  className="mt-2 block min-h-11 w-full rounded-xl border border-white/15 bg-stone-900 px-3 text-sm text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000]"
+                >
+                  <option value="">Any month / season</option>
+                  {TRIP_MATCH_MONTHS.map((month) => <option key={month.value} value={month.value}>{month.label}</option>)}
+                </select>
+              </label>
+            </div>
+          ) : null}
+
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+            <button type="button" onClick={() => setStep((current) => Math.max(0, current - 1))} disabled={step === 0} className="min-h-11 rounded-full px-4 text-sm font-semibold text-white/65 transition hover:text-white disabled:invisible focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000]">
+              Back
+            </button>
+            <p className="text-xs text-white/40">Each answer is optional; skip any step.</p>
+            <button type="button" onClick={advance} className="min-h-11 rounded-full bg-[#FCC000] px-5 text-sm font-bold text-stone-950 transition hover:bg-[#ffda4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+              {step === stepTitles.length - 1 ? "See my matches" : "Continue"}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-6" aria-live="polite">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h4 className="text-lg font-semibold text-white">Your closest matches</h4>
+              <p className="mt-1 text-xs text-white/50">Scores compare your answers with listed details. Unknown prices, dates, and paces are left unscored.</p>
+            </div>
+            <p className="text-xs text-white/45">
+              Weighted by style {TRIP_MATCH_WEIGHTS.travelStyle}% · time {TRIP_MATCH_WEIGHTS.duration}% · experience {TRIP_MATCH_WEIGHTS.experience}% · budget {TRIP_MATCH_WEIGHTS.budget}% · season {TRIP_MATCH_WEIGHTS.season}%
+            </p>
+          </div>
+          {selectedSeason ? (
+            <p className="mt-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-xs leading-5 text-white/55">
+              Season matches require an explicit month in the listed schedule. If a journey has no month listed, its season match is left unscored.
+            </p>
+          ) : null}
+          {results.length ? (
+            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              {results.map(({ trip, score, reasons }) => (
+                <article key={trip.id} className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.035]">
+                  <div className="relative aspect-[16/7] overflow-hidden bg-stone-800">
+                    <Image src={trip.image ?? "/images/package-cards/images__destinations__swat-hd.webp"} alt="" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                    <span className="absolute bottom-3 left-4 text-xs font-semibold uppercase tracking-[0.12em] text-white/80">{trip.duration} · {trip.region}</span>
+                    <span className="absolute right-3 top-3 rounded-full border border-white/40 bg-[#FCC000] px-3 py-1.5 text-xs font-black text-stone-950">{score}% match</span>
+                  </div>
+                  <div className="p-4 sm:p-5">
+                    <h5 className="font-serif text-xl leading-tight text-white">{trip.title}</h5>
+                    <p className="mt-1 text-sm font-semibold text-[#FCC000]">{trip.pricePerPerson === undefined ? "Price on request" : `${formatCurrency(trip.pricePerPerson)} per person`}</p>
+                    <p className="mt-2 text-xs leading-5 text-white/55">{trip.routeHighlights.length ? trip.routeHighlights.slice(0, 3).join(" · ") : trip.routeStops.join(" · ")}</p>
+                    <ul className="mt-4 space-y-2">
+                      {reasons.length ? reasons.map((reason) => (
+                        <li key={`${trip.id}-${reason.category}-${reason.label}`} className="flex gap-2 text-xs leading-5 text-white/75">
+                          <span aria-hidden="true" className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#FCC000]" />
+                          {reason.label}
+                        </li>
+                      )) : (
+                        <li className="text-xs leading-5 text-white/50">No selected preference is supported by the listed details yet.</li>
+                      )}
+                    </ul>
+                    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/10 pt-4 text-xs font-semibold">
+                      <Link href={journeyHref(trip)} className="text-white underline decoration-[#FCC000] decoration-2 underline-offset-4">{trip.requestOnly ? "Request details" : "View journey"}</Link>
+                      <JourneyActions packageId={trip.id} packageTitle={trip.title} />
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-4 rounded-2xl border border-dashed border-white/15 bg-black/20 px-5 py-6">
+              <p className="font-semibold text-white">No journey matches the selected facts yet.</p>
+              <p className="mt-1 text-sm leading-6 text-white/55">Try another answer. We don’t infer dates or prices that aren’t listed.</p>
+            </div>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export function TravelDiscoveryCatalog() {
   const router = useRouter();
   const [search, setSearch] = useState("");
@@ -329,11 +591,8 @@ export function TravelDiscoveryCatalog() {
   const [minimumBudget, setMinimumBudget] = useState("");
   const [maximumBudget, setMaximumBudget] = useState("");
   const [sort, setSort] = useState<SortOption>("recommended");
-  const [fitStyle, setFitStyle] = useState<TravelStyle | "all">("all");
-  const [fitRegion, setFitRegion] = useState<RegionFilter>("all");
-  const [fitDuration, setFitDuration] = useState<DurationFilter>("all");
-  const [fitBudget, setFitBudget] = useState("");
-  const [fitMonth, setFitMonth] = useState("");
+  const [tripMatchAnswers, setTripMatchAnswers] = useState<TripMatchPreferences>({ moods: [], experiences: [] });
+  const [tripMatchComplete, setTripMatchComplete] = useState(false);
   const compareIds = useStoredIds(STORAGE_KEYS.compare, MAX_COMPARE_ITEMS);
   const wishlistIds = useStoredIds(STORAGE_KEYS.wishlist);
   const [quickCompareSelection, setQuickCompareSelection] = useState<Array<string | "">>(["", "", "", ""]);
@@ -371,39 +630,6 @@ export function TravelDiscoveryCatalog() {
     return filtered;
   }, [duration, maximumBudget, minimumBudget, region, search, sort, style]);
 
-  const fitPreferences = useMemo(
-    () => buildTripPreferences(search, fitStyle, fitRegion, fitDuration, fitBudget, fitMonth),
-    [fitBudget, fitDuration, fitMonth, fitRegion, fitStyle, search],
-  );
-  const fitCriteriaCount = [
-    fitPreferences.destination,
-    fitPreferences.region,
-    fitPreferences.travelStyle,
-    fitPreferences.duration,
-    fitPreferences.budget,
-    fitPreferences.departureMonth,
-  ].filter(Boolean).length;
-
-  const fitRecommendations = useMemo(() => {
-    if (fitCriteriaCount === 0) {
-      return [];
-    }
-
-    return packageList
-      .map((packageItem) => {
-        const result = calculateTripFit(fitPreferences, packageItem);
-        return {
-          packageItem,
-          score: result.score,
-          summary: result.summary,
-          reasons: result.reasons,
-          matchedCriteria: result.matchedCriteria,
-        };
-      })
-      .sort((first, second) => second.score - first.score || first.packageItem.title.localeCompare(second.packageItem.title))
-      .slice(0, 3);
-  }, [fitCriteriaCount, fitPreferences]);
-
   const toggleWishlist = (id: string) => {
     writeStorageIds(
       STORAGE_KEYS.wishlist,
@@ -434,8 +660,32 @@ export function TravelDiscoveryCatalog() {
   const comparePackages = compareIds
     .map((id) => packageList.find((packageItem) => packageItem.id === id))
     .filter((packageItem): packageItem is DiscoveryPackage => Boolean(packageItem));
+  const savedPackages = wishlistIds
+    .map((id) => packageList.find((packageItem) => packageItem.id === id))
+    .filter((packageItem): packageItem is DiscoveryPackage => Boolean(packageItem));
+  const tripMatchScores = useMemo(() => {
+    const hasAnswers = tripMatchAnswers.moods.length > 0 ||
+      tripMatchAnswers.duration !== undefined ||
+      tripMatchAnswers.experiences.length > 0 ||
+      tripMatchAnswers.budget !== undefined ||
+      tripMatchAnswers.season !== undefined;
+    if (!tripMatchComplete || !hasAnswers) return new Map<string, number>();
+    return new Map(
+      packageList
+        .map((packageItem) => [packageItem.id, calculateTripMatch(tripMatchAnswers, packageItem).score] as const)
+        .filter(([, score]) => score > 0),
+    );
+  }, [tripMatchAnswers, tripMatchComplete]);
+
+  const compareSavedPackages = () => {
+    const selected = savedPackages.slice(0, MAX_COMPARE_ITEMS);
+    if (selected.length < 2) return;
+    writeStorageIds(STORAGE_KEYS.compare, selected.map((packageItem) => packageItem.id));
+    router.push("/compare");
+  };
 
   return (
+    <>
     <section id="tour-discovery" className="relative isolate scroll-mt-20 overflow-hidden bg-[#0b0b0b] text-white">
       <div className="pointer-events-none absolute -left-48 top-12 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
       <div className="pointer-events-none absolute -right-48 top-[38%] h-[38rem] w-[38rem] rounded-full bg-[#b47b12]/[0.09] blur-3xl" />
@@ -445,11 +695,11 @@ export function TravelDiscoveryCatalog() {
         <div>
           <p className="inline-flex items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.34em] text-[#FCC000]">
             <span className="h-px w-8 bg-[#FCC000]" />
-            Smart trip suggestions
+            TRIP MATCH
           </p>
-          <h2 className="mt-5 max-w-3xl font-[var(--font-display)] text-5xl leading-[0.98] tracking-[-0.035em] text-white sm:text-6xl lg:text-7xl">Find your Pakistan escape.</h2>
+          <h2 className="mt-5 max-w-3xl font-[var(--font-display)] text-5xl leading-[0.98] tracking-[-0.035em] text-white sm:text-6xl lg:text-7xl">Not sure where to go?</h2>
           <p className="mt-4 max-w-xl text-sm leading-7 text-white/65">
-            Share what you’re looking for and discover journeys matched to your style, dates, and budget.
+            Tell us how you want to travel. We&apos;ll find the journeys that fit you.
           </p>
         </div>
         <div className="flex items-center gap-3 text-sm font-medium text-white/75">
@@ -459,6 +709,14 @@ export function TravelDiscoveryCatalog() {
           </Link>
         </div>
       </div>
+
+        <TripMatchPanel
+          journeys={packageList}
+          answers={tripMatchAnswers}
+          onAnswersChange={setTripMatchAnswers}
+          isComplete={tripMatchComplete}
+          onComplete={setTripMatchComplete}
+        />
 
       <div className="mt-7 grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px_220px]">
         <label className="rounded-[1.4rem] border border-white/10 bg-white/[0.04] p-3 transition focus-within:border-[#FCC000]/55">
@@ -539,152 +797,6 @@ export function TravelDiscoveryCatalog() {
           </div>
         </fieldset>
       </div>
-
-      <section className="mt-8 overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(130deg,rgba(255,255,255,0.07),rgba(255,255,255,0.015)_55%,rgba(252,192,0,0.06))] p-5 sm:p-7" aria-labelledby="trip-fit-heading">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-[#FCC000]/30 bg-[#FCC000]/[0.06] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#FCC000]">
-              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#FCC000] shadow-[0_0_0_3px_rgba(252,192,0,0.18)]" />
-              Trip suggestions
-            </p>
-            <h3 id="trip-fit-heading" className="mt-3 font-[var(--font-display)] text-3xl text-white sm:text-4xl">Your kind of Pakistan journey</h3>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-white/65">Tell us what matters. We’ll bring the most relevant routes to the top.</p>
-          </div>
-          <span className="rounded-full border border-white/10 bg-black/20 px-3 py-2 text-xs font-medium text-white/55">Matched using listed route, price, and departure details</span>
-        </div>
-
-        <div className="mt-6 grid gap-3 rounded-[1.5rem] border border-white/10 bg-black/20 p-4 sm:grid-cols-2 xl:grid-cols-5">
-          <label className="text-xs font-bold text-white/75">
-            Travel style
-            <select value={fitStyle} onChange={(event) => setFitStyle(event.target.value as TravelStyle | "all")} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
-              <option value="all">Any style</option>
-              <option value="family">Family</option>
-              <option value="couples">Couples</option>
-              <option value="adventure">Adventure</option>
-              <option value="tailored">Tailored</option>
-            </select>
-          </label>
-          <label className="text-xs font-bold text-white/75">
-            Region
-            <select value={fitRegion} onChange={(event) => setFitRegion(event.target.value as RegionFilter)} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
-              <option value="all">Either region</option>
-              <option value="northern">Northern Pakistan</option>
-              <option value="southern">Southern Pakistan</option>
-            </select>
-          </label>
-          <label className="text-xs font-bold text-white/75">
-            Time available
-            <select value={fitDuration} onChange={(event) => setFitDuration(event.target.value as DurationFilter)} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
-              <option value="all">Any duration</option>
-              <option value="weekend">Up to 3 days</option>
-              <option value="4-7">4–7 days</option>
-              <option value="8-12">8–12 days</option>
-              <option value="12-plus">More than 12 days</option>
-            </select>
-          </label>
-          <label className="text-xs font-bold text-white/75">
-            Budget per person
-            <input type="number" min="0" step="5000" value={fitBudget} onChange={(event) => setFitBudget(event.target.value)} placeholder="No limit" className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm placeholder:text-stone-400 transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30" />
-          </label>
-          <label className="text-xs font-bold text-white/75">
-            Season match
-            <select value={fitMonth} onChange={(event) => setFitMonth(event.target.value)} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
-              <option value="">Not selected</option>
-              {departureMonths.map((month) => <option key={month} value={month}>{month.charAt(0).toUpperCase() + month.slice(1)}</option>)}
-            </select>
-          </label>
-        </div>
-
-        {fitCriteriaCount ? (
-          <div className="mt-5 grid gap-4 lg:grid-cols-3">
-            {fitRecommendations.map(({ packageItem, score, summary, reasons, matchedCriteria }) => {
-              const matchReasons = reasons.filter((reason) => reason.type === "match").slice(0, 3);
-              const mismatchReasons = reasons.filter((reason) => reason.type === "mismatch").slice(0, 2);
-              const label = getPreferenceSummary(score, matchedCriteria.length, fitCriteriaCount);
-
-              return (
-                <article key={packageItem.id} className="group flex flex-col overflow-hidden rounded-[1.6rem] border border-stone-200/90 bg-white shadow-[0_14px_35px_rgba(42,35,13,0.07)] transition duration-500 hover:-translate-y-1 hover:border-[#d8b431] hover:shadow-[0_22px_42px_rgba(42,35,13,0.12)] motion-reduce:transform-none motion-reduce:transition-none">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-stone-200">
-                    <Image
-                      src={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"}
-                      alt={packageItem.title}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 33vw"
-                      className="object-cover transition duration-700 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-                    <span className="absolute bottom-3 left-4 text-xs font-semibold uppercase tracking-[0.18em] text-white/85">{packageItem.duration} · {packageItem.region}</span>
-                    <span className="absolute right-3 top-3 rounded-full border border-white/40 bg-[#fcc000] px-3 py-1.5 text-xs font-black text-stone-950 shadow-lg">{score}% match</span>
-                  </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <div className="mb-3 flex items-center gap-2">
-                      <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-stone-100">
-                        <span className="block h-full rounded-full bg-gradient-to-r from-[#e0ae00] to-[#fcc000]" style={{ width: `${score}%` }} />
-                      </span>
-                      <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#806000]">{label}</span>
-                    </div>
-                    <h4 className="font-serif text-xl leading-tight text-stone-950">{packageItem.title}</h4>
-                    <p className="mt-1 text-xs font-bold text-[#806000]">{listedPrice(packageItem)}{packageItem.pricePerPerson === undefined ? "" : <span className="font-medium text-stone-500"> per person</span>}</p>
-                    <p className="mt-3 text-xs leading-5 text-stone-600">{summary}</p>
-                    <ul className="mt-4 space-y-2 text-xs text-stone-600">
-                    {matchReasons.length ? (
-                      matchReasons.map((reason) => (
-                        <li key={`${packageItem.id}-${reason.criterion}`} className="flex items-start gap-2 rounded-xl bg-[#f6f3e9] px-3 py-2">
-                          <span aria-hidden="true" className="mt-1 inline-block h-2 w-2 shrink-0 rounded-full bg-[#b38a00]" />
-                          <span>{reason.label}</span>
-                        </li>
-                      ))
-                    ) : (
-                      <li className="flex items-start gap-2 rounded-xl bg-stone-50 px-3 py-2">
-                        <span aria-hidden="true" className="mt-1 inline-block h-2 w-2 shrink-0 rounded-full bg-stone-400" />
-                        <span>No selected preference is a strong match yet.</span>
-                      </li>
-                    )}
-                    {mismatchReasons.length > 0 ? (
-                      mismatchReasons.map((reason) => (
-                        <li key={`${packageItem.id}-${reason.criterion}-mismatch`} className="flex items-start gap-2 text-stone-500">
-                          <span aria-hidden="true" className="mt-1 inline-block h-2 w-2 shrink-0 rounded-full bg-stone-300" />
-                          <span>{reason.label}</span>
-                        </li>
-                      ))
-                    ) : null}
-                    </ul>
-                    <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-stone-100 pt-4 text-xs font-semibold">
-                      <Link href={journeyHref(packageItem)} className="rounded-sm text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00]">{packageItem.requestOnly ? "Request details" : "View journey"}</Link>
-                      <Link href={`/make-my-trip?destination=${encodeURIComponent(packageItem.destinationSlugs[0] ?? "")}&inspiration=${encodeURIComponent(packageItem.title)}`} className="rounded-sm text-[#735900] underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00]">Plan this route</Link>
-                      <button type="button" onClick={() => toggleWishlist(packageItem.id)} className="rounded-sm text-stone-600 underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00]">{wishlistIds.includes(packageItem.id) ? "Saved" : "Save"}</button>
-                      <button type="button" onClick={() => toggleCompare(packageItem.id)} disabled={!compareIds.includes(packageItem.id) && compareIds.length >= MAX_COMPARE_ITEMS} className="rounded-sm text-stone-600 underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00] disabled:cursor-not-allowed disabled:text-stone-500 disabled:opacity-100">{compareIds.includes(packageItem.id) ? "In compare" : "Compare"}</button>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="mt-5 rounded-[1.5rem] border border-dashed border-[#d9c275] bg-white/75 px-5 py-6 text-sm text-stone-600">
-            <p className="font-serif text-xl text-stone-950">A better match starts with one detail</p>
-            <p className="mt-1">Choose a destination, travel style, duration, budget, or month to see trips matched to your plans.</p>
-          </div>
-        )}
-
-        {fitCriteriaCount && fitRecommendations[0] ? (
-          <div className="mt-5 border-t border-white/10 pt-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">Similar trips to {fitRecommendations[0].packageItem.title}</p>
-            <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
-              {getSimilarTripsFromEngine(fitRecommendations[0].packageItem, packageList).map(({ trip, reasons }) => {
-                const similarPackage = packageList.find((packageItem) => packageItem.id === trip.id);
-                if (!similarPackage) return null;
-
-                return (
-                  <Link key={trip.id} href={journeyHref(similarPackage)} className="text-sm font-semibold text-white/85 underline decoration-white/25 underline-offset-4 hover:decoration-[#fcc000]">
-                    {trip.title}<span className="ml-2 text-xs font-normal text-white/50">{reasons.join(" · ")}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        ) : null}
-      </section>
 
       <div className="mt-7 rounded-[1.8rem] border border-[#28251c] bg-[radial-gradient(circle_at_top_right,_rgba(252,192,0,0.2),_transparent_32%),linear-gradient(135deg,_#171714,_#29271f)] p-5 text-white shadow-[0_24px_55px_rgba(20,18,12,0.18)] sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -812,6 +924,7 @@ export function TravelDiscoveryCatalog() {
                 isCompareEnabled={compareIds.includes(packageItem.id)}
                 onToggleWishlist={toggleWishlist}
                 onToggleCompare={toggleCompare}
+                matchScore={tripMatchScores.get(packageItem.id)}
               />
             ))}
           </div>
@@ -819,6 +932,19 @@ export function TravelDiscoveryCatalog() {
       </div>
       </div>
     </section>
+    {savedPackages.length >= 2 ? (
+      <div className="fixed inset-x-3 bottom-24 z-40 mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#FCC000]/30 bg-stone-950/95 px-4 py-3 text-white shadow-[0_14px_50px_rgba(0,0,0,0.45)] backdrop-blur sm:inset-x-6 sm:px-5" role="region" aria-label="Saved trip shortlist">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#FCC000]">Your shortlist</p>
+          <p className="mt-1 text-xs text-white/70">{savedPackages.length} journeys saved · compare up to {MAX_COMPARE_ITEMS}</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/wishlist" className="text-xs font-semibold text-white/75 underline underline-offset-4 hover:text-white">Review saved</Link>
+          <button type="button" onClick={compareSavedPackages} className="min-h-10 rounded-full bg-[#FCC000] px-4 text-xs font-bold text-stone-950 transition hover:bg-[#ffda4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Compare saved</button>
+        </div>
+      </div>
+    ) : null}
+    </>
   );
 }
 
@@ -842,6 +968,34 @@ export function CompareTripsClient() {
         packageItem,
         result: calculateTripFit(fitPreferences, packageItem),
       }))
+    : [];
+  const lowestPricedPackage = comparePackages
+    .filter((packageItem) => packageItem.pricePerPerson !== undefined)
+    .sort((first, second) =>
+      (first.pricePerPerson ?? Number.POSITIVE_INFINITY) - (second.pricePerPerson ?? Number.POSITIVE_INFINITY) ||
+      first.title.localeCompare(second.title),
+    )[0];
+  const shortestPackage = [...comparePackages].sort((first, second) =>
+    normalizeTrip(first).durationDays - normalizeTrip(second).durationDays ||
+    first.title.localeCompare(second.title),
+  )[0];
+  const itineraryPackages = comparePackages.filter((packageItem) => packageItem.itinerary?.length);
+  const requestOnlyPackages = comparePackages.filter((packageItem) => packageItem.pricePerPerson === undefined);
+  const comparisonTakeaways = comparePackages.length > 1
+    ? [
+        lowestPricedPackage
+          ? `For the lowest listed starting price, choose ${lowestPricedPackage.title} at ${listedPrice(lowestPricedPackage)} per person.`
+          : "None of these journeys has a listed price, so compare costs after requesting quotes.",
+        shortestPackage
+          ? `For the shortest break, choose ${shortestPackage.title} (${shortestPackage.duration}).`
+          : null,
+        itineraryPackages.length
+          ? `A day-by-day itinerary is listed for ${itineraryPackages.map((packageItem) => packageItem.title).join(" and ")}.`
+          : "None of these journeys has a day-by-day itinerary listed yet.",
+        requestOnlyPackages.length
+          ? `${requestOnlyPackages.map((packageItem) => packageItem.title).join(" and ")} ${requestOnlyPackages.length === 1 ? "has" : "have"} price on request and can’t be ranked by cost.`
+          : null,
+      ].filter((takeaway): takeaway is string => Boolean(takeaway))
     : [];
 
   const removeComparedPackage = (id: string) => {
@@ -1107,6 +1261,35 @@ export function CompareTripsClient() {
           </tbody>
         </table>
       </div>
+
+      {comparisonTakeaways.length ? (
+      <section className="mt-5 rounded-[1.5rem] border border-[#e8d99f] bg-[linear-gradient(135deg,_#fffdf7,_#f7f2e3)] p-4 sm:p-5" aria-labelledby="comparison-takeaways-heading">
+        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#806000]">Our take</p>
+        <h2 id="comparison-takeaways-heading" className="mt-1 font-serif text-2xl text-stone-950">A quick way to choose</h2>
+        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          {comparisonTakeaways.map((takeaway) => (
+            <li key={takeaway} className="rounded-xl border border-[#e8d99f] bg-white/75 px-3 py-2 text-sm leading-6 text-stone-700">{takeaway}</li>
+          ))}
+        </ul>
+      </section>
+      ) : null}
+
+      <section className="mt-5 grid gap-3 rounded-[1.5rem] border border-[#e8d99f] bg-[linear-gradient(135deg,_#fffdf7,_#f7f2e3)] p-4 sm:grid-cols-2 sm:p-5" aria-label="Comparison takeaway">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#806000]">Lowest listed starting price</p>
+          <p className="mt-1 text-sm leading-6 text-stone-800">
+            {lowestPricedPackage
+              ? `${lowestPricedPackage.title} · ${listedPrice(lowestPricedPackage)} per person`
+              : "No selected journey has a listed price."}
+          </p>
+        </div>
+        {shortestPackage ? (
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#806000]">Shortest listed duration</p>
+            <p className="mt-1 text-sm leading-6 text-stone-800">{shortestPackage.title} · {shortestPackage.duration}</p>
+          </div>
+        ) : null}
+      </section>
 
       <section className="mt-8 rounded-[1.6rem] bg-[linear-gradient(145deg,_#f5f0df,_#fffdf7)] p-5 sm:p-6" aria-labelledby="fit-explanation-heading">
         <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#806000]">The short version</p>

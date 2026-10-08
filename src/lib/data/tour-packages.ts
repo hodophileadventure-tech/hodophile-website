@@ -8,6 +8,7 @@ export type TourDeparture = {
 };
 
 export type TravelStyle = "family" | "couples" | "adventure" | "tailored";
+export type TourExperience = "mountains" | "lakes-valleys" | "beaches" | "nature" | "adventure" | "romance" | "culture" | "offbeat";
 
 export type TourPackage = {
   id: string;
@@ -42,6 +43,7 @@ export type TourPackage = {
   departureAvailability: "confirmed" | "on-request";
   departures: TourDeparture[];
   travelStyles: TravelStyle[];
+  experiences: TourExperience[];
   transport?: string[];
   includes?: string[];
   excludes?: string[];
@@ -63,6 +65,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "Short escape",
     pace: "Fast",
     travelStyles: ["adventure", "couples", "tailored"],
+    experiences: ["mountains", "nature", "adventure"],
     duration: "3 Days",
     pricePerPerson: 45000,
     couplePrice: 70000,
@@ -84,6 +87,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "Mountain and forest",
     pace: "Moderate",
     travelStyles: ["adventure", "couples", "tailored"],
+    experiences: ["mountains", "nature", "offbeat"],
     duration: "5 Days",
     pricePerPerson: 60000,
     couplePrice: 90000,
@@ -105,6 +109,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "Baltistan road circuit",
     pace: "Relaxed",
     travelStyles: ["adventure", "family", "tailored"],
+    experiences: ["mountains", "lakes-valleys", "nature", "adventure", "culture"],
     duration: "10 Days / 9 Nights",
     pricePerPerson: 47500,
     priceWithoutIslamabadStay: 43500,
@@ -139,6 +144,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "Two-valley journey",
     pace: "Moderate",
     travelStyles: ["family", "couples", "tailored"],
+    experiences: ["mountains", "lakes-valleys", "nature", "romance"],
     duration: "7 Days",
     pricePerPerson: 100000,
     couplePrice: 180000,
@@ -160,6 +166,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "Coastal camping",
     pace: "Relaxed",
     travelStyles: ["adventure", "family", "tailored"],
+    experiences: ["beaches", "nature", "adventure", "offbeat"],
     duration: "2 Days / 1 Night",
     pricePerPerson: 13500,
     scheduleNote: "Every weekend: Saturday morning to Sunday evening",
@@ -179,6 +186,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "Families and varied scenery",
     pace: "Relaxed",
     travelStyles: ["family", "couples", "tailored"],
+    experiences: ["mountains", "lakes-valleys", "nature", "romance"],
     duration: "10 Days",
     pricePerPerson: 42000,
     couplePrice: 94000,
@@ -201,6 +209,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "Valley contrast",
     pace: "Relaxed",
     travelStyles: ["family", "couples", "tailored"],
+    experiences: ["mountains", "lakes-valleys", "nature", "romance"],
     duration: "9 Days",
     pricePerPerson: 39000,
     couplePrice: 90000,
@@ -223,6 +232,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "Three-region circuit",
     pace: "Relaxed",
     travelStyles: ["adventure", "family", "tailored"],
+    experiences: ["mountains", "lakes-valleys", "nature", "adventure"],
     duration: "12 Days",
     pricePerPerson: 68000,
     couplePrice: 155400,
@@ -245,6 +255,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "Highland explorer",
     pace: "Relaxed",
     travelStyles: ["adventure", "family", "tailored"],
+    experiences: ["mountains", "lakes-valleys", "nature", "adventure"],
     duration: "10 Days",
     pricePerPerson: 59500,
     couplePrice: 139000,
@@ -274,6 +285,7 @@ export const tourPackages: TourPackage[] = [
     departureAvailability: "on-request",
     departures: [],
     travelStyles: ["family", "couples", "tailored"],
+    experiences: ["mountains", "lakes-valleys", "nature", "romance"],
     notes: [
       "Quad sharing from PKR 46,500 with Islamabad stays, or PKR 42,500 without them.",
       "Room rates: triple PKR 48,500, twin PKR 52,500, solo PKR 76,500.",
@@ -297,6 +309,7 @@ export const tourPackages: TourPackage[] = [
     departureAvailability: "on-request",
     departures: [],
     travelStyles: ["adventure", "family", "tailored"],
+    experiences: ["mountains", "nature", "offbeat"],
     notes: [
       "Quad sharing from PKR 16,500 with Islamabad stays, or PKR 16,500 without them.",
       "Room rates: triple PKR 17,500, twin PKR 18,500, solo PKR 18,500.",
@@ -320,6 +333,7 @@ export const tourPackages: TourPackage[] = [
     departureAvailability: "on-request",
     departures: [],
     travelStyles: ["adventure", "family", "tailored"],
+    experiences: ["nature", "adventure", "offbeat"],
     notes: [
       "Quad sharing from PKR 16,000 with Islamabad stays, or PKR 16,000 without them.",
       "Room rates: triple PKR 17,000, twin PKR 18,000, solo PKR 18,000.",

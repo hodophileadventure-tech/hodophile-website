@@ -43,6 +43,7 @@ test("the canonical list contains exactly the 12 unique journeys with required s
     assert.ok(Number.isFinite(tourPackage.pricePerPerson) && tourPackage.pricePerPerson > 0);
     assert.ok(Number.parseInt(tourPackage.duration, 10) > 0);
     assert.ok(tourPackage.travelStyles.length > 0);
+    assert.ok(tourPackage.experiences.length > 0);
     assert.ok(Array.isArray(tourPackage.departures));
     if (tourPackage.departureAvailability === "confirmed") assert.ok(tourPackage.departures.length > 0);
     const renderedJourneyText = [
@@ -78,6 +79,9 @@ test("the tour discovery catalog restores unique historical route ideas without 
     assert.ok(idea.description.trim().length > 0);
     assert.ok(idea.destinationSlugs.length > 0);
     assert.ok(idea.routeStops.length > 0);
+    assert.ok(idea.experiences.length > 0);
+    assert.ok(idea.routeHighlights.length > 0);
+    assert.ok(idea.bestFor.trim().length > 0);
     assert.ok(existsSync(resolve(process.cwd(), "public", idea.image.slice(1))), `missing image for ${idea.id}`);
     assert.ok(!("pricePerPerson" in idea), `${idea.id} must not expose historical pricing`);
     assert.ok(!/\b(?:departure|dates?)\s*[:(]/i.test(idea.title), `${idea.id} must not include an old departure date`);

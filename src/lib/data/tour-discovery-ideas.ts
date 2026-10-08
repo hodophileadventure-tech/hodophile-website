@@ -1,4 +1,4 @@
-import type { TravelStyle } from "./tour-packages";
+import type { TourExperience, TravelStyle } from "./tour-packages";
 
 export type TourDiscoveryIdea = {
   id: string;
@@ -10,6 +10,10 @@ export type TourDiscoveryIdea = {
   duration: string;
   image: string;
   travelStyles: TravelStyle[];
+  experiences: TourExperience[];
+  routeHighlights: string[];
+  bestFor: string;
+  pace: "Fast" | "Moderate" | "Relaxed";
 };
 
 export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
@@ -23,6 +27,10 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     duration: "8 Days / 7 Nights",
     image: "/images/package-cards/images__tour-packages__01.webp",
     travelStyles: ["family", "couples", "adventure", "tailored"],
+    experiences: ["mountains", "nature", "adventure"],
+    routeHighlights: ["Kalam valley", "Malam Jabba"],
+    bestFor: "A short northern escape",
+    pace: "Moderate",
   },
   {
     id: "swat-kalam-malam-jabba-shogran-10-days",
@@ -34,6 +42,10 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     duration: "10 Days / 9 Nights",
     image: "/images/package-cards/images__tour-packages__08.webp",
     travelStyles: ["family", "couples", "adventure", "tailored"],
+    experiences: ["mountains", "nature", "adventure"],
+    routeHighlights: ["Kalam valley", "Malam Jabba", "Shogran highlands"],
+    bestFor: "A longer northern circuit",
+    pace: "Relaxed",
   },
   {
     id: "skardu-manthoka-basho-10-days",
@@ -45,6 +57,10 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     duration: "10 Days / 9 Nights",
     image: "/images/package-cards/images__tour-packages__23.webp",
     travelStyles: ["family", "adventure", "tailored"],
+    experiences: ["mountains", "nature", "offbeat"],
+    routeHighlights: ["Manthoka Waterfall", "Basho valley"],
+    bestFor: "Baltistan's waterfalls and forests",
+    pace: "Relaxed",
   },
   {
     id: "hunza-naltar-10-days",
@@ -56,6 +72,10 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     duration: "10 Days / 9 Nights",
     image: "/images/package-cards/images__tour-packages__13.webp",
     travelStyles: ["family", "couples", "adventure", "tailored"],
+    experiences: ["mountains", "lakes-valleys", "nature", "romance"],
+    routeHighlights: ["Hunza", "Naltar Valley"],
+    bestFor: "A two-valley mountain escape",
+    pace: "Relaxed",
   },
   {
     id: "hunza-skardu-12-days",
@@ -67,6 +87,10 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     duration: "12 Days / 11 Nights",
     image: "/images/package-cards/images__tour-packages__09.webp",
     travelStyles: ["family", "couples", "adventure", "tailored"],
+    experiences: ["mountains", "lakes-valleys", "nature", "romance"],
+    routeHighlights: ["Hunza", "Skardu"],
+    bestFor: "A two-region mountain circuit",
+    pace: "Relaxed",
   },
   {
     id: "naran-shogran-9-days",
@@ -78,6 +102,10 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     duration: "9 Days / 8 Nights",
     image: "/images/package-cards/images__tour-packages__43.webp",
     travelStyles: ["family", "couples", "adventure", "tailored"],
+    experiences: ["mountains", "lakes-valleys", "nature", "romance"],
+    routeHighlights: ["Naran", "Shogran"],
+    bestFor: "A twin-valley getaway",
+    pace: "Relaxed",
   },
   {
     id: "ranikot-fort-2-days",
@@ -89,6 +117,10 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     duration: "2 Days / 1 Night",
     image: "/images/package-cards/images__tour-packages__30.webp",
     travelStyles: ["family", "adventure", "tailored"],
+    experiences: ["nature", "culture", "offbeat"],
+    routeHighlights: ["Ranikot Fort"],
+    bestFor: "A short heritage escape",
+    pace: "Moderate",
   },
   {
     id: "charo-machi-2-days",
@@ -100,5 +132,9 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     duration: "2 Days / 1 Night",
     image: "/images/package-cards/images__tour-packages__34.webp",
     travelStyles: ["family", "adventure", "tailored"],
+    experiences: ["nature", "adventure", "offbeat"],
+    routeHighlights: ["Charo Machi"],
+    bestFor: "A short offbeat adventure",
+    pace: "Fast",
   },
 ];
