@@ -59,6 +59,23 @@ test("the canonical list contains exactly the 12 unique journeys with required s
   }
 });
 
+test("the five-day air journey is accurately listed as Skardu and Basho without Deosai", () => {
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "skardu-deosai-basho-air-5-days");
+
+  assert.ok(journey);
+  assert.equal(journey.title, "Skardu & Basho by Air");
+  assert.deepEqual(journey.routeStops, ["Skardu", "Basho"]);
+  assert.ok(!journey.description.includes("Deosai"));
+  assert.ok(!(journey.routeHighlights ?? []).some((highlight) => highlight.includes("Deosai")));
+});
+
+test("Ormara Beach Night Camping uses its dedicated beach-camping image", () => {
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "ormara-beach-camping");
+
+  assert.ok(journey);
+  assert.equal(journey.image, "/images/package-cards/images__tour-packages__ormara-beach-camping.png");
+});
+
 test("destination relationships are explicit and never fall back to unrelated packages", () => {
   for (const item of tourMenu.flatMap((group) => group.items)) {
     const matches = getTourPackagesForDestination(item.destinationSlug);
