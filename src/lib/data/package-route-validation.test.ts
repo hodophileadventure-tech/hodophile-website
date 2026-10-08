@@ -5,6 +5,7 @@ import { resolve } from "node:path";
 
 import { destinationTourPageRedirects, tourMenu } from "../site";
 import { featuredTourCards, indexableFeaturedTourRoutePaths } from "./featured-tour-cards";
+import { tourDiscoveryIdeas } from "./tour-discovery-ideas";
 import { getTourPackagesForDestination, getTourPackagesForRegion, tourPackages } from "./tour-packages";
 
 const expectedJourneyIds = [
@@ -56,6 +57,30 @@ test("the canonical list contains exactly the 12 unique journeys with required s
       renderedJourneyText.every((value) => !/\broute\s+route\b/i.test(value)),
       `${tourPackage.id} contains a duplicated route suffix`,
     );
+  }
+});
+
+test("the tour discovery catalog restores unique historical route ideas without stale prices or dates", () => {
+  const journeys = [...tourPackages, ...tourDiscoveryIdeas];
+  const ids = journeys.map((journey) => journey.id);
+  const images = journeys.map((journey) => journey.image);
+  const routeDurations = journeys.map((journey) =>
+    `${[...journey.destinationSlugs].sort().join(",")}|${[...journey.routeStops].sort().join(",")}|${Number.parseInt(journey.duration, 10)}`,
+  );
+
+  assert.equal(journeys.length, 20);
+  assert.equal(new Set(ids).size, ids.length, "journey ids must be unique across catalog and ideas");
+  assert.equal(new Set(images).size, images.length, "each journey must use a unique image");
+  assert.equal(new Set(routeDurations).size, routeDurations.length, "the same destination set and duration must not be listed twice");
+
+  for (const idea of tourDiscoveryIdeas) {
+    assert.ok(idea.title.trim().length > 0);
+    assert.ok(idea.description.trim().length > 0);
+    assert.ok(idea.destinationSlugs.length > 0);
+    assert.ok(idea.routeStops.length > 0);
+    assert.ok(existsSync(resolve(process.cwd(), "public", idea.image.slice(1))), `missing image for ${idea.id}`);
+    assert.ok(!("pricePerPerson" in idea), `${idea.id} must not expose historical pricing`);
+    assert.ok(!/\b(?:departure|dates?)\s*[:(]/i.test(idea.title), `${idea.id} must not include an old departure date`);
   }
 });
 

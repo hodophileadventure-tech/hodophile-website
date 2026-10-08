@@ -145,6 +145,21 @@ test("budget and duration edge cases remain safe and informational", () => {
   assert.ok(result.reasons.some((reason) => reason.criterion === "budget" || reason.criterion === "duration"));
 });
 
+test("a trip with no current price is never presented as a budget fit", () => {
+  const result = calculateTripFit(
+    { budget: 100000 },
+    {
+      id: "unpriced-trip",
+      title: "Unpriced trip",
+      region: "northern",
+      pricePerPerson: undefined,
+    },
+  );
+
+  assert.ok(!result.matchedCriteria.includes("budget"));
+  assert.ok(result.reasons.some((reason) => reason.label === "Price to confirm" && reason.detail.includes("Current pricing is not listed")));
+});
+
 test("rankTripRecommendations avoids package-count dominance and stays stable across input order", () => {
   const skarduOne = {
     id: "skardu-one",

@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore } from "react";
 
+import type { RouteItineraryDay } from "@/lib/data/routes";
 import { tourPackages, type TravelStyle, type TourDeparture } from "@/lib/data/tour-packages";
+import { tourDiscoveryIdeas } from "@/lib/data/tour-discovery-ideas";
 import { calculateTripFit, getSimilarTrips as getSimilarTripsFromEngine, getSimilarTripsForSavedTrips, normalizeTrip, type TripPreferences } from "@/lib/trip-intelligence";
 
 type RegionFilter = "all" | "northern" | "southern";
@@ -16,7 +18,8 @@ type DiscoveryPackage = {
   id: string;
   title: string;
   duration: string;
-  pricePerPerson: number;
+  pricePerPerson?: number;
+  requestOnly?: boolean;
   scheduleNote?: string;
   departureAvailability: "confirmed" | "on-request";
   region: Exclude<RegionFilter, "all">;
@@ -24,6 +27,7 @@ type DiscoveryPackage = {
   destinationSlugs: string[];
   routeStops: string[];
   routeHighlights: string[];
+  itinerary?: RouteItineraryDay[];
   bestFor?: string;
   pace?: "Fast" | "Moderate" | "Relaxed";
   travelStyles: TravelStyle[];
@@ -50,7 +54,18 @@ function formatCurrency(value: number) {
   }).format(value);
 }
 
-const packageList: DiscoveryPackage[] = tourPackages.map((tourPackage) => ({
+function journeyHref(packageItem: DiscoveryPackage) {
+  if (!packageItem.requestOnly) return `/packages/${packageItem.id}`;
+
+  return `/make-my-trip?destination=${encodeURIComponent(packageItem.destinationSlugs[0] ?? "")}&inspiration=${encodeURIComponent(packageItem.title)}`;
+}
+
+function listedPrice(packageItem: DiscoveryPackage) {
+  return packageItem.pricePerPerson === undefined ? "Price on request" : formatCurrency(packageItem.pricePerPerson);
+}
+
+const packageList: DiscoveryPackage[] = [
+  ...tourPackages.map((tourPackage) => ({
     id: tourPackage.id,
     title: tourPackage.title,
     duration: tourPackage.duration,
@@ -62,6 +77,7 @@ const packageList: DiscoveryPackage[] = tourPackages.map((tourPackage) => ({
     destinationSlugs: tourPackage.destinationSlugs,
     routeStops: tourPackage.routeStops,
     routeHighlights: tourPackage.routeHighlights ?? [],
+    itinerary: tourPackage.itinerary,
     bestFor: tourPackage.bestFor,
     pace: tourPackage.pace,
     travelStyles: tourPackage.travelStyles,
@@ -70,7 +86,20 @@ const packageList: DiscoveryPackage[] = tourPackages.map((tourPackage) => ({
     includes: tourPackage.includes ?? [],
     image: tourPackage.image,
     summary: tourPackage.description,
-  }));
+  })),
+  ...tourDiscoveryIdeas.map((idea): DiscoveryPackage => ({
+    ...idea,
+    scheduleNote: "Dates, itinerary details, and current price to confirm",
+    departureAvailability: "on-request",
+    notes: [],
+    routeHighlights: [],
+    departures: [],
+    transport: [],
+    includes: [],
+    requestOnly: true,
+    summary: idea.description,
+  })),
+];
 
 function getDurationDays(packageItem: DiscoveryPackage) {
   return Number(packageItem.duration.match(/\d+/)?.[0] ?? 0);
@@ -231,7 +260,7 @@ function RouteCard({
   onToggleCompare: (id: string) => void;
   relatedContext?: { savedTripTitle: string; reasons: string[] };
 }) {
-  const priceText = formatCurrency(packageItem.pricePerPerson);
+  const priceText = listedPrice(packageItem);
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_12px_30px_rgba(55,55,48,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/60 hover:shadow-[0_20px_40px_rgba(55,55,48,0.12)]">
@@ -269,15 +298,15 @@ function RouteCard({
 
         <div className="mt-auto flex items-end justify-between gap-3 pt-4">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500">From</p>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500">{packageItem.pricePerPerson === undefined ? "Pricing" : "From"}</p>
             <p className="mt-1 text-xl font-semibold text-[#9a7600]">{priceText}</p>
           </div>
           <span className="max-w-[48%] text-right text-xs font-semibold leading-5 text-stone-700">{packageItem.bestFor ?? "Not specified"}</span>
         </div>
 
         <div className="mt-4 flex items-center gap-2 border-t border-stone-200 pt-4">
-          <Link href={`/packages/${packageItem.id}`} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#0b0b0b] px-4 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#282828] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
-            View journey
+          <Link href={journeyHref(packageItem)} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#0b0b0b] px-4 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#282828] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
+            {packageItem.requestOnly ? "Request details" : "View journey"}
           </Link>
           <button type="button" onClick={() => onToggleWishlist(packageItem.id)} title={isWishlistEnabled ? "Remove from saved journeys" : "Save journey"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isWishlistEnabled ? "border-[#1b7a4b] bg-[#1b7a4b] text-white" : "border-stone-300 bg-white text-stone-700 hover:border-[#1b7a4b] hover:text-[#1b7a4b]"}`} aria-label={isWishlistEnabled ? `Remove ${packageItem.title} from wishlist` : `Save ${packageItem.title} to wishlist`}>
             ♥
@@ -328,13 +357,13 @@ export function TravelDiscoveryCatalog() {
         (duration === "8-12" && packageDuration >= 8 && packageDuration <= 12) ||
         (duration === "12-plus" && packageDuration > 12);
       const matchesRegion = region === "all" || packageItem.region === region;
-      const matchesMinimum = minimumBudget === "" || packageItem.pricePerPerson >= Number(minimumBudget);
-      const matchesMaximum = maximumBudget === "" || packageItem.pricePerPerson <= Number(maximumBudget);
+      const matchesMinimum = minimumBudget === "" || (packageItem.pricePerPerson !== undefined && packageItem.pricePerPerson >= Number(minimumBudget));
+      const matchesMaximum = maximumBudget === "" || (packageItem.pricePerPerson !== undefined && packageItem.pricePerPerson <= Number(maximumBudget));
 
       return matchesQuery && matchesStyle && matchesDuration && matchesRegion && matchesMinimum && matchesMaximum;
     });
     if (sort === "price-low") {
-      return filtered.sort((first, second) => first.pricePerPerson - second.pricePerPerson);
+      return filtered.sort((first, second) => (first.pricePerPerson ?? Number.POSITIVE_INFINITY) - (second.pricePerPerson ?? Number.POSITIVE_INFINITY));
     }
     if (sort === "duration-short") {
       return filtered.sort((first, second) => getDurationDays(first) - getDurationDays(second));
@@ -407,40 +436,47 @@ export function TravelDiscoveryCatalog() {
     .filter((packageItem): packageItem is DiscoveryPackage => Boolean(packageItem));
 
   return (
-    <section className="mt-10 overflow-hidden rounded-[2.5rem] border border-stone-800 bg-[radial-gradient(ellipse_at_top_right,_rgba(252,192,0,0.12),_transparent_38%),linear-gradient(145deg,_#171715_0%,_#0b0b0b_72%)] px-5 py-8 shadow-[0_35px_90px_rgba(0,0,0,0.18)] sm:px-8 sm:py-10 lg:px-10 lg:py-12">
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-7">
+    <section id="tour-discovery" className="relative isolate scroll-mt-20 overflow-hidden bg-[#0b0b0b] text-white">
+      <div className="pointer-events-none absolute -left-48 top-12 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
+      <div className="pointer-events-none absolute -right-48 top-[38%] h-[38rem] w-[38rem] rounded-full bg-[#b47b12]/[0.09] blur-3xl" />
+      <div className="relative mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-16 lg:px-14 lg:py-24">
+      <div className="relative flex flex-wrap items-end justify-between gap-4 border-y border-[#FCC000]/25 py-8 sm:py-10">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FCC000]/65 to-transparent" />
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.32em] text-[#fcc000]">Smart trip suggestions</p>
-          <h2 className="mt-3 font-serif text-4xl text-white">Find your perfect Pakistan escape</h2>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-stone-300">
+          <p className="inline-flex items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.34em] text-[#FCC000]">
+            <span className="h-px w-8 bg-[#FCC000]" />
+            Smart trip suggestions
+          </p>
+          <h2 className="mt-5 max-w-3xl font-[var(--font-display)] text-5xl leading-[0.98] tracking-[-0.035em] text-white sm:text-6xl lg:text-7xl">Find your Pakistan escape.</h2>
+          <p className="mt-4 max-w-xl text-sm leading-7 text-white/65">
             Share what you’re looking for and discover journeys matched to your style, dates, and budget.
           </p>
         </div>
-        <div className="flex items-center gap-3 text-sm font-medium text-stone-200">
-          <span className="rounded-full border border-white/15 bg-white/5 px-3 py-2">{filteredPackages.length} {filteredPackages.length === 1 ? "journey" : "journeys"}</span>
-          <Link href="/wishlist" className="rounded-full border border-white/15 bg-white/5 px-3 py-2 transition hover:border-[#1f6b4a] hover:bg-[#1f6b4a]/15 hover:text-white">
+        <div className="flex items-center gap-3 text-sm font-medium text-white/75">
+          <span className="rounded-full border border-[#FCC000]/35 bg-[#FCC000]/[0.06] px-3 py-2 text-[#FCC000]">{filteredPackages.length} {filteredPackages.length === 1 ? "journey" : "journeys"}</span>
+          <Link href="/wishlist" className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-2 transition hover:border-[#FCC000]/50 hover:text-[#FCC000]">
             Saved trips ({wishlistIds.length})
           </Link>
         </div>
       </div>
 
       <div className="mt-7 grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px_220px]">
-        <label className="rounded-[1.4rem] border border-stone-200 bg-white p-3 shadow-[0_12px_24px_rgba(55,55,48,0.04)]">
-          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Where do you want to go?</span>
+        <label className="rounded-[1.4rem] border border-white/10 bg-white/[0.04] p-3 transition focus-within:border-[#FCC000]/55">
+          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">Where do you want to go?</span>
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search Pakistan destinations"
-            className="w-full border-0 bg-transparent px-1 py-2 text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none"
+            className="w-full border-0 bg-transparent px-1 py-2 text-sm text-white placeholder:text-white/35 focus:outline-none"
           />
         </label>
 
-        <label className="rounded-[1.4rem] border border-stone-200 bg-white p-3 shadow-[0_12px_24px_rgba(55,55,48,0.04)]">
-          <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Duration</span>
+        <label className="rounded-[1.4rem] border border-white/10 bg-white/[0.04] p-3 transition focus-within:border-[#FCC000]/55">
+          <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">Duration</span>
           <select
             value={duration}
             onChange={(event) => setDuration(event.target.value as DurationFilter)}
-            className="w-full border-0 bg-transparent px-1 py-2 text-sm text-stone-900 focus:outline-none"
+            className="w-full border-0 bg-transparent px-1 py-2 text-sm text-white focus:outline-none"
           >
             <option value="all">Any duration</option>
             <option value="weekend">Weekend</option>
@@ -450,9 +486,9 @@ export function TravelDiscoveryCatalog() {
           </select>
         </label>
 
-        <label className="rounded-[1.4rem] border border-stone-200 bg-white p-3 shadow-[0_12px_24px_rgba(55,55,48,0.04)]">
-          <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Sort journeys</span>
-          <select value={sort} onChange={(event) => setSort(event.target.value as SortOption)} className="w-full border-0 bg-transparent px-1 py-2 text-sm text-stone-900 focus:outline-none">
+        <label className="rounded-[1.4rem] border border-white/10 bg-white/[0.04] p-3 transition focus-within:border-[#FCC000]/55">
+          <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">Sort journeys</span>
+          <select value={sort} onChange={(event) => setSort(event.target.value as SortOption)} className="w-full border-0 bg-transparent px-1 py-2 text-sm text-white focus:outline-none">
             <option value="recommended">Catalog order</option>
             <option value="price-low">Price: low to high</option>
             <option value="duration-short">Shortest first</option>
@@ -462,7 +498,7 @@ export function TravelDiscoveryCatalog() {
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1fr_1fr]">
         <div id="adventure-tours">
-          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Travel style</span>
+          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">Travel style</span>
           <div className="flex flex-wrap gap-2">
             {([
               ["all", "All styles"],
@@ -471,7 +507,7 @@ export function TravelDiscoveryCatalog() {
               ["adventure", "Adventure"],
               ["tailored", "Tailored"],
             ] as const).map(([value, label]) => (
-              <button key={value} type="button" onClick={() => setStyle(value)} aria-pressed={style === value} className={`rounded-full px-3 py-2 text-xs font-semibold transition ${style === value ? "bg-[#0b0b0b] text-white" : "border border-stone-200 bg-white text-stone-700 hover:border-[#fcc000]"}`}>
+              <button key={value} type="button" onClick={() => setStyle(value)} aria-pressed={style === value} className={`rounded-full px-3 py-2 text-xs font-semibold transition ${style === value ? "bg-[#FCC000] text-stone-950" : "border border-white/15 bg-white/[0.04] text-white/75 hover:border-[#FCC000]/60 hover:text-white"}`}>
                 {label}
               </button>
             ))}
@@ -479,10 +515,10 @@ export function TravelDiscoveryCatalog() {
         </div>
 
         <div>
-          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Region</span>
+          <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">Region</span>
           <div className="flex flex-wrap gap-2">
             {(["all", "northern", "southern"] as const).map((option) => (
-              <button key={option} type="button" onClick={() => setRegion(option)} aria-pressed={region === option} className={`rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.15em] transition ${region === option ? "bg-[#0b0b0b] text-white" : "border border-stone-200 bg-white text-stone-700 hover:border-stone-300"}`}>
+              <button key={option} type="button" onClick={() => setRegion(option)} aria-pressed={region === option} className={`rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.15em] transition ${region === option ? "bg-[#FCC000] text-stone-950" : "border border-white/15 bg-white/[0.04] text-white/75 hover:border-[#FCC000]/60 hover:text-white"}`}>
                 {option === "all" ? "All" : option}
               </button>
             ))}
@@ -490,35 +526,35 @@ export function TravelDiscoveryCatalog() {
         </div>
 
         <fieldset>
-          <legend className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Budget · PKR</legend>
+          <legend className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">Budget · PKR</legend>
           <div className="grid grid-cols-2 gap-2">
-            <label className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-stone-500">
+            <label className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-white/55">
               Min
-              <input type="number" min="0" step="5000" value={minimumBudget} onChange={(event) => setMinimumBudget(event.target.value)} placeholder="Any" className="mt-1 block w-full bg-transparent text-sm text-stone-900 outline-none placeholder:text-stone-400" />
+              <input type="number" min="0" step="5000" value={minimumBudget} onChange={(event) => setMinimumBudget(event.target.value)} placeholder="Any" className="mt-1 block w-full bg-transparent text-sm text-white outline-none placeholder:text-white/35" />
             </label>
-            <label className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-stone-500">
+            <label className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-[10px] uppercase tracking-[0.12em] text-white/55">
               Max
-              <input type="number" min="0" step="5000" value={maximumBudget} onChange={(event) => setMaximumBudget(event.target.value)} placeholder="Any" className="mt-1 block w-full bg-transparent text-sm text-stone-900 outline-none placeholder:text-stone-400" />
+              <input type="number" min="0" step="5000" value={maximumBudget} onChange={(event) => setMaximumBudget(event.target.value)} placeholder="Any" className="mt-1 block w-full bg-transparent text-sm text-white outline-none placeholder:text-white/35" />
             </label>
           </div>
         </fieldset>
       </div>
 
-      <section className="mt-8 overflow-hidden rounded-[2rem] border border-[#e8d69b] bg-[radial-gradient(circle_at_top_right,_rgba(252,192,0,0.16),_transparent_34%),linear-gradient(145deg,_#fffdf6_0%,_#f6f2e7_100%)] p-5 shadow-[0_24px_60px_rgba(58,46,12,0.09)] sm:p-7" aria-labelledby="trip-fit-heading">
+      <section className="mt-8 overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(130deg,rgba(255,255,255,0.07),rgba(255,255,255,0.015)_55%,rgba(252,192,0,0.06))] p-5 sm:p-7" aria-labelledby="trip-fit-heading">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-[#ead99e] bg-white/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#806000]">
-              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#fcc000] shadow-[0_0_0_3px_rgba(252,192,0,0.18)]" />
+            <p className="inline-flex items-center gap-2 rounded-full border border-[#FCC000]/30 bg-[#FCC000]/[0.06] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#FCC000]">
+              <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#FCC000] shadow-[0_0_0_3px_rgba(252,192,0,0.18)]" />
               Trip suggestions
             </p>
-            <h3 id="trip-fit-heading" className="mt-3 font-serif text-3xl text-stone-950 sm:text-4xl">Your kind of Pakistan journey</h3>
-            <p className="mt-2 max-w-xl text-sm leading-6 text-stone-600">Tell us what matters. We’ll bring the most relevant routes to the top.</p>
+            <h3 id="trip-fit-heading" className="mt-3 font-[var(--font-display)] text-3xl text-white sm:text-4xl">Your kind of Pakistan journey</h3>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-white/65">Tell us what matters. We’ll bring the most relevant routes to the top.</p>
           </div>
-          <span className="rounded-full border border-stone-200/80 bg-white/75 px-3 py-2 text-xs font-medium text-stone-600">Matched using listed route, price, and departure details</span>
+          <span className="rounded-full border border-white/10 bg-black/20 px-3 py-2 text-xs font-medium text-white/55">Matched using listed route, price, and departure details</span>
         </div>
 
-        <div className="mt-6 grid gap-3 rounded-[1.5rem] border border-white/80 bg-white/70 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:grid-cols-2 xl:grid-cols-5">
-          <label className="text-xs font-bold text-stone-700">
+        <div className="mt-6 grid gap-3 rounded-[1.5rem] border border-white/10 bg-black/20 p-4 sm:grid-cols-2 xl:grid-cols-5">
+          <label className="text-xs font-bold text-white/75">
             Travel style
             <select value={fitStyle} onChange={(event) => setFitStyle(event.target.value as TravelStyle | "all")} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
               <option value="all">Any style</option>
@@ -528,7 +564,7 @@ export function TravelDiscoveryCatalog() {
               <option value="tailored">Tailored</option>
             </select>
           </label>
-          <label className="text-xs font-bold text-stone-700">
+          <label className="text-xs font-bold text-white/75">
             Region
             <select value={fitRegion} onChange={(event) => setFitRegion(event.target.value as RegionFilter)} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
               <option value="all">Either region</option>
@@ -536,7 +572,7 @@ export function TravelDiscoveryCatalog() {
               <option value="southern">Southern Pakistan</option>
             </select>
           </label>
-          <label className="text-xs font-bold text-stone-700">
+          <label className="text-xs font-bold text-white/75">
             Time available
             <select value={fitDuration} onChange={(event) => setFitDuration(event.target.value as DurationFilter)} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
               <option value="all">Any duration</option>
@@ -546,11 +582,11 @@ export function TravelDiscoveryCatalog() {
               <option value="12-plus">More than 12 days</option>
             </select>
           </label>
-          <label className="text-xs font-bold text-stone-700">
+          <label className="text-xs font-bold text-white/75">
             Budget per person
             <input type="number" min="0" step="5000" value={fitBudget} onChange={(event) => setFitBudget(event.target.value)} placeholder="No limit" className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm placeholder:text-stone-400 transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30" />
           </label>
-          <label className="text-xs font-bold text-stone-700">
+          <label className="text-xs font-bold text-white/75">
             Season match
             <select value={fitMonth} onChange={(event) => setFitMonth(event.target.value)} className="mt-2 block min-h-12 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#c89a00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30">
               <option value="">Not selected</option>
@@ -588,7 +624,7 @@ export function TravelDiscoveryCatalog() {
                       <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#806000]">{label}</span>
                     </div>
                     <h4 className="font-serif text-xl leading-tight text-stone-950">{packageItem.title}</h4>
-                    <p className="mt-1 text-xs font-bold text-[#806000]">From {formatCurrency(packageItem.pricePerPerson)} <span className="font-medium text-stone-500">per person</span></p>
+                    <p className="mt-1 text-xs font-bold text-[#806000]">{listedPrice(packageItem)}{packageItem.pricePerPerson === undefined ? "" : <span className="font-medium text-stone-500"> per person</span>}</p>
                     <p className="mt-3 text-xs leading-5 text-stone-600">{summary}</p>
                     <ul className="mt-4 space-y-2 text-xs text-stone-600">
                     {matchReasons.length ? (
@@ -614,7 +650,7 @@ export function TravelDiscoveryCatalog() {
                     ) : null}
                     </ul>
                     <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-stone-100 pt-4 text-xs font-semibold">
-                      <Link href={`/packages/${packageItem.id}`} className="rounded-sm text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00]">View journey</Link>
+                      <Link href={journeyHref(packageItem)} className="rounded-sm text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00]">{packageItem.requestOnly ? "Request details" : "View journey"}</Link>
                       <Link href={`/make-my-trip?destination=${encodeURIComponent(packageItem.destinationSlugs[0] ?? "")}&inspiration=${encodeURIComponent(packageItem.title)}`} className="rounded-sm text-[#735900] underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00]">Plan this route</Link>
                       <button type="button" onClick={() => toggleWishlist(packageItem.id)} className="rounded-sm text-stone-600 underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00]">{wishlistIds.includes(packageItem.id) ? "Saved" : "Save"}</button>
                       <button type="button" onClick={() => toggleCompare(packageItem.id)} disabled={!compareIds.includes(packageItem.id) && compareIds.length >= MAX_COMPARE_ITEMS} className="rounded-sm text-stone-600 underline underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00] disabled:cursor-not-allowed disabled:text-stone-500 disabled:opacity-100">{compareIds.includes(packageItem.id) ? "In compare" : "Compare"}</button>
@@ -632,14 +668,19 @@ export function TravelDiscoveryCatalog() {
         )}
 
         {fitCriteriaCount && fitRecommendations[0] ? (
-          <div className="mt-5 border-t border-stone-200 pt-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Similar trips to {fitRecommendations[0].packageItem.title}</p>
+          <div className="mt-5 border-t border-white/10 pt-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">Similar trips to {fitRecommendations[0].packageItem.title}</p>
             <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
-              {getSimilarTripsFromEngine(fitRecommendations[0].packageItem, packageList).map(({ trip, reasons }) => (
-                <Link key={trip.id} href={`/packages/${trip.id}`} className="text-sm font-semibold text-stone-800 underline decoration-stone-300 underline-offset-4 hover:decoration-[#fcc000]">
-                  {trip.title}<span className="ml-2 text-xs font-normal text-stone-500">{reasons.join(" · ")}</span>
-                </Link>
-              ))}
+              {getSimilarTripsFromEngine(fitRecommendations[0].packageItem, packageList).map(({ trip, reasons }) => {
+                const similarPackage = packageList.find((packageItem) => packageItem.id === trip.id);
+                if (!similarPackage) return null;
+
+                return (
+                  <Link key={trip.id} href={journeyHref(similarPackage)} className="text-sm font-semibold text-white/85 underline decoration-white/25 underline-offset-4 hover:decoration-[#fcc000]">
+                    {trip.title}<span className="ml-2 text-xs font-normal text-white/50">{reasons.join(" · ")}</span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         ) : null}
@@ -700,12 +741,12 @@ export function TravelDiscoveryCatalog() {
       </div>
 
       {comparePackages.length > 0 && (
-        <div className="mt-7 rounded-[1.6rem] border border-[#e4c976] bg-[linear-gradient(135deg,_#fff3c4,_#fffdf7_64%,_#f4efdf)] p-5 shadow-[0_18px_40px_rgba(122,94,0,0.1)]">
+        <div className="mt-7 rounded-[1.6rem] border border-white/10 bg-[linear-gradient(130deg,rgba(255,255,255,0.07),rgba(255,255,255,0.015)_55%,rgba(252,192,0,0.06))] p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#8b6b00]">Comparison tray</p>
-              <h3 className="mt-1 text-lg font-semibold text-stone-950">Selected for side-by-side comparison</h3>
-              <p className="mt-1 text-xs text-stone-600">Up to four journeys. Remove one to make room for another.</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#FCC000]">Comparison tray</p>
+              <h3 className="mt-1 text-lg font-semibold text-white">Selected for side-by-side comparison</h3>
+              <p className="mt-1 text-xs text-white/55">Up to four journeys. Remove one to make room for another.</p>
             </div>
             <Link href="/compare" className="inline-flex items-center justify-center rounded-full bg-[#0b0b0b] px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-black">
               View compare
@@ -713,10 +754,10 @@ export function TravelDiscoveryCatalog() {
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {comparePackages.map((packageItem) => (
-              <div key={packageItem.id} className="flex items-center justify-between rounded-2xl border border-[#e7cf74] bg-white/80 p-3">
+              <div key={packageItem.id} className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 p-3">
                 <div>
-                  <p className="text-sm font-semibold text-stone-900">{packageItem.title}</p>
-                  <p className="mt-1 text-xs text-stone-600">{formatCurrency(packageItem.pricePerPerson)}</p>
+                  <p className="text-sm font-semibold text-white">{packageItem.title}</p>
+                  <p className="mt-1 text-xs text-white/55">{listedPrice(packageItem)}</p>
                 </div>
                 <button
                   type="button"
@@ -734,8 +775,8 @@ export function TravelDiscoveryCatalog() {
       <div className="mt-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-2xl font-semibold text-stone-950">Journey results</h3>
-            <p className="mt-1 text-sm text-stone-600">{filteredPackages.length} {filteredPackages.length === 1 ? "journey" : "journeys"} found</p>
+            <h3 className="font-[var(--font-display)] text-3xl text-white">Journey results</h3>
+            <p className="mt-1 text-sm text-white/55">{filteredPackages.length} {filteredPackages.length === 1 ? "journey" : "journeys"} found</p>
           </div>
           {search || style !== "all" || duration !== "all" || region !== "all" || minimumBudget || maximumBudget ? (
             <button
@@ -749,7 +790,7 @@ export function TravelDiscoveryCatalog() {
                 setMaximumBudget("");
                 setSort("recommended");
               }}
-              className="text-sm font-semibold text-stone-600 transition hover:text-[#8b6b00]"
+              className="text-sm font-semibold text-white/65 transition hover:text-[#FCC000]"
             >
               Clear filters
             </button>
@@ -775,6 +816,7 @@ export function TravelDiscoveryCatalog() {
             ))}
           </div>
         )}
+      </div>
       </div>
     </section>
   );
@@ -937,8 +979,8 @@ export function CompareTripsClient() {
                     </li>
                   ))}
                 </ul>
-                <Link href={`/packages/${packageItem.id}`} className="mt-4 inline-flex min-h-10 items-center text-xs font-semibold text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
-                  View journey
+                <Link href={journeyHref(packageItem)} className="mt-4 inline-flex min-h-10 items-center text-xs font-semibold text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
+                  {packageItem.requestOnly ? "Request details" : "View journey"}
                 </Link>
               </article>
             ))}
@@ -974,7 +1016,33 @@ export function CompareTripsClient() {
                     </div>
                     <p className="font-serif text-lg leading-tight text-stone-950">{packageItem.title}</p>
                     <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">{packageItem.duration} · {packageItem.pace ?? "Pace to confirm"}</p>
-                    <p className="mt-3 text-xl font-bold text-[#806000]">From {formatCurrency(packageItem.pricePerPerson)}</p>
+                    <p className="mt-3 text-xl font-bold text-[#806000]">{listedPrice(packageItem)}</p>
+                    <details className="group mt-4 border-t border-[#e8dbb6] pt-3">
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-xs font-bold text-stone-800 marker:content-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00] [&::-webkit-details-marker]:hidden">
+                        <span>{packageItem.itinerary?.length ? "View day-by-day itinerary" : "View route outline"}</span>
+                        <span aria-hidden="true" className="text-[#806000] transition-transform group-open:rotate-180">⌄</span>
+                      </summary>
+                      {packageItem.itinerary?.length ? (
+                        <ol className="mt-3 space-y-3">
+                          {packageItem.itinerary.map((day) => (
+                            <li key={`${packageItem.id}-${day.day}`} className="border-l-2 border-[#fcc000] pl-3">
+                              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#806000]">{day.day}</p>
+                              <p className="mt-0.5 text-sm font-semibold text-stone-900">{day.title}</p>
+                              <p className="mt-1 text-xs leading-5 text-stone-600">{day.description}</p>
+                            </li>
+                          ))}
+                        </ol>
+                      ) : (
+                        <div className="mt-3">
+                          <p className="text-xs leading-5 text-stone-600">
+                            The day-by-day plan is not listed yet and will be confirmed with your dates.
+                          </p>
+                          <ol className="mt-2 list-inside list-decimal space-y-1 text-xs leading-5 text-stone-700">
+                            {packageItem.routeStops.map((stop) => <li key={`${packageItem.id}-${stop}`}>{stop}</li>)}
+                          </ol>
+                        </div>
+                      )}
+                    </details>
                     <button type="button" onClick={() => removeComparedPackage(packageItem.id)} className="mt-3 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-stone-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700">Remove journey</button>
                   </div>
                 </th>
@@ -983,7 +1051,7 @@ export function CompareTripsClient() {
           </thead>
           <tbody>
             {[
-              { label: "Listed price per person", value: (packageItem: DiscoveryPackage) => formatCurrency(packageItem.pricePerPerson) },
+              { label: "Listed price per person", value: (packageItem: DiscoveryPackage) => listedPrice(packageItem) },
               { label: "Duration", value: (packageItem: DiscoveryPackage) => packageItem.duration },
               { label: "Region", value: (packageItem: DiscoveryPackage) => `${packageItem.region.charAt(0).toUpperCase()}${packageItem.region.slice(1)}` },
               { label: "Travel style", value: (packageItem: DiscoveryPackage) => packageItem.travelStyles.length ? packageItem.travelStyles.map((style) => `${style.charAt(0).toUpperCase()}${style.slice(1)}`).join(", ") : "Not specified" },
@@ -1056,25 +1124,30 @@ export function CompareTripsClient() {
               const durationDifference = previousPackage
                 ? normalizeTrip(packageItem).durationDays - normalizeTrip(previousPackage).durationDays
                 : 0;
-              const priceDifference = previousPackage ? packageItem.pricePerPerson - previousPackage.pricePerPerson : 0;
+              const priceDifference = previousPackage && packageItem.pricePerPerson !== undefined && previousPackage.pricePerPerson !== undefined
+                ? packageItem.pricePerPerson - previousPackage.pricePerPerson
+                : undefined;
+              const hasUnlistedPrice = packageItem.pricePerPerson === undefined ||
+                (previousPackage !== undefined && previousPackage.pricePerPerson === undefined);
               const differences = [
                 addedStops.length ? `adds ${addedStops.join(", ")}` : null,
                 removedStops.length ? `does not include ${removedStops.join(", ")}` : null,
                 durationDifference > 0 ? `adds ${durationDifference} ${durationDifference === 1 ? "day" : "days"}` : null,
                 durationDifference < 0 ? `takes ${Math.abs(durationDifference)} fewer days` : null,
-                priceDifference > 0 ? `has a listed per-person price ${formatCurrency(priceDifference)} higher` : null,
-                priceDifference < 0 ? `has a listed per-person price ${formatCurrency(Math.abs(priceDifference))} lower` : null,
+                priceDifference !== undefined && priceDifference > 0 ? `has a listed per-person price ${formatCurrency(priceDifference)} higher` : null,
+                priceDifference !== undefined && priceDifference < 0 ? `has a listed per-person price ${formatCurrency(Math.abs(priceDifference))} lower` : null,
+                hasUnlistedPrice ? "has pricing to confirm" : null,
               ].filter((difference): difference is string => Boolean(difference));
               const description = previousPackage
                 ? `Compared with ${previousPackage.title}, this journey ${differences.join(" and ") || "has no differences in compared stop coverage, duration, or listed price"}.`
-                : `Trip 1 sets the reference: ${packageItem.duration.toLowerCase()} across ${packageItem.routeStops.join(" and ")}, listed at ${formatCurrency(packageItem.pricePerPerson)} per person.`;
+                : `Trip 1 sets the reference: ${packageItem.duration.toLowerCase()} across ${packageItem.routeStops.join(" and ")}, priced ${listedPrice(packageItem)}.`;
               return (
                 <article key={`${packageItem.id}-fit`} className="rounded-[1.35rem] border border-[#e6d8aa] bg-white p-5 shadow-[0_10px_25px_rgba(50,40,10,0.06)]">
                   <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#806000]">Journey {index + 1}</p>
                   <h3 className="mt-1 font-serif text-lg text-stone-950">{packageItem.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-stone-600">{description}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href={`/packages/${packageItem.id}`} className="inline-flex min-h-10 items-center justify-center rounded-full bg-stone-950 px-4 text-xs font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[#343126] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]">View journey</Link>
+                    <Link href={journeyHref(packageItem)} className="inline-flex min-h-10 items-center justify-center rounded-full bg-stone-950 px-4 text-xs font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[#343126] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]">{packageItem.requestOnly ? "Request details" : "View journey"}</Link>
                     <Link href="/make-my-trip" className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#e3d7b4] bg-[#fffaf0] px-4 text-xs font-bold uppercase tracking-[0.1em] text-stone-900 transition hover:border-[#c89a00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]">Customize trip</Link>
                   </div>
                 </article>
@@ -1189,9 +1262,9 @@ export function WishlistTripsClient() {
             <h2 className="mt-2 font-serif text-2xl text-stone-950">{packageItem.title}</h2>
             <p className="mt-3 text-sm leading-6 text-stone-600">{packageItem.summary}</p>
             <div className="mt-4 flex items-center justify-between border-t border-stone-200 pt-4">
-              <span className="text-lg font-semibold text-[#9a7600]">{formatCurrency(packageItem.pricePerPerson)}</span>
-              <Link href={`/packages/${packageItem.id}`} className="text-xs font-bold uppercase tracking-[0.12em] text-stone-950 transition hover:text-[#9a7600] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
-                View route ↗
+              <span className="text-lg font-semibold text-[#9a7600]">{listedPrice(packageItem)}</span>
+              <Link href={journeyHref(packageItem)} className="text-xs font-bold uppercase tracking-[0.12em] text-stone-950 transition hover:text-[#9a7600] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
+                {packageItem.requestOnly ? "Request details ↗" : "View route ↗"}
               </Link>
             </div>
           </div>

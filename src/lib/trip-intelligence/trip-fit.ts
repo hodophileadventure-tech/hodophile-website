@@ -183,14 +183,17 @@ export function calculateTripFit(preferences: TripPreferences, trip: Partial<Tou
       }
       case "budget": {
         const numericBudget = Number(preferences.budget ?? 0);
-        isMatch = numericBudget > 0 && normalizedTrip.pricePerPerson <= numericBudget;
-        matchStrength = numericBudget > 0
+        const hasListedPrice = normalizedTrip.pricePerPerson > 0;
+        isMatch = numericBudget > 0 && hasListedPrice && normalizedTrip.pricePerPerson <= numericBudget;
+        matchStrength = numericBudget > 0 && hasListedPrice
           ? Math.min(1, numericBudget / Math.max(normalizedTrip.pricePerPerson, 1))
           : 0;
-        label = isMatch ? "Budget fit" : matchStrength > 0 ? "Budget stretch" : "Budget mismatch";
-        detail = isMatch
-          ? `PKR ${normalizedTrip.pricePerPerson.toLocaleString()} is within your budget.`
-          : `PKR ${normalizedTrip.pricePerPerson.toLocaleString()} is above your selected budget of PKR ${numericBudget.toLocaleString()}.`;
+        label = !hasListedPrice ? "Price to confirm" : isMatch ? "Budget fit" : matchStrength > 0 ? "Budget stretch" : "Budget mismatch";
+        detail = !hasListedPrice
+          ? "Current pricing is not listed; request a quote from the planning team."
+          : isMatch
+            ? `PKR ${normalizedTrip.pricePerPerson.toLocaleString()} is within your budget.`
+            : `PKR ${normalizedTrip.pricePerPerson.toLocaleString()} is above your selected budget of PKR ${numericBudget.toLocaleString()}.`;
         break;
       }
       case "departureMonth": {
