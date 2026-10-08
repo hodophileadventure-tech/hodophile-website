@@ -25,10 +25,12 @@ const expectedJourneyIds = [
 test("the canonical list contains exactly the 12 unique journeys with required source fields", () => {
   const ids = tourPackages.map((tourPackage) => tourPackage.id);
   const titles = tourPackages.map((tourPackage) => tourPackage.title);
+  const images = tourPackages.map((tourPackage) => tourPackage.image);
 
   assert.deepEqual(ids, expectedJourneyIds);
   assert.equal(new Set(ids).size, ids.length, "journey ids must be unique");
   assert.equal(new Set(titles).size, titles.length, "canonical journey titles must be unique");
+  assert.equal(new Set(images).size, images.length, "each journey must use a unique image");
 
   for (const tourPackage of tourPackages) {
     assert.ok(["northern", "southern"].includes(tourPackage.region));

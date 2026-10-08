@@ -41,18 +41,6 @@ const STORAGE_KEYS = {
 const MAX_COMPARE_ITEMS = 4;
 const STORAGE_CHANGE_EVENT = "hodophile-storage-change";
 const EMPTY_STORAGE_SNAPSHOT = "[]";
-const destinationCardImages: Record<string, string> = {
-  hunza: "/images/package-cards/images__package-cards__kamran-ch-unsplash.webp",
-  skardu: "/images/package-cards/images__package-cards__obaid-awan-unsplash.jpg.webp",
-  "fairy-meadows": "/images/package-cards/images__package-cards__hussain-ahmed-unsplash.webp",
-  kashmir: "/images/package-cards/images__package-cards__zain-raza-unsplash.webp",
-  swat: "/images/package-cards/images__package-cards__hussain-ahmed-unsplash.webp",
-  deosai: "/images/package-cards/images__package-cards__kamran-ch-unsplash.webp",
-  gilgit: "/images/package-cards/images__package-cards__kamran-ch-unsplash.webp",
-  ormara: "/images/package-cards/images__package-cards__25.webp",
-  gorakh: "/images/package-cards/images__package-cards__27.webp",
-  moola: "/images/package-cards/images__package-cards__28.webp",
-};
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-PK", {
@@ -80,9 +68,7 @@ const packageList: DiscoveryPackage[] = tourPackages.map((tourPackage) => ({
     departures: tourPackage.departures,
     transport: tourPackage.transport ?? [],
     includes: tourPackage.includes ?? [],
-    image: tourPackage.destinationSlugs
-      .map((slug) => destinationCardImages[slug])
-      .find(Boolean) ?? tourPackage.image,
+    image: tourPackage.image,
     summary: tourPackage.description,
   }));
 

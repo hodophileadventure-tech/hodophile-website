@@ -8,14 +8,14 @@ import { tourPackages } from "@/lib/data/tour-packages";
 import { absoluteUrl, tourMenu } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Pakistan Tour Packages",
+  title: "Pakistan Tours, Made Easy",
   description:
-    "Browse domestic Pakistan tour packages for Hunza, Skardu, Murree, and more with clear SEO-friendly service pages.",
+    "Browse domestic Pakistan tour packages for Hunza, Skardu, Murree, and more with clear, easy planning.",
   alternates: {
     canonical: "/tours",
   },
   openGraph: {
-    title: "Pakistan Tour Packages",
+    title: "Pakistan Tours, Made Easy",
     description:
       "Domestic packages for families, couples, and groups traveling across Pakistan.",
     url: absoluteUrl("/tours"),
@@ -37,7 +37,7 @@ export default function ToursPage() {
         image="/images/package-cards/images__editorial__editorial-8.webp"
         imageAlt="Scenic tour route"
         eyebrow="Tours and Packages"
-        title="Domestic Pakistan packages built for clear comparisons and stronger search visibility."
+        title="Pakistan tours, made easy"
         description="Browse grouped routes and destination-first package pages designed for smooth planning and confident booking."
       />
 
