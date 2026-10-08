@@ -407,18 +407,18 @@ export function TravelDiscoveryCatalog() {
     .filter((packageItem): packageItem is DiscoveryPackage => Boolean(packageItem));
 
   return (
-    <section className="mt-10 overflow-hidden rounded-[2.5rem] border border-[#e8ddba] bg-[radial-gradient(circle_at_top,_rgba(252,192,0,0.12),_rgba(247,245,240,0.98)_38%,_rgba(247,245,240,1)_100%)] px-5 py-8 shadow-[0_35px_90px_rgba(55,55,48,0.08)] sm:px-8 sm:py-10 lg:px-10 lg:py-12">
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-stone-200 pb-7">
+    <section className="mt-10 overflow-hidden rounded-[2.5rem] border border-stone-800 bg-[radial-gradient(ellipse_at_top_right,_rgba(252,192,0,0.12),_transparent_38%),linear-gradient(145deg,_#171715_0%,_#0b0b0b_72%)] px-5 py-8 shadow-[0_35px_90px_rgba(0,0,0,0.18)] sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-7">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.32em] text-[#8b6b00]">Curated discovery</p>
-          <h2 className="mt-3 font-serif text-4xl text-stone-950">Search, compare, and shortlist your next Pakistan journey.</h2>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-stone-600">
-            Thoughtful escapes for mountain lovers, beach seekers, and travelers who want the right route without the noise.
+          <p className="text-[11px] font-bold uppercase tracking-[0.32em] text-[#fcc000]">Smart trip suggestions</p>
+          <h2 className="mt-3 font-serif text-4xl text-white">Find your perfect Pakistan escape</h2>
+          <p className="mt-3 max-w-xl text-sm leading-6 text-stone-300">
+            Share what you’re looking for and discover journeys matched to your style, dates, and budget.
           </p>
         </div>
-        <div className="flex items-center gap-3 text-sm font-medium text-stone-700">
-          <span className="rounded-full border border-[#e5d5a3] bg-[#fffdf8] px-3 py-2 shadow-[0_8px_20px_rgba(122,94,0,0.06)]">{filteredPackages.length} {filteredPackages.length === 1 ? "journey" : "journeys"}</span>
-          <Link href="/wishlist" className="rounded-full border border-stone-200 bg-white px-3 py-2 transition hover:border-[#1f6b4a] hover:text-[#1f6b4a]">
+        <div className="flex items-center gap-3 text-sm font-medium text-stone-200">
+          <span className="rounded-full border border-white/15 bg-white/5 px-3 py-2">{filteredPackages.length} {filteredPackages.length === 1 ? "journey" : "journeys"}</span>
+          <Link href="/wishlist" className="rounded-full border border-white/15 bg-white/5 px-3 py-2 transition hover:border-[#1f6b4a] hover:bg-[#1f6b4a]/15 hover:text-white">
             Saved trips ({wishlistIds.length})
           </Link>
         </div>
