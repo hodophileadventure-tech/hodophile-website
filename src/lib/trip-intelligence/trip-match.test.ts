@@ -58,6 +58,29 @@ test("experience, duration, and mood scores explain only verified metadata", () 
   assert.ok(result.reasons.every((reason) => !reason.label.toLowerCase().includes("beach")));
 });
 
+test("travel reasons use supported journey metadata to personalize matches", () => {
+  const familyJourney = tourPackages.find((item) => item.id === "skardu-khaplu-deosai-basho-air-7-days");
+  const beachJourney = tourPackages.find((item) => item.id === "ormara-beach-camping");
+  assert.ok(familyJourney);
+  assert.ok(beachJourney);
+
+  const familyResult = calculateTripMatch({
+    moods: [],
+    experiences: [],
+    reason: "family",
+  }, familyJourney);
+  const beachResult = calculateTripMatch({
+    moods: [],
+    experiences: [],
+    reason: "beach",
+  }, beachJourney);
+
+  assert.equal(familyResult.score, 100);
+  assert.ok(familyResult.reasons.some((reason) => /family getaway/i.test(reason.label)));
+  assert.equal(beachResult.score, 100);
+  assert.ok(beachResult.reasons.some((reason) => /beach/i.test(reason.label)));
+});
+
 test("request-only ideas without listed prices cannot match a selected budget", () => {
   const idea = tourDiscoveryIdeas[0];
   const preferences: TripMatchPreferences = {

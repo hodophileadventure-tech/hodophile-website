@@ -11,6 +11,15 @@ export const TRIP_MATCH_WEIGHTS = {
 export type TripMatchMood = TravelStyle | "relaxing" | "offbeat";
 export type TripMatchDuration = "2-3" | "4-5" | "6-8" | "9-plus";
 export type TripMatchSeason = "winter" | "spring" | "summer" | "autumn";
+export type TripMatchReasonPreference =
+  | "recharge"
+  | "family"
+  | "couple"
+  | "adventure"
+  | "nature"
+  | "culture"
+  | "offbeat"
+  | "beach";
 export type TripMatchMonth =
   | "january" | "february" | "march" | "april" | "may" | "june"
   | "july" | "august" | "september" | "october" | "november" | "december";
@@ -24,6 +33,7 @@ export type TripBudgetRange = {
 
 export type TripMatchPreferences = {
   moods: TripMatchMood[];
+  reason?: TripMatchReasonPreference;
   duration?: TripMatchDuration;
   experiences: TourExperience[];
   budget?: TripBudgetRange;
@@ -87,6 +97,22 @@ export const TRIP_MATCH_EXPERIENCES: Array<{
   { value: "romance", label: "Romance", icon: "♡" },
   { value: "culture", label: "Culture", icon: "⌂" },
   { value: "offbeat", label: "Offbeat", icon: "✦" },
+];
+
+export const TRIP_MATCH_REASONS: Array<{
+  value: TripMatchReasonPreference;
+  label: string;
+  mood?: TripMatchMood;
+  experience?: TourExperience;
+}> = [
+  { value: "recharge", label: "To relax and recharge", mood: "relaxing" },
+  { value: "family", label: "To spend quality time with family", mood: "family" },
+  { value: "couple", label: "For a special escape together", mood: "couples" },
+  { value: "adventure", label: "To seek adventure", mood: "adventure" },
+  { value: "nature", label: "To enjoy nature and scenery", experience: "nature" },
+  { value: "culture", label: "To discover culture and heritage", experience: "culture" },
+  { value: "offbeat", label: "To explore somewhere off the beaten path", mood: "offbeat" },
+  { value: "beach", label: "To enjoy a beach escape", experience: "beaches" },
 ];
 
 export const TRIP_MATCH_DURATIONS: Array<{
@@ -182,9 +208,18 @@ export function calculateTripMatch<T extends TripMatchTrip>(
   const reasons: TripMatchReason[] = [];
   let availableWeight = 0;
   let earnedWeight = 0;
+  const selectedReason = TRIP_MATCH_REASONS.find((option) => option.value === preferences.reason);
+  const moods = [...new Set([
+    ...preferences.moods,
+    ...(selectedReason?.mood ? [selectedReason.mood] : []),
+  ])];
+  const experiences = [...new Set([
+    ...preferences.experiences,
+    ...(selectedReason?.experience ? [selectedReason.experience] : []),
+  ])];
 
-  if (preferences.moods.length > 0) {
-    const knownMoods = preferences.moods.filter((mood) => canMatchMood(trip, mood));
+  if (moods.length > 0) {
+    const knownMoods = moods.filter((mood) => canMatchMood(trip, mood));
     const matchedMoods = knownMoods.filter((mood) => matchesMood(trip, mood));
     if (knownMoods.length > 0) {
       availableWeight += TRIP_MATCH_WEIGHTS.travelStyle;
@@ -206,10 +241,10 @@ export function calculateTripMatch<T extends TripMatchTrip>(
     }
   }
 
-  if (preferences.experiences.length > 0) {
+  if (experiences.length > 0) {
     availableWeight += TRIP_MATCH_WEIGHTS.experience;
-    const matchedExperiences = preferences.experiences.filter((experience) => trip.experiences.includes(experience));
-    earnedWeight += TRIP_MATCH_WEIGHTS.experience * matchedExperiences.length / preferences.experiences.length;
+    const matchedExperiences = experiences.filter((experience) => trip.experiences.includes(experience));
+    earnedWeight += TRIP_MATCH_WEIGHTS.experience * matchedExperiences.length / experiences.length;
     for (const experience of matchedExperiences) {
       const label = TRIP_MATCH_EXPERIENCES.find((option) => option.value === experience)?.label ?? experience;
       reasons.push({ category: "experience", label: `Includes your ${label.toLowerCase()} preference` });

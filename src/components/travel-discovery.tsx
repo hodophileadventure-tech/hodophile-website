@@ -17,6 +17,7 @@ import {
   TRIP_MATCH_EXPERIENCES,
   TRIP_MATCH_MOODS,
   TRIP_MATCH_MONTHS,
+  TRIP_MATCH_REASONS,
   TRIP_MATCH_SEASONS,
   TRIP_MATCH_WEIGHTS,
   type TripMatchPreferences,
@@ -427,19 +428,37 @@ function TripMatchPanel({
           </div>
 
           {step === 0 ? (
-            <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {TRIP_MATCH_MOODS.map((option) => {
-                const selected = answers.moods.includes(option.value);
-                return (
-                  <button key={option.value} type="button" aria-pressed={selected} onClick={() => toggleMood(option.value)} className={`min-h-[4.5rem] rounded-2xl border p-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-white" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
-                    <span className="flex items-center justify-between gap-2 text-sm font-semibold">
-                      <span className="flex items-center gap-2"><span aria-hidden="true" className="text-base text-[#FCC000]">{option.icon}</span>{option.label}</span>
-                      <span aria-hidden="true" className={`flex h-5 w-5 items-center justify-center rounded-full border text-[10px] ${selected ? "border-[#FCC000] bg-[#FCC000] text-stone-950" : "border-white/30 text-transparent"}`}>✓</span>
-                    </span>
-                    <span className="mt-1 block text-xs text-white/45">{option.description}</span>
-                  </button>
-                );
-              })}
+            <div className="mt-5">
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {TRIP_MATCH_MOODS.map((option) => {
+                  const selected = answers.moods.includes(option.value);
+                  return (
+                    <button key={option.value} type="button" aria-pressed={selected} onClick={() => toggleMood(option.value)} className={`min-h-[4.5rem] rounded-2xl border p-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-white" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
+                      <span className="flex items-center justify-between gap-2 text-sm font-semibold">
+                        <span className="flex items-center gap-2"><span aria-hidden="true" className="text-base text-[#FCC000]">{option.icon}</span>{option.label}</span>
+                        <span aria-hidden="true" className={`flex h-5 w-5 items-center justify-center rounded-full border text-[10px] ${selected ? "border-[#FCC000] bg-[#FCC000] text-stone-950" : "border-white/30 text-transparent"}`}>✓</span>
+                      </span>
+                      <span className="mt-1 block text-xs text-white/45">{option.description}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <label className="mt-4 block max-w-2xl text-xs font-semibold text-white/75">
+                Why do you want to go on a trip?
+                <select
+                  value={answers.reason ?? ""}
+                  onChange={(event) => onAnswersChange({
+                    ...answers,
+                    reason: TRIP_MATCH_REASONS.find((option) => option.value === event.target.value)?.value,
+                  })}
+                  className="mt-2 block min-h-12 w-full rounded-xl border border-white/15 bg-[#fdfcf8] px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#fcc000] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30"
+                >
+                  <option value="">Choose a reason (optional)</option>
+                  {TRIP_MATCH_REASONS.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
             </div>
           ) : null}
 
@@ -533,6 +552,11 @@ function TripMatchPanel({
               Weighted by style {TRIP_MATCH_WEIGHTS.travelStyle}% · time {TRIP_MATCH_WEIGHTS.duration}% · experience {TRIP_MATCH_WEIGHTS.experience}% · budget {TRIP_MATCH_WEIGHTS.budget}% · season {TRIP_MATCH_WEIGHTS.season}%
             </p>
           </div>
+          {answers.reason ? (
+            <p className="mt-3 text-xs text-white/55">
+              Your reason: {TRIP_MATCH_REASONS.find((option) => option.value === answers.reason)?.label}
+            </p>
+          ) : null}
           {selectedSeason ? (
             <p className="mt-3 rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-xs leading-5 text-white/55">
               Season matches require an explicit month in the listed schedule. If a journey has no month listed, its season match is left unscored.
@@ -665,6 +689,7 @@ export function TravelDiscoveryCatalog() {
     .filter((packageItem): packageItem is DiscoveryPackage => Boolean(packageItem));
   const tripMatchScores = useMemo(() => {
     const hasAnswers = tripMatchAnswers.moods.length > 0 ||
+      tripMatchAnswers.reason !== undefined ||
       tripMatchAnswers.duration !== undefined ||
       tripMatchAnswers.experiences.length > 0 ||
       tripMatchAnswers.budget !== undefined ||
