@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 
 export function MiqatHighlightSection() {
@@ -65,10 +66,13 @@ export function MiqatHighlightSection() {
                 transition={{ ...transition, delay: 0.1 }}
                 className="overflow-hidden bg-[#f3ede5] lg:relative lg:-top-10 lg:translate-x-8"
               >
-                <img
-                  src="/images/package-cards/images__miqat__miqat-cinematic.webp"
-                  alt="Pilgrims moving through Masjid al-Haram in soft evening light, an intimate Umrah moment."
-                  className="h-[58vh] min-h-[500px] w-full object-cover object-[50%_20%] lg:h-[72vh]"
+                <Image
+                  src="/images/miqat-sunset.png"
+                  alt="Sunset over the Kaaba and the Prophet's Mosque courtyard."
+                  width={1672}
+                  height={1024}
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                  className="aspect-[1.63] w-full object-cover"
                 />
               </motion.div>
 
