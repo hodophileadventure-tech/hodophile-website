@@ -115,7 +115,7 @@ export function calculateTripFit(preferences: TripPreferences, trip: Partial<Tou
     preferences.region ? "region" : null,
     preferences.travelStyle ? "travelStyle" : null,
     preferences.duration ? "duration" : null,
-    typeof preferences.budget === "number" && Number.isFinite(preferences.budget) ? "budget" : null,
+    typeof preferences.budget === "number" && Number.isFinite(preferences.budget) && !normalizedTrip.priceOnRequest ? "budget" : null,
     preferences.departureMonth ? "departureMonth" : null,
   ].filter((criterion): criterion is FitCriterion => criterion !== null);
 

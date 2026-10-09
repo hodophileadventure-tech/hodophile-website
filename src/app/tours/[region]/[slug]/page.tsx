@@ -105,7 +105,7 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
     hotel: accommodationDetails.join("; ") || "Accommodation details are not specified in the related journey records.",
     vehicle: transportDetails.join("; ") || "Transport details are not specified in the related journey records.",
     pricing: matchingPackages.length
-      ? matchingPackages.map((tourPackage) => `${tourPackage.title}: PKR ${tourPackage.pricePerPerson.toLocaleString()} per person`).join("; ")
+      ? matchingPackages.map((tourPackage) => `${tourPackage.title}: ${tourPackage.priceOnRequest ? "price on request" : `PKR ${tourPackage.pricePerPerson.toLocaleString()} per person`}`).join("; ")
       : "No matching journeys are currently listed for this destination.",
     faqs: [
       {
@@ -237,7 +237,7 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
                   <p className="mt-3 text-sm text-stone-600">{pkg.description}</p>
                   {pkg.scheduleNote ? <p className="mt-3 text-xs text-stone-500">Schedule note: {pkg.scheduleNote}</p> : null}
                   <div className="mt-4 flex items-center justify-between gap-3 border-t border-stone-200 pt-3">
-                    <span className="text-sm font-semibold text-stone-900">PKR {pkg.pricePerPerson.toLocaleString()}</span>
+                    <span className="text-sm font-semibold text-stone-900">{pkg.priceOnRequest ? "Price on request" : `PKR ${pkg.pricePerPerson.toLocaleString()}`}</span>
                     <Link href={`/packages/${pkg.id}`} className="text-xs uppercase tracking-[0.16em] text-stone-500 group-hover:text-[#8b6b00]">View journey ↗</Link>
                   </div>
                   <a

@@ -53,6 +53,7 @@ export type TripMatchTrip = {
   experiences: TourExperience[];
   pace?: "Fast" | "Moderate" | "Relaxed";
   pricePerPerson?: number;
+  priceOnRequest?: boolean;
   departureAvailability?: "confirmed" | "on-request";
   departures?: Array<{ label: string }>;
   scheduleNote?: string;
@@ -252,7 +253,7 @@ export function calculateTripMatch<T extends TripMatchTrip>(
   }
 
   if (preferences.budget) {
-    if (trip.pricePerPerson !== undefined && Number.isFinite(trip.pricePerPerson)) {
+    if (!trip.priceOnRequest && trip.pricePerPerson !== undefined && Number.isFinite(trip.pricePerPerson)) {
       availableWeight += TRIP_MATCH_WEIGHTS.budget;
       if (
         trip.pricePerPerson >= preferences.budget.minimum &&

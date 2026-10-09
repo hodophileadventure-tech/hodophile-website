@@ -103,5 +103,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(validatePromoCode(body.promoCode, body.tourId, 0));
   }
 
+  if (tourPackage.priceOnRequest) {
+    return NextResponse.json({ valid: false, error: "Promotions are unavailable until this tour's price is confirmed." });
+  }
+
   return NextResponse.json(validatePromoCode(body.promoCode, tourPackage.id, tourPackage.pricePerPerson));
 }

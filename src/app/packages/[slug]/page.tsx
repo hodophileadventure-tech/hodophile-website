@@ -222,7 +222,9 @@ const allPackages: PackageDetail[] = [
 allPackages.push(
   ...tourPackages.map((tourPackage): PackageDetail => {
       const routeStops = tourPackage.routeStops;
-      const startingPrice = `PKR ${tourPackage.pricePerPerson.toLocaleString()}`;
+      const startingPrice = tourPackage.priceOnRequest
+        ? "Price on request"
+        : `PKR ${tourPackage.pricePerPerson.toLocaleString()}`;
       const sharingPrice = tourPackage.sharingPrices?.quad ?? tourPackage.pricePerPerson;
       const sharingPriceWithoutIslamabad = tourPackage.sharingPricesWithoutIslamabadStay?.quad ?? tourPackage.priceWithoutIslamabadStay;
 
@@ -237,7 +239,7 @@ allPackages.push(
         transportSummary: tourPackage.transport?.join("; ") ?? "Transport details are not specified in the source listing.",
         factsNeedConfirmation: true,
         priceDisplay: {
-          label: "Listed starting rate",
+          label: tourPackage.priceOnRequest ? "Package rate" : "Listed starting rate",
           value: startingPrice,
           note: "Confirm the current price and package configuration for your requested dates.",
         },
@@ -250,7 +252,7 @@ allPackages.push(
           ...(tourPackage.routeHighlights ?? []),
         ],
         attractions: routeStops,
-        itinerary: [],
+        itinerary: tourPackage.itinerary ?? [],
         includes: tourPackage.includes ?? [],
         excludes: tourPackage.excludes ?? [],
         bookingPolicy: [
@@ -311,7 +313,10 @@ export default async function PackagePage({ params }: PackagePageProps) {
     notFound();
   }
 
-  const packagePromotion = Object.values(PROMOTIONS).find((item) => item.eligibleTourIds.includes(pkg.slug));
+  const canonicalTourPackage = tourPackages.find((tourPackage) => tourPackage.id === pkg.slug);
+  const packagePromotion = canonicalTourPackage?.priceOnRequest
+    ? undefined
+    : Object.values(PROMOTIONS).find((item) => item.eligibleTourIds.includes(pkg.slug));
 
   const travelDetailCards = [
     {

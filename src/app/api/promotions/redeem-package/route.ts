@@ -39,6 +39,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, error: "This promo code is not valid for this tour." }, { status: 400 });
   }
 
+  if (tourPackage.priceOnRequest) {
+    return NextResponse.json({ success: false, error: "Promotions are unavailable until this tour's price is confirmed." }, { status: 400 });
+  }
+
   const promotion = validatePromoCode(values.promoCode, tourPackage.id, tourPackage.pricePerPerson);
   if (!promotion.valid) {
     return NextResponse.json({ success: false, error: promotion.error }, { status: 400 });

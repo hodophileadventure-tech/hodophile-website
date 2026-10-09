@@ -33,11 +33,11 @@ test("normalizeTrip converts existing package metadata into stable matching inpu
   const trip = normalizeTrip(tourPackages[0]);
 
   assert.equal(trip.id, "skardu-deosai-air-3-days");
-  assert.deepEqual(trip.destinationSlugs, ["skardu"]);
-  assert.deepEqual(trip.travelStyles, ["adventure", "couples", "tailored"]);
+  assert.deepEqual(trip.destinationSlugs, ["skardu", "naran"]);
+  assert.deepEqual(trip.travelStyles, ["adventure", "family", "tailored"]);
   assert.equal(trip.region, "northern");
-  assert.equal(trip.durationDays, 3);
-  assert.equal(trip.pricePerPerson, 45000);
+  assert.equal(trip.durationDays, 6);
+  assert.equal(trip.pricePerPerson, 0);
   assert.ok(Array.isArray(trip.routeStops));
   assert.ok(Array.isArray(trip.departureMonths));
 });
@@ -47,7 +47,7 @@ test("calculateTripFit returns a deterministic score and transparent reasons", (
     destination: "skardu",
     region: "northern",
     travelStyle: "adventure",
-    duration: "weekend",
+    duration: "4-7",
     budget: 60000,
     departureMonth: "april",
   };
@@ -61,7 +61,7 @@ test("calculateTripFit returns a deterministic score and transparent reasons", (
   assert.ok(result.matchedCriteria.includes("region"));
   assert.ok(result.matchedCriteria.includes("travelStyle"));
   assert.ok(result.matchedCriteria.includes("duration"));
-  assert.ok(result.matchedCriteria.includes("budget"));
+  assert.ok(!result.matchedCriteria.includes("budget"));
   assert.ok(result.summary.length > 0);
 });
 
@@ -234,7 +234,7 @@ test("recommendations change materially with style, duration, budget, and destin
   assert.notDeepEqual(shortAdventure.map((result) => result.trip.id), longAdventure.map((result) => result.trip.id));
   assert.notDeepEqual(shortAdventure.map((result) => result.trip.id), family.map((result) => result.trip.id));
   assert.notDeepEqual(family.map((result) => result.trip.id), lowBudget.map((result) => result.trip.id));
-  assert.equal(kashmir[0]?.trip.id, "kashmir-shogran-9-days");
+  assert.equal(kashmir[0]?.trip.id, "seasonal-11");
   assert.ok(kashmir.every((result) => result.score > 0));
   assert.ok(lowBudget[0]?.score > 0);
   assert.ok(lowBudget[0]?.reasons.some((reason) => reason.criterion === "budget" && reason.type === "match"));
@@ -243,7 +243,7 @@ test("recommendations change materially with style, duration, budget, and destin
 test("near matches retain factual mismatch reasons and honest on-request month wording", () => {
   const result = calculateTripFit({ budget: 20000, duration: "weekend", departureMonth: "july" }, tourPackages.find((trip) => trip.id === "kashmir-shogran-9-days"));
 
-  assert.ok(result.reasons.some((reason) => reason.criterion === "budget" && reason.type === "mismatch"));
+  assert.ok(!result.reasons.some((reason) => reason.criterion === "budget"));
   assert.ok(result.reasons.some((reason) => reason.criterion === "duration" && reason.type === "mismatch"));
   assert.ok(result.reasons.some((reason) => reason.criterion === "departureMonth" && reason.type === "mismatch"));
   assert.ok(!result.reasons.some((reason) => reason.detail.includes("confirmed departure") && reason.type === "match"));

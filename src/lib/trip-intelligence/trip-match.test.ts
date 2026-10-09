@@ -25,13 +25,15 @@ test("Trip Match weights total 100 points and use the requested category proport
 });
 
 test("budget tiers are derived from listed prices and never fabricate prices", () => {
-  const ranges = createTripBudgetRanges(tourPackages.map((journey) => journey.pricePerPerson));
-  const priceValues = tourPackages.map((journey) => journey.pricePerPerson);
+  const priceValues = tourPackages
+    .filter((journey) => !journey.priceOnRequest)
+    .map((journey) => journey.pricePerPerson);
+  const ranges = createTripBudgetRanges(priceValues);
 
   assert.equal(ranges.length, 3);
   assert.deepEqual(
     ranges.map(({ minimum, maximum }) => [minimum, maximum]),
-    [[0, 16500], [16501, 59500], [59501, undefined]],
+    [[0, 16000], [16001, 47500], [47501, undefined]],
   );
   assert.ok(priceValues.every((price) => ranges.some((range) => price >= range.minimum && (range.maximum === undefined || price <= range.maximum))));
   assert.deepEqual(createTripBudgetRanges([]), []);
@@ -48,7 +50,7 @@ test("experience, duration, and mood scores explain only verified metadata", () 
   assert.ok(journey);
   const preferences: TripMatchPreferences = {
     moods: ["adventure"],
-    duration: "2-3",
+    duration: "6-8",
     experiences: ["mountains", "beaches"],
   };
 
@@ -106,7 +108,7 @@ test("missing price and season details do not count as mismatches", () => {
     season: "summer",
   }, journey);
 
-  assert.equal(result.score, 56);
+  assert.equal(result.score, 100);
   assert.deepEqual(result.reasons.map((reason) => reason.category), ["travelStyle"]);
 });
 

@@ -27,6 +27,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ valid: false, error: "This promo code is not valid for this tour." });
   }
 
+  if (tourPackage.priceOnRequest) {
+    return NextResponse.json({ valid: false, error: "Promotions are unavailable until this tour's price is confirmed." });
+  }
+
   const promotion = validatePromoCode(values.promoCode, tourPackage.id, tourPackage.pricePerPerson);
   if (!promotion.valid) {
     return NextResponse.json(promotion);

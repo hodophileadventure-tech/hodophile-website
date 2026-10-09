@@ -112,7 +112,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
             <Link key={item.id} href={`/packages/${item.id}`} className="group rounded-2xl border border-white/10 bg-white/[0.05] p-5 transition hover:-translate-y-1 hover:border-[#fcc000]/60 hover:bg-[#fcc000]/10">
               <div className="flex items-center justify-between gap-3 text-[10px] uppercase tracking-[0.2em] text-white/45">
                 <span>{item.duration}</span>
-                <span className="text-[#fcc000]">From PKR {item.pricePerPerson.toLocaleString()}</span>
+                <span className="text-[#fcc000]">{item.priceOnRequest ? "Price on request" : `From PKR ${item.pricePerPerson.toLocaleString()}`}</span>
               </div>
               <h3 className="mt-4 font-serif text-2xl leading-tight text-white transition group-hover:text-[#fcc000]">{item.title}</h3>
               <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-white/45">Explore package ↗</p>

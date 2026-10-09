@@ -40,3 +40,10 @@ test("package promo check rejects an invalid phone before querying redemption st
   assert.equal(result.status, 400);
   assert.equal(result.body.valid, false);
 });
+
+test("package promo validation rejects tours whose rates are on request", async () => {
+  const result = await validatePackage("skardu-deosai-air-3-days", "HODOHS10");
+  assert.equal(result.status, 200);
+  assert.equal(result.body.valid, false);
+  assert.match(String(result.body.error), /price is confirmed/i);
+});

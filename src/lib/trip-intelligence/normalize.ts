@@ -81,7 +81,8 @@ export function normalizeTrip(trip: Partial<TourPackage> & { id: string; title: 
     destinationSlugs,
     routeStops,
     travelStyles,
-    pricePerPerson: Number(trip.pricePerPerson) || 0,
+    pricePerPerson: trip.priceOnRequest ? 0 : Number(trip.pricePerPerson) || 0,
+    priceOnRequest: trip.priceOnRequest,
     durationDays: parseDurationDays(trip.duration),
     durationLabel: trip.duration ?? "",
     departureMonths: getDepartureMonthsFromTrip({

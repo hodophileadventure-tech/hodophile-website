@@ -521,7 +521,9 @@ const canonicalFeaturedTourCards = Object.entries(canonicalFeaturedAliases).map(
   const tourPackage = getTourPackageById(packageId);
   if (!tourPackage) throw new Error(`Missing canonical journey for featured alias ${slug}`);
 
-  const listedPrice = `PKR ${tourPackage.pricePerPerson.toLocaleString()}`;
+  const listedPrice = tourPackage.priceOnRequest
+    ? "Price on request"
+    : `PKR ${tourPackage.pricePerPerson.toLocaleString()}`;
   const pricingRows = tourPackage.sharingPrices
     ? [
         { label: "Quad sharing", price: `PKR ${tourPackage.sharingPrices.quad.toLocaleString()}` },
@@ -538,7 +540,7 @@ const canonicalFeaturedTourCards = Object.entries(canonicalFeaturedAliases).map(
     homeImage: tourPackage.image,
     heroImage: tourPackage.image,
     duration: tourPackage.duration,
-    priceFrom: `${listedPrice} per person`,
+    priceFrom: tourPackage.priceOnRequest ? listedPrice : `${listedPrice} per person`,
     summary: tourPackage.description,
     description: tourPackage.description,
     overview: tourPackage.description,
@@ -550,7 +552,7 @@ const canonicalFeaturedTourCards = Object.entries(canonicalFeaturedAliases).map(
     importantNotes: tourPackage.notes ?? [],
     bookingPolicy: ["Request your dates to confirm current availability and package details."],
     highlights: tourPackage.routeHighlights ?? tourPackage.routeStops,
-    itinerary: [],
+    itinerary: tourPackage.itinerary ?? [],
   } satisfies FeaturedTourCard;
 });
 

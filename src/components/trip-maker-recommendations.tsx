@@ -36,7 +36,10 @@ function buildPlannerHref(packageId: string, destination?: string) {
   return `/make-my-trip?${query.toString()}`;
 }
 
-type Recommendation = RankedTripRecommendation<(typeof tourPackages)[number]>;
+const recommendationTrips = tourPackages.map((trip) =>
+  trip.priceOnRequest ? { ...trip, pricePerPerson: undefined } : trip,
+);
+type Recommendation = RankedTripRecommendation<(typeof recommendationTrips)[number]>;
 
 function RecommendationCard({ recommendation, hasPreferences }: { recommendation: Recommendation; hasPreferences: boolean }) {
   const { trip, score, reasons, matchedCriteria } = recommendation;
@@ -63,8 +66,8 @@ function RecommendationCard({ recommendation, hasPreferences }: { recommendation
         <p className="mt-2 text-sm leading-6 text-stone-600">{trip.routeStops.join(" · ")}</p>
         <div className="mt-4 flex items-end justify-between gap-3 border-t border-stone-100 pt-4">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.16em] text-stone-500">Listed price</p>
-            <p className="mt-1 text-lg font-semibold text-[#8b6b00]">PKR {trip.pricePerPerson.toLocaleString()}</p>
+            <p className="text-[10px] uppercase tracking-[0.16em] text-stone-500">Price</p>
+            <p className="mt-1 text-lg font-semibold text-[#8b6b00]">{trip.pricePerPerson === undefined ? "Price on request" : `PKR ${trip.pricePerPerson.toLocaleString()}`}</p>
           </div>
           <p className="text-right text-xs font-semibold text-stone-600">{trip.departureAvailability === "confirmed" ? "Confirmed departures" : "On request"}</p>
         </div>
@@ -107,7 +110,7 @@ export function TripMakerRecommendations() {
   }), [budget, departureMonth, destination, duration, region, travelStyle]);
 
   const recommendations = useMemo(
-    () => rankTripRecommendations(preferences, tourPackages, 5),
+    () => rankTripRecommendations(preferences, recommendationTrips, 5),
     [preferences],
   );
   const hasPreferences = Object.values(preferences).some(Boolean);
@@ -253,7 +256,7 @@ export function TripMakerRecommendations() {
                 <h3 className="mt-2 font-serif text-2xl text-stone-950">{surpriseRecommendation.trip.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-stone-600">{surpriseRecommendation.trip.description}</p>
                 <p className="mt-3 text-xs text-stone-500">{surpriseRecommendation.trip.duration} · {surpriseRecommendation.trip.routeStops.join(" · ")}</p>
-                <p className="mt-2 text-base font-semibold text-stone-950">PKR {surpriseRecommendation.trip.pricePerPerson.toLocaleString()} <span className="text-xs font-normal text-stone-500">per person, as listed</span></p>
+                <p className="mt-2 text-base font-semibold text-stone-950">{surpriseRecommendation.trip.pricePerPerson === undefined ? "Price on request" : <>PKR {surpriseRecommendation.trip.pricePerPerson.toLocaleString()} <span className="text-xs font-normal text-stone-500">per person, as listed</span></>}</p>
                 <div className="mt-auto flex flex-wrap gap-3 pt-5">
                   <Link href={buildPlannerHref(surpriseRecommendation.trip.id, surpriseRecommendation.trip.destinationSlugs[0])} className="inline-flex min-h-11 items-center justify-center bg-stone-950 px-4 text-xs font-semibold uppercase tracking-[0.1em] text-white">Build this journey</Link>
                   {surprisePool.length > 1 ? <button type="button" onClick={() => setSurpriseIndex((index) => index + 1)} className="min-h-11 border border-stone-300 px-4 text-xs font-semibold uppercase tracking-[0.1em] text-stone-800 hover:border-[#8b6b00]">Show me another</button> : null}

@@ -420,7 +420,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
                     </div>
                     <div className="text-right">
                       <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/45">From</p>
-                      <p className="mt-1 text-xl font-semibold text-[#fcc000]">PKR {tourPackage.pricePerPerson.toLocaleString()}</p>
+                      <p className="mt-1 text-xl font-semibold text-[#fcc000]">{tourPackage.priceOnRequest ? "Price on request" : `PKR ${tourPackage.pricePerPerson.toLocaleString()}`}</p>
                       <p className="text-xs text-white/45">per person</p>
                       {tourPackage.couplePrice && <p className="mt-2 text-xs text-white/60">PKR {tourPackage.couplePrice.toLocaleString()} / couple</p>}
                     </div>

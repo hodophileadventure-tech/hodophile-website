@@ -27,6 +27,7 @@ export interface NormalizedTrip {
   routeStops: string[];
   travelStyles: TravelStyle[];
   pricePerPerson: number;
+  priceOnRequest?: boolean;
   durationDays: number;
   durationLabel: string;
   departureMonths: string[];

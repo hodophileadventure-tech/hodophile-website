@@ -105,6 +105,71 @@ test("Ormara Beach Night Camping uses its dedicated beach-camping image", () => 
   assert.equal(journey.image, "/images/package-cards/images__tour-packages__ormara-beach-camping.png");
 });
 
+test("provided Ormara and Skardu-Deosai-Naran itineraries match their listed trip durations", () => {
+  const expectedItineraryDays = {
+    "ormara-beach-camping": 2,
+    "skardu-deosai-naran-10-days": 10,
+  };
+
+  for (const [journeyId, dayCount] of Object.entries(expectedItineraryDays)) {
+    const journey = tourPackages.find((tourPackage) => tourPackage.id === journeyId);
+    assert.ok(journey, `missing journey ${journeyId}`);
+    assert.equal(journey.itinerary?.length, dayCount, `${journeyId} should list every itinerary day`);
+    assert.deepEqual(
+      journey.itinerary?.map((day) => day.day),
+      Array.from({ length: dayCount }, (_, index) => `Day ${index + 1}`),
+    );
+  }
+});
+
+test("poster-matched packages use the supplied names, durations, itinerary, and current price status", () => {
+  const posterJourneys = [
+    { id: "skardu-deosai-air-3-days", title: "Skardu, Deosai & Naran by Road", days: 6 },
+    { id: "swat-kalam-shogran-10-days", title: "Swat, Kalam, Malam Jabba & Shogran", days: 6 },
+    { id: "kashmir-shogran-9-days", title: "Kashmir, Shogran & Murree", days: 6 },
+    { id: "hunza-skardu-naran-12-days", title: "Skardu & Hunza", days: 8 },
+  ];
+
+  for (const expected of posterJourneys) {
+    const journey = tourPackages.find((tourPackage) => tourPackage.id === expected.id);
+    assert.ok(journey, `missing journey ${expected.id}`);
+    assert.equal(journey.title, expected.title);
+    assert.ok(journey.duration.startsWith(`${expected.days} Days`));
+    assert.equal(journey.itinerary?.length, expected.days);
+    assert.equal(journey.priceOnRequest, true);
+  }
+
+  const pricedPosterJourney = tourPackages.find((tourPackage) => tourPackage.id === "skardu-deosai-naran-10-days");
+  assert.ok(pricedPosterJourney);
+  assert.equal(pricedPosterJourney.priceOnRequest, undefined);
+  assert.equal(pricedPosterJourney.pricePerPerson, 47500);
+  assert.equal(pricedPosterJourney.priceWithoutIslamabadStay, 43500);
+  assert.equal(pricedPosterJourney.couplePrice, 109000);
+  assert.deepEqual(pricedPosterJourney.itinerary?.map((day) => day.day), Array.from({ length: 10 }, (_, index) => `Day ${index + 1}`));
+});
+
+test("Gorakh Hill and Moola Chotok remain without unprovided day-by-day itineraries", () => {
+  for (const journeyId of ["seasonal-53", "seasonal-54"]) {
+    const journey = tourPackages.find((tourPackage) => tourPackage.id === journeyId);
+    assert.ok(journey, `missing journey ${journeyId}`);
+    assert.equal(journey.itinerary, undefined);
+  }
+});
+
+test("Kashmir Arang Kel and Taobat follows the supplied five-day poster itinerary", () => {
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "seasonal-11");
+
+  assert.ok(journey);
+  assert.equal(journey.title, "Kashmir with Arang Kel & Taobat");
+  assert.equal(journey.duration, "5 Days");
+  assert.equal(journey.itinerary?.length, 5);
+  assert.deepEqual(
+    journey.itinerary?.map((day) => day.day),
+    ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"],
+  );
+  assert.deepEqual(journey.routeStops, ["Islamabad", "Sharda", "Kel", "Arang Kel", "Taobat", "Keran", "Kutton Waterfall"]);
+});
+
 test("destination relationships are explicit and never fall back to unrelated packages", () => {
   for (const item of tourMenu.flatMap((group) => group.items)) {
     const matches = getTourPackagesForDestination(item.destinationSlug);
@@ -131,7 +196,7 @@ test("the eight audited destinations resolve only their canonical journeys", () 
       "hunza-skardu-naran-12-days",
       "skardu-deosai-naran-10-days",
     ],
-    naran: ["hunza-skardu-naran-12-days", "skardu-deosai-naran-10-days"],
+    naran: ["skardu-deosai-air-3-days", "hunza-skardu-naran-12-days", "skardu-deosai-naran-10-days"],
     swat: ["swat-kalam-shogran-10-days"],
     kashmir: ["kashmir-shogran-9-days", "seasonal-11"],
     ormara: ["ormara-beach-camping"],
@@ -208,8 +273,8 @@ test("overlapping featured routes project canonical journey facts", () => {
     assert.equal(featuredCard.duration, tourPackage.duration);
     assert.equal(featuredCard.homeImage, tourPackage.image);
     assert.deepEqual(featuredCard.attractions, tourPackage.routeStops);
-    assert.equal(featuredCard.priceFrom, `PKR ${tourPackage.pricePerPerson.toLocaleString()} per person`);
-    assert.deepEqual(featuredCard.itinerary, []);
+    assert.equal(featuredCard.priceFrom, tourPackage.priceOnRequest ? "Price on request" : `PKR ${tourPackage.pricePerPerson.toLocaleString()} per person`);
+    assert.deepEqual(featuredCard.itinerary, tourPackage.itinerary ?? []);
     assert.ok(!indexableFeaturedTourRoutePaths.includes(`/tours/featured/${slug}`));
   }
 });

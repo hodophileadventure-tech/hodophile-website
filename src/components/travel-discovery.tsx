@@ -83,7 +83,7 @@ const packageList: DiscoveryPackage[] = [
     id: tourPackage.id,
     title: tourPackage.title,
     duration: tourPackage.duration,
-    pricePerPerson: tourPackage.pricePerPerson,
+    pricePerPerson: tourPackage.priceOnRequest ? undefined : tourPackage.pricePerPerson,
     scheduleNote: tourPackage.scheduleNote,
     departureAvailability: tourPackage.departureAvailability,
     region: tourPackage.region,
