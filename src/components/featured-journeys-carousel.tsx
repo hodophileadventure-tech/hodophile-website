@@ -81,7 +81,7 @@ export function FeaturedJourneysCarousel({ tours }: FeaturedJourneysCarouselProp
   const progressPercentage = ((activeIndex + 1) / tours.length) * 100;
 
   return (
-    <section className="mt-[6rem] overflow-hidden bg-[#fbf7f1] px-6 pb-10 lg:px-8">
+    <section className="mt-16 overflow-hidden bg-[#fbf7f1] px-6 pb-10 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-3xl">
           <p className="text-xs uppercase tracking-[0.32em] text-stone-700/80">

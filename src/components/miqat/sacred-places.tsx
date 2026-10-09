@@ -25,7 +25,7 @@ const sacredPlaces = [
 
 export function SacredPlaces() {
   return (
-    <section className="py-20 sm:py-24" aria-labelledby="miqat-sacred-heading">
+    <section className="py-14 sm:py-18" aria-labelledby="miqat-sacred-heading">
       <div className="mx-auto max-w-[92rem]">
         <p className="text-xs uppercase tracking-[0.3em] text-[#0F5132]">Sacred Places</p>
         <h2

@@ -469,8 +469,8 @@ function JourneyPlanning() {
   ];
 
   return (
-    <section className="bg-[#f4f1eb] px-5 py-16 sm:px-8 lg:px-14 lg:py-24">
-      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+    <section className="bg-[#f4f1eb] px-5 py-12 sm:px-8 lg:px-14 lg:py-16">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#806700]">
             From here to there
@@ -615,7 +615,7 @@ export default function BeyondPakistanPage() {
           </div>
         </section>
 
-        <section id="packages" className="relative isolate scroll-mt-20 overflow-hidden bg-[#0b0b0b] px-5 py-16 text-white sm:px-8 lg:px-14 lg:py-24">
+        <section id="packages" className="relative isolate scroll-mt-20 overflow-hidden bg-[#0b0b0b] px-5 py-12 text-white sm:px-8 lg:px-14 lg:py-16">
           <div className="pointer-events-none absolute -left-48 top-12 -z-10 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
           <div className="pointer-events-none absolute -right-48 top-[38%] -z-10 h-[38rem] w-[38rem] rounded-full bg-[#b47b12]/[0.09] blur-3xl" />
           <div className="mx-auto max-w-7xl">
@@ -664,7 +664,7 @@ export default function BeyondPakistanPage() {
 
         <JourneyPlanning />
 
-        <section className="relative overflow-hidden bg-[#090909] px-5 py-16 text-white sm:px-8 lg:px-14 lg:py-24">
+        <section className="relative overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 lg:px-14 lg:py-16">
           <div className="absolute -right-20 -top-32 h-80 w-80 rounded-full bg-[#FCC000]/10 blur-3xl" />
           <div className="absolute -bottom-48 left-1/4 h-72 w-72 rounded-full bg-[#FCC000]/[0.06] blur-3xl" />
           <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(130deg,rgba(255,255,255,0.07),rgba(255,255,255,0.015)_55%,rgba(252,192,0,0.08))] px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-16">

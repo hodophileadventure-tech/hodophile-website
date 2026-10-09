@@ -416,11 +416,11 @@ export function ExplorePakistanPageContent() {
         </div>
       </section>
 
-      <section className="relative isolate left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#0b0b0b] px-5 py-16 text-white sm:px-8 lg:px-14 lg:py-24">
+      <section className="relative isolate left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#0b0b0b] px-5 py-12 text-white sm:px-8 lg:px-14 lg:py-16">
         <div className="pointer-events-none absolute -left-48 top-12 -z-10 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
         <div className="pointer-events-none absolute -right-48 top-[38%] -z-10 h-[38rem] w-[38rem] rounded-full bg-[#b47b12]/[0.09] blur-3xl" />
         <div className="mx-auto max-w-7xl">
-          <div className="relative grid gap-8 border-y border-[#FCC000]/25 py-8 sm:py-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16 lg:py-12">
+          <div className="relative grid gap-8 border-y border-[#FCC000]/25 py-6 sm:py-8 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-12 lg:py-10">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FCC000]/65 to-transparent" />
             <div className="max-w-3xl">
               <p className="inline-flex items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.34em] text-[#FCC000]">

@@ -44,7 +44,7 @@ export default function HotelsGalleryPage() {
         description="Explore hotel room options across our Pakistan hotel portfolio. Each card shows the room category, price details, and a photo when available."
       />
 
-      <section className="mt-12 space-y-20">
+      <section className="mt-10 space-y-12">
         {hotelCities.map((city) => (
           <section key={city} className="space-y-8">
             <div className="flex flex-col gap-4 border-b border-stone-200 pb-4 sm:flex-row sm:items-end sm:justify-between">

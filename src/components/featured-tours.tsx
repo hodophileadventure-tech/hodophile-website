@@ -28,7 +28,7 @@ export function FeaturedTours({ tours }: { tours: FeaturedJourney[] }) {
   const remaining = useMemo(() => tours.map((t, i) => ({ ...t, i })), [tours]);
 
   return (
-    <section className="mt-20 px-6 lg:px-8 py-20">
+    <section className="mt-16 px-6 py-12 lg:px-8 lg:py-16">
       <div className="mx-auto max-w-7xl">
         {/* Section Header */}
         <motion.div
@@ -36,7 +36,7 @@ export function FeaturedTours({ tours }: { tours: FeaturedJourney[] }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="max-w-4xl mb-16"
+          className="max-w-4xl mb-10"
         >
           <div className="inline-flex items-center gap-3 mb-6">
             <div className="h-px w-8 bg-yellow-400" />

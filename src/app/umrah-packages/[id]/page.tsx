@@ -40,7 +40,7 @@ export default async function UmrahPackageDetailPage({ params }: PageProps) {
   return (
     <PageShell wide>
       <main className="bg-[#f4f1eb] text-[#111]">
-        <section className="border-b border-[#d6d1c5] px-4 py-16 sm:px-8 lg:px-14">
+        <section className="border-b border-[#d6d1c5] px-4 py-12 sm:px-8 sm:py-14 lg:px-14">
           <div className="mx-auto max-w-5xl">
             <Link href="/umrah-packages" className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8b7000] hover:text-black">Back to MIQAT packages</Link>
             <div className="mt-10 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">

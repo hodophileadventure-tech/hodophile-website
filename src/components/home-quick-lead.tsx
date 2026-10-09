@@ -67,7 +67,7 @@ export function HomeQuickLeadForm() {
   };
 
   return (
-    <section className="relative mt-24 w-full overflow-hidden border-y border-stone-300/70 bg-[#111111] text-white">
+    <section className="relative mt-16 w-full overflow-hidden border-y border-stone-300/70 bg-[#111111] text-white">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="bg-[radial-gradient(circle_at_top_left,_rgba(252,192,0,0.18),transparent_35%)] p-6 sm:p-8 lg:p-12">

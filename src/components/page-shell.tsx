@@ -14,7 +14,7 @@ type PageShellProps = {
 export function PageShell({ children, wide = false, noTopPadding = false, mainClassName = "" }: PageShellProps) {
   const shellWidthClass = wide ? "max-w-[96rem]" : "max-w-7xl";
   const mainPaddingClass = wide ? "px-4 md:px-6 lg:px-10 xl:px-14" : "px-4 md:px-6 lg:px-8";
-  const topPaddingClass = noTopPadding ? "pt-0" : "pt-24";
+  const topPaddingClass = noTopPadding ? "pt-0" : "pt-20";
 
   return (
     <div className="min-h-screen bg-[#f4f1eb] text-stone-900">
@@ -22,7 +22,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
         <SiteHeader />
       </div>
 
-      <main className={`mx-auto ${shellWidthClass} pb-20 ${topPaddingClass} ${mainPaddingClass} ${mainClassName}`}>
+      <main className={`mx-auto ${shellWidthClass} pb-16 ${topPaddingClass} ${mainPaddingClass} ${mainClassName}`}>
         {children}
       </main>
 

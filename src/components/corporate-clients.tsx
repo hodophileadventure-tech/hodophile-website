@@ -41,7 +41,7 @@ const corporateClients = [
 
 export function CorporateClients() {
   return (
-    <section className="bg-[#f7f6f2] py-16 md:py-24">
+    <section className="bg-[#f7f6f2] py-12 md:py-16">
       <div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-2">

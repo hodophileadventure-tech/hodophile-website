@@ -119,7 +119,7 @@ export default function Home() {
 
   return (
     <PageShell wide>
-      <section className="relative left-1/2 -mt-24 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
+      <section className="relative left-1/2 -mt-20 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
         <div className="relative min-h-[88vh]">
           <video
             src="/hero-video.mp4"
@@ -164,7 +164,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative mt-24 w-full overflow-hidden border-y border-stone-300/70 py-16 lg:py-24">
+      <section className="relative mt-16 w-full overflow-hidden border-y border-stone-300/70 py-12 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-20">
           <div className="relative h-[26rem] overflow-hidden sm:h-[34rem]">
             <img
@@ -193,7 +193,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-20 w-full">
+      <section className="mt-16 w-full">
         <div>
           <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
@@ -242,7 +242,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-24 w-full bg-[#0b0b0b] px-6 py-12 text-white lg:px-10 lg:py-16">
+      <section className="mt-16 w-full bg-[#0b0b0b] px-6 py-10 text-white lg:px-10 lg:py-14">
         <div>
           <div>
             <p className="eyebrow">Signature departures</p>
@@ -293,7 +293,7 @@ export default function Home() {
 
       <WhyChooseUs />
 
-      <section className="mt-24 w-full overflow-hidden bg-white px-6 py-10 lg:px-10 lg:py-14">
+      <section className="mt-16 w-full overflow-hidden bg-white px-6 py-8 lg:px-10 lg:py-12">
         <div>
           <p className="eyebrow text-stone-600">From the road</p>
           <h2 className="display-serif mt-3 text-5xl font-normal">
@@ -303,7 +303,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative left-1/2 mt-24 w-screen -translate-x-1/2 overflow-hidden bg-[#fcc000] px-6 py-16 lg:px-16">
+      <section className="relative left-1/2 mt-16 w-screen -translate-x-1/2 overflow-hidden bg-[#fcc000] px-6 py-12 lg:px-16">
         <div>
           <div className="mx-auto max-w-5xl overflow-hidden rounded-xl bg-black shadow-[0_24px_70px_rgba(0,0,0,0.22)]">
             <div className="relative bg-black">

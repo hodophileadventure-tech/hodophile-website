@@ -714,7 +714,7 @@ export function TravelDiscoveryCatalog() {
     <section id="tour-discovery" className="relative isolate scroll-mt-20 overflow-hidden bg-[#0b0b0b] text-white">
       <div className="pointer-events-none absolute -left-48 top-12 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
       <div className="pointer-events-none absolute -right-48 top-[38%] h-[38rem] w-[38rem] rounded-full bg-[#b47b12]/[0.09] blur-3xl" />
-      <div className="relative mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-16 lg:px-14 lg:py-24">
+      <div className="relative mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16">
       <div className="relative flex flex-wrap items-end justify-between gap-4 border-y border-[#FCC000]/25 py-8 sm:py-10">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FCC000]/65 to-transparent" />
         <div>

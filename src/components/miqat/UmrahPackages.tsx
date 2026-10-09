@@ -82,7 +82,7 @@ export function UmrahPackages() {
   );
 
   return (
-    <section id="miqat-packages" className="bg-[#f4f1eb] px-4 py-16 text-[#111] sm:px-6 lg:px-10 xl:px-14" aria-labelledby="miqat-packages-heading">
+    <section id="miqat-packages" className="bg-[#f4f1eb] px-4 py-12 text-[#111] sm:px-6 sm:py-14 lg:px-10 xl:px-14" aria-labelledby="miqat-packages-heading">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col justify-between gap-8 border-b border-[#d6d1c5] pb-8 lg:flex-row lg:items-end">
           <div className="max-w-2xl">

@@ -6,7 +6,7 @@ const steps = ["Book", "Visa", "Departure", "Makkah", "Madinah", "Return"];
 
 export function Timeline() {
   return (
-    <section className="py-20 sm:py-24" aria-labelledby="miqat-timeline-heading">
+    <section className="py-14 sm:py-18" aria-labelledby="miqat-timeline-heading">
       <div className="mx-auto max-w-[92rem]">
         <p className="text-xs uppercase tracking-[0.3em] text-[#0F5132]">Journey Timeline</p>
         <h2

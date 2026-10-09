@@ -11,17 +11,17 @@ export function MiqatHighlightSection() {
     <section
       id="miqat-highlight"
       aria-labelledby="miqat-highlight-heading"
-      className="relative overflow-visible bg-[#f3ede5] px-6 py-24 sm:px-8 lg:px-12 lg:py-32"
+      className="relative overflow-visible bg-[#f3ede5] px-6 py-16 sm:px-8 lg:px-12 lg:py-20"
     >
       <div className="mx-auto max-w-[96rem]">
         <div className="relative overflow-visible">
-          <div className="mb-16 flex items-center gap-5 text-xs uppercase tracking-[0.35em] text-stone-950/55 lg:mb-24">
+          <div className="mb-10 flex items-center gap-5 text-xs uppercase tracking-[0.35em] text-stone-950/55 lg:mb-14">
             <span className="text-stone-950">02</span>
             <span className="h-px w-16 bg-stone-950/30" />
             <span>A quieter way to travel</span>
           </div>
 
-          <div className="grid gap-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-20">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-14">
             <motion.div
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}

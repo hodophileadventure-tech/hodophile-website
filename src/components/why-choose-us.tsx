@@ -151,7 +151,7 @@ export function WhyChooseUs() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.25 }}
-      className="relative mt-24 overflow-x-hidden px-4 py-20 sm:px-6 lg:px-8 xl:px-12"
+      className="relative mt-16 overflow-x-hidden px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16 xl:px-12"
       style={{
         backgroundImage:
           "radial-gradient(circle at 20% 30%, rgba(252,192,0,0.08), transparent 35%), radial-gradient(circle at 80% 70%, rgba(17,17,17,0.03), transparent 40%)",
@@ -161,7 +161,7 @@ export function WhyChooseUs() {
         {/* Section Header */}
         <motion.div
           variants={introGroupVariants}
-          className="mb-20 text-center"
+          className="mb-12 text-center"
         >
           <motion.div variants={introItemVariants} className="inline-flex items-center gap-3 mb-6">
             <div className="h-px w-8 bg-yellow-400" />
@@ -271,7 +271,7 @@ export function WhyChooseUs() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6, duration: 0.6 }}
-          className="mt-20 text-center"
+          className="mt-12 text-center"
         >
           <p className="text-lg text-stone-600 mb-6">
             Ready for an unforgettable journey?

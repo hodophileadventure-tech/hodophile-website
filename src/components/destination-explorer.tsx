@@ -24,7 +24,7 @@ export function DestinationExplorer({ destinations }: { destinations: Destinatio
   );
 
   return (
-    <section className="mt-24 overflow-hidden py-20">
+    <section className="mt-16 overflow-hidden py-12 sm:py-16">
       {/* Animated Background Elements */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-[-10%] top-20 h-80 w-96 rounded-full bg-yellow-400/5 blur-3xl animate-pulse" />
@@ -38,7 +38,7 @@ export function DestinationExplorer({ destinations }: { destinations: Destinatio
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-16 flex flex-wrap items-end justify-between gap-6"
+          className="mb-10 flex flex-wrap items-end justify-between gap-5"
         >
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-3 mb-6">
@@ -73,7 +73,7 @@ export function DestinationExplorer({ destinations }: { destinations: Destinatio
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
             className="relative overflow-hidden rounded-3xl bg-stone-950 shadow-2xl"
-            style={{ minHeight: 560 }}
+            style={{ minHeight: 480 }}
           >
             <AnimatePresence mode="wait">
               <motion.div

@@ -94,8 +94,8 @@ export default function ToursPage() {
         <TravelDiscoveryCatalog />
       </div>
 
-      <section className="-mx-4 mt-0 bg-[#f4f1eb] px-4 py-12 md:-mx-6 md:px-6 sm:py-16 lg:-mx-10 lg:px-14 lg:py-20 xl:-mx-14" aria-labelledby="confirmed-departures-heading">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+      <section className="-mx-4 mt-0 bg-[#f4f1eb] px-4 py-10 md:-mx-6 md:px-6 sm:py-12 lg:-mx-10 lg:px-14 lg:py-16 xl:-mx-14" aria-labelledby="confirmed-departures-heading">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#806700]">{scheduledDepartureCount ? "Confirmed departures" : "Travel on your terms"}</p>
             <h2 id="confirmed-departures-heading" className="mt-4 max-w-md font-[var(--font-display)] text-4xl leading-[1.08] tracking-[-0.025em] text-stone-950 sm:text-5xl">
@@ -137,7 +137,7 @@ export default function ToursPage() {
         </div>
       </section>
 
-      <section className="relative -mx-4 mt-0 overflow-hidden bg-[#090909] px-4 py-12 text-white md:-mx-6 md:px-6 sm:py-16 lg:-mx-10 lg:px-14 lg:py-20 xl:-mx-14">
+      <section className="relative -mx-4 mt-0 overflow-hidden bg-[#090909] px-4 py-10 text-white md:-mx-6 md:px-6 sm:py-12 lg:-mx-10 lg:px-14 lg:py-16 xl:-mx-14">
         <div className="absolute -right-20 -top-32 h-80 w-80 rounded-full bg-[#FCC000]/10 blur-3xl" />
         <div className="absolute -bottom-48 left-1/4 h-72 w-72 rounded-full bg-[#FCC000]/[0.06] blur-3xl" />
         <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(130deg,rgba(255,255,255,0.07),rgba(255,255,255,0.015)_55%,rgba(252,192,0,0.08))] px-6 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-16">
@@ -157,7 +157,7 @@ export default function ToursPage() {
         </div>
       </section>
 
-      <section className="relative -mx-4 mt-0 overflow-hidden bg-[#0b0b0b] px-4 py-12 text-white md:-mx-6 md:px-6 sm:py-16 lg:-mx-10 lg:px-14 lg:py-20 xl:-mx-14">
+      <section className="relative -mx-4 mt-0 overflow-hidden bg-[#0b0b0b] px-4 py-10 text-white md:-mx-6 md:px-6 sm:py-12 lg:-mx-10 lg:px-14 lg:py-16 xl:-mx-14">
         <div className="pointer-events-none absolute -right-24 -top-36 h-72 w-72 rounded-full bg-[#FCC000]/10 blur-3xl" />
         <div className="relative mx-auto max-w-7xl">
           <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/15 pb-8">

@@ -22,7 +22,7 @@ const features = [
 
 export function WhyChoose() {
   return (
-    <section id="miqat-why" className="py-20 sm:py-24" aria-labelledby="miqat-why-heading">
+    <section id="miqat-why" className="py-14 sm:py-18" aria-labelledby="miqat-why-heading">
       <div className="mx-auto grid max-w-[92rem] gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
         <motion.div
           initial={{ opacity: 0, x: -32 }}

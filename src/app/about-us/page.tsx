@@ -47,7 +47,7 @@ export default function AboutUsPage() {
 
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60" />
 
-        <div className="relative z-10 mx-auto max-w-[96rem] px-6 py-20 lg:px-8 lg:py-32 xl:px-10">
+        <div className="relative z-10 mx-auto max-w-[96rem] px-6 py-16 lg:px-8 lg:py-20 xl:px-10">
           <div className="max-w-3xl">
             <div className="mb-4 inline-block rounded-full border border-[#fcc000]/80 bg-[#fcc000]/20 px-4 py-2 backdrop-blur-sm">
               <span className="text-sm font-semibold uppercase tracking-wide text-[#fcc000]">Our Story</span>

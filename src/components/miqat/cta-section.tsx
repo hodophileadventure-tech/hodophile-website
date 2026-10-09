@@ -7,7 +7,7 @@ import { whatsappUrl } from "@/lib/site";
 
 export function CTASection() {
   return (
-    <section id="miqat-cta" className="pb-8 pt-20 sm:pt-24" aria-labelledby="miqat-cta-heading">
+    <section id="miqat-cta" className="pb-8 pt-14 sm:pt-16" aria-labelledby="miqat-cta-heading">
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
