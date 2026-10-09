@@ -3,9 +3,7 @@ import "./globals.css";
 
 import { siteConfig } from "@/lib/site";
 import { AnalyticsScripts } from "@/components/AnalyticsScripts";
-import { DealsPopup } from "@/components/deals-popup";
-import { FloatingCtaBar } from "@/components/floating-cta-bar";
-import { LeadCapturePopup } from "@/components/lead-capture-popup";
+import { SitePopups } from "@/components/site-popups";
 
 const GA_TRACKING_ID =
   process.env.NEXT_PUBLIC_GA_TRACKING_ID || process.env.NEXT_PUBLIC_GA_ID;
@@ -73,9 +71,7 @@ export default function RootLayout({
             />
           </noscript>
         ) : null}
-        <DealsPopup />
-        <LeadCapturePopup />
-        <FloatingCtaBar />
+        <SitePopups />
         {children}
       </body>
     </html>
