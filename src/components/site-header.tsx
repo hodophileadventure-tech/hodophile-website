@@ -13,6 +13,9 @@ const desktopPrimaryHrefs = new Set([
   "/",
   "/destinations",
   "/tours",
+  "/tours#adventure-tours",
+  "/honeymoon-packages",
+  "/umrah-packages",
   "/beyond-pakistan",
   "/contact-us",
 ]);
