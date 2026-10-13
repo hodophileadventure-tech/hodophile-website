@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { motion, useReducedMotion, useSpring } from "framer-motion";
 import {
   CalendarDays,
   CarFront,
@@ -154,8 +155,8 @@ function RouteItineraryPreview({ days, pricing }: { days?: RouteItineraryDay[]; 
       {pricing ? (
         <div className="mt-4 border-t border-stone-200 pt-3 text-xs text-stone-700">
           <p className="font-semibold text-stone-900">Listed package pricing</p>
-          <p className="mt-1">With Islamabad stay: PKR {pricing.quadPerPerson.toLocaleString()} per person Â· PKR {pricing.coupleTotal.toLocaleString()} per couple</p>
-          {pricing.withoutIslamabadStay ? <p className="mt-1">Without Islamabad stay: PKR {pricing.withoutIslamabadStay.quadPerPerson.toLocaleString()} per person Â· PKR {pricing.withoutIslamabadStay.coupleTotal.toLocaleString()} per couple</p> : null}
+          <p className="mt-1">With Islamabad stay: PKR {pricing.quadPerPerson.toLocaleString()} per person · PKR {pricing.coupleTotal.toLocaleString()} per couple</p>
+          {pricing.withoutIslamabadStay ? <p className="mt-1">Without Islamabad stay: PKR {pricing.withoutIslamabadStay.quadPerPerson.toLocaleString()} per person · PKR {pricing.withoutIslamabadStay.coupleTotal.toLocaleString()} per couple</p> : null}
         </div>
       ) : null}
     </details>
@@ -164,6 +165,9 @@ function RouteItineraryPreview({ days, pricing }: { days?: RouteItineraryDay[]; 
 
 export function MakeMyTripForm() {
   const router = useRouter();
+  const reduceMotion = useReducedMotion();
+  const backgroundX = useSpring(0, { stiffness: 70, damping: 22 });
+  const backgroundY = useSpring(0, { stiffness: 70, damping: 22 });
   const [plannerStep, setPlannerStep] = useState(1);
   const [stepError, setStepError] = useState("");
   const [plannerSourceMessage, setPlannerSourceMessage] = useState("");
@@ -1811,9 +1815,9 @@ export function MakeMyTripForm() {
   })();
   const summaryNights = configuredSummaryStops.reduce((total, stop) => total + (stop.nights ?? 0), 0);
   const summaryDuration = selectedRoute
-    ? `${selectedRoute.duration} days Â· ${summaryNights || Math.max(0, selectedRoute.duration - 1)} nights`
+    ? `${selectedRoute.duration} days · ${summaryNights || Math.max(0, selectedRoute.duration - 1)} nights`
     : summaryNights > 0
-      ? `${summaryNights + 1} days Â· ${summaryNights} nights`
+      ? `${summaryNights + 1} days · ${summaryNights} nights`
       : "";
   const summaryHotelDetails = (() => {
     const describeStay = (city: string, hotelId: string, roomId: string) => {
@@ -1821,7 +1825,7 @@ export function MakeMyTripForm() {
       const hotel = getHotelsByCity(baseCity).find((item) => item.id === hotelId)
         ?? availableHotels.find((item) => item.id === hotelId);
       if (!hotel) return "";
-      return `${city ? `${city}: ` : ""}${hotel.name}${roomId ? ` Â· ${roomId}` : ""}`;
+      return `${city ? `${city}: ` : ""}${hotel.name}${roomId ? ` · ${roomId}` : ""}`;
     };
 
     if (supportsMultipleHotelsInCustomSingleCity || supportsMultipleHotelsInSingleCity) {
@@ -1926,8 +1930,45 @@ export function MakeMyTripForm() {
   }, [quotation]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen overflow-x-hidden px-4 pb-28 pt-8 sm:px-6 lg:px-0">
-      <div className="make-my-trip-form mx-auto w-full max-w-7xl">
+    <div
+      onPointerMove={(event) => {
+        if (reduceMotion || event.pointerType === "touch") {
+          backgroundX.set(0);
+          backgroundY.set(0);
+          return;
+        }
+
+        const bounds = event.currentTarget.getBoundingClientRect();
+        if (!bounds.width || !bounds.height) return;
+
+        const pointerX = (event.clientX - bounds.left) / bounds.width - 0.5;
+        const pointerY = (event.clientY - bounds.top) / bounds.height - 0.5;
+        backgroundX.set(pointerX * -14);
+        backgroundY.set(pointerY * -10);
+      }}
+      onPointerLeave={() => {
+        backgroundX.set(0);
+        backgroundY.set(0);
+      }}
+      className="relative isolate flex min-h-screen items-center justify-center overflow-x-hidden px-4 pb-28 pt-8 sm:px-6 lg:px-0"
+    >
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+        style={{ x: backgroundX, y: backgroundY, scale: 1.08 }}
+      >
+        <Image
+          src="/images/package-cards/hero-images__hunza.avif"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover opacity-30"
+        />
+        <div className="absolute inset-0 bg-[#f4f1eb]/75" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_18%,rgba(252,192,0,0.14),transparent_34%),radial-gradient(circle_at_86%_78%,rgba(35,73,66,0.12),transparent_38%)]" />
+      </motion.div>
+
+      <div className="make-my-trip-form relative z-10 mx-auto w-full max-w-7xl">
         <style>{`
           .make-my-trip-form input,
           .make-my-trip-form select,
@@ -2002,7 +2043,7 @@ export function MakeMyTripForm() {
           )}
 
           <div className="mb-6 text-center md:text-left">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[#8b6b00]">Hodophile Â· Journey builder</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[#8b6b00]">Hodophile · Journey builder</p>
             <h2 className="mt-3 max-w-3xl font-serif text-4xl font-normal leading-[1.02] text-stone-950 sm:text-5xl lg:text-6xl">
               Design a journey that feels like yours.
             </h2>
@@ -3347,10 +3388,10 @@ export function MakeMyTripForm() {
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#8d6500]">Your estimated journey</p>
-                    {quotation.promotion ? <p className="mt-2 text-xs font-semibold text-[#32633e]">{quotation.promotion.code} Â· {quotation.promotion.discountPercent}% off</p> : null}
+                    {quotation.promotion ? <p className="mt-2 text-xs font-semibold text-[#32633e]">{quotation.promotion.code} · {quotation.promotion.discountPercent}% off</p> : null}
                     <h2 id="journey-estimate-heading" className="mt-1 text-2xl font-semibold text-stone-950">{formatPKR(quotation.totalCost + offRouteChargePKR)}</h2>
                     {quotation.promotion ? <p className="mt-1 text-xs text-stone-500 line-through">Original total {formatPKR(quotation.promotion.originalPrice + offRouteChargePKR)}</p> : null}
-                    <p className="mt-1 text-sm text-stone-600">{formatPKR(quotation.perPersonCost + (offRouteChargePKR / Math.max(1, totalGuests)))} per person Â· {totalGuests} traveler{totalGuests === 1 ? "" : "s"}</p>
+                    <p className="mt-1 text-sm text-stone-600">{formatPKR(quotation.perPersonCost + (offRouteChargePKR / Math.max(1, totalGuests)))} per person · {totalGuests} traveler{totalGuests === 1 ? "" : "s"}</p>
                   </div>
                   <div className="grid gap-1 text-right text-xs text-stone-600">
                     <span>{journeyLabel}</span>
@@ -3457,4 +3498,3 @@ export function MakeMyTripForm() {
       </div>
   );
 }
-
