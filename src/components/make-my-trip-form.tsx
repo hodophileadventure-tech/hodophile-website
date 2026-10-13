@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { motion, useReducedMotion, useSpring } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   CalendarDays,
   CarFront,
@@ -99,6 +99,13 @@ const destinationCardDetails: Record<string, { image?: string; description: stri
   "Nathia Gali": { image: "/images/package-cards/images__nathia-ready.webp", description: "Forest-covered hills" },
   Murree: { image: "/images/package-cards/images__honeymoon__murree-tour.webp", description: "Hill-station escapes" },
 };
+const plannerInspirations = [
+  { city: "Hunza", image: "/images/package-cards/hero-images__hunza.avif", description: "Terraced valleys beneath towering peaks." },
+  { city: "Skardu", image: "/images/package-cards/hero-images__skurdu.webp", description: "Glacial lakes, wide skies, and mountain roads." },
+  { city: "Naran", image: "/images/package-cards/hero-images__Naran.webp", description: "Alpine rivers and quiet lakeside mornings." },
+  { city: "Kashmir", image: "/images/package-cards/hero-images__kashmir.webp", description: "Forest trails and green valley hideaways." },
+  { city: "Swat", image: "/images/package-cards/hero-images__Sawat.webp", description: "A slower escape among cedar-covered hills." },
+] as const;
 
 function getCityMinimumDays(city: string, startingPointValue: string) {
   const baseDays = CITY_MINIMUM_DAYS[city] ?? 2;
@@ -167,12 +174,9 @@ function RouteItineraryPreview({ days, pricing }: { days?: RouteItineraryDay[]; 
 export function MakeMyTripForm() {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
-  const backgroundX = useSpring(0, { stiffness: 70, damping: 22 });
-  const backgroundY = useSpring(0, { stiffness: 70, damping: 22 });
-  const backgroundGlowX = useSpring(-600, { stiffness: 90, damping: 24 });
-  const backgroundGlowY = useSpring(-600, { stiffness: 90, damping: 24 });
-  const backgroundGlowOpacity = useSpring(0, { stiffness: 90, damping: 24 });
+  const plannerFormRef = useRef<HTMLFormElement>(null);
   const [plannerStep, setPlannerStep] = useState(1);
+  const [activePlannerDestination, setActivePlannerDestination] = useState<string>(plannerInspirations[0].city);
   const [stepError, setStepError] = useState("");
   const [plannerSourceMessage, setPlannerSourceMessage] = useState("");
   
@@ -1903,6 +1907,7 @@ export function MakeMyTripForm() {
   const journeyLabel = isCustomCitySelection()
     ? effectiveSelectedCities.join(" + ") || "Custom itinerary"
     : selectedRoute?.name || "Your selected route";
+  const activeInspiration = plannerInspirations.find((destination) => destination.city === activePlannerDestination) ?? plannerInspirations[0];
   const journeyWhatsAppMessage = [
     "Hi Hodophile, I would like to plan this journey:",
     `Name: ${customerName || "Not provided"}`,
@@ -1934,53 +1939,8 @@ export function MakeMyTripForm() {
   }, [quotation]);
 
   return (
-    <div
-      onPointerMove={(event) => {
-        if (reduceMotion || event.pointerType === "touch") {
-          return;
-        }
-
-        if (!window.innerWidth || !window.innerHeight) return;
-
-        const pointerX = event.clientX / window.innerWidth - 0.5;
-        const pointerY = event.clientY / window.innerHeight - 0.5;
-        backgroundX.set(pointerX * -48);
-        backgroundY.set(pointerY * -32);
-        backgroundGlowX.set(event.clientX - 288);
-        backgroundGlowY.set(event.clientY - 288);
-        backgroundGlowOpacity.set(1);
-      }}
-      onPointerLeave={() => {
-        backgroundX.set(0);
-        backgroundY.set(0);
-        backgroundGlowX.set(-600);
-        backgroundGlowY.set(-600);
-        backgroundGlowOpacity.set(0);
-      }}
-      className="relative isolate flex min-h-screen items-center justify-center overflow-x-hidden px-4 pb-28 pt-8 sm:px-6 lg:px-0"
-    >
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
-        style={{ x: backgroundX, y: backgroundY, scale: 1.16 }}
-      >
-        <Image
-          src="/images/package-cards/hero-images__hunza.avif"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover opacity-60"
-        />
-        <div className="absolute inset-0 bg-[#f4f1eb]/45" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_18%,rgba(252,192,0,0.14),transparent_34%),radial-gradient(circle_at_86%_78%,rgba(35,73,66,0.12),transparent_38%)]" />
-      </motion.div>
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-[1] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(252,192,0,0.18)_0%,rgba(252,192,0,0.07)_38%,transparent_72%)] blur-2xl"
-        style={{ x: backgroundGlowX, y: backgroundGlowY, opacity: backgroundGlowOpacity }}
-      />
-
-      <div className="make-my-trip-form relative z-10 mx-auto w-full max-w-7xl border border-white/70 bg-white/50 shadow-[0_28px_80px_rgba(0,0,0,0.16)] backdrop-blur-sm">
+    <div className="relative isolate flex min-h-screen items-center justify-center overflow-x-hidden bg-[radial-gradient(ellipse_at_top,rgba(252,192,0,0.1),transparent_42%),#f4f1eb] px-4 pb-28 pt-8 sm:px-6 lg:px-0">
+      <div className="make-my-trip-form relative z-10 mx-auto w-full max-w-7xl">
         <style>{`
           .make-my-trip-form input,
           .make-my-trip-form select,
@@ -2029,7 +1989,7 @@ export function MakeMyTripForm() {
           .blink-fast { animation: fast-blink 0.6s ease-in-out infinite; }
         `}</style>
 
-        <div className="relative overflow-hidden border border-white/70 bg-white p-4 shadow-[0_28px_80px_rgba(0,0,0,0.22)] sm:p-7 lg:p-9">
+        <div className="relative overflow-hidden rounded-[28px] border border-stone-200 bg-white p-4 shadow-[0_28px_80px_rgba(0,0,0,0.14)] sm:p-7 lg:p-9">
             {plannerSourceMessage ? (
               <p role="status" className="mb-5 rounded-xl border border-black/15 bg-white/85 px-4 py-3 text-sm font-medium text-stone-900">
                 {plannerSourceMessage}
@@ -2054,15 +2014,86 @@ export function MakeMyTripForm() {
             </div>
           )}
 
-          <div className="mb-6 text-center md:text-left">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[#8b6b00]">Hodophile · Journey builder</p>
-            <h2 className="mt-3 max-w-3xl font-serif text-4xl font-normal leading-[1.02] text-stone-950 sm:text-5xl lg:text-6xl">
-              Design a journey that feels like yours.
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-stone-600 md:mx-0 sm:text-base">
-              Explore routes, tailor your stay, and shape a Pakistan journey with a live estimate at every step.
-            </p>
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+          <section aria-labelledby="planner-inspiration-heading" className="relative isolate mb-6 min-h-[30rem] overflow-hidden rounded-[22px] bg-stone-950 sm:min-h-[34rem]">
+            <AnimatePresence initial={false} mode="sync">
+              <motion.div
+                key={activeInspiration.city}
+                initial={reduceMotion ? { opacity: 1 } : { opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: reduceMotion ? 0 : 0.7, ease: "easeOut" }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={activeInspiration.image}
+                  alt=""
+                  fill
+                  loading="eager"
+                  sizes="(max-width: 768px) 100vw, 1280px"
+                  className="object-cover"
+                />
+              </motion.div>
+            </AnimatePresence>
+            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/5" />
+            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
+            <div className="relative z-10 flex min-h-[30rem] flex-col justify-between p-6 sm:min-h-[34rem] sm:p-10 lg:p-12">
+              <div className="max-w-2xl">
+                <p className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-black/20 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#ffd84d] backdrop-blur-sm">
+                  <Compass className="h-3.5 w-3.5" aria-hidden="true" />
+                  Hodophile · Journey builder
+                </p>
+                <h2 id="planner-inspiration-heading" className="mt-5 font-serif text-4xl font-medium leading-[1.02] text-white drop-shadow sm:text-5xl lg:text-6xl">
+                  Design a journey that feels like yours.
+                </h2>
+                <p aria-live="polite" className="mt-4 max-w-lg text-sm leading-7 text-white/85 sm:text-base">
+                  {activeInspiration.description}
+                </p>
+                <p className="mt-2 max-w-lg text-sm leading-7 text-white/85 sm:text-base">
+                  Explore routes, tailor your stay, and shape a Pakistan journey with a live estimate at every step.
+                </p>
+              </div>
+
+              <div className="mt-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70">Choose a place to explore</p>
+                  <div className="flex max-w-full gap-2 overflow-x-auto pb-1" role="group" aria-label="Trip inspiration destinations">
+                    {plannerInspirations.map((destination) => {
+                      const isActive = destination.city === activeInspiration.city;
+                      return (
+                        <button
+                          key={destination.city}
+                          type="button"
+                          aria-pressed={isActive}
+                          onClick={() => setActivePlannerDestination(destination.city)}
+                          className={`shrink-0 rounded-full border px-4 py-2.5 text-xs font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000] ${
+                            isActive
+                              ? "border-[#fcc000] bg-[#fcc000] text-stone-950 shadow-lg shadow-black/20"
+                              : "border-white/35 bg-black/20 text-white backdrop-blur-sm hover:border-white hover:bg-white/15"
+                          }`}
+                        >
+                          {destination.city}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPlannerStep(1);
+                    setStepError("");
+                    plannerFormRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+                  }}
+                  className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full bg-[#fcc000] px-6 py-3 text-sm font-bold text-stone-950 shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-[#ffd84d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  Start planning
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <div className="mb-6">
+            <div className="flex flex-wrap items-center justify-center gap-2 md:justify-start">
               {/* Honeymoon Gateway Button with Featured Tours Dropdown */}
               <div ref={honeymoonDropdownRef} className="relative">
                 <button
@@ -2125,7 +2156,7 @@ export function MakeMyTripForm() {
           </div>
 
           <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_19rem]">
-          <form onSubmit={handleSubmit} noValidate className="grid min-w-0 gap-5">
+          <form ref={plannerFormRef} onSubmit={handleSubmit} noValidate className="grid min-w-0 gap-5 scroll-mt-6">
             <TripPlannerProgress
               steps={plannerSteps}
               currentStep={plannerStep}
