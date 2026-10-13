@@ -1196,32 +1196,6 @@ export function CompareTripsClient() {
                     <p className="font-serif text-lg leading-tight text-stone-950">{packageItem.title}</p>
                     <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">{packageItem.duration} · {packageItem.pace ?? "Pace to confirm"}</p>
                     <p className="mt-3 text-xl font-bold text-[#806000]">{listedPrice(packageItem)}</p>
-                    <details className="group mt-4 border-t border-[#e8dbb6] pt-3">
-                      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-xs font-bold text-stone-800 marker:content-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#b38a00] [&::-webkit-details-marker]:hidden">
-                        <span>{packageItem.itinerary?.length ? "View day-by-day itinerary" : "View route outline"}</span>
-                        <span aria-hidden="true" className="text-[#806000] transition-transform group-open:rotate-180">⌄</span>
-                      </summary>
-                      {packageItem.itinerary?.length ? (
-                        <ol className="mt-3 space-y-3">
-                          {packageItem.itinerary.map((day) => (
-                            <li key={`${packageItem.id}-${day.day}`} className="border-l-2 border-[#fcc000] pl-3">
-                              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#806000]">{day.day}</p>
-                              <p className="mt-0.5 text-sm font-semibold text-stone-900">{day.title}</p>
-                              <p className="mt-1 text-xs leading-5 text-stone-600">{day.description}</p>
-                            </li>
-                          ))}
-                        </ol>
-                      ) : (
-                        <div className="mt-3">
-                          <p className="text-xs leading-5 text-stone-600">
-                            The day-by-day plan is not listed yet and will be confirmed with your dates.
-                          </p>
-                          <ol className="mt-2 list-inside list-decimal space-y-1 text-xs leading-5 text-stone-700">
-                            {packageItem.routeStops.map((stop) => <li key={`${packageItem.id}-${stop}`}>{stop}</li>)}
-                          </ol>
-                        </div>
-                      )}
-                    </details>
                     <button type="button" onClick={() => removeComparedPackage(packageItem.id)} className="mt-3 rounded-full border border-stone-200 bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-stone-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700">Remove journey</button>
                   </div>
                 </th>
@@ -1286,6 +1260,68 @@ export function CompareTripsClient() {
           </tbody>
         </table>
       </div>
+
+      <section className="mt-6 rounded-[1.5rem] border border-[#e8d99f] bg-[linear-gradient(135deg,_#fffdf7,_#f8f3e4)] p-4 sm:p-6" aria-labelledby="compare-itineraries-heading">
+        <div className="border-b border-[#e8d99f] pb-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#806000]">Plan each day</p>
+          <h2 id="compare-itineraries-heading" className="mt-2 font-serif text-3xl text-stone-950">Day-by-day itineraries</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
+            Open any journey to see its daily plan. Itineraries that have not been published yet are marked clearly.
+          </p>
+        </div>
+        <div className="mt-4 grid gap-3">
+          {comparePackages.map((packageItem, index) => (
+            <details key={`${packageItem.id}-itinerary`} className="group overflow-hidden rounded-2xl border border-[#e8dbb6] bg-white shadow-[0_4px_16px_rgba(50,40,10,0.04)]">
+              <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-[#b38a00] [&::-webkit-details-marker]:hidden sm:px-5">
+                <span className="flex min-w-0 items-center gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#fff3c4] text-xs font-bold text-[#725600]">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-semibold text-stone-950 sm:text-base">{packageItem.title}</span>
+                    <span className="mt-0.5 block text-xs text-stone-500">
+                      {packageItem.itinerary?.length
+                        ? `${packageItem.itinerary.length} itinerary ${packageItem.itinerary.length === 1 ? "day" : "days"}`
+                        : "Day-by-day details to be confirmed"}
+                    </span>
+                  </span>
+                </span>
+                <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-stone-200 text-stone-600 transition-transform group-open:rotate-180">
+                  <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4">
+                    <path d="m5 7.5 5 5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              </summary>
+              <div className="border-t border-stone-100 px-4 py-4 sm:px-5">
+                {packageItem.itinerary?.length ? (
+                  <ol className="grid gap-4 sm:grid-cols-2">
+                    {packageItem.itinerary.map((day) => (
+                      <li key={`${packageItem.id}-${day.day}`} className="relative border-l-2 border-[#fcc000] pl-4">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#806000]">{day.day}</p>
+                        <p className="mt-1 text-sm font-semibold text-stone-900">{day.title}</p>
+                        <p className="mt-1 text-xs leading-5 text-stone-600">{day.description}</p>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <div className="rounded-xl bg-[#faf8f2] p-4">
+                    <p className="text-sm font-semibold text-stone-800">The detailed daily schedule is not published yet.</p>
+                    <p className="mt-1 text-xs leading-5 text-stone-600">These are the currently listed route stops; the team can confirm the day-by-day plan with your dates.</p>
+                    {packageItem.routeStops.length ? (
+                      <ol className="mt-3 flex flex-wrap gap-2">
+                        {packageItem.routeStops.map((stop, stopIndex) => (
+                          <li key={`${packageItem.id}-${stop}`} className="inline-flex items-center gap-2 rounded-full border border-[#e8dbb6] bg-white px-3 py-1.5 text-xs font-medium text-stone-700">
+                            <span className="text-[10px] font-bold text-[#806000]">{stopIndex + 1}</span>
+                            {stop}
+                          </li>
+                        ))}
+                      </ol>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
 
       {comparisonTakeaways.length ? (
       <section className="mt-5 rounded-[1.5rem] border border-[#e8d99f] bg-[linear-gradient(135deg,_#fffdf7,_#f7f2e3)] p-4 sm:p-5" aria-labelledby="comparison-takeaways-heading">
