@@ -9,6 +9,7 @@ import {
   CarFront,
   Check,
   Compass,
+  Heart,
   Sparkles,
   Hotel as HotelIcon,
   Baby,
@@ -168,6 +169,9 @@ export function MakeMyTripForm() {
   const reduceMotion = useReducedMotion();
   const backgroundX = useSpring(0, { stiffness: 70, damping: 22 });
   const backgroundY = useSpring(0, { stiffness: 70, damping: 22 });
+  const backgroundGlowX = useSpring(-600, { stiffness: 90, damping: 24 });
+  const backgroundGlowY = useSpring(-600, { stiffness: 90, damping: 24 });
+  const backgroundGlowOpacity = useSpring(0, { stiffness: 90, damping: 24 });
   const [plannerStep, setPlannerStep] = useState(1);
   const [stepError, setStepError] = useState("");
   const [plannerSourceMessage, setPlannerSourceMessage] = useState("");
@@ -508,7 +512,7 @@ export function MakeMyTripForm() {
       room.quad;
 
     if (typeof price === "number" && !Number.isNaN(price) && price > 0) {
-      return `${room.name} â€” PKR ${price.toLocaleString()} / night`;
+      return `${room.name} - PKR ${price.toLocaleString()} / night`;
     }
 
     return room.name;
@@ -1933,42 +1937,50 @@ export function MakeMyTripForm() {
     <div
       onPointerMove={(event) => {
         if (reduceMotion || event.pointerType === "touch") {
-          backgroundX.set(0);
-          backgroundY.set(0);
           return;
         }
 
-        const bounds = event.currentTarget.getBoundingClientRect();
-        if (!bounds.width || !bounds.height) return;
+        if (!window.innerWidth || !window.innerHeight) return;
 
-        const pointerX = (event.clientX - bounds.left) / bounds.width - 0.5;
-        const pointerY = (event.clientY - bounds.top) / bounds.height - 0.5;
-        backgroundX.set(pointerX * -14);
-        backgroundY.set(pointerY * -10);
+        const pointerX = event.clientX / window.innerWidth - 0.5;
+        const pointerY = event.clientY / window.innerHeight - 0.5;
+        backgroundX.set(pointerX * -48);
+        backgroundY.set(pointerY * -32);
+        backgroundGlowX.set(event.clientX - 288);
+        backgroundGlowY.set(event.clientY - 288);
+        backgroundGlowOpacity.set(1);
       }}
       onPointerLeave={() => {
         backgroundX.set(0);
         backgroundY.set(0);
+        backgroundGlowX.set(-600);
+        backgroundGlowY.set(-600);
+        backgroundGlowOpacity.set(0);
       }}
       className="relative isolate flex min-h-screen items-center justify-center overflow-x-hidden px-4 pb-28 pt-8 sm:px-6 lg:px-0"
     >
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-        style={{ x: backgroundX, y: backgroundY, scale: 1.08 }}
+        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+        style={{ x: backgroundX, y: backgroundY, scale: 1.16 }}
       >
         <Image
           src="/images/package-cards/hero-images__hunza.avif"
           alt=""
           fill
           sizes="100vw"
-          className="object-cover opacity-30"
+          className="object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-[#f4f1eb]/75" />
+        <div className="absolute inset-0 bg-[#f4f1eb]/45" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_18%,rgba(252,192,0,0.14),transparent_34%),radial-gradient(circle_at_86%_78%,rgba(35,73,66,0.12),transparent_38%)]" />
       </motion.div>
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none fixed left-0 top-0 z-[1] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(252,192,0,0.18)_0%,rgba(252,192,0,0.07)_38%,transparent_72%)] blur-2xl"
+        style={{ x: backgroundGlowX, y: backgroundGlowY, opacity: backgroundGlowOpacity }}
+      />
 
-      <div className="make-my-trip-form relative z-10 mx-auto w-full max-w-7xl">
+      <div className="make-my-trip-form relative z-10 mx-auto w-full max-w-7xl border border-white/70 bg-white/50 shadow-[0_28px_80px_rgba(0,0,0,0.16)] backdrop-blur-sm">
         <style>{`
           .make-my-trip-form input,
           .make-my-trip-form select,
@@ -2058,7 +2070,8 @@ export function MakeMyTripForm() {
                   onClick={() => setShowHoneymoonDropdown(!showHoneymoonDropdown)}
                   className="relative inline-flex min-h-10 items-center border border-[#e8d7a3] bg-[#fffdf8] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6e5200] transition hover:border-[#fcc000] hover:bg-[#fff9e8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
                 >
-                  ðŸ’• Honeymoon Gateway
+                  <Heart className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+                  Honeymoon Gateway
                 </button>
                 
                 {/* Featured Tours Dropdown */}
@@ -2087,7 +2100,7 @@ export function MakeMyTripForm() {
                   onClick={() => setShowLuxuryDropdown(!showLuxuryDropdown)}
                   className="relative inline-flex min-h-10 items-center border border-[#e8d7a3] bg-[#fffdf8] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#6e5200] transition hover:border-[#fcc000] hover:bg-[#fff9e8] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
                 >
-                  <span>âœ¨ Luxury Planning</span>
+                  <span className="inline-flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5" aria-hidden="true" />Luxury Planning</span>
                 </button>
                 
                 {/* Dropdown Menu */}
@@ -2432,7 +2445,7 @@ export function MakeMyTripForm() {
                             disabled={(effectiveCustomCityNights[city] ?? 1) <= 1}
                             onClick={() => setCustomCityNights((current) => ({ ...current, [city]: Math.max(1, (current[city] ?? 1) - 1) }))}
                             className="h-9 w-9 border border-stone-300 text-lg leading-none text-stone-800 transition hover:border-[#b98d00] disabled:cursor-not-allowed disabled:text-stone-400"
-                          >âˆ’</button>
+                          >-</button>
                           <span aria-live="polite" className="w-6 text-center text-sm font-semibold tabular-nums">{effectiveCustomCityNights[city] ?? 1}</span>
                           <button
                             type="button"
@@ -2448,10 +2461,10 @@ export function MakeMyTripForm() {
                     <div className="mt-4 border-t border-stone-200 pt-4">
                       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b6b00]">Why this route works</p>
                       <ul className="mt-2 grid gap-2 text-xs text-stone-700 sm:grid-cols-2">
-                        <li className="flex items-start gap-2"><span aria-hidden="true" className="font-bold text-[#8b6b00]">âœ“</span><span>Selected sequence passes route validation.</span></li>
-                        {usesChilasItinerary ? <li className="flex items-start gap-2"><span aria-hidden="true" className="font-bold text-[#8b6b00]">âœ“</span><span>Chilas arrival and return stays are included.</span></li> : null}
-                        {summaryNights > 0 ? <li className="flex items-start gap-2"><span aria-hidden="true" className="font-bold text-[#8b6b00]">âœ“</span><span>{summaryNights} hotel nights are currently assigned.</span></li> : null}
-                        {vehicleName ? <li className="flex items-start gap-2"><span aria-hidden="true" className="font-bold text-[#8b6b00]">{isVehicleSuitable(vehicleName, totalGuests) ? "âœ“" : "!"}</span><span>{isVehicleSuitable(vehicleName, totalGuests) ? `${vehicleName} fits the current group size.` : `${vehicleName} is not suitable for ${totalGuests} travellers.`}</span></li> : null}
+                        <li className="flex items-start gap-2"><Check aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8b6b00]" /><span>Selected sequence passes route validation.</span></li>
+                        {usesChilasItinerary ? <li className="flex items-start gap-2"><Check aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8b6b00]" /><span>Chilas arrival and return stays are included.</span></li> : null}
+                        {summaryNights > 0 ? <li className="flex items-start gap-2"><Check aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8b6b00]" /><span>{summaryNights} hotel nights are currently assigned.</span></li> : null}
+                        {vehicleName ? <li className="flex items-start gap-2">{isVehicleSuitable(vehicleName, totalGuests) ? <Check aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8b6b00]" /> : <span aria-hidden="true" className="font-bold text-[#8b6b00]">!</span>}<span>{isVehicleSuitable(vehicleName, totalGuests) ? `${vehicleName} fits the current group size.` : `${vehicleName} is not suitable for ${totalGuests} travellers.`}</span></li> : null}
                       </ul>
                     </div>
                   ) : null}
@@ -3375,12 +3388,12 @@ export function MakeMyTripForm() {
                     <p className="text-xs font-semibold text-[#32633e]">Promo code {promoCode} applied - {promoValidation.discountPercent}% off</p>
                     <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
                       <div><dt className="text-[10px] uppercase tracking-[0.12em] text-stone-500">Original price</dt><dd className="mt-1 font-medium text-stone-700 line-through">{formatPKR(quotation?.promotion?.originalPrice ?? promoValidation.originalPrice)}</dd></div>
-                      <div><dt className="text-[10px] uppercase tracking-[0.12em] text-stone-500">20% discount</dt><dd className="mt-1 font-semibold text-[#32633e]">âˆ’{formatPKR(quotation?.promotion?.discountAmount ?? promoValidation.discountAmount)}</dd></div>
+                      <div><dt className="text-[10px] uppercase tracking-[0.12em] text-stone-500">20% discount</dt><dd className="mt-1 font-semibold text-[#32633e]">-{formatPKR(quotation?.promotion?.discountAmount ?? promoValidation.discountAmount)}</dd></div>
                       <div><dt className="text-[10px] uppercase tracking-[0.12em] text-stone-500">Final price</dt><dd className="mt-1 font-bold text-stone-950">{formatPKR(quotation?.promotion?.finalPrice ?? promoValidation.finalPrice)}</dd></div>
                     </dl>
                   </div>
                 ) : null}
-                {promoCode && !promoValidation ? <p role="status" className="mt-3 text-xs text-stone-600">Revalidating the discount against your updated trip detailsâ€¦</p> : null}
+                {promoCode && !promoValidation ? <p role="status" className="mt-3 text-xs text-stone-600">Revalidating the discount against your updated trip details...</p> : null}
               </section>
             ) : null}
             {quotation ? (
@@ -3468,11 +3481,11 @@ export function MakeMyTripForm() {
             {plannerStep < 5 && (
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[#f4d77d] bg-white p-3">
                 <button type="button" onClick={handlePlannerBack} disabled={plannerStep === 1} className="rounded-full border border-stone-300 px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500 disabled:cursor-not-allowed disabled:border-stone-300 disabled:bg-stone-100 disabled:text-stone-600 disabled:opacity-100">Back</button>
-                <button type="button" onClick={handlePlannerContinue} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-[#fcc000] transition hover:brightness-110">Continue <span aria-hidden="true">â†’</span></button>
+                <button type="button" onClick={handlePlannerContinue} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-[#fcc000] transition hover:brightness-110">Continue</button>
               </div>
             )}
             {plannerStep === 5 && (
-              <button type="button" onClick={handlePlannerBack} className="justify-self-start rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500">â† Back to preferences</button>
+              <button type="button" onClick={handlePlannerBack} className="justify-self-start rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-500">Back to preferences</button>
             )}
           </form>
           <JourneySummary
