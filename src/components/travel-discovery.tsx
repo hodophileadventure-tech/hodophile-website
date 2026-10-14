@@ -115,6 +115,10 @@ const packageList: DiscoveryPackage[] = [
   })),
 ];
 
+const adventurePackages = packageList.filter(
+  (packageItem) => !packageItem.requestOnly && packageItem.travelStyles.includes("adventure"),
+);
+
 function getDurationDays(packageItem: DiscoveryPackage) {
   return Number(packageItem.duration.match(/\d+/)?.[0] ?? 0);
 }
@@ -970,6 +974,188 @@ export function TravelDiscoveryCatalog() {
       </div>
     ) : null}
     </>
+  );
+}
+
+export function AdventureToursCatalog() {
+  const [search, setSearch] = useState("");
+  const [duration, setDuration] = useState<DurationFilter>("all");
+  const [region, setRegion] = useState<RegionFilter>("all");
+  const [minimumBudget, setMinimumBudget] = useState("");
+  const [maximumBudget, setMaximumBudget] = useState("");
+  const [sort, setSort] = useState<SortOption>("recommended");
+  const compareIds = useStoredIds(STORAGE_KEYS.compare, MAX_COMPARE_ITEMS);
+  const wishlistIds = useStoredIds(STORAGE_KEYS.wishlist);
+
+  const filteredPackages = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const filtered = adventurePackages.filter((packageItem) => {
+      const matchesQuery =
+        query.length === 0 ||
+        packageItem.title.toLowerCase().includes(query) ||
+        packageItem.destinationSlugs.some((slug) => slug.toLowerCase().includes(query)) ||
+        packageItem.routeStops.some((stop) => stop.toLowerCase().includes(query)) ||
+        packageItem.summary.toLowerCase().includes(query);
+
+      const packageDuration = getDurationDays(packageItem);
+      const matchesDuration =
+        duration === "all" ||
+        (duration === "weekend" && packageDuration <= 3) ||
+        (duration === "4-7" && packageDuration >= 4 && packageDuration <= 7) ||
+        (duration === "8-12" && packageDuration >= 8 && packageDuration <= 12) ||
+        (duration === "12-plus" && packageDuration > 12);
+      const matchesRegion = region === "all" || packageItem.region === region;
+      const matchesMinimum =
+        minimumBudget === "" ||
+        (packageItem.pricePerPerson !== undefined && packageItem.pricePerPerson >= Number(minimumBudget));
+      const matchesMaximum =
+        maximumBudget === "" ||
+        (packageItem.pricePerPerson !== undefined && packageItem.pricePerPerson <= Number(maximumBudget));
+
+      return matchesQuery && matchesDuration && matchesRegion && matchesMinimum && matchesMaximum;
+    });
+
+    if (sort === "price-low") {
+      return filtered.sort(
+        (first, second) =>
+          (first.pricePerPerson ?? Number.POSITIVE_INFINITY) -
+          (second.pricePerPerson ?? Number.POSITIVE_INFINITY),
+      );
+    }
+    if (sort === "duration-short") {
+      return filtered.sort((first, second) => getDurationDays(first) - getDurationDays(second));
+    }
+    return filtered;
+  }, [duration, maximumBudget, minimumBudget, region, search, sort]);
+
+  const toggleWishlist = (id: string) => {
+    writeStorageIds(
+      STORAGE_KEYS.wishlist,
+      wishlistIds.includes(id) ? wishlistIds.filter((value) => value !== id) : [...wishlistIds, id],
+    );
+  };
+
+  const toggleCompare = (id: string) => {
+    if (compareIds.includes(id)) {
+      writeStorageIds(STORAGE_KEYS.compare, compareIds.filter((value) => value !== id));
+      return;
+    }
+
+    if (compareIds.length < MAX_COMPARE_ITEMS) {
+      writeStorageIds(STORAGE_KEYS.compare, [...compareIds, id]);
+    }
+  };
+
+  const hasActiveFilters =
+    search !== "" ||
+    duration !== "all" ||
+    region !== "all" ||
+    minimumBudget !== "" ||
+    maximumBudget !== "" ||
+    sort !== "recommended";
+
+  return (
+    <section id="adventure-listings" className="bg-[#f4f1eb] px-4 py-10 text-stone-950 sm:px-6 sm:py-14 lg:px-10 lg:py-16">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#806700]">Adventure tours</p>
+            <h2 className="mt-3 font-[var(--font-display)] text-3xl tracking-[-0.025em] sm:text-4xl">Find your next adventure</h2>
+          </div>
+          <span className="rounded-full border border-[#FCC000]/50 bg-[#FCC000]/15 px-4 py-2 text-sm font-semibold text-stone-900">
+            {filteredPackages.length} {filteredPackages.length === 1 ? "tour" : "tours"}
+          </span>
+        </div>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <label className="rounded-2xl border border-stone-200 bg-white p-3 lg:col-span-2">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Search tours</span>
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search by tour or destination"
+              className="w-full bg-transparent text-sm text-stone-900 outline-none placeholder:text-stone-400"
+            />
+          </label>
+          <label className="rounded-2xl border border-stone-200 bg-white p-3">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Duration</span>
+            <select value={duration} onChange={(event) => setDuration(event.target.value as DurationFilter)} className="w-full bg-transparent text-sm text-stone-900 outline-none">
+              <option value="all">Any duration</option>
+              <option value="weekend">Weekend</option>
+              <option value="4-7">4–7 days</option>
+              <option value="8-12">8–12 days</option>
+              <option value="12-plus">12+ days</option>
+            </select>
+          </label>
+          <label className="rounded-2xl border border-stone-200 bg-white p-3">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Region</span>
+            <select value={region} onChange={(event) => setRegion(event.target.value as RegionFilter)} className="w-full bg-transparent text-sm text-stone-900 outline-none">
+              <option value="all">All regions</option>
+              <option value="northern">Northern</option>
+              <option value="southern">Southern</option>
+            </select>
+          </label>
+          <label className="rounded-2xl border border-stone-200 bg-white p-3">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Sort tours</span>
+            <select value={sort} onChange={(event) => setSort(event.target.value as SortOption)} className="w-full bg-transparent text-sm text-stone-900 outline-none">
+              <option value="recommended">Catalog order</option>
+              <option value="price-low">Price: low to high</option>
+              <option value="duration-short">Shortest first</option>
+            </select>
+          </label>
+          <label className="rounded-2xl border border-stone-200 bg-white p-3">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Min. price · PKR</span>
+            <input type="number" min="0" step="5000" value={minimumBudget} onChange={(event) => setMinimumBudget(event.target.value)} placeholder="Any" className="w-full bg-transparent text-sm text-stone-900 outline-none placeholder:text-stone-400" />
+          </label>
+          <label className="rounded-2xl border border-stone-200 bg-white p-3">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Max. price · PKR</span>
+            <input type="number" min="0" step="5000" value={maximumBudget} onChange={(event) => setMaximumBudget(event.target.value)} placeholder="Any" className="w-full bg-transparent text-sm text-stone-900 outline-none placeholder:text-stone-400" />
+          </label>
+        </div>
+
+        <div className="mt-4 flex min-h-6 items-center justify-between gap-4">
+          <p className="text-sm text-stone-600" aria-live="polite">
+            {filteredPackages.length} {filteredPackages.length === 1 ? "adventure tour" : "adventure tours"} found
+          </p>
+          {hasActiveFilters ? (
+            <button
+              type="button"
+              onClick={() => {
+                setSearch("");
+                setDuration("all");
+                setRegion("all");
+                setMinimumBudget("");
+                setMaximumBudget("");
+                setSort("recommended");
+              }}
+              className="text-sm font-semibold text-stone-700 underline decoration-[#FCC000] decoration-2 underline-offset-4 hover:text-stone-950"
+            >
+              Clear filters
+            </button>
+          ) : null}
+        </div>
+
+        {filteredPackages.length === 0 ? (
+          <div className="mt-5 rounded-[1.5rem] border border-dashed border-stone-300 bg-white px-5 py-10 text-center">
+            <h3 className="text-lg font-semibold text-stone-900">No adventure tours match these filters.</h3>
+            <p className="mt-2 text-sm text-stone-600">Try another destination or clear the filters to see all available adventure tours.</p>
+          </div>
+        ) : (
+          <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            {filteredPackages.map((packageItem) => (
+              <RouteCard
+                key={packageItem.id}
+                packageItem={packageItem}
+                isWishlistEnabled={wishlistIds.includes(packageItem.id)}
+                isCompareEnabled={compareIds.includes(packageItem.id)}
+                onToggleWishlist={toggleWishlist}
+                onToggleCompare={toggleCompare}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
 

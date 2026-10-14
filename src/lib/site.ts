@@ -21,7 +21,7 @@ export const navigation = [
   { href: "/", label: "Home" },
   { href: "/destinations", label: "Destinations" },
   { href: "/tours", label: "Tours" },
-  { href: "/tours#adventure-tours", label: "Adventure Tours" },
+  { href: "/tours/adventure", label: "Adventure Tours" },
   { href: "/explore-pakistan", label: "Explore Pakistan" },
   { href: "/beyond-pakistan", label: "Beyond Pakistan" },
   { href: "/wishlist", label: "Saved" },

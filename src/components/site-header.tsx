@@ -13,7 +13,7 @@ const desktopPrimaryHrefs = new Set([
   "/",
   "/destinations",
   "/tours",
-  "/tours#adventure-tours",
+  "/tours/adventure",
   "/honeymoon-packages",
   "/umrah-packages",
   "/beyond-pakistan",
