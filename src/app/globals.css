@@ -27,14 +27,14 @@
 }
 
 :root {
-  --surface-page: #f7f5ef;
-  --surface-section: #f3ede5;
+  --surface-page: #f4f1eb;
+  --surface-section: #f4f1eb;
   --surface-raised: #ffffff;
-  --text-primary: #1c1c1c;
-  --text-secondary: #666666;
-  --border-subtle: #d6d1c5;
-  --accent-olive: #0f5132;
-  --accent-gold: #c9a227;
+  --text-primary: #0a0a0a;
+  --text-secondary: #57544f;
+  --border-subtle: #d6d3cc;
+  --accent-gold: #fcc000;
+  --accent-gold-dark: #806700;
   --background: var(--surface-page);
   --foreground: var(--text-primary);
   --accent: #fcc000;
@@ -43,10 +43,9 @@
   --gold-light: #ffe066;
   --gold-dark: #d4a600;
   --site-header-height: 72px;
-  --font-miqat-body: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  --font-miqat-heading: Georgia, "Times New Roman", serif;
-  --font-body: var(--font-miqat-body);
-  --font-display: var(--font-miqat-heading);
+  --font-body: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-miqat-heading: var(--font-display);
   
   /* Premium Grays */
   --stone-50: #fafaf9;
@@ -79,7 +78,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-body);
-  --font-serif: var(--font-miqat-heading);
+  --font-serif: var(--font-display);
 }
 
 html {
@@ -150,7 +149,7 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--accent-gold);
+  outline: 2px solid var(--accent-gold-dark);
   outline-offset: 3px;
   box-shadow: 0 0 0 2px #ffffff;
   border-radius: 0.75rem;
@@ -187,7 +186,7 @@ button:active {
   h4,
   h5,
   h6 {
-    font-family: var(--font-miqat-heading);
+    font-family: var(--font-display);
     letter-spacing: 0;
     line-height: 1.1;
     font-weight: 600;
@@ -294,7 +293,7 @@ input:focus,
 textarea:focus,
 button:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--accent-gold);
+  outline: 2px solid var(--accent-gold-dark);
   outline-offset: 3px;
   box-shadow: 0 0 0 2px #ffffff;
 }

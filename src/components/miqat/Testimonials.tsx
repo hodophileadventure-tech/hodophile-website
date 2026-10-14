@@ -30,11 +30,11 @@ const testimonials = [
 
 export function Testimonials() {
   return (
-    <section className="snap-start min-h-[calc(100vh-var(--site-header-height))] overflow-hidden bg-black px-4 py-4 text-white sm:px-6 lg:px-10 xl:px-14">
-      <div className="mx-auto min-h-[calc(100vh-var(--site-header-height))] w-full max-w-7xl">
+    <section className="overflow-hidden bg-[var(--surface-page)] px-4 py-12 text-stone-950 sm:px-6 sm:py-16 lg:px-10 lg:py-20 xl:px-14">
+      <div className="mx-auto w-full max-w-7xl">
         <div className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.38em] text-[#FCC000]">Trust & Testimonials</p>
-          <h2 className="mt-4 font-[var(--font-miqat-heading)] text-4xl text-white sm:text-5xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.38em] text-[#806700]">Trust & Testimonials</p>
+          <h2 className="mt-4 font-[var(--font-display)] text-4xl text-stone-950 sm:text-5xl">
             Loved by Pilgrims Worldwide
           </h2>
         </div>
@@ -47,7 +47,7 @@ export function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, delay: index * 0.08 }}
-              className="rounded-[1.6rem] border border-white/10 bg-[#0B0B0B] p-6 shadow-[0_14px_45px_rgba(0,0,0,0.3)]"
+              className="rounded-[1.25rem] border border-stone-200 bg-white p-6 shadow-[0_14px_36px_rgba(25,22,16,0.06)]"
             >
               <div className="flex items-center gap-1 text-[#FCC000]" aria-label="5 out of 5 stars">
                 {Array.from({ length: 5 }).map((_, starIndex) => (
@@ -55,16 +55,16 @@ export function Testimonials() {
                 ))}
               </div>
 
-              <Quote className="mt-6 h-8 w-8 text-[#FCC000]/40" aria-hidden="true" />
-              <p className="mt-4 text-sm leading-8 text-[#B5B5B5]">{item.quote}</p>
+              <Quote className="mt-6 h-8 w-8 text-[#806700]/50" aria-hidden="true" />
+              <p className="mt-4 text-sm leading-8 text-stone-600">{item.quote}</p>
 
-              <div className="mt-6 flex items-center gap-3 border-t border-white/10 pt-4">
+              <div className="mt-6 flex items-center gap-3 border-t border-stone-200 pt-4">
                 <div className="relative h-12 w-12 overflow-hidden rounded-full">
                   <Image src={item.image} alt={item.name} fill sizes="48px" className="object-cover" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white">{item.name}</p>
-                  <p className="text-xs uppercase tracking-[0.26em] text-[#B5B5B5]">{item.role}</p>
+                  <p className="text-sm font-semibold text-stone-950">{item.name}</p>
+                  <p className="text-xs uppercase tracking-[0.26em] text-stone-500">{item.role}</p>
                 </div>
               </div>
             </motion.article>

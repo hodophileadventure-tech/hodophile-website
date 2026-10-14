@@ -6,7 +6,7 @@ import { whatsappUrl } from "@/lib/site";
 
 export function MiqatHero() {
   return (
-    <section className="relative snap-start min-h-[calc(115vh-var(--site-header-height))] overflow-hidden bg-black px-4 py-4 text-white sm:px-6 lg:px-10 xl:px-14">
+    <section className="relative isolate flex min-h-[min(760px,calc(100svh-var(--site-header-height)))] overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
       <motion.div
         animate={{ scale: 1 }}
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
@@ -27,7 +27,7 @@ export function MiqatHero() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(252,192,0,0.16),transparent_32%)]" />
       </motion.div>
 
-      <div className="relative z-10 mx-auto flex h-[calc(100vh-var(--site-header-height))] w-full max-w-6xl items-center justify-start">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-start">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -37,9 +37,9 @@ export function MiqatHero() {
         >
           <p className="text-sm font-semibold uppercase tracking-[0.42em] text-[#FCC000]">Introducing</p>
 
-          <h1 className="mt-4 font-[var(--font-miqat-heading)] leading-[0.95] tracking-[-0.03em] text-white text-[clamp(2.4rem,6.5vw,5.5rem)] sm:text-[clamp(3rem,6.5vw,6.5rem)] lg:text-[clamp(4.2rem,8.5vw,8rem)]">
+          <h1 className="mt-6 font-[var(--font-display)] text-6xl leading-[0.94] tracking-[-0.04em] text-white sm:text-7xl lg:text-[6rem] xl:text-[6.5rem]">
             <span className="block">MIQAT</span>
-            <span className="mt-2 block text-[clamp(1.2rem,2.4vw,1.9rem)] font-light tracking-[0.01em] text-white/90 sm:text-[clamp(1.6rem,2.6vw,2.6rem)] lg:text-[clamp(1.8rem,2.6vw,3.2rem)]">
+            <span className="mt-2 block text-2xl font-light tracking-[0.01em] text-white/90 sm:text-3xl lg:text-4xl">
               by Hodophile
             </span>
           </h1>
@@ -52,7 +52,7 @@ export function MiqatHero() {
             className="mt-6 h-[2px] bg-[#FCC000]"
           />
 
-          <p className="mt-6 font-[var(--font-miqat-heading)] text-2xl italic text-[#FCC000] sm:text-3xl">
+          <p className="mt-6 font-[var(--font-display)] text-2xl italic text-[#FCC000] sm:text-3xl">
             Your Sacred Journey, Thoughtfully Arranged.
           </p>
 
@@ -63,7 +63,7 @@ export function MiqatHero() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="#miqat-packages"
-              className="inline-flex items-center rounded-full bg-[#FCC000] px-6 py-3 text-sm font-semibold text-black transition hover:-translate-y-0.5"
+              className="inline-flex items-center justify-center rounded-full bg-[#FCC000] px-6 py-3.5 text-sm font-semibold text-black transition hover:-translate-y-0.5"
             >
               Explore Packages
             </Link>
@@ -71,7 +71,7 @@ export function MiqatHero() {
               href={whatsappUrl("Hi Hodophile, I would like to speak with a MIQAT Umrah expert.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center rounded-full border border-white/25 px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-[#FCC000] hover:text-[#FCC000]"
+              className="inline-flex items-center justify-center rounded-full border border-white/35 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur transition hover:-translate-y-0.5 hover:border-[#FCC000] hover:text-[#FCC000]"
             >
               Talk to a MIQAT Expert
             </Link>

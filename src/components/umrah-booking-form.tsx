@@ -159,11 +159,11 @@ export function UmrahBookingForm() {
   // routeLabel and routeChoices were removed per spec; no memoization needed
 
   return (
-    <section className="mt-12 rounded-[2rem] bg-gradient-to-br from-[#05110a] to-[#07120b] p-8 lg:p-12 ring-1 ring-[#0b2d14]/10">
+    <section className="mt-12 rounded-[1.5rem] bg-gradient-to-br from-[#090909] to-[#0b0b0b] p-8 ring-1 ring-white/10 lg:p-12">
       <div className="grid gap-6 lg:grid-cols-[1fr_420px] lg:items-start">
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-widest text-[#FCC000]">MIQAT Package Inquiry</p>
-          <h1 className="font-[var(--font-miqat-heading)] text-4xl leading-tight text-white sm:text-5xl">
+          <h1 className="font-[var(--font-display)] text-4xl leading-tight text-white sm:text-5xl">
             Submit your Umrah package preferences
           </h1>
           <p className="max-w-2xl text-sm leading-7 text-stone-300">
@@ -299,12 +299,12 @@ export function UmrahBookingForm() {
                   <select
                     value={makkahZiyarat}
                     onChange={(e) => setMakkahZiyarat(e.target.value as "private" | "sharing")}
-                    className="w-full rounded-2xl border border-white/10 bg-[#09110d] px-4 py-2 text-white outline-none focus:border-[#FCC000]/50 focus:ring-2 focus:ring-[#FCC000]/15"
+                    className="w-full rounded-2xl border border-white/10 bg-[#0b0b0b] px-4 py-2 text-white outline-none focus:border-[#FCC000]/50 focus:ring-2 focus:ring-[#FCC000]/15"
                   >
-                    <option value="private" className="bg-[#09110d] text-white">
+                    <option value="private" className="bg-[#0b0b0b] text-white">
                       Private
                     </option>
-                    <option value="sharing" className="bg-[#09110d] text-white">
+                    <option value="sharing" className="bg-[#0b0b0b] text-white">
                       Sharing
                     </option>
                   </select>
@@ -315,12 +315,12 @@ export function UmrahBookingForm() {
                   <select
                     value={medinaZiyarat}
                     onChange={(e) => setMedinaZiyarat(e.target.value as "private" | "sharing")}
-                    className="rounded-3xl border border-white/10 bg-[#09110d] px-4 py-3 text-white outline-none focus:border-[#FCC000]/50 focus:ring-2 focus:ring-[#FCC000]/15"
+                    className="rounded-3xl border border-white/10 bg-[#0b0b0b] px-4 py-3 text-white outline-none focus:border-[#FCC000]/50 focus:ring-2 focus:ring-[#FCC000]/15"
                   >
-                    <option value="private" className="bg-[#09110d] text-white">
+                    <option value="private" className="bg-[#0b0b0b] text-white">
                       Private
                     </option>
-                    <option value="sharing" className="bg-[#09110d] text-white">
+                    <option value="sharing" className="bg-[#0b0b0b] text-white">
                       Sharing
                     </option>
                   </select>
@@ -339,7 +339,7 @@ export function UmrahBookingForm() {
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-white outline-none focus:border-[#FCC000]/50 focus:ring-2 focus:ring-[#FCC000]/15"
             >
               {hotelDistances.map((d) => (
-                <option key={`makkah-${d}`} value={d} className="bg-[#09110d] text-white">
+                <option key={`makkah-${d}`} value={d} className="bg-[#0b0b0b] text-white">
                   {d > 900 ? `${d} meter - Shuttle service` : `${d} meter`}
                 </option>
               ))}
@@ -354,7 +354,7 @@ export function UmrahBookingForm() {
                   className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-white outline-none focus:border-[#FCC000]/50 focus:ring-2 focus:ring-[#FCC000]/15"
                 >
                   {hotelDistances.map((d) => (
-                    <option key={`medina-${d}`} value={d} className="bg-[#09110d] text-white">
+                    <option key={`medina-${d}`} value={d} className="bg-[#0b0b0b] text-white">
                       {d > 900 ? `${d} meter - Shuttle service` : `${d} meter`}
                     </option>
                   ))}
@@ -369,7 +369,7 @@ export function UmrahBookingForm() {
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-white outline-none focus:border-[#FCC000]/50 focus:ring-2 focus:ring-[#FCC000]/15"
             >
               {starCategories.map((star) => (
-                <option key={star} value={star} className="bg-[#09110d] text-white">
+                <option key={star} value={star} className="bg-[#0b0b0b] text-white">
                   {star}
                 </option>
               ))}
@@ -428,7 +428,7 @@ export function UmrahBookingForm() {
                         className="rounded-3xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none focus:border-[#FCC000]/50 focus:ring-2 focus:ring-[#FCC000]/15"
                       >
                         {route.choices.map((choice) => (
-                          <option key={choice} value={choice.toLowerCase()} className="bg-[#09110d] text-white">
+                          <option key={choice} value={choice.toLowerCase()} className="bg-[#0b0b0b] text-white">
                             {choice}
                           </option>
                         ))}
@@ -462,7 +462,7 @@ export function UmrahBookingForm() {
                         className="rounded-3xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none focus:border-[#FCC000]/50 focus:ring-2 focus:ring-[#FCC000]/15"
                       >
                         {route.choices.map((choice) => (
-                          <option key={choice} value={choice.toLowerCase()} className="bg-[#09110d] text-white">
+                          <option key={choice} value={choice.toLowerCase()} className="bg-[#0b0b0b] text-white">
                             {choice}
                           </option>
                         ))}
@@ -483,7 +483,7 @@ export function UmrahBookingForm() {
                 Pick a direct or indirect airline for your flights.
               </p>
             </div>
-            <div className="grid w-full grid-cols-2 gap-3 rounded-3xl border border-[#FCC000]/15 bg-[#09110d] p-3 text-sm text-white lg:w-auto">
+            <div className="grid w-full grid-cols-2 gap-3 rounded-3xl border border-[#FCC000]/15 bg-[#0b0b0b] p-3 text-sm text-white lg:w-auto">
               <button
                 type="button"
                 onClick={() => {
@@ -524,7 +524,7 @@ export function UmrahBookingForm() {
                 className="rounded-3xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none focus:border-[#FCC000]/50 focus:ring-2 focus:ring-[#FCC000]/15"
               >
                 {(airlineType === "direct" ? directAirlines : indirectAirlines).map((airline) => (
-                  <option key={airline} value={airline} className="bg-[#09110d] text-white">
+                  <option key={airline} value={airline} className="bg-[#0b0b0b] text-white">
                     {airline}
                   </option>
                 ))}

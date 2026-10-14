@@ -41,7 +41,7 @@ function PackageCard({ pkg }: { pkg: UmrahPackage }) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#777]">{pkg.originalTier} tier</p>
-            <h3 className="mt-2 font-[var(--font-miqat-heading)] text-3xl text-[#111]">{pkg.name}</h3>
+            <h3 className="mt-2 font-[var(--font-display)] text-3xl text-[#111]">{pkg.name}</h3>
           </div>
           <p className="whitespace-nowrap border border-[#d7b200] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#5d4b00]">{pkg.duration} days</p>
         </div>
@@ -53,7 +53,7 @@ function PackageCard({ pkg }: { pkg: UmrahPackage }) {
         <HotelBlock city="Madinah hotel" hotel={pkg.madinah.hotel} distance={pkg.madinah.distance} />
       </div>
 
-      <div className="mt-auto border-t border-[#ebe8e0] bg-[#f7f5ef] px-5 py-5 sm:px-6">
+      <div className="mt-auto border-t border-[#ebe8e0] bg-[#f4f1eb] px-5 py-5 sm:px-6">
         <div className="flex items-end justify-between gap-4">
           <div>
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#777]">From</p>
@@ -87,7 +87,7 @@ export function UmrahPackages() {
         <div className="flex flex-col justify-between gap-8 border-b border-[#d6d1c5] pb-8 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#8b7000]">MIQAT packages</p>
-            <h2 id="miqat-packages-heading" className="mt-3 font-[var(--font-miqat-heading)] text-4xl leading-tight sm:text-5xl">Clear choices for a considered journey.</h2>
+            <h2 id="miqat-packages-heading" className="mt-3 font-[var(--font-display)] text-4xl leading-tight sm:text-5xl">Clear choices for a considered journey.</h2>
             <p className="mt-4 text-base leading-8 text-[#5d5a54]">Compare the accommodation and room occupancy options already available in our 15 and 20 day Umrah packages.</p>
           </div>
           <div className="flex shrink-0 gap-2" aria-label="Package duration">

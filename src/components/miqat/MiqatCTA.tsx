@@ -7,15 +7,15 @@ import { whatsappUrl } from "@/lib/site";
 
 export function MiqatCTA() {
   return (
-    <section className="snap-start min-h-[calc(100vh-var(--site-header-height))] overflow-hidden bg-black px-4 py-4 text-white sm:px-6 lg:px-10 xl:px-14">
+    <section className="overflow-hidden bg-[#090909] px-4 py-12 text-white sm:px-6 sm:py-16 lg:px-10 lg:py-20 xl:px-14">
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, amount: 0.35 }}
         transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto w-full max-w-7xl overflow-hidden rounded-[2.2rem] border border-white/10"
+        className="mx-auto w-full max-w-7xl overflow-hidden rounded-[1.5rem] border border-white/10"
       >
-        <div className="relative h-[70vh] min-h-[32rem]">
+        <div className="relative h-[min(60vh,42rem)] min-h-[28rem]">
           <Image
             src="/images/package-cards/images__umrah__kabah-shareef.webp"
             alt="Makkah night"
@@ -28,7 +28,7 @@ export function MiqatCTA() {
           <div className="relative z-10 flex h-full items-center px-6 sm:px-10 lg:px-14">
             <div className="max-w-3xl">
               <p className="text-sm font-semibold uppercase tracking-[0.38em] text-[#FCC000]">Final Invitation</p>
-              <h2 className="mt-4 font-[var(--font-miqat-heading)] text-4xl text-white sm:text-5xl lg:text-6xl">
+              <h2 className="mt-4 font-[var(--font-display)] text-4xl text-white sm:text-5xl lg:text-6xl">
                 Begin Your Spiritual Journey
               </h2>
               <p className="mt-5 text-lg text-[#B5B5B5] sm:text-xl">MIQAT by Hodophile</p>

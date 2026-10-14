@@ -15,14 +15,14 @@ const features = [
 
 export function WhyMiqat() {
   return (
-    <section className="snap-start min-h-[calc(100vh-var(--site-header-height))] overflow-hidden bg-black px-4 py-4 text-white sm:px-6 lg:px-10 xl:px-14">
-      <div className="mx-auto grid min-h-[calc(100vh-var(--site-header-height))] w-full max-w-7xl items-center gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+    <section className="overflow-hidden bg-[var(--surface-page)] px-4 py-12 text-stone-950 sm:px-6 sm:py-16 lg:px-10 lg:py-20 xl:px-14">
+      <div className="mx-auto grid w-full max-w-7xl items-center gap-8 lg:grid-cols-[0.95fr_1.05fr]">
         <motion.div
           initial={{ opacity: 0, x: -24 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-[2rem] border border-white/10"
+          className="relative overflow-hidden rounded-[1.25rem] border border-stone-300"
         >
           <div className="relative h-[28rem] sm:h-[34rem]">
             <Image
@@ -43,11 +43,11 @@ export function WhyMiqat() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.04 }}
           className="max-w-2xl"
         >
-          <p className="text-sm font-semibold uppercase tracking-[0.38em] text-[#FCC000]">Trust, clearly stated</p>
-          <h2 className="mt-4 font-[var(--font-miqat-heading)] text-4xl leading-tight text-white sm:text-5xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.38em] text-[#806700]">Trust, clearly stated</p>
+          <h2 className="mt-4 font-[var(--font-display)] text-4xl leading-tight text-stone-950 sm:text-5xl">
             A considered partner for your journey.
           </h2>
-          <p className="mt-5 text-base leading-8 text-[#B5B5B5] sm:text-lg">
+          <p className="mt-5 text-base leading-8 text-stone-600 sm:text-lg">
             MIQAT is backed by Hodophile Adventures, a Karachi-based, government-licensed travel company founded in 2021. We bring the same careful planning and clear communication to Umrah services.
           </p>
 
@@ -60,13 +60,13 @@ export function WhyMiqat() {
                 viewport={{ once: true, amount: 0.6 }}
                 transition={{ duration: 0.45, delay: 0.05 + index * 0.05 }}
                 whileHover={{ y: -4, scale: 1.01 }}
-                className="rounded-[1.25rem] border border-[#FCC000]/35 bg-[#070707] p-4 shadow-[0_10px_35px_rgba(252,192,0,0.12)] transition duration-300 hover:shadow-[0_16px_45px_rgba(252,192,0,0.2)]"
+                className="rounded-[1.25rem] border border-stone-200 bg-white p-4 shadow-[0_10px_28px_rgba(25,22,16,0.06)] transition duration-300 hover:border-[#FCC000]/60 hover:shadow-[0_16px_35px_rgba(25,22,16,0.1)]"
               >
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#fff5cc] text-[#4d3a00] shadow-[inset_0_0_0_1px_rgba(217,168,29,0.16)]">
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#FCC000]/15 text-[#8b6b00] shadow-[inset_0_0_0_1px_rgba(217,168,29,0.16)]">
                     <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                   </span>
-                  <p className="text-sm font-medium text-white">{feature}</p>
+                  <p className="text-sm font-medium text-stone-900">{feature}</p>
                 </div>
               </motion.article>
             ))}

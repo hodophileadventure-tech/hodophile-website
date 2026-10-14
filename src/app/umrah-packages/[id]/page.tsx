@@ -46,7 +46,7 @@ export default async function UmrahPackageDetailPage({ params }: PageProps) {
             <div className="mt-10 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#777]">{pkg.originalTier} tier · {pkg.duration} days</p>
-                <h1 className="mt-3 font-[var(--font-miqat-heading)] text-5xl sm:text-7xl">{pkg.name}</h1>
+                <h1 className="mt-3 font-[var(--font-display)] text-5xl sm:text-7xl">{pkg.name}</h1>
                 <p className="mt-4 max-w-xl text-lg leading-8 text-[#5d5a54]">{pkg.tagline}. A clear package view for your accommodation and room occupancy choices.</p>
               </div>
               <div className="flex flex-wrap gap-3">
@@ -79,7 +79,7 @@ export default async function UmrahPackageDetailPage({ params }: PageProps) {
 
         <section className="px-4 py-12 sm:px-8 lg:px-14">
           <div className="mx-auto max-w-5xl border border-[#d6d1c5] bg-[#111] p-6 text-white sm:p-8">
-            <h2 className="font-[var(--font-miqat-heading)] text-3xl">Plan the next step with MIQAT.</h2>
+            <h2 className="font-[var(--font-display)] text-3xl">Plan the next step with MIQAT.</h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[#c8c8c8]">Share your preferred dates and requirements. Our team will review availability, routing, and final accommodation details with you.</p>
             <div className="mt-6 flex flex-wrap gap-3"><Link href="/umrah-packages/book" className="bg-[#FCC000] px-5 py-3 text-sm font-semibold text-black">Get package details</Link><a href={whatsappUrl(inquiry)} target="_blank" rel="noopener noreferrer" className="border border-white/30 px-5 py-3 text-sm font-semibold text-white hover:border-[#FCC000] hover:text-[#FCC000]">Ask a MIQAT expert</a></div>
           </div>

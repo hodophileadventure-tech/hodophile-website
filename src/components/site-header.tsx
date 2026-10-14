@@ -290,7 +290,7 @@ export function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`fixed inset-x-0 top-0 z-50 border-b border-stone-200/80 bg-[#f7f5ef]/95 backdrop-blur-md transition-shadow duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 border-b border-stone-200/80 bg-[#f4f1eb]/95 backdrop-blur-md transition-shadow duration-300 ${
         scrolled ? "shadow-[0_8px_28px_rgba(25,22,16,0.08)]" : ""
       }`}
       aria-hidden={false}
@@ -375,7 +375,7 @@ export function SiteHeader() {
       </div>
 
       {mobileOpen ? (
-        <div ref={mobileMenuRef} id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Mobile navigation" className="max-h-[calc(100svh-4.5rem)] overflow-y-auto border-t border-stone-200 bg-[#f7f5ef] px-5 pb-6 pt-4 text-stone-900 shadow-[0_18px_32px_rgba(25,22,16,0.08)] sm:px-6 xl:hidden">
+        <div ref={mobileMenuRef} id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Mobile navigation" className="max-h-[calc(100svh-4.5rem)] overflow-y-auto border-t border-stone-200 bg-[#f4f1eb] px-5 pb-6 pt-4 text-stone-900 shadow-[0_18px_32px_rgba(25,22,16,0.08)] sm:px-6 xl:hidden">
           <nav className="mx-auto grid max-w-xl gap-1">
             {navigation.map((item) => (
               item.href === "/tours" ? (

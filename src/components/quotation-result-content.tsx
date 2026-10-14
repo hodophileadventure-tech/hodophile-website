@@ -72,7 +72,7 @@ export function QuotationResultContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--surface-page)] flex items-center justify-center">
         <div className="animate-pulse text-stone-600">Loading quotation...</div>
       </div>
     );
@@ -198,7 +198,7 @@ export function QuotationResultContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f4f4] py-10 px-4 print:bg-white print:py-0 print:px-0">
+    <div className="min-h-screen bg-[var(--surface-page)] py-10 px-4 print:bg-white print:py-0 print:px-0">
       <div className="mx-auto w-full max-w-[900px] bg-white border border-stone-200 shadow-xl print:shadow-none print:border-black/10 print:m-0 print:max-w-none">
         <div className="px-8 py-8 print:px-6 print:py-4">
           <div className="flex flex-wrap items-center justify-between gap-6 border-b border-stone-200 pb-6 print:gap-3 print:pb-3">
