@@ -27,14 +27,14 @@
 }
 
 :root {
-  --surface-page: #f4f1eb;
-  --surface-section: #f4f1eb;
-  --surface-raised: #ffffff;
-  --text-primary: #0a0a0a;
-  --text-secondary: #57544f;
-  --border-subtle: #d6d3cc;
+  --surface-page: #090909;
+  --surface-section: #101010;
+  --surface-raised: #171717;
+  --text-primary: #f5f1e8;
+  --text-secondary: #b8b2a7;
+  --border-subtle: #343434;
   --accent-gold: #fcc000;
-  --accent-gold-dark: #806700;
+  --accent-gold-dark: #fcc000;
   --background: var(--surface-page);
   --foreground: var(--text-primary);
   --accent: #fcc000;
@@ -48,16 +48,16 @@
   --font-miqat-heading: var(--font-display);
   
   /* Premium Grays */
-  --stone-50: #fafaf9;
-  --stone-100: #f5f5f3;
-  --stone-200: #e7e5e0;
-  --stone-300: #d6d3cc;
-  --stone-400: #a8a49d;
-  --stone-500: #78756e;
-  --stone-600: #57544f;
-  --stone-700: #3f3d39;
-  --stone-800: #28272c;
-  --stone-900: #1c1b19;
+  --stone-50: #101010;
+  --stone-100: #171717;
+  --stone-200: #282828;
+  --stone-300: #343434;
+  --stone-400: #575757;
+  --stone-500: #777168;
+  --stone-600: #918b81;
+  --stone-700: #b8b2a7;
+  --stone-800: #d0cbc2;
+  --stone-900: #f5f1e8;
   
   /* Accent Colors for Sophistication */
   --emerald-dark: #1a3a3a;
@@ -69,9 +69,9 @@
   --transition-slow: 0.55s;
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --glass-light: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.58);
-  --glass-shadow: 0 18px 55px rgba(25, 22, 16, 0.12);
+  --glass-light: rgba(25, 25, 25, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 18px 55px rgba(0, 0, 0, 0.4);
 }
 
 @theme inline {
@@ -79,6 +79,230 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-body);
   --font-serif: var(--font-display);
+}
+
+.site-theme {
+  color-scheme: dark;
+}
+
+.site-theme :is(
+  [class~="bg-white"],
+  [class~="bg-stone-50"],
+  [class~="bg-stone-100"],
+  [class~="bg-gray-50"],
+  [class~="bg-gray-100"],
+  [class~="bg-gray-200"],
+  [class~="bg-gray-300"],
+  [class~="bg-neutral-50"],
+  [class~="bg-neutral-100"],
+  [class~="bg-neutral-200"],
+  [class~="bg-neutral-300"],
+  [class*="bg-stone-50/"],
+  [class*="bg-stone-100/"],
+  [class*="bg-stone-200"],
+  [class*="bg-stone-300"],
+  [class*="bg-white/60"],
+  [class*="bg-white/70"],
+  [class*="bg-white/75"],
+  [class*="bg-white/80"],
+  [class*="bg-white/85"],
+  [class*="bg-white/90"],
+  [class*="bg-white/94"],
+  [class*="bg-white/95"],
+  [class*="bg-white/40"],
+  [class*="bg-white/45"],
+  [class*="bg-[#f3ecd5]"],
+  [class*="bg-[#f4f1eb]"],
+  [class*="bg-[#F6F0DD]"],
+  [class*="bg-[#f7f2e8]"],
+  [class*="bg-[#f7f3ea]"],
+  [class*="bg-[#f7f4ea]"],
+  [class*="bg-[#f7f5ef]"],
+  [class*="bg-[#f3ede5]"],
+  [class*="bg-[#f7f6f2]"],
+  [class*="bg-[#f8efc8]"],
+  [class*="bg-[#f8f6ef]"],
+  [class*="bg-[#f8f6f0]"],
+  [class*="bg-yellow-50"],
+  [class*="bg-yellow-100"],
+  [class*="bg-[#faf8f2]"],
+  [class*="bg-[#fbf7f1]"],
+  [class*="bg-[#FDFBF7]"],
+  [class*="bg-[#fdfcf8]"],
+  [class*="bg-[#fff"],
+  [class*="bg-[linear-gradient"][class*="#fff"],
+  [class*="bg-[linear-gradient"][class*="#f5"],
+  [class*="bg-[linear-gradient"][class*="#f4f1eb"],
+  [class*="bg-[radial-gradient"][class*="#fff"],
+  [class*="bg-[radial-gradient"][class*="rgba(255,255,255,1)"],
+  [class*="bg-[radial-gradient"][class*="#f4f1eb"]
+) {
+  background-color: var(--surface-raised);
+  background-image: none;
+}
+
+.site-theme :is(
+  [class*="hover:bg-white"],
+  [class*="hover:bg-stone-50"],
+  [class*="hover:bg-stone-100"],
+  [class*="hover:bg-[#fff"],
+  [class*="hover:bg-[#f3"],
+  [class*="hover:bg-[#f4"],
+  [class*="hover:bg-[#f5"],
+  [class*="hover:bg-[#f6"],
+  [class*="hover:bg-[#f7"],
+  [class*="hover:bg-[#f8"],
+  [class*="hover:bg-[#fa"],
+  [class*="hover:bg-[#fb"],
+  [class*="hover:bg-[#fd"],
+  [class*="hover:bg-yellow-50"],
+  [class*="hover:bg-yellow-100"]
+):hover {
+  background-color: #282828;
+  background-image: none;
+}
+
+.site-theme :is(
+  [class*="bg-green-50"],
+  [class*="bg-red-50"],
+  [class*="bg-amber-50"],
+  [class*="bg-purple-50"]
+) {
+  background-color: #1c1c1c;
+}
+
+.site-theme :is(
+  [class*="text-green-700"],
+  [class*="text-green-800"]
+) {
+  color: #86d69a;
+}
+
+.site-theme :is(
+  [class*="text-red-700"],
+  [class*="text-red-800"]
+) {
+  color: #ff9a9a;
+}
+
+.site-theme :is(
+  [class*="text-amber-800"],
+  [class*="text-yellow-900"]
+) {
+  color: #ffd84d;
+}
+
+.site-theme :is(
+  [class~="text-black"],
+  [class~="text-stone-950"],
+  [class~="text-stone-900"],
+  [class~="text-stone-800"],
+  [class~="text-gray-950"],
+  [class~="text-gray-900"],
+  [class~="text-gray-800"],
+  [class~="text-neutral-950"],
+  [class~="text-neutral-900"],
+  [class~="text-zinc-950"],
+  [class~="text-zinc-900"],
+  [class*="text-[#0b0b0b"],
+  [class*="text-[#111"],
+  [class*="text-[#0a0a0a"],
+  [class*="text-[#1c1c1c"],
+  [class*="text-[#1C1C1C"],
+  [class*="text-[#1d1d1d"],
+  [class*="text-[#0F5132"],
+  [class*="text-[#1a7f4f"],
+  [class*="text-[#1b7a4b"],
+  [class*="text-[#32633e"]
+) {
+  color: #f5f1e8;
+}
+
+.site-theme :is(
+  [class~="text-stone-700"],
+  [class~="text-stone-600"],
+  [class~="text-gray-700"],
+  [class~="text-gray-600"],
+  [class~="text-neutral-700"],
+  [class~="text-neutral-600"],
+  [class~="text-zinc-700"],
+  [class~="text-zinc-600"]
+) {
+  color: #b8b2a7;
+}
+
+.site-theme :is(
+  [class~="text-stone-500"],
+  [class~="text-stone-400"],
+  [class~="text-gray-500"],
+  [class~="text-gray-400"],
+  [class~="text-neutral-500"],
+  [class~="text-neutral-400"],
+  [class~="text-zinc-500"],
+  [class~="text-zinc-400"],
+  [class*="text-[#4b4945"],
+  [class*="text-[#5d5a54"],
+  [class*="text-[#666"],
+  [class*="text-[#66615a"],
+  [class*="text-[#777"]
+) {
+  color: #918b81;
+}
+
+.site-theme :is(
+  [class*="text-[#5d4b00"],
+  [class*="text-[#5f4900"],
+  [class*="text-[#624b00"],
+  [class*="text-[#6e5200"],
+  [class*="text-[#6e590d"],
+  [class*="text-[#725600"],
+  [class*="text-[#7f5a00"],
+  [class*="text-[#806000"],
+  [class*="text-[#806700"],
+  [class*="text-[#8b6b00"],
+  [class*="text-[#8b7000"],
+  [class*="text-[#8d6500"],
+  [class*="text-[#9a7600"],
+  [class*="text-[#9c7600"],
+  [class*="text-[#a36d00"],
+  [class*="text-[#a37a00"],
+  [class*="text-[#b08b16"],
+  [class*="text-[#b58900"],
+  [class*="text-[#b76d00"],
+  [class*="text-[#b77f00"],
+  [class*="text-[#b98a00"],
+  [class*="text-[#8a4b00"],
+  [class*="text-[#8a6a00"],
+  [class*="text-[#8a6a12"]
+) {
+  color: var(--accent-gold);
+}
+
+.site-theme :is(
+  [class~="bg-[#fcc000]"],
+  [class~="bg-[#FCC000]"],
+  [class~="bg-[#ffc000]"],
+  [class~="bg-yellow-400"],
+  [class~="bg-yellow-500"]
+) {
+  color: #090909;
+}
+
+.site-theme :is(
+  [class~="border-stone-100"],
+  [class~="border-stone-200"],
+  [class~="border-stone-300"],
+  [class~="border-gray-100"],
+  [class~="border-gray-200"],
+  [class~="border-gray-300"],
+  [class~="border-neutral-100"],
+  [class~="border-neutral-200"],
+  [class~="border-neutral-300"],
+  [class*="border-[#dedbd2]"],
+  [class*="border-[#d6d1c5]"],
+  [class*="border-[#ebe8e0]"]
+) {
+  border-color: #343434;
 }
 
 html {
@@ -151,7 +375,7 @@ textarea:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--accent-gold-dark);
   outline-offset: 3px;
-  box-shadow: 0 0 0 2px #ffffff;
+  box-shadow: 0 0 0 2px #090909;
   border-radius: 0.75rem;
 }
 
@@ -233,16 +457,16 @@ section {
 
 .glass-surface {
   border: 1px solid var(--glass-border);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.82), var(--glass-light));
-  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: linear-gradient(135deg, rgba(35, 35, 35, 0.92), var(--glass-light));
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   -webkit-backdrop-filter: blur(22px) saturate(125%);
   backdrop-filter: blur(22px) saturate(125%);
 }
 
 .glass-header {
-  background: rgba(255, 255, 255, 0.42);
-  border-color: rgba(255, 255, 255, 0.72);
-  box-shadow: 0 12px 42px rgba(25, 22, 16, 0.1), inset 0 -1px 0 rgba(255, 255, 255, 0.45);
+  background: rgba(12, 12, 12, 0.84);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.45), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
   -webkit-backdrop-filter: blur(24px) saturate(135%);
   backdrop-filter: blur(24px) saturate(135%);
 }
@@ -271,7 +495,7 @@ section {
 @media (prefers-reduced-transparency: reduce) {
   .glass-surface,
   .glass-header {
-    background: #fff;
+    background: #171717;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
@@ -289,13 +513,24 @@ select {
   outline: none;
 }
 
+input,
+textarea,
+select {
+  color-scheme: dark;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #918b81;
+}
+
 input:focus,
 textarea:focus,
 button:focus-visible,
 select:focus-visible {
   outline: 2px solid var(--accent-gold-dark);
   outline-offset: 3px;
-  box-shadow: 0 0 0 2px #ffffff;
+  box-shadow: 0 0 0 2px #090909;
 }
 
 /* Premium Utility Animations */
@@ -361,7 +596,7 @@ select:focus-visible {
 
 /* Premium Text Classes */
 .text-gradient {
-  background: linear-gradient(135deg, var(--brand-black) 0%, var(--brand-black) 70%, var(--brand-gold) 100%);
+  background: linear-gradient(135deg, #f5f1e8 0%, #f5f1e8 70%, var(--brand-gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -376,10 +611,10 @@ select:focus-visible {
 
 /* Glassmorphism Effect */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(23, 23, 23, 0.82);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .glass-dark {
@@ -487,28 +722,28 @@ select:focus-visible {
 }
 
 .btn-outline {
-  background: rgba(255, 255, 255, 0.7);
-  color: #111111;
-  border: 1px solid rgba(17, 17, 17, 0.24);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f5f1e8;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-outline:hover,
 .btn-outline:focus-visible {
-  background: #fff8df;
-  color: #111111;
-  border-color: #d8a900;
+  background: #282828;
+  color: #f5f1e8;
+  border-color: #fcc000;
 }
 
 .btn-ghost {
   background: transparent;
-  color: #111111;
+  color: #f5f1e8;
   border: 1px solid transparent;
 }
 
 .btn-ghost:hover,
 .btn-ghost:focus-visible {
   background: rgba(252, 192, 0, 0.08);
-  color: #111111;
+  color: #fcc000;
   border-color: rgba(252, 192, 0, 0.28);
 }
 
@@ -550,11 +785,11 @@ select:focus-visible {
 
 /* Premium Card Styles */
 .card-premium {
-  background: #ffffff;
+  background: var(--surface-raised);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border-subtle);
   transition: all var(--transition-slow) var(--ease-smooth);
 }
 

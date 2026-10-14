@@ -62,9 +62,9 @@ export function AboutTeamTabDropdown() {
           justify-content: center;
           border: 1px solid #dccb88;
           border-radius: 999px;
-          background: #fffdf7;
+          background: #171717;
           padding: 0.58rem 1.05rem;
-          color: #3a3224;
+          color: #f5f1e8;
           font-size: 0.73rem;
           font-weight: 800;
           letter-spacing: 0.2em;
@@ -89,8 +89,8 @@ export function AboutTeamTabDropdown() {
         .about-tab-label:hover,
         .about-tab-label:focus {
           border-color: #b77e00;
-          background: #fff7d8;
-          color: #18130a;
+          background: #282828;
+          color: #f5f1e8;
         }
 
         .about-team-caret {
@@ -120,8 +120,8 @@ export function AboutTeamTabDropdown() {
           padding: 0.45rem;
           border: 1px solid #fcc000;
           border-radius: 1rem;
-          background: white;
-          box-shadow: 0 22px 55px rgba(32, 24, 7, 0.14);
+          background: #171717;
+          box-shadow: 0 22px 55px rgba(0, 0, 0, 0.45);
           opacity: 0;
           visibility: hidden;
           transform: translateY(-6px);
@@ -149,19 +149,19 @@ export function AboutTeamTabDropdown() {
           width: 100%;
           padding: 0.72rem 0.88rem;
           border-radius: 0.75rem;
-          color: #211b12;
+          color: #f5f1e8;
           font-size: 0.74rem;
           font-weight: 800;
           letter-spacing: 0.18em;
           text-transform: uppercase;
           text-decoration: none;
-          background: #fff9e8;
+          background: #222222;
         }
 
         .about-team-link:hover,
         .about-team-link:focus {
           background: #fcc000;
-          color: #211b12;
+          color: #090909;
         }
 
         .about-team-link-arrow {

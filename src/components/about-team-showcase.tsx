@@ -70,7 +70,7 @@ export function AboutTeamShowcase() {
 
       <style jsx>{`
         .team-showcase-root {
-          background: #fffdf9;
+          background: #101010;
           padding: clamp(4.5rem, 8vw, 7.5rem) 0;
         }
 
@@ -88,7 +88,7 @@ export function AboutTeamShowcase() {
 
         .eyebrow {
           margin: 0 0 0.85rem;
-          color: #b77e00;
+          color: #fcc000;
           font-size: 0.72rem;
           font-weight: 800;
           letter-spacing: 0.3em;
@@ -96,17 +96,17 @@ export function AboutTeamShowcase() {
 
         h2 {
           margin: 0;
-          color: #1d1915;
+          color: #f5f1e8;
           font-size: clamp(2.5rem, 5vw, 4.75rem);
           line-height: 0.98;
           letter-spacing: -0.055em;
         }
 
-        h2 span { color: #b77e00; }
+        h2 span { color: #fcc000; }
 
         .team-showcase-heading > p:last-child {
           margin: 1.1rem auto 0;
-          color: #625a52;
+          color: #b8b2a7;
           font-size: 1rem;
           line-height: 1.65;
         }
@@ -122,7 +122,7 @@ export function AboutTeamShowcase() {
 
         .team-group-label {
           margin: clamp(2rem, 4vw, 3.25rem) 0 1.25rem;
-          color: #8b6b00;
+          color: #fcc000;
           font-size: 0.72rem;
           font-weight: 800;
           letter-spacing: 0.2em;

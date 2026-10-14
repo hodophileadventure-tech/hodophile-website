@@ -106,7 +106,7 @@ export function TeamMemberArtwork({
           overflow: hidden;
           border: 3px solid #fcc000;
           border-radius: 0;
-          background: #fff;
+          background: #171717;
           display: flex;
           align-items: flex-start;
           justify-content: center;
@@ -132,11 +132,11 @@ export function TeamMemberArtwork({
           width: 84px;
           height: 84px;
           padding: 17px;
-          border: 1px solid rgba(37, 33, 28, 0.7);
+          border: 1px solid rgba(245, 241, 232, 0.35);
           border-radius: 50%;
-          background: rgba(255, 253, 249, 0.8);
+          background: rgba(23, 23, 23, 0.9);
           fill: #c58a00;
-          stroke: #201d1a;
+          stroke: #f5f1e8;
           stroke-linecap: round;
           stroke-linejoin: round;
           stroke-width: 1.5;
@@ -164,7 +164,7 @@ export function TeamMemberArtwork({
 
         h3 {
           margin: 0;
-          color: #1d1915;
+          color: #f5f1e8;
           font-size: 1.18rem;
           font-weight: 700;
           line-height: 1.2;
@@ -172,7 +172,7 @@ export function TeamMemberArtwork({
 
         p {
           margin: 0.55rem 0 0;
-          color: #8c650b;
+          color: #fcc000;
           font-size: 0.66rem;
           font-weight: 800;
           letter-spacing: 0.13em;
