@@ -58,7 +58,7 @@ export default function RootLayout({
       lang="en"
       className="h-full antialiased"
     >
-      <body suppressHydrationWarning className="min-h-full flex flex-col bg-[#f7f6f2] text-stone-900">
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-[var(--surface-page)] font-[var(--font-miqat-body)] text-[var(--text-primary)]">
         <AnalyticsScripts gaTrackingId={GA_TRACKING_ID} facebookPixelId={FACEBOOK_PIXEL_ID} />
         {FACEBOOK_PIXEL_ID ? (
           <noscript>

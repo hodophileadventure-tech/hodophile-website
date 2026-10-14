@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import { PageShell } from "@/components/page-shell";
+import { JourneyCard } from "@/components/journey-card";
 import { MiqatHighlightSection } from "@/components/miqat-highlight";
 import { WhyChooseUs } from "@/components/why-choose-us";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
@@ -213,30 +214,29 @@ export default function Home() {
 
         <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {destinations.slice(0, 4).map((destination) => (
-            <Link
-              href={destinationPackageLinks[destination.name] ?? "/destinations"}
+            <JourneyCard
               key={destination.name}
-              className="group relative overflow-hidden bg-[#171717] transition hover:-translate-y-1"
-            >
-                <div className="relative h-[30rem] overflow-hidden">
+              href={destinationPackageLinks[destination.name] ?? "/destinations"}
+              media={
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={destination.image}
                   alt={destination.name}
-                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                  <div className="flex items-end justify-between gap-3">
-                    <div>
-                      <p className="text-[11px] uppercase tracking-[0.24em] text-[#fcc000]">{destination.season}</p>
-                      <h3 className="display-serif mt-2 text-4xl font-normal leading-none">{destination.name}</h3>
-                    </div>
-                    <span className="text-xs font-semibold uppercase tracking-[0.12em] text-white/70">{destination.duration}</span>
-                  </div>
-                  <p className="mt-4 max-w-xs text-sm leading-6 text-white/75">{destination.description}</p>
-                </div>
-              </div>
-            </Link>
+              }
+              imageAlt={destination.name}
+              imageHeight="h-[30rem]"
+              badge={destination.season}
+              counter={destination.duration}
+              title={destination.name}
+              bodyClassName="p-5"
+            >
+              <p className="flex-1 text-sm leading-6 text-white/75">{destination.description}</p>
+              <span className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-[#FCC000] px-5 text-sm font-semibold text-black transition group-hover:bg-[#ffda4d]">
+                Explore destination
+              </span>
+            </JourneyCard>
           ))}
           </div>
         </div>
@@ -256,34 +256,29 @@ export default function Home() {
 
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {packageCards.map((tour) => (
-              <article key={tour.name} className="group flex h-full flex-col overflow-hidden rounded-xl bg-white text-black shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
-                <div className="relative h-[240px] overflow-hidden bg-stone-100">
+              <JourneyCard
+                key={tour.name}
+                media={
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={tour.image}
                     alt={tour.name}
-                    sizes="(max-width: 1280px) 50vw, 25vw"
-                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-105"
+                    className="h-full w-full object-cover object-center transition duration-700 group-hover:scale-105"
                   />
-                </div>
-                <div className="p-5 flex flex-col justify-between gap-5 flex-1">
-                  <h3 className="text-center text-lg font-semibold leading-7 text-black">
-                    {tour.titleParts.length > 1 ? (
-                      <>
-                        <span className="block">{tour.titleParts[0]}</span>
-                        <span className="block">{tour.titleParts[1]}</span>
-                      </>
-                    ) : (
-                      tour.name
-                    )}
-                  </h3>
-                  <Link
-                    href={tour.href}
-                    className="inline-flex w-full items-center justify-between border-t border-stone-200 pt-4 text-sm font-bold uppercase tracking-[0.14em] !text-black transition hover:text-[#b58900]"
-                  >
-                    View Details
-                  </Link>
-                </div>
-              </article>
+                }
+                imageAlt={tour.name}
+                imageSizes="(max-width: 1280px) 50vw, 25vw"
+                imageHeight="h-[15rem]"
+                title={tour.titleParts.length > 1 ? tour.titleParts.join(" ") : tour.name}
+                bodyClassName="p-5"
+              >
+                <Link
+                  href={tour.href}
+                  className="mt-auto inline-flex min-h-11 items-center justify-center rounded-full bg-[#FCC000] px-5 text-sm font-semibold uppercase tracking-[0.12em] text-black transition hover:bg-[#ffda4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000]"
+                >
+                  View Details
+                </Link>
+              </JourneyCard>
             ))}
           </div>
         </div>

@@ -8,7 +8,7 @@ export type TourDeparture = {
 };
 
 export type TravelStyle = "family" | "couples" | "adventure" | "tailored";
-export type TourExperience = "mountains" | "lakes-valleys" | "beaches" | "nature" | "adventure" | "romance" | "culture" | "offbeat";
+export type TourExperience = "mountains" | "lakes-valleys" | "beaches" | "nature" | "adventure" | "romance" | "culture" | "heritage" | "offbeat";
 
 export type TourPackage = {
   id: string;
@@ -62,11 +62,11 @@ export const tourPackages: TourPackage[] = [
     destinationSlugs: ["skardu", "naran"],
     image: "/images/package-cards/images__tour-packages__03.webp",
     routeStops: ["Islamabad", "Chilas", "Skardu", "Deosai", "Naran"],
-    routeHighlights: ["Kiwai Waterfall", "Lulusar Lake", "Babusar Top", "Shangrila Resort", "Deosai plateau", "Naran"],
+    routeHighlights: ["Kiwai Waterfall", "Lulusar Lake", "Babusar Top", "Shangrila Resort", "Deosai plateau", "Naran", "Shigar Fort"],
     bestFor: "A private highland road circuit",
     pace: "Relaxed",
     travelStyles: ["adventure", "family", "tailored"],
-    experiences: ["mountains", "nature", "adventure"],
+    experiences: ["mountains", "nature", "adventure", "heritage"],
     duration: "6 Days / 5 Nights",
     pricePerPerson: 45000,
     priceOnRequest: true,
@@ -143,7 +143,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "Baltistan road circuit",
     pace: "Relaxed",
     travelStyles: ["adventure", "family", "tailored"],
-    experiences: ["mountains", "lakes-valleys", "nature", "adventure", "culture"],
+    experiences: ["mountains", "lakes-valleys", "nature", "adventure", "culture", "heritage"],
     duration: "10 Days / 9 Nights",
     pricePerPerson: 47500,
     priceWithoutIslamabadStay: 43500,
@@ -287,7 +287,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "A private Kashmir and Shogran circuit",
     pace: "Relaxed",
     travelStyles: ["family", "couples", "tailored"],
-    experiences: ["mountains", "lakes-valleys", "nature", "romance"],
+    experiences: ["mountains", "lakes-valleys", "nature", "romance", "heritage"],
     duration: "6 Days / 5 Nights",
     pricePerPerson: 39000,
     priceOnRequest: true,
@@ -341,7 +341,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "A private Hunza and Skardu road circuit",
     pace: "Relaxed",
     travelStyles: ["adventure", "family", "tailored"],
-    experiences: ["mountains", "lakes-valleys", "nature", "adventure"],
+    experiences: ["mountains", "lakes-valleys", "nature", "adventure", "heritage"],
     duration: "8 Days / 7 Nights",
     pricePerPerson: 68000,
     priceOnRequest: true,
@@ -406,7 +406,7 @@ export const tourPackages: TourPackage[] = [
     bestFor: "A full coach and highland circuit",
     pace: "Relaxed",
     travelStyles: ["adventure", "family", "tailored"],
-    experiences: ["mountains", "lakes-valleys", "nature", "adventure"],
+    experiences: ["mountains", "lakes-valleys", "nature", "adventure", "heritage"],
     duration: "10 Days",
     pricePerPerson: 47500,
     couplePrice: 109000,
@@ -588,4 +588,8 @@ export function getTourPackagesForRegion(region: TourPackage["region"]) {
 
 export function getTourPackagesForTravelStyle(travelStyle: TravelStyle) {
   return tourPackages.filter((tourPackage) => tourPackage.travelStyles.includes(travelStyle));
+}
+
+export function getHeritageTourPackages() {
+  return tourPackages.filter((tourPackage) => tourPackage.experiences.includes("heritage"));
 }

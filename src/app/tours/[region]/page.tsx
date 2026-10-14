@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { JourneyCard } from "@/components/journey-card";
 import { PageShell } from "@/components/page-shell";
 import { TourLanding } from "@/components/tour-landing";
 import { getTourPackagesForRegion } from "@/lib/data/tour-packages";
@@ -109,14 +110,24 @@ export default async function RegionPage({ params }: RegionPageProps) {
 
         <div className="relative mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {regionalPackages.map((item) => (
-            <Link key={item.id} href={`/packages/${item.id}`} className="group rounded-2xl border border-white/10 bg-white/[0.05] p-5 transition hover:-translate-y-1 hover:border-[#fcc000]/60 hover:bg-[#fcc000]/10">
-              <div className="flex items-center justify-between gap-3 text-[10px] uppercase tracking-[0.2em] text-white/45">
-                <span>{item.duration}</span>
-                <span className="text-[#fcc000]">{item.priceOnRequest ? "Price on request" : `From PKR ${item.pricePerPerson.toLocaleString()}`}</span>
+            <JourneyCard
+              key={item.id}
+              href={`/packages/${item.id}`}
+              image={item.image}
+              imageAlt={item.title}
+              eyebrow={item.duration}
+              title={item.title}
+              imageHeight="h-52 sm:h-56"
+              bodyClassName="p-5"
+            >
+              <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4 text-sm">
+                <span className="text-white/55">From</span>
+                <span className="font-semibold text-[#fcc000]">{item.priceOnRequest ? "Price on request" : `PKR ${item.pricePerPerson.toLocaleString()}`}</span>
               </div>
-              <h3 className="mt-4 font-serif text-2xl leading-tight text-white transition group-hover:text-[#fcc000]">{item.title}</h3>
-              <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-white/45">Explore package ↗</p>
-            </Link>
+              <span className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-[#fcc000] px-5 text-sm font-semibold text-black transition group-hover:bg-[#ffda4d]">
+                Explore package ↗
+              </span>
+            </JourneyCard>
           ))}
         </div>
       </section>

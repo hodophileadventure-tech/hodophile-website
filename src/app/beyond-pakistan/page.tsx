@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import { JsonLd } from "@/components/JsonLd";
+import { JourneyCard } from "@/components/journey-card";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl, whatsappUrl } from "@/lib/site";
 import { buildPageSchema } from "@/lib/seo/structured-data";
@@ -305,61 +306,43 @@ export const metadata: Metadata = {
 };
 
 function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number }) {
-  return (
-    <article
-      id={pkg.id}
-      className="group scroll-mt-28 overflow-hidden rounded-[1.25rem] border border-[#d4b34d]/25 bg-[#fffefa] shadow-[0_22px_60px_rgba(0,0,0,0.2)] transition duration-500 hover:-translate-y-1 hover:border-[#c7a32a] hover:shadow-[0_30px_75px_rgba(0,0,0,0.36)]"
-    >
-      <div className="relative h-72 overflow-hidden bg-[#161616] sm:h-[22rem]">
-        {pkg.image ? (
-          <Image
-            src={pkg.image}
-            alt={pkg.imageAlt ?? ""}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition duration-1000 group-hover:scale-[1.06]"
-          />
-        ) : (
-          <div className="absolute inset-0 overflow-hidden bg-[#141923]">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_20%,rgba(206,170,75,0.3),transparent_35%),linear-gradient(135deg,#111723,#2b3140_62%,#71603f)]" />
-            <div className="absolute -right-14 top-8 h-64 w-64 rounded-full border border-white/10 transition duration-700 group-hover:scale-110" />
-            <div className="absolute right-2 top-20 h-48 w-48 rounded-full border border-white/10" />
-            <div className="absolute inset-x-8 top-[43%] h-px bg-gradient-to-r from-transparent via-[#FCC000]/70 to-transparent" />
-            <div className="absolute inset-x-8 top-[43%] h-20 -translate-y-1/2 border-x border-[#FCC000]/20" />
-            <div className="absolute inset-x-0 top-8 text-center font-[var(--font-display)] text-[0.62rem] uppercase tracking-[0.42em] text-white/45">
-              A Hodophile route
-            </div>
-            <div className="absolute inset-x-7 top-1/2 -translate-y-1/2 text-center">
-              <p className="font-[var(--font-display)] text-3xl leading-tight text-white sm:text-4xl">
-                {pkg.artwork?.title}
-              </p>
-              <p className="mx-auto mt-3 max-w-sm text-[0.62rem] uppercase leading-5 tracking-[0.2em] text-white/55">
-                {pkg.artwork?.route}
-              </p>
-            </div>
-          </div>
-        )}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.26)_0%,transparent_28%,rgba(0,0,0,0.05)_48%,rgba(0,0,0,0.82)_100%)]" />
-        <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 sm:p-6">
-          <span className="rounded-full border border-white/30 bg-black/25 px-3.5 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
-            {pkg.region}
-          </span>
-          <span className="font-[var(--font-display)] text-sm tracking-[0.18em] text-white/80">
-            {String(index + 1).padStart(2, "0")} <span className="text-[#FCC000]">/ 06</span>
-          </span>
-        </div>
-        <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/70">{pkg.duration}</p>
-          <h3 className="mt-2 font-[var(--font-display)] text-4xl leading-[1.02] tracking-[-0.02em] sm:text-[2.8rem]">
-            {pkg.name}
-          </h3>
-          <p className="mt-3 text-sm font-medium text-white/85">
-            From <span className="text-[#FCC000]">{pkg.price}</span>
-          </p>
-        </div>
+  const fallbackArtwork = pkg.image ? undefined : (
+    <div className="absolute inset-0 overflow-hidden bg-[#141923]">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_20%,rgba(206,170,75,0.3),transparent_35%),linear-gradient(135deg,#111723,#2b3140_62%,#71603f)]" />
+      <div className="absolute -right-14 top-8 h-64 w-64 rounded-full border border-white/10 transition duration-700 group-hover:scale-110" />
+      <div className="absolute right-2 top-20 h-48 w-48 rounded-full border border-white/10" />
+      <div className="absolute inset-x-8 top-[43%] h-px bg-gradient-to-r from-transparent via-[#FCC000]/70 to-transparent" />
+      <div className="absolute inset-x-8 top-[43%] h-20 -translate-y-1/2 border-x border-[#FCC000]/20" />
+      <div className="absolute inset-x-0 top-8 text-center font-[var(--font-display)] text-[0.62rem] uppercase tracking-[0.42em] text-white/45">
+        A Hodophile route
       </div>
+      <div className="absolute inset-x-7 top-1/2 -translate-y-1/2 text-center">
+        <p className="font-[var(--font-display)] text-3xl leading-tight text-white sm:text-4xl">
+          {pkg.artwork?.title}
+        </p>
+        <p className="mx-auto mt-3 max-w-sm text-[0.62rem] uppercase leading-5 tracking-[0.2em] text-white/55">
+          {pkg.artwork?.route}
+        </p>
+      </div>
+    </div>
+  );
 
-      <div className="p-6 sm:p-8">
+  return (
+    <JourneyCard
+      id={pkg.id}
+      className="scroll-mt-28"
+      image={pkg.image}
+      imageAlt={pkg.imageAlt ?? ""}
+      imageSizes="(max-width: 768px) 100vw, 50vw"
+      imageHeight="h-72 sm:h-[22rem]"
+      media={fallbackArtwork}
+      badge={pkg.region}
+      counter={<>{String(index + 1).padStart(2, "0")} <span className="text-[#FCC000]">/ 06</span></>}
+      eyebrow={pkg.duration}
+      title={pkg.name}
+      imageCaption={<>From <span className="text-[#FCC000]">{pkg.price}</span></>}
+      bodyClassName="bg-[#fffefa] p-6 sm:p-8"
+    >
         <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#806700]">
           The journey
         </p>
@@ -444,8 +427,7 @@ function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number 
             <span aria-hidden="true" className="text-base text-[#FCC000] transition group-hover:text-black">↗</span>
           </a>
         </div>
-      </div>
-    </article>
+    </JourneyCard>
   );
 }
 

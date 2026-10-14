@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { JourneyCard } from "@/components/journey-card";
 
 type AdventureItineraryDay = {
   day: string;
@@ -321,56 +321,35 @@ const dedicatedTrekkingTours = trekkingTours.filter(
 
 function TourCard({ tour }: { tour: AdventureTour }) {
   return (
-    <article className="flex h-full flex-col rounded-3xl border border-stone-200 bg-white p-5 shadow-[0_12px_30px_rgba(55,55,48,0.06)] sm:p-6">
-      {tour.image ? (
-        <div className="relative -mx-5 -mt-5 mb-5 aspect-[16/9] overflow-hidden rounded-t-3xl bg-stone-200 sm:-mx-6 sm:-mt-6">
-          <Image
-            src={tour.image}
-            alt={`${tour.title} mountain view`}
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
-          />
-        </div>
-      ) : null}
-      <div className="flex flex-wrap gap-2">
-        {tour.duration ? (
-          <span className="rounded-full bg-[#fff5d4] px-3 py-1 text-xs font-semibold text-stone-800">
-            {tour.duration}
-          </span>
-        ) : null}
-        {tour.altitude ? (
-          <span className="rounded-full border border-stone-200 px-3 py-1 text-xs font-medium text-stone-600">
-            {tour.altitude}
-          </span>
-        ) : null}
-        {tour.grade ? (
-          <span className="rounded-full border border-stone-200 px-3 py-1 text-xs font-medium text-stone-600">
-            {tour.grade}
-          </span>
-        ) : null}
-      </div>
-      <h3 className="mt-5 font-[var(--font-display)] text-2xl leading-tight text-stone-950">
-        {tour.title}
-      </h3>
-      <p className="mt-3 flex-1 text-sm leading-7 text-stone-600">{tour.summary}</p>
-      <details className="group mt-5 border-t border-stone-200 pt-4">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-stone-900 [&::-webkit-details-marker]:hidden">
+    <JourneyCard
+      image={tour.image}
+      imageAlt={`${tour.title} mountain view`}
+      imageSizes="(max-width: 1024px) 100vw, 50vw"
+      imageHeight="h-64 sm:h-[19rem]"
+      eyebrow={tour.duration}
+      title={tour.title}
+      badge={tour.grade}
+      counter={tour.altitude}
+      bodyClassName="p-5 sm:p-6"
+    >
+      <p className="flex-1 text-sm leading-7 text-white/75">{tour.summary}</p>
+      <details className="group mt-5 border-t border-white/15 pt-4">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-white [&::-webkit-details-marker]:hidden">
           View itinerary
-          <span className="text-lg text-[#8b6b00] transition-transform group-open:rotate-45" aria-hidden="true">
+          <span className="text-lg text-[#fcc000] transition-transform group-open:rotate-45" aria-hidden="true">
             +
           </span>
         </summary>
         <ol className="mt-4 space-y-3">
           {tour.itinerary.map((item) => (
             <li key={`${tour.title}-${item.day}`} className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 text-sm leading-6">
-              <span className="font-semibold text-[#806700]">{item.day}</span>
-              <span className="text-stone-700">{item.plan}</span>
+              <span className="font-semibold text-[#fcc000]">{item.day}</span>
+              <span className="text-white/75">{item.plan}</span>
             </li>
           ))}
         </ol>
       </details>
-    </article>
+    </JourneyCard>
   );
 }
 

@@ -17,7 +17,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
   const topPaddingClass = noTopPadding ? "pt-0" : "pt-20";
 
   return (
-    <div className="min-h-screen bg-[#f4f1eb] text-stone-900">
+    <div className="min-h-screen bg-[var(--surface-page)] font-[var(--font-miqat-body)] text-[var(--text-primary)]">
       <div className="mx-auto max-w-7xl">
         <SiteHeader />
       </div>

@@ -14,6 +14,7 @@ const desktopPrimaryHrefs = new Set([
   "/destinations",
   "/tours",
   "/tours/adventure",
+  "/tours/heritage-travel",
   "/honeymoon-packages",
   "/umrah-packages",
   "/beyond-pakistan",
@@ -289,7 +290,7 @@ export function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`fixed inset-x-0 top-0 z-50 border-b border-stone-200/80 bg-[#f4f1eb]/95 backdrop-blur-md transition-shadow duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 border-b border-stone-200/80 bg-[#f7f5ef]/95 backdrop-blur-md transition-shadow duration-300 ${
         scrolled ? "shadow-[0_8px_28px_rgba(25,22,16,0.08)]" : ""
       }`}
       aria-hidden={false}
@@ -298,7 +299,7 @@ export function SiteHeader() {
         <div className="relative flex min-w-0 items-center py-2.5 lg:py-2">
           <Link
             href="/"
-            className="group relative hidden h-11 w-[9.5rem] shrink-0 items-center justify-start lg:inline-flex"
+            className="group relative hidden h-11 w-[9.5rem] shrink-0 items-center justify-start xl:inline-flex"
           >
             <Image
               src="/images/package-cards/logo-transparent.webp"
@@ -309,7 +310,7 @@ export function SiteHeader() {
             />
           </Link>
 
-          <nav className="mx-3 hidden min-w-0 flex-1 items-center justify-end gap-0.5 lg:flex xl:mx-6 xl:gap-1" aria-label="Primary navigation">
+          <nav className="mx-3 hidden min-w-0 flex-1 items-center justify-end gap-0.5 xl:flex xl:mx-6 xl:gap-1" aria-label="Primary navigation">
             {navigation.filter((entry) => desktopPrimaryHrefs.has(entry.href)).map((entry) => (
               <div key={entry.href} className="flex shrink-0 items-center justify-center">
                 {renderDesktopNavItem(entry)}
@@ -334,15 +335,15 @@ export function SiteHeader() {
 
           <Link
             href="/make-my-trip"
-            className="hidden shrink-0 items-center justify-center rounded-full bg-[#fcc000] px-5 py-2.5 text-xs font-bold tracking-wide text-stone-950 transition hover:bg-[#e6ae00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] lg:inline-flex"
+            className="hidden shrink-0 items-center justify-center rounded-full bg-[#fcc000] px-5 py-2.5 text-xs font-bold tracking-wide text-stone-950 transition hover:bg-[#e6ae00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] xl:inline-flex"
           >
             Plan your trip
           </Link>
 
-          <div className="flex flex-1 items-center justify-between lg:hidden">
+          <div className="flex flex-1 items-center justify-between xl:hidden">
           <Link
             href="/"
-            className="group relative inline-flex h-10 w-[9.5rem] shrink-0 items-center justify-start lg:inline-flex"
+            className="group relative inline-flex h-10 w-[9.5rem] shrink-0 items-center justify-start xl:inline-flex"
           >
             <Image
               src="/images/package-cards/logo-transparent.webp"
@@ -361,7 +362,7 @@ export function SiteHeader() {
               setToursOpen(false);
               setMobileOpen((prev) => !prev);
             }}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 bg-transparent text-stone-800 transition duration-300 hover:border-[#d9a407] hover:text-stone-950 lg:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 bg-transparent text-stone-800 transition duration-300 hover:border-[#d9a407] hover:text-stone-950 xl:hidden"
             aria-expanded={mobileOpen}
             aria-controls="mobile-navigation"
             aria-label="Toggle navigation menu"
@@ -374,7 +375,7 @@ export function SiteHeader() {
       </div>
 
       {mobileOpen ? (
-        <div ref={mobileMenuRef} id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Mobile navigation" className="max-h-[calc(100svh-4.5rem)] overflow-y-auto border-t border-stone-200 bg-[#f4f1eb] px-5 pb-6 pt-4 text-stone-900 shadow-[0_18px_32px_rgba(25,22,16,0.08)] sm:px-6 lg:hidden">
+        <div ref={mobileMenuRef} id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Mobile navigation" className="max-h-[calc(100svh-4.5rem)] overflow-y-auto border-t border-stone-200 bg-[#f7f5ef] px-5 pb-6 pt-4 text-stone-900 shadow-[0_18px_32px_rgba(25,22,16,0.08)] sm:px-6 xl:hidden">
           <nav className="mx-auto grid max-w-xl gap-1">
             {navigation.map((item) => (
               item.href === "/tours" ? (

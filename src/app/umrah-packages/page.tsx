@@ -22,15 +22,8 @@ export const metadata: Metadata = {
 
 export default function UmrahPackagesPage() {
   return (
-    <div
-      style={{
-        ["--font-miqat-body" as string]: '"Segoe UI", system-ui, sans-serif',
-        ["--font-miqat-heading" as string]: 'Georgia, "Times New Roman", serif',
-      }}
-    >
-      <PageShell wide noTopPadding>
-        <MiqatLanding />
-      </PageShell>
-    </div>
+    <PageShell wide noTopPadding>
+      <MiqatLanding />
+    </PageShell>
   );
 }

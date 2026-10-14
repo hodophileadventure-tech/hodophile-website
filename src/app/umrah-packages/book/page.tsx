@@ -22,24 +22,17 @@ export const metadata: Metadata = {
 
 export default function UmrahBookingPage() {
   return (
-    <div
-      style={{
-        ["--font-miqat-body" as string]: '"Segoe UI", system-ui, sans-serif',
-        ["--font-miqat-heading" as string]: 'Georgia, "Times New Roman", serif',
-      }}
-    >
-      <PageShell wide noTopPadding>
-        <PageHeroImage
-          image="/images/package-cards/images__miqat__miqat-booking-header.webp"
-          imageAlt="MIQAT by Hodophile Umrah booking form"
-          imageClassName="object-contain object-center"
-          eyebrow="MIQAT Booking"
-          title="Reserve your Umrah details with a dedicated MIQAT package form."
-          description="Choose hotel distances, transportation preferences, airline routing, and passenger details in one elegant booking experience."
-        />
+    <PageShell wide noTopPadding>
+      <PageHeroImage
+        image="/images/package-cards/images__miqat__miqat-booking-header.webp"
+        imageAlt="MIQAT by Hodophile Umrah booking form"
+        imageClassName="object-contain object-center"
+        eyebrow="MIQAT Booking"
+        title="Reserve your Umrah details with a dedicated MIQAT package form."
+        description="Choose hotel distances, transportation preferences, airline routing, and passenger details in one elegant booking experience."
+      />
 
-        <UmrahBookingForm />
-      </PageShell>
-    </div>
+      <UmrahBookingForm />
+    </PageShell>
   );
 }

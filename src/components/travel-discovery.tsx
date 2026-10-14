@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore } from "react";
 
+import { JourneyCard } from "@/components/journey-card";
 import type { RouteItineraryDay } from "@/lib/data/routes";
 import { tourPackages, type TourExperience, type TravelStyle, type TourDeparture } from "@/lib/data/tour-packages";
 import { tourDiscoveryIdeas } from "@/lib/data/tour-discovery-ideas";
@@ -59,6 +60,7 @@ const STORAGE_KEYS = {
 const MAX_COMPARE_ITEMS = 4;
 const STORAGE_CHANGE_EVENT = "hodophile-storage-change";
 const EMPTY_STORAGE_SNAPSHOT = "[]";
+const heritageHighlightPattern = /\b(?:fort|mosque|bazaar|historic)\b/i;
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-PK", {
@@ -240,6 +242,7 @@ export function JourneyActions({ packageId, packageTitle }: { packageId: string;
 
 function RouteCard({
   packageItem,
+  destinationLabel,
   isWishlistEnabled,
   isCompareEnabled,
   onToggleWishlist,
@@ -248,6 +251,7 @@ function RouteCard({
   matchScore,
 }: {
   packageItem: DiscoveryPackage;
+  destinationLabel?: string;
   isWishlistEnabled: boolean;
   isCompareEnabled: boolean;
   onToggleWishlist: (id: string) => void;
@@ -258,43 +262,28 @@ function RouteCard({
   const priceText = listedPrice(packageItem);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-stone-200 bg-white shadow-[0_12px_30px_rgba(55,55,48,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/60 hover:shadow-[0_20px_40px_rgba(55,55,48,0.12)]">
-      <div className="relative aspect-[4/3] overflow-hidden bg-stone-200">
-        <Image
-          src={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"}
-          alt={packageItem.title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-          className="object-cover transition duration-700 group-hover:scale-105"
-        />
-        <span className="absolute left-4 top-4 rounded-full bg-[#fcc000] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#0b0b0b]">
-          {packageItem.routeStops[0] ?? (packageItem.region === "northern" ? "Northern" : "Southern")}
-        </span>
-        {matchScore !== undefined ? (
-          <span className="absolute right-4 top-4 rounded-full border border-white/50 bg-stone-950/85 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white backdrop-blur">
-            {matchScore}% match
-          </span>
-        ) : null}
-      </div>
-
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <div className="flex items-center justify-between gap-3 text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">
-          <span>{packageItem.duration}</span>
-          {packageItem.pace ? <span>{packageItem.pace} pace</span> : null}
-        </div>
-
-        <h3 className="mt-2 font-serif text-2xl leading-tight text-stone-950">{packageItem.title}</h3>
+    <JourneyCard
+      image={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"}
+      imageAlt={packageItem.title}
+      imageSizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+      imageHeight="h-56 sm:h-64"
+      badge={destinationLabel ?? packageItem.routeStops[0] ?? (packageItem.region === "northern" ? "Northern" : "Southern")}
+      counter={matchScore !== undefined ? `${matchScore}% match` : undefined}
+      eyebrow={`${packageItem.duration}${packageItem.pace ? ` · ${packageItem.pace} pace` : ""}`}
+      title={packageItem.title}
+      bodyClassName="p-4 sm:p-5"
+    >
         <div className="mt-3">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-stone-500">Why you’ll love it</p>
-          <p className="mt-1 line-clamp-2 text-sm leading-6 text-stone-600">{packageItem.summary}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">Why you’ll love it</p>
+          <p className="mt-1 line-clamp-2 text-sm leading-6 text-white/75">{packageItem.summary}</p>
         </div>
         {packageItem.routeHighlights.length ? (
           <div className="mt-3">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-stone-500">Trip highlights</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">Trip highlights</p>
             <ul className="mt-1 flex flex-wrap gap-1.5">
               {packageItem.routeHighlights.slice(0, 3).map((highlight) => (
-                <li key={`${packageItem.id}-${highlight}`} className="rounded-full border border-stone-200 bg-stone-50 px-2.5 py-1 text-[11px] font-medium text-stone-700">
-                  <span aria-hidden="true" className="mr-1 text-[#9a7600]">✦</span>{highlight}
+                <li key={`${packageItem.id}-${highlight}`} className="rounded-full border border-white/15 bg-white/[0.06] px-2.5 py-1 text-[11px] font-medium text-white/75">
+                  <span aria-hidden="true" className="mr-1 text-[#fcc000]">✦</span>{highlight}
                 </li>
               ))}
             </ul>
@@ -302,39 +291,213 @@ function RouteCard({
         ) : null}
         {relatedContext ? (
           <div className="mt-3 border-l border-[#fcc000] pl-3">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">Related to {relatedContext.savedTripTitle}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/55">Related to {relatedContext.savedTripTitle}</p>
             {relatedContext.reasons.length ? (
-              <ul className="mt-1 space-y-0.5 text-xs leading-5 text-stone-600">
+              <ul className="mt-1 space-y-0.5 text-xs leading-5 text-white/70">
                 {relatedContext.reasons.map((reason) => <li key={`${packageItem.id}-${reason}`}>{reason}</li>)}
               </ul>
             ) : null}
           </div>
         ) : null}
 
-        <div className="mt-auto flex items-end justify-between gap-3 pt-4">
+        <div className="mt-auto flex items-end justify-between gap-3 border-t border-white/10 pt-4">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500">{packageItem.pricePerPerson === undefined ? "Pricing" : "From"}</p>
-            <p className="mt-1 text-xl font-semibold text-[#9a7600]">{priceText}</p>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-white/50">{packageItem.pricePerPerson === undefined ? "Pricing" : "From"}</p>
+            <p className="mt-1 text-xl font-semibold text-[#fcc000]">{priceText}</p>
           </div>
-          <span className="max-w-[48%] text-right text-xs leading-5 text-stone-600">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-stone-500">Best for</span>
-            <span className="font-semibold text-stone-800">{packageItem.bestFor ?? "Not specified"}</span>
+          <span className="max-w-[48%] text-right text-xs leading-5 text-white/60">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">Best for</span>
+            <span className="font-semibold text-white/85">{packageItem.bestFor ?? "Not specified"}</span>
           </span>
         </div>
 
-        <div className="mt-4 flex items-center gap-2 border-t border-stone-200 pt-4">
-          <Link href={journeyHref(packageItem)} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#0b0b0b] px-4 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#282828] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
+        <div className="mt-4 flex items-center gap-2 border-t border-white/10 pt-4">
+          <Link href={journeyHref(packageItem)} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#fcc000] px-4 text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#ffda4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000]">
             {packageItem.requestOnly ? "Request details" : "View journey"}
           </Link>
-          <button type="button" onClick={() => onToggleWishlist(packageItem.id)} title={isWishlistEnabled ? "Remove from saved journeys" : "Save journey"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isWishlistEnabled ? "border-[#1b7a4b] bg-[#1b7a4b] text-white" : "border-stone-300 bg-white text-stone-700 hover:border-[#1b7a4b] hover:text-[#1b7a4b]"}`} aria-label={isWishlistEnabled ? `Remove ${packageItem.title} from wishlist` : `Save ${packageItem.title} to wishlist`}>
+          <button type="button" onClick={() => onToggleWishlist(packageItem.id)} title={isWishlistEnabled ? "Remove from saved journeys" : "Save journey"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000] ${isWishlistEnabled ? "border-[#1b7a4b] bg-[#1b7a4b] text-white" : "border-white/25 bg-white/[0.05] text-white/75 hover:border-[#1b7a4b] hover:text-[#4ade80]"}`} aria-label={isWishlistEnabled ? `Remove ${packageItem.title} from wishlist` : `Save ${packageItem.title} to wishlist`}>
             ♥
           </button>
-          <button type="button" onClick={() => onToggleCompare(packageItem.id)} title={isCompareEnabled ? "Remove from comparison" : "Add to comparison"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isCompareEnabled ? "border-[#9a7600] bg-[#fcc000] text-[#0b0b0b]" : "border-stone-300 bg-white text-stone-700 hover:border-[#9a7600] hover:text-[#9a7600]"}`} aria-label={isCompareEnabled ? `Remove ${packageItem.title} from compare` : `Add ${packageItem.title} to compare`}>
+          <button type="button" onClick={() => onToggleCompare(packageItem.id)} title={isCompareEnabled ? "Remove from comparison" : "Add to comparison"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000] ${isCompareEnabled ? "border-[#fcc000] bg-[#fcc000] text-[#0b0b0b]" : "border-white/25 bg-white/[0.05] text-white/75 hover:border-[#fcc000] hover:text-[#fcc000]"}`} aria-label={isCompareEnabled ? `Remove ${packageItem.title} from compare` : `Add ${packageItem.title} to compare`}>
             ⇄
           </button>
         </div>
+    </JourneyCard>
+  );
+}
+
+export function HeritageToursCatalog({ packageIds }: { packageIds: string[] }) {
+  const heritagePackages = useMemo(
+    () => packageList
+      .filter((packageItem) => !packageItem.requestOnly && packageIds.includes(packageItem.id))
+      .map((packageItem) => ({
+        ...packageItem,
+        routeHighlights: [
+          ...packageItem.routeHighlights.filter((highlight) => heritageHighlightPattern.test(highlight)),
+          ...packageItem.routeHighlights.filter((highlight) => !heritageHighlightPattern.test(highlight)),
+        ],
+      })),
+    [packageIds],
+  );
+  const [search, setSearch] = useState("");
+  const [duration, setDuration] = useState<DurationFilter>("all");
+  const [sort, setSort] = useState<SortOption>("recommended");
+  const compareIds = useStoredIds(STORAGE_KEYS.compare, MAX_COMPARE_ITEMS);
+  const wishlistIds = useStoredIds(STORAGE_KEYS.wishlist);
+
+  const filteredPackages = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const filtered = heritagePackages.filter((packageItem) => {
+      const matchesQuery =
+        query.length === 0 ||
+        [
+          packageItem.title,
+          packageItem.summary,
+          ...packageItem.destinationSlugs,
+          ...packageItem.routeStops,
+          ...packageItem.routeHighlights,
+        ].some((value) => value.toLowerCase().includes(query));
+      const packageDuration = getDurationDays(packageItem);
+      const matchesDuration =
+        duration === "all" ||
+        (duration === "4-7" && packageDuration >= 4 && packageDuration <= 7) ||
+        (duration === "8-12" && packageDuration >= 8 && packageDuration <= 12);
+
+      return matchesQuery && matchesDuration;
+    });
+
+    if (sort === "price-low") {
+      return filtered.sort(
+        (first, second) =>
+          (first.pricePerPerson ?? Number.POSITIVE_INFINITY) -
+          (second.pricePerPerson ?? Number.POSITIVE_INFINITY),
+      );
+    }
+    if (sort === "duration-short") {
+      return filtered.sort((first, second) => getDurationDays(first) - getDurationDays(second));
+    }
+    return filtered;
+  }, [duration, heritagePackages, search, sort]);
+
+  const hasActiveFilters = search !== "" || duration !== "all" || sort !== "recommended";
+
+  const toggleWishlist = (id: string) => {
+    writeStorageIds(
+      STORAGE_KEYS.wishlist,
+      wishlistIds.includes(id) ? wishlistIds.filter((value) => value !== id) : [...wishlistIds, id],
+    );
+  };
+
+  const toggleCompare = (id: string) => {
+    if (compareIds.includes(id)) {
+      writeStorageIds(STORAGE_KEYS.compare, compareIds.filter((value) => value !== id));
+      return;
+    }
+
+    if (compareIds.length < MAX_COMPARE_ITEMS) {
+      writeStorageIds(STORAGE_KEYS.compare, [...compareIds, id]);
+    }
+  };
+
+  return (
+    <section id="heritage-tours" className="bg-[#f4f1eb] px-4 py-12 text-stone-950 sm:px-6 sm:py-16 lg:px-10 lg:py-20">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#806700]">Curated heritage routes</p>
+            <h2 id="heritage-tours-heading" className="mt-3 font-[var(--font-display)] text-4xl leading-tight text-stone-950 sm:text-5xl">
+              Journeys with stories to tell
+            </h2>
+          </div>
+          <p className="text-sm text-stone-600">
+            {heritagePackages.length} curated {heritagePackages.length === 1 ? "journey" : "journeys"}
+          </p>
+        </div>
+
+        {heritagePackages.length ? (
+          <>
+            <div className="mt-7 grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px_220px]">
+              <label className="rounded-2xl border border-stone-300 bg-white p-3 transition focus-within:border-[#9a7600]">
+                <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Search journeys</span>
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Try Khaplu Fort, Hunza, or a tour title"
+                  className="w-full bg-transparent text-sm text-stone-900 outline-none placeholder:text-stone-400"
+                />
+              </label>
+              <label className="rounded-2xl border border-stone-300 bg-white p-3 focus-within:border-[#9a7600]">
+                <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Duration</span>
+                <select value={duration} onChange={(event) => setDuration(event.target.value as DurationFilter)} className="w-full bg-transparent text-sm text-stone-900 outline-none">
+                  <option value="all">Any duration</option>
+                  <option value="4-7">4-7 days</option>
+                  <option value="8-12">8-12 days</option>
+                </select>
+              </label>
+              <label className="rounded-2xl border border-stone-300 bg-white p-3 focus-within:border-[#9a7600]">
+                <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Sort by</span>
+                <select value={sort} onChange={(event) => setSort(event.target.value as SortOption)} className="w-full bg-transparent text-sm text-stone-900 outline-none">
+                  <option value="recommended">Recommended</option>
+                  <option value="price-low">Price: low to high</option>
+                  <option value="duration-short">Shortest first</option>
+                </select>
+              </label>
+            </div>
+
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-stone-600">
+                {filteredPackages.length} {filteredPackages.length === 1 ? "journey" : "journeys"} found
+              </p>
+              {hasActiveFilters ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearch("");
+                    setDuration("all");
+                    setSort("recommended");
+                  }}
+                  className="text-sm font-semibold text-stone-700 underline underline-offset-4 transition hover:text-[#8b6b00]"
+                >
+                  Clear filters
+                </button>
+              ) : null}
+            </div>
+
+            {filteredPackages.length ? (
+              <div className="mt-4 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {filteredPackages.map((packageItem) => (
+                  <RouteCard
+                    key={packageItem.id}
+                    packageItem={packageItem}
+                    destinationLabel={packageItem.destinationSlugs.map(formatDestination).join(" · ")}
+                    isWishlistEnabled={wishlistIds.includes(packageItem.id)}
+                    isCompareEnabled={compareIds.includes(packageItem.id)}
+                    onToggleWishlist={toggleWishlist}
+                    onToggleCompare={toggleCompare}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="mt-4 rounded-[1.5rem] border border-dashed border-stone-300 bg-white px-5 py-8 text-center">
+                <h3 className="text-lg font-semibold text-stone-900">No heritage journeys match this search.</h3>
+                <p className="mt-2 text-sm text-stone-600">Adjust your search or filters to explore the available packages.</p>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="mt-8 rounded-[1.5rem] border border-dashed border-stone-300 bg-white px-5 py-10 text-center">
+            <h3 className="font-[var(--font-display)] text-2xl text-stone-950">Heritage journeys are being curated</h3>
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-stone-600">
+              There are no published packages matching this collection yet. Contact our team to discuss a heritage-focused itinerary.
+            </p>
+            <Link href="/contact-us" className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-[#0b0b0b] px-5 text-sm font-semibold text-white transition hover:bg-[#282828]">
+              Contact our team
+            </Link>
+          </div>
+        )}
       </div>
-    </article>
+    </section>
   );
 }
 
@@ -569,15 +732,17 @@ function TripMatchPanel({
           {results.length ? (
             <div className="mt-4 grid gap-4 lg:grid-cols-2">
               {results.map(({ trip, score, reasons }) => (
-                <article key={trip.id} className="overflow-hidden rounded-[1.4rem] border border-white/10 bg-white/[0.035]">
-                  <div className="relative aspect-[16/7] overflow-hidden bg-stone-800">
-                    <Image src={trip.image ?? "/images/package-cards/images__destinations__swat-hd.webp"} alt="" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                    <span className="absolute bottom-3 left-4 text-xs font-semibold uppercase tracking-[0.12em] text-white/80">{trip.duration} · {trip.region}</span>
-                    <span className="absolute right-3 top-3 rounded-full border border-white/40 bg-[#FCC000] px-3 py-1.5 text-xs font-black text-stone-950">{score}% match</span>
-                  </div>
-                  <div className="p-4 sm:p-5">
-                    <h5 className="font-serif text-xl leading-tight text-white">{trip.title}</h5>
+                <JourneyCard
+                  key={trip.id}
+                  image={trip.image ?? "/images/package-cards/images__destinations__swat-hd.webp"}
+                  imageAlt={trip.title}
+                  imageSizes="(max-width: 1024px) 100vw, 50vw"
+                  badge={`${score}% match`}
+                  eyebrow={`${trip.duration} · ${trip.region}`}
+                  title={trip.title}
+                  imageHeight="h-48 sm:h-52"
+                  bodyClassName="p-4 sm:p-5"
+                >
                     <p className="mt-1 text-sm font-semibold text-[#FCC000]">{trip.pricePerPerson === undefined ? "Price on request" : `${formatCurrency(trip.pricePerPerson)} per person`}</p>
                     <p className="mt-2 text-xs leading-5 text-white/55">{trip.routeHighlights.length ? trip.routeHighlights.slice(0, 3).join(" · ") : trip.routeStops.join(" · ")}</p>
                     <ul className="mt-4 space-y-2">
@@ -594,8 +759,7 @@ function TripMatchPanel({
                       <Link href={journeyHref(trip)} className="text-white underline decoration-[#FCC000] decoration-2 underline-offset-4">{trip.requestOnly ? "Request details" : "View journey"}</Link>
                       <JourneyActions packageId={trip.id} packageTitle={trip.title} />
                     </div>
-                  </div>
-                </article>
+                </JourneyCard>
               ))}
             </div>
           ) : (

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 
 import { tourPackages, type TravelStyle } from "@/lib/data/tour-packages";
+import { JourneyCard } from "@/components/journey-card";
 import { JourneyActions } from "@/components/travel-discovery";
 import { rankTripRecommendations, type DurationPreference, type TripPreferences, type RankedTripRecommendation } from "@/lib/trip-intelligence";
 
@@ -49,20 +50,15 @@ function RecommendationCard({ recommendation, hasPreferences }: { recommendation
   const label = !hasPreferences ? "Suggested starting point" : isStrong ? "Strong match" : matchedCriteria.length ? "Good fit" : "Worth considering";
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[1rem] border border-stone-200 bg-white shadow-[0_12px_30px_rgba(55,55,48,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#d3a900] hover:shadow-[0_18px_38px_rgba(55,55,48,0.1)]">
-      <div className="relative aspect-[16/9] overflow-hidden bg-stone-200">
-        <Image src={trip.image} alt={trip.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition duration-700 group-hover:scale-105" />
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-4 pb-3 pt-10">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#ffe28a]">{label}</p>
-        </div>
-      </div>
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-bold uppercase tracking-[0.14em] text-stone-500">
-          <span>{trip.duration}</span>
-          <span>{trip.region === "northern" ? "Northern Pakistan" : "Southern Pakistan"}</span>
-          {trip.pace ? <span>{trip.pace} pace</span> : null}
-        </div>
-        <h3 className="mt-2 font-serif text-2xl leading-tight text-stone-950">{trip.title}</h3>
+    <JourneyCard
+      image={trip.image}
+      imageAlt={trip.title}
+      badge={label}
+      eyebrow={`${trip.duration} · ${trip.region === "northern" ? "Northern Pakistan" : "Southern Pakistan"}${trip.pace ? ` · ${trip.pace} pace` : ""}`}
+      title={trip.title}
+      imageHeight="h-56 sm:h-64"
+      bodyClassName="bg-white p-5 text-stone-950"
+    >
         <p className="mt-2 text-sm leading-6 text-stone-600">{trip.routeStops.join(" · ")}</p>
         <div className="mt-4 flex items-end justify-between gap-3 border-t border-stone-100 pt-4">
           <div>
@@ -84,8 +80,7 @@ function RecommendationCard({ recommendation, hasPreferences }: { recommendation
           <Link href={`/packages/${trip.id}`} className="inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 bg-white px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-stone-900 transition hover:border-[#8b6b00] hover:text-[#5f4900] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">View journey</Link>
           <JourneyActions packageId={trip.id} packageTitle={trip.title} />
         </div>
-      </div>
-    </article>
+    </JourneyCard>
   );
 }
 

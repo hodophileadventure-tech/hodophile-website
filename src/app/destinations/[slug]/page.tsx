@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { JsonLd } from "@/components/JsonLd";
+import { JourneyCard } from "@/components/journey-card";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl, destinationTourPageRedirects } from "@/lib/site";
 import { getTourPackageById, getTourPackagesForDestination } from "@/lib/data/tour-packages";
@@ -410,29 +411,37 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
 
             <div className="relative mt-8 grid gap-5 md:grid-cols-2">
               {packages.map((tourPackage) => (
-                <article key={tourPackage.id} className="group rounded-2xl border border-white/10 bg-white/[0.06] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#fcc000]/50 hover:bg-white/[0.09] sm:p-7">
-                  <div className="flex flex-wrap items-start justify-between gap-5 border-b border-white/10 pb-5">
+                <JourneyCard
+                  key={tourPackage.id}
+                  image={tourPackage.image}
+                  imageAlt={tourPackage.title}
+                  eyebrow={tourPackage.duration}
+                  title={tourPackage.title}
+                  imageHeight="h-56 sm:h-64"
+                  bodyClassName="p-6 sm:p-7"
+                >
+                  <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#fcc000]">{tourPackage.duration}</p>
-                      <h3 className="mt-3 max-w-sm font-serif text-2xl font-normal leading-tight text-white">
-                        <Link href={`/packages/${tourPackage.id}`} className="transition hover:text-[#fcc000]">{tourPackage.title}</Link>
-                      </h3>
-                    </div>
-                    <div className="text-right">
                       <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/45">From</p>
                       <p className="mt-1 text-xl font-semibold text-[#fcc000]">{tourPackage.priceOnRequest ? "Price on request" : `PKR ${tourPackage.pricePerPerson.toLocaleString()}`}</p>
                       <p className="text-xs text-white/45">per person</p>
                       {tourPackage.couplePrice && <p className="mt-2 text-xs text-white/60">PKR {tourPackage.couplePrice.toLocaleString()} / couple</p>}
                     </div>
+                    <Link
+                      href={`/packages/${tourPackage.id}`}
+                      className="inline-flex min-h-10 items-center justify-center rounded-full bg-[#fcc000] px-4 text-xs font-semibold uppercase tracking-[0.1em] text-black transition hover:bg-[#ffda4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000]"
+                    >
+                      View details
+                    </Link>
                   </div>
-                  <div className="mt-5 space-y-3 text-sm leading-6 text-white/65">
+                  <div className="mt-5 space-y-3 text-sm leading-6 text-white/75">
                     {tourPackage.scheduleNote && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Schedule note</span>{tourPackage.scheduleNote}</p>}
                     {tourPackage.transport && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Transport</span>{tourPackage.transport.join("; ")}</p>}
                     {tourPackage.includes && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Includes</span>{tourPackage.includes.join("; ")}</p>}
                     {tourPackage.excludes && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Excludes</span>{tourPackage.excludes.join("; ")}</p>}
                   </div>
                   {tourPackage.notes?.map((note) => <p key={note} className="mt-5 border-t border-white/10 pt-4 text-xs leading-6 text-white/45">{note}</p>)}
-                </article>
+                </JourneyCard>
               ))}
             </div>
           </section>

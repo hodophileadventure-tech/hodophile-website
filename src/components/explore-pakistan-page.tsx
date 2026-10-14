@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { JourneyCard } from "@/components/journey-card";
 import { whatsappUrl } from "@/lib/site";
 
 const destinationTiles = [
@@ -446,35 +447,17 @@ export function ExplorePakistanPageContent() {
 
           <div className="mt-8 grid gap-6 md:grid-cols-2 xl:mt-10 xl:gap-8">
             {journeyCards.map((journey, index) => (
-              <article
+              <JourneyCard
                 key={journey.route}
-                className="group overflow-hidden rounded-[1.25rem] border border-[#d4b34d]/25 bg-[#141414] shadow-[0_22px_60px_rgba(0,0,0,0.2)] transition duration-500 hover:-translate-y-1 hover:border-[#c7a32a] hover:shadow-[0_30px_75px_rgba(0,0,0,0.36)]"
+                image={journey.image}
+                imageAlt={`${journey.route} in Pakistan`}
+                imageSizes="(max-width: 768px) 100vw, 50vw"
+                badge="Pakistan · Private journey"
+                counter={<>{String(index + 1).padStart(2, "0")} <span className="text-[#FCC000]">/ 08</span></>}
+                eyebrow={journey.duration}
+                title={journey.route}
+                bodyClassName="p-0"
               >
-                <div className="relative h-64 overflow-hidden bg-[#161616] sm:h-[19rem]">
-                  <Image
-                    src={journey.image}
-                    alt={`${journey.route} in Pakistan`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover transition duration-1000 group-hover:scale-[1.05]"
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.3)_0%,transparent_34%,rgba(0,0,0,0.82)_100%)]" />
-                  <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 sm:p-6">
-                    <span className="rounded-full border border-white/30 bg-black/30 px-3.5 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
-                      Pakistan · Private journey
-                    </span>
-                    <span className="font-[var(--font-display)] text-sm tracking-[0.18em] text-white">
-                      {String(index + 1).padStart(2, "0")} <span className="text-[#FCC000]">/ 08</span>
-                    </span>
-                  </div>
-                  <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
-                    <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/75">{journey.duration}</p>
-                    <h3 className="mt-2 font-[var(--font-display)] text-3xl leading-[1.02] tracking-[-0.02em] sm:text-4xl">
-                      {journey.route}
-                    </h3>
-                  </div>
-                </div>
-
                 <div className="flex flex-col justify-between gap-6 p-6 sm:flex-row sm:items-center sm:p-8">
                   <p className="max-w-lg text-sm leading-7 text-white/65">{journey.description}</p>
                   <a
@@ -487,7 +470,7 @@ export function ExplorePakistanPageContent() {
                     <span aria-hidden="true" className="text-base">↗</span>
                   </a>
                 </div>
-              </article>
+              </JourneyCard>
             ))}
           </div>
         </div>

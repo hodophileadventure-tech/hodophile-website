@@ -6,7 +6,7 @@ import { resolve } from "node:path";
 import { destinationTourPageRedirects, tourMenu } from "../site";
 import { featuredTourCards, indexableFeaturedTourRoutePaths } from "./featured-tour-cards";
 import { tourDiscoveryIdeas } from "./tour-discovery-ideas";
-import { getTourPackagesForDestination, getTourPackagesForRegion, tourPackages } from "./tour-packages";
+import { getHeritageTourPackages, getTourPackagesForDestination, getTourPackagesForRegion, tourPackages } from "./tour-packages";
 
 const expectedJourneyIds = [
   "skardu-deosai-air-3-days",
@@ -58,6 +58,29 @@ test("the canonical list contains exactly the 12 unique journeys with required s
       renderedJourneyText.every((value) => !/\broute\s+route\b/i.test(value)),
       `${tourPackage.id} contains a duplicated route suffix`,
     );
+  }
+});
+
+test("the heritage collection includes only packages with explicit historic itinerary stops", () => {
+  const heritagePackages = getHeritageTourPackages();
+
+  assert.deepEqual(
+    heritagePackages.map((tourPackage) => tourPackage.id),
+    [
+      "skardu-deosai-air-3-days",
+      "skardu-khaplu-deosai-basho-air-7-days",
+      "kashmir-shogran-9-days",
+      "hunza-skardu-naran-12-days",
+      "skardu-deosai-naran-10-days",
+    ],
+  );
+
+  for (const tourPackage of heritagePackages) {
+    const listedHistoricSites = [
+      ...(tourPackage.routeHighlights ?? []),
+      ...(tourPackage.itinerary ?? []).map((day) => day.description),
+    ].join(" ");
+    assert.match(listedHistoricSites, /\b(?:fort|mosque|bazaar)\b/i, `${tourPackage.id} needs a named historic stop`);
   }
 });
 
