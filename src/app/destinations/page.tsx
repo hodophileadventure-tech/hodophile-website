@@ -26,6 +26,7 @@ export default function DestinationsPage() {
       <PageHeroImage
         image="/images/package-cards/images__editorial__editorial-4.webp"
         imageAlt="Mountain valley with river"
+        videoSrc="/videos/destinations-hero.mp4"
         eyebrow="Destinations"
         title="The routes travelers search most when planning domestic Pakistan journeys."
         description="Explore destination-led pages designed for discovery, route comparison, and premium itinerary planning."

@@ -1,4 +1,5 @@
 import { JourneyCard } from "@/components/journey-card";
+import { PageHeroImage } from "@/components/page-hero-image";
 
 type AdventureItineraryDay = {
   day: string;
@@ -394,17 +395,14 @@ function TourSection({
 export function AdventureToursContent() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-16">
-      <header className="border-b border-stone-300 pb-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#806700]">
-          Hodophile Adventures
-        </p>
-        <h1 className="mt-3 font-[var(--font-display)] text-4xl tracking-[-0.035em] text-stone-950 sm:text-5xl">
-          Adventure Tours
-        </h1>
-        <p className="mt-4 max-w-3xl text-base leading-7 text-stone-600">
-          Explore the itineraries shared so far for Pakistan&apos;s mountain expeditions and base-camp treks.
-        </p>
-      </header>
+      <PageHeroImage
+        image="/images/editorial/adventure-routes.webp"
+        imageAlt="Hiker looking across a mountain lake"
+        videoSrc="/videos/adventure-hero.mp4"
+        eyebrow="Hodophile Adventures"
+        title="Adventure Tours"
+        description="Explore the itineraries shared so far for Pakistan's mountain expeditions and base-camp treks."
+      />
       <TourSection
         id="beyond-the-summit"
         eyebrow="Expeditions and base-camp treks"

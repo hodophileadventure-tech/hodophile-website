@@ -29,7 +29,6 @@ const routes = [...new Set([
   "/terms-and-conditions",
   "/tours",
   "/tours/adventure",
-  "/tours/heritage-travel",
   "/umrah-packages",
   "/umrah-packages/book",
   ...umrahPackages.map((pkg) => `/umrah-packages/${pkg.id}`),

@@ -14,7 +14,6 @@ const desktopPrimaryHrefs = new Set([
   "/destinations",
   "/tours",
   "/tours/adventure",
-  "/tours/heritage-travel",
   "/honeymoon-packages",
   "/umrah-packages",
   "/beyond-pakistan",
@@ -290,7 +289,7 @@ export function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`fixed inset-x-0 top-0 z-50 border-b border-stone-200/80 bg-[#f4f1eb]/95 backdrop-blur-md transition-shadow duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 border-b border-white/35 bg-[#f4f1eb]/45 backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-300 ${
         scrolled ? "shadow-[0_8px_28px_rgba(25,22,16,0.08)]" : ""
       }`}
       aria-hidden={false}

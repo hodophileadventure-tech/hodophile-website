@@ -271,6 +271,18 @@ export function ExplorePakistanPageContent() {
             sizes="100vw"
             className="object-cover"
           />
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            poster="/images/package-cards/hero-images__kamran-ch-unsplash.webp"
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover"
+          >
+            <source src="/videos/explore-pakistan-hero.mp4" type="video/mp4" />
+          </video>
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,8,8,0.76)_0%,rgba(8,8,8,0.46)_34%,rgba(8,8,8,0.24)_100%)]" />
         </div>
 

@@ -55,6 +55,7 @@ export default function HoneymoonPackagesPage() {
       <PageHeroImage
         image="/images/package-cards/images__honeymoon__hero.webp"
         imageAlt="Honeymoon header"
+        videoSrc="/videos/honeymoon-hero.mp4"
         eyebrow="Honeymoon Packages"
         title="Curated honeymoon journeys for scenic, private, and memorable travel."
         description="Choose from premium domestic routes in Pakistan and let us craft an elegant honeymoon itinerary around your preferred pace."

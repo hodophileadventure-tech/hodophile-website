@@ -3,16 +3,31 @@ import Image from "next/image";
 type PageHeroImageProps = {
   image: string;
   imageAlt: string;
+  videoSrc?: string;
   eyebrow: string;
   title: string;
   description: string;
   imageClassName?: string;
 };
 
-export function PageHeroImage({ image, imageAlt, eyebrow, title, description, imageClassName }: PageHeroImageProps) {
+export function PageHeroImage({ image, imageAlt, videoSrc, eyebrow, title, description, imageClassName }: PageHeroImageProps) {
   return (
     <section className="relative isolate -mx-4 flex min-h-[min(760px,calc(100svh-var(--site-header-height)))] overflow-hidden bg-[#090909] px-5 py-12 text-white md:-mx-6 sm:px-8 sm:py-16 lg:-mx-10 lg:px-14 lg:py-10 xl:-mx-14">
       <Image src={image} alt={imageAlt} fill preload sizes="100vw" className={`absolute inset-0 -z-20 ${imageClassName ?? "object-cover"}`} />
+      {videoSrc && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster={image}
+          aria-hidden="true"
+          className="absolute inset-0 -z-20 h-full w-full object-cover"
+        >
+          <source src={videoSrc} type="video/mp4" />
+        </video>
+      )}
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(105deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.62)_52%,rgba(0,0,0,0.22)_100%),linear-gradient(0deg,rgba(0,0,0,0.42),transparent_48%)]" />
       <div className="pointer-events-none absolute -right-40 -top-48 -z-10 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
 
