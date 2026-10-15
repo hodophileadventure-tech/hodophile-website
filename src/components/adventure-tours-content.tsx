@@ -1,5 +1,5 @@
 import { JourneyCard } from "@/components/journey-card";
-import { PageHeroImage } from "@/components/page-hero-image";
+import Image from "next/image";
 
 type AdventureItineraryDay = {
   day: string;
@@ -394,29 +394,60 @@ function TourSection({
 
 export function AdventureToursContent() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10 lg:py-16">
-      <PageHeroImage
-        image="/images/editorial/adventure-routes.webp"
-        imageAlt="Hiker looking across a mountain lake"
-        videoSrc="/videos/adventure-hero.mp4"
-        eyebrow="Hodophile Adventures"
-        title="Adventure Tours"
-        description="Explore the itineraries shared so far for Pakistan's mountain expeditions and base-camp treks."
-      />
-      <TourSection
-        id="beyond-the-summit"
-        eyebrow="Expeditions and base-camp treks"
-        title="Beyond the Summit"
-        description="Karakoram climbing expeditions, including the K2 and Nanga Parbat base-camp treks."
-        tours={[...summitExpeditions, ...beyondSummitBaseCampTours]}
-      />
-      <TourSection
-        id="trekking-tours"
-        eyebrow="Mountain trekking"
-        title="Beyond the Beaten Path"
-        description="Explore day hikes, alpine meadows, and multi-day trekking routes across Pakistan."
-        tours={dedicatedTrekkingTours}
-      />
-    </div>
+    <>
+      <section className="relative left-1/2 -mt-20 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
+        <div className="relative min-h-[88vh]">
+          <Image
+            src="/images/editorial/adventure-routes.webp"
+            alt="Hiker looking across a mountain lake"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <video
+            src="/hero-video.mp4"
+            poster="/images/editorial/adventure-routes.webp"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            controls={false}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,24,28,0.35)_0%,rgba(18,24,28,0.6)_100%)]" />
+
+          <div className="relative z-10 flex min-h-[88vh] w-full items-end px-6 pb-14 pt-40 lg:px-16 lg:pb-20">
+            <div className="max-w-5xl text-white">
+              <p className="eyebrow">Hodophile Adventures · Pakistan</p>
+              <h1 className="display-serif mt-5 max-w-4xl text-6xl font-normal leading-[0.95] sm:text-7xl lg:text-[7.8rem]">
+                Adventure Tours
+              </h1>
+              <p className="mt-6 max-w-2xl text-base leading-7 text-white/85 sm:text-lg">
+                Explore the itineraries shared so far for Pakistan&apos;s mountain expeditions and base-camp treks.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
+        <TourSection
+          id="beyond-the-summit"
+          eyebrow="Expeditions and base-camp treks"
+          title="Beyond the Summit"
+          description="Karakoram climbing expeditions, including the K2 and Nanga Parbat base-camp treks."
+          tours={[...summitExpeditions, ...beyondSummitBaseCampTours]}
+        />
+        <TourSection
+          id="trekking-tours"
+          eyebrow="Mountain trekking"
+          title="Beyond the Beaten Path"
+          description="Explore day hikes, alpine meadows, and multi-day trekking routes across Pakistan."
+          tours={dedicatedTrekkingTours}
+        />
+      </div>
+    </>
   );
 }
