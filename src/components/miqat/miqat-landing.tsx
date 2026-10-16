@@ -10,7 +10,7 @@ import { WhyMiqat } from "@/components/miqat/WhyMiqat";
 
 export function MiqatLanding() {
   return (
-    <div className="site-page-gradient -mx-4 overflow-x-hidden text-[var(--text-primary)] scroll-smooth md:-mx-6 lg:-mx-10 xl:-mx-14">
+    <div className="site-page-gradient relative left-1/2 w-screen -translate-x-1/2 overflow-x-clip text-[var(--text-primary)] scroll-smooth">
       <div className="">
         <MiqatHero />
       </div>

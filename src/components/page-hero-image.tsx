@@ -12,7 +12,7 @@ type PageHeroImageProps = {
 
 export function PageHeroImage({ image, imageAlt, videoSrc, eyebrow, title, description, imageClassName }: PageHeroImageProps) {
   return (
-    <section className="relative isolate -mx-4 flex min-h-[min(760px,calc(100svh-var(--site-header-height)))] overflow-hidden bg-[#090909] px-5 py-12 text-white md:-mx-6 sm:px-8 sm:py-16 lg:-mx-10 lg:px-14 lg:py-10 xl:-mx-14">
+    <section className="relative isolate left-1/2 flex w-screen -translate-x-1/2 min-h-[min(760px,calc(100svh-var(--site-header-height)))] overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
       <Image src={image} alt={imageAlt} fill preload sizes="100vw" className={`absolute inset-0 -z-20 ${imageClassName ?? "object-cover"}`} />
       {videoSrc && (
         <video
