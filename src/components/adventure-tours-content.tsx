@@ -406,7 +406,7 @@ export function AdventureToursContent() {
             className="object-cover"
           />
           <video
-            src="/hero-video.mp4"
+            src="/videos/adventure-hero.mp4"
             poster="/images/editorial/adventure-routes.webp"
             autoPlay
             muted

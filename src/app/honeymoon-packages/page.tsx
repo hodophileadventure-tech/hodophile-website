@@ -57,7 +57,7 @@ export default function HoneymoonPackagesPage() {
         imageAlt="Honeymoon header"
         videoSrc="/videos/honeymoon-hero.mp4"
         eyebrow="Honeymoon Packages"
-        title="Curated honeymoon journeys for scenic, private, and memorable travel."
+        title="Romantic escapes, beautifully curated."
         description="Choose from premium domestic routes in Pakistan and let us craft an elegant honeymoon itinerary around your preferred pace."
       />
 

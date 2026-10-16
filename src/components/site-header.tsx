@@ -142,8 +142,8 @@ export function SiteHeader() {
             onFocus={openAboutUsMenu}
             className={`relative inline-flex items-center justify-center gap-1 whitespace-nowrap px-2 py-3 text-[11px] font-semibold tracking-wide transition duration-300 xl:px-3 xl:text-xs ${
               pathname === item.href
-                ? "text-stone-950"
-                : "text-stone-600 hover:text-stone-950"
+                ? "text-white"
+                : "text-white/80 hover:text-white"
             }`}
           >
             <span>{item.label}</span>
@@ -192,8 +192,8 @@ export function SiteHeader() {
             onFocus={openDesktopToursMenu}
             className={`relative inline-flex items-center justify-center gap-1 whitespace-nowrap px-2 py-3 text-[11px] font-semibold tracking-wide transition duration-300 xl:px-3 xl:text-xs ${
               pathname === item.href || isToursActive
-                ? "text-stone-950"
-                : "text-stone-600 hover:text-stone-950"
+                ? "text-white"
+                : "text-white/80 hover:text-white"
             }`}
           >
             <span>{item.label}</span>
@@ -274,8 +274,8 @@ export function SiteHeader() {
         href={item.href}
         className={`relative inline-flex items-center justify-center whitespace-nowrap px-2 py-3 text-[11px] font-semibold tracking-wide transition duration-300 xl:px-3 xl:text-xs ${
           pathname === item.href
-            ? "text-stone-950"
-            : "text-stone-600 hover:text-stone-950"
+            ? "text-white"
+            : "text-white/80 hover:text-white"
         }`}
       >
         {item.label}
@@ -289,7 +289,7 @@ export function SiteHeader() {
   return (
     <header
       ref={headerRef}
-      className={`fixed inset-x-0 top-0 z-50 border-b border-white/35 bg-[#f4f1eb]/45 backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-300 ${
+      className={`site-header-gradient fixed inset-x-0 top-0 z-50 border-b border-white/20 backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-300 ${
         scrolled ? "shadow-[0_8px_28px_rgba(25,22,16,0.08)]" : ""
       }`}
       aria-hidden={false}
@@ -316,7 +316,7 @@ export function SiteHeader() {
               </div>
             ))}
             <details className="group relative shrink-0">
-              <summary className="inline-flex cursor-pointer list-none items-center gap-1 px-2 py-3 text-[11px] font-semibold tracking-wide text-stone-600 transition hover:text-stone-950 xl:px-3 xl:text-xs [&::-webkit-details-marker]:hidden">
+              <summary className="inline-flex cursor-pointer list-none items-center gap-1 px-2 py-3 text-[11px] font-semibold tracking-wide text-white/80 transition hover:text-white xl:px-3 xl:text-xs [&::-webkit-details-marker]:hidden">
                 More
                 <svg viewBox="0 0 20 20" className="h-3 w-3 fill-current transition-transform group-open:rotate-180" aria-hidden="true">
                   <path d="M5.8 7.5 10 11.7l4.2-4.2 1.4 1.4L10 14.5 4.4 8.9z" />
@@ -361,7 +361,7 @@ export function SiteHeader() {
               setToursOpen(false);
               setMobileOpen((prev) => !prev);
             }}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 bg-transparent text-stone-800 transition duration-300 hover:border-[#d9a407] hover:text-stone-950 xl:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-black/20 text-white transition duration-300 hover:border-[#fcc000] hover:text-[#fcc000] xl:hidden"
             aria-expanded={mobileOpen}
             aria-controls="mobile-navigation"
             aria-label="Toggle navigation menu"

@@ -138,7 +138,7 @@ export default function Home() {
           <div className="relative z-10 flex min-h-[88vh] w-full items-end px-6 pb-14 pt-40 lg:px-16 lg:pb-20">
             <div className="max-w-5xl text-white">
               <p className="eyebrow">Hodophile Adventures · Pakistan</p>
-              <h1 className="display-serif mt-5 max-w-4xl text-6xl font-normal leading-[0.95] sm:text-7xl lg:text-[7.8rem]">
+              <h1 className="display-serif mt-5 max-w-4xl text-5xl font-normal leading-[0.98] sm:text-6xl lg:text-7xl">
                 Go where the view changes you.
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-7 text-white/85 sm:text-lg">

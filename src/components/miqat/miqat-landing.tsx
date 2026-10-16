@@ -10,12 +10,12 @@ import { WhyMiqat } from "@/components/miqat/WhyMiqat";
 
 export function MiqatLanding() {
   return (
-    <div className="-mx-4 overflow-x-hidden bg-[var(--surface-page)] text-[var(--text-primary)] scroll-smooth md:-mx-6 lg:-mx-10 xl:-mx-14">
+    <div className="site-page-gradient -mx-4 overflow-x-hidden text-[var(--text-primary)] scroll-smooth md:-mx-6 lg:-mx-10 xl:-mx-14">
       <div className="">
         <MiqatHero />
       </div>
 
-      <section className="border-y border-stone-300 bg-[var(--surface-page)] px-4 py-8 sm:px-6 lg:px-10 xl:px-14" aria-label="MIQAT package information">
+      <section className="border-y border-stone-300 px-4 py-8 sm:px-6 lg:px-10 xl:px-14" aria-label="MIQAT package information">
         <div className="mx-auto grid max-w-7xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             ["15 & 20 days", "Package durations"],

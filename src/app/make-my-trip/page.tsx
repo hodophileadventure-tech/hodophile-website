@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function MakeMyTripPage() {
   return (
-    <main className="min-h-screen overflow-x-clip bg-[var(--surface-page)]">
+    <main className="site-page-gradient min-h-screen overflow-x-clip">
       <MakeMyTripForm />
     </main>
   );
