@@ -33,7 +33,7 @@ export function JourneyCard({
   badge,
   counter,
   media,
-  glassBody = false,
+  glassBody = true,
   imageSizes = "(max-width: 768px) 100vw, 50vw",
   imageHeight = "h-64 sm:h-[19rem]",
   bodyClassName = "p-6 sm:p-8",
