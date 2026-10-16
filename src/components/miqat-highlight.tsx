@@ -12,13 +12,13 @@ export function MiqatHighlightSection() {
     <section
       id="miqat-highlight"
       aria-labelledby="miqat-highlight-heading"
-      className="relative overflow-visible bg-[#f3ede5] px-6 py-16 sm:px-8 lg:px-12 lg:py-20"
+      className="relative overflow-hidden bg-[#171717] px-6 py-16 sm:px-8 lg:px-12 lg:py-20"
     >
       <div className="mx-auto max-w-[96rem]">
-        <div className="relative overflow-visible">
-          <div className="mb-10 flex items-center gap-5 text-xs uppercase tracking-[0.35em] text-stone-950/55 lg:mb-14">
-            <span className="text-stone-950">02</span>
-            <span className="h-px w-16 bg-stone-950/30" />
+        <div className="relative">
+          <div className="mb-10 flex items-center gap-5 text-xs uppercase tracking-[0.35em] text-[#b8b2a7] lg:mb-14">
+            <span className="text-[#FCC000]">02</span>
+            <span className="h-px w-16 bg-white/25" />
             <span>A quieter way to travel</span>
           </div>
 
@@ -30,27 +30,27 @@ export function MiqatHighlightSection() {
               transition={transition}
               className="relative z-10 max-w-[520px]"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#9a7600]">MIQAT by Hodophile</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#FCC000]">MIQAT by Hodophile</p>
 
               <h2
                 id="miqat-highlight-heading"
-                className="mt-8 font-[var(--font-miqat-heading)] text-[clamp(3.5rem,6vw,7rem)] font-normal leading-[0.88] text-stone-950"
+                className="mt-8 font-[var(--font-miqat-heading)] text-[clamp(3.5rem,6vw,7rem)] font-normal leading-[0.88] text-[#f5f1e8]"
               >
                 A journey of the heart.
               </h2>
 
-              <p className="mt-10 max-w-[450px] text-lg leading-[1.8] text-stone-800 sm:text-xl">
+              <p className="mt-10 max-w-[450px] text-lg leading-[1.8] text-[#f5f1e8] sm:text-xl">
                 Some journeys take you somewhere new. Some return you to what matters most.
               </p>
 
-              <p className="mt-5 max-w-[430px] text-sm leading-7 text-stone-700/80">
+              <p className="mt-5 max-w-[430px] text-sm leading-7 text-[#d0cbc2]">
                 MIQAT is our considered approach to Umrah: thoughtfully arranged, quietly supported, and shaped around the sacred rhythm of the days ahead. From the first conversation to the moment you return home, every detail is held with care.
               </p>
 
               <div className="mt-10">
                 <Link
                   href="/umrah-packages"
-                  className="group inline-flex items-center gap-4 border-b border-stone-950/40 pb-3 text-sm font-semibold uppercase tracking-[0.28em] text-stone-950 transition duration-200 ease-in-out hover:border-[#9a7600] hover:text-[#9a7600]"
+                  className="group inline-flex items-center gap-4 border-b border-[#FCC000]/50 pb-3 text-sm font-semibold uppercase tracking-[0.28em] text-[#f5f1e8] transition duration-200 ease-in-out hover:border-[#FCC000] hover:text-[#FCC000]"
                 >
                   <span>Enter MIQAT</span>
                   <span className="inline-block transition-transform duration-200 ease-in-out group-hover:translate-x-1">↗</span>
@@ -58,13 +58,13 @@ export function MiqatHighlightSection() {
               </div>
             </motion.div>
 
-            <div className="relative lg:-mr-10">
+            <div className="relative min-w-0">
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.35 }}
                 transition={{ ...transition, delay: 0.1 }}
-                className="overflow-hidden bg-[#f3ede5] lg:relative lg:-top-10 lg:translate-x-8"
+                className="relative overflow-hidden rounded-[1.5rem] border border-white/10 shadow-[0_18px_55px_rgba(0,0,0,0.35)]"
               >
                 <Image
                   src="/images/miqat-sunset.png"
@@ -76,7 +76,7 @@ export function MiqatHighlightSection() {
                 />
               </motion.div>
 
-              <div className="mt-6 flex items-start justify-between gap-6 text-xs uppercase tracking-[0.3em] text-stone-900/60">
+              <div className="mt-6 flex items-start justify-between gap-6 text-xs uppercase tracking-[0.3em] text-[#b8b2a7]">
                 <p>Makkah · Saudi Arabia</p>
                 <p className="hidden max-w-[190px] text-right leading-5 sm:block">A sacred journey, held with intention.</p>
               </div>

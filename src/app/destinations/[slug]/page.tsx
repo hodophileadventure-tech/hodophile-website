@@ -194,7 +194,7 @@ const destinationGalleries = {
   ormara: {
     name: "Ormara",
     description: "A relaxed Makran coast escape for beachside camping, open sea views, and slow weekend travel.",
-    images: [{ src: "/images/package-cards/images__editorial__editorial-4.webp", alt: "Ormara coastal escape" }],
+    images: [{ src: "/images/destinations/ormara-beach-camping.png", alt: "Beachside camping under a starry sky in Ormara" }],
     highlights: ["Beach camping", "Makran coast", "Sea views", "Weekend escape"],
     journeyStyle: "A coastal route designed for relaxed travel, sea air, and simple logistics.",
     bestSeason: "October to March",

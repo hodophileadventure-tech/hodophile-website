@@ -244,7 +244,7 @@ export const destinations: Destination[] = [
   {
     slug: "ormara",
     name: "Ormara",
-    image: "/images/package-cards/images__editorial__editorial-4.webp",
+    image: "/images/destinations/ormara-beach-camping.png",
     description: "A relaxed Makran coast escape for beachside camping, open sea views, and slow weekend travel.",
     season: "October to March",
     duration: "2 Days / 1 Night",
