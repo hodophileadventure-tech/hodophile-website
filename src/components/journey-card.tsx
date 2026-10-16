@@ -14,6 +14,7 @@ type JourneyCardProps = {
   badge?: ReactNode;
   counter?: ReactNode;
   media?: ReactNode;
+  glassBody?: boolean;
   imageSizes?: string;
   imageHeight?: string;
   bodyClassName?: string;
@@ -32,6 +33,7 @@ export function JourneyCard({
   badge,
   counter,
   media,
+  glassBody = false,
   imageSizes = "(max-width: 768px) 100vw, 50vw",
   imageHeight = "h-64 sm:h-[19rem]",
   bodyClassName = "p-6 sm:p-8",
@@ -81,8 +83,23 @@ export function JourneyCard({
         </div>
       </div>
       {children ? (
-        <div className={`flex flex-1 flex-col ${bodyClassName}`}>
-          {children}
+        <div className={`relative flex flex-1 flex-col ${glassBody ? "isolate overflow-hidden bg-black/40" : ""} ${bodyClassName}`}>
+          {glassBody && image ? (
+            <>
+              <Image
+                src={image}
+                alt=""
+                fill
+                sizes={imageSizes}
+                aria-hidden="true"
+                className="absolute inset-0 -z-20 scale-110 object-cover opacity-75 blur-xl"
+              />
+              <div className="absolute inset-0 -z-10 bg-black/45 backdrop-blur-sm" aria-hidden="true" />
+            </>
+          ) : null}
+          <div className={glassBody ? "relative z-10 flex flex-1 flex-col" : "contents"}>
+            {children}
+          </div>
         </div>
       ) : null}
     </article>

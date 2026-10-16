@@ -217,6 +217,7 @@ export default function Home() {
             <JourneyCard
               key={destination.name}
               href={destinationPackageLinks[destination.name] ?? "/destinations"}
+              image={destination.image}
               media={
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -230,6 +231,7 @@ export default function Home() {
               badge={destination.season}
               counter={destination.duration}
               title={destination.name}
+              glassBody
               bodyClassName="p-5"
             >
               <p className="flex-1 text-sm leading-6 text-white/75">{destination.description}</p>
