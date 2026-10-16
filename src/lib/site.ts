@@ -226,7 +226,7 @@ export const destinations: Destination[] = [
   {
     slug: "khaplu",
     name: "Khaplu",
-    image: "/images/package-cards/images__destinations__featured-skardu-basho.webp",
+    image: "/images/destinations/khaplu-palace.webp",
     description: "A quiet Baltistan valley of historic forts, wide mountain views, and peaceful cultural routes.",
     season: "May to October",
     duration: "7 Days",

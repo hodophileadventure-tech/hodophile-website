@@ -148,7 +148,7 @@ const destinationGalleries = {
   khaplu: {
     name: "Khaplu",
     description: "A quiet Baltistan valley of historic forts, wide mountain views, and peaceful cultural routes.",
-    images: [{ src: "/images/package-cards/images__destinations__featured-skardu-basho.webp", alt: "Khaplu mountain landscape" }],
+    images: [{ src: "/images/destinations/khaplu-palace.webp", alt: "Khaplu Palace beneath the mountains" }],
     highlights: ["Khaplu Palace", "Baltistan culture", "Mountain views", "Quiet routes"],
     journeyStyle: "A calmer Baltistan route for travelers who prefer low-noise, heritage-filled mountain travel.",
     bestSeason: "May to October",
