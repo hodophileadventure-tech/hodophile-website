@@ -1939,7 +1939,7 @@ export function MakeMyTripForm() {
   }, [quotation]);
 
   return (
-    <div className="relative isolate flex min-h-screen items-center justify-center overflow-x-hidden bg-transparent px-4 pb-28 pt-8 sm:px-6 lg:px-0">
+    <div className="relative isolate flex min-h-screen items-center justify-center overflow-x-hidden bg-[radial-gradient(ellipse_at_16%_12%,rgba(252,192,0,0.24),transparent_34%),radial-gradient(ellipse_at_88%_56%,rgba(252,192,0,0.14),transparent_30%),linear-gradient(135deg,#090909_0%,#17150d_48%,#090909_100%)] px-4 pb-28 pt-8 sm:px-6 lg:px-0">
       <div className="make-my-trip-form relative z-10 mx-auto w-full max-w-7xl">
         <style>{`
           .make-my-trip-form input,
