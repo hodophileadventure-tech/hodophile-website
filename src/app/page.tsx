@@ -244,7 +244,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-16 w-full bg-[#0b0b0b] px-6 py-10 text-white lg:px-10 lg:py-14">
+      <section className="mt-16 w-full bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.18),transparent_38%),linear-gradient(135deg,#11110f,#29271f)] px-6 py-10 text-white lg:px-10 lg:py-14">
         <div>
           <div>
             <p className="eyebrow">Signature departures</p>
