@@ -125,11 +125,11 @@ export function JourneySummary(props: JourneySummaryProps) {
 
   return (
     <>
-      <aside className="sticky top-24 hidden self-start rounded-2xl border border-[#FCC000]/20 bg-[radial-gradient(circle_at_top_right,rgba(252,192,0,0.1),transparent_40%),linear-gradient(155deg,#1d1a12,#131313_70%)] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.28)] lg:block" aria-label="Live journey summary">
+      <aside className="sticky top-24 hidden self-start rounded-2xl border border-[#FCC000]/40 bg-[radial-gradient(circle_at_top_right,rgba(252,192,0,0.24),transparent_42%),radial-gradient(circle_at_bottom_left,rgba(126,84,0,0.2),transparent_40%),linear-gradient(155deg,#29200c,#15130e_65%,#201807)] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.38),0_0_32px_rgba(252,192,0,0.1)] lg:block" aria-label="Live journey summary">
         <SummaryContent {...props} />
       </aside>
 
-      <section className="fixed inset-x-0 bottom-0 z-40 border-t border-[#FCC000]/25 bg-[linear-gradient(120deg,#1c1a13,#111_65%,#18150c)] shadow-[0_-10px_30px_rgba(0,0,0,0.35)] lg:hidden" aria-label="Live journey summary">
+      <section className="fixed inset-x-0 bottom-0 z-40 border-t border-[#FCC000]/45 bg-[radial-gradient(ellipse_at_top_left,rgba(252,192,0,0.2),transparent_46%),linear-gradient(120deg,#29200c,#111_65%,#211806)] shadow-[0_-10px_30px_rgba(0,0,0,0.45)] lg:hidden" aria-label="Live journey summary">
         <div className="mx-auto max-w-3xl px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2">
           <div className="flex items-center gap-3">
             <button

@@ -1939,7 +1939,7 @@ export function MakeMyTripForm() {
   }, [quotation]);
 
   return (
-    <div className="relative isolate flex min-h-screen items-center justify-center overflow-x-hidden bg-[radial-gradient(ellipse_at_16%_12%,rgba(252,192,0,0.24),transparent_34%),radial-gradient(ellipse_at_88%_56%,rgba(252,192,0,0.14),transparent_30%),linear-gradient(135deg,#090909_0%,#17150d_48%,#090909_100%)] px-4 pb-28 pt-8 sm:px-6 lg:px-0">
+    <div className="relative isolate flex min-h-screen items-center justify-center overflow-x-hidden bg-[radial-gradient(ellipse_at_12%_8%,rgba(252,192,0,0.38),transparent_28%),radial-gradient(ellipse_at_88%_18%,rgba(190,128,0,0.3),transparent_30%),radial-gradient(ellipse_at_72%_82%,rgba(252,192,0,0.22),transparent_32%),radial-gradient(ellipse_at_8%_78%,rgba(112,76,0,0.28),transparent_30%),linear-gradient(135deg,#080808_0%,#211906_38%,#100f0b_68%,#080808_100%)] px-4 pb-28 pt-8 sm:px-6 lg:px-0">
       <div className="make-my-trip-form relative z-10 mx-auto w-full max-w-7xl">
         <style>{`
           .make-my-trip-form input,
@@ -1989,7 +1989,7 @@ export function MakeMyTripForm() {
           .blink-fast { animation: fast-blink 0.6s ease-in-out infinite; }
         `}</style>
 
-        <div className="relative overflow-hidden rounded-[28px] border border-[#FCC000]/20 bg-[radial-gradient(ellipse_at_top_left,rgba(252,192,0,0.08),transparent_40%),linear-gradient(145deg,#19170f_0%,#111_56%,#17140c_100%)] p-4 shadow-[0_28px_80px_rgba(0,0,0,0.38)] sm:p-7 lg:p-9">
+        <div className="relative overflow-hidden rounded-[28px] border border-[#FCC000]/45 bg-[radial-gradient(ellipse_at_0%_0%,rgba(252,192,0,0.2),transparent_35%),radial-gradient(ellipse_at_100%_100%,rgba(154,103,0,0.22),transparent_38%),linear-gradient(145deg,#241d0d_0%,#111_48%,#191306_100%)] p-4 shadow-[0_28px_80px_rgba(0,0,0,0.45),0_0_45px_rgba(252,192,0,0.12)] sm:p-7 lg:p-9">
             {plannerSourceMessage ? (
               <p role="status" className="mb-5 rounded-xl border border-black/15 bg-white/85 px-4 py-3 text-sm font-medium text-stone-900">
                 {plannerSourceMessage}
@@ -2221,7 +2221,7 @@ export function MakeMyTripForm() {
             )}
 
             {/* Trip Details - Always visible */}
-            <div hidden={plannerStep !== 1} className="grid gap-4 rounded-[24px] border border-[#FCC000]/30 bg-[radial-gradient(ellipse_at_top_left,rgba(252,192,0,0.1),transparent_44%),linear-gradient(145deg,#211e14_0%,#151515_58%,#111_100%)] p-4 shadow-[0_12px_36px_rgba(0,0,0,0.24)]">
+            <div hidden={plannerStep !== 1} className="grid gap-4 rounded-[24px] border border-[#FCC000]/55 bg-[radial-gradient(ellipse_at_0%_0%,rgba(252,192,0,0.22),transparent_42%),radial-gradient(ellipse_at_100%_100%,rgba(130,88,0,0.2),transparent_40%),linear-gradient(145deg,#29200c_0%,#19170f_52%,#111_100%)] p-4 shadow-[0_14px_40px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(252,192,0,0.12)]">
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <label className="grid gap-2 text-sm font-medium text-black">
                   <span className="flex items-center gap-2">

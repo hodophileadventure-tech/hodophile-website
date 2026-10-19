@@ -23,7 +23,7 @@ export function TripPlannerProgress({
   onSelectStep,
 }: TripPlannerProgressProps) {
   return (
-    <nav aria-label="Trip designer progress" className="rounded-2xl border border-[#FCC000]/20 bg-[radial-gradient(ellipse_at_top_left,rgba(252,192,0,0.07),transparent_42%),linear-gradient(120deg,#1c1a13,#141414_62%,#18150c)] px-4 py-5 sm:px-5">
+    <nav aria-label="Trip designer progress" className="rounded-2xl border border-[#FCC000]/40 bg-[radial-gradient(ellipse_at_0%_0%,rgba(252,192,0,0.2),transparent_44%),radial-gradient(ellipse_at_100%_100%,rgba(153,103,0,0.18),transparent_42%),linear-gradient(120deg,#29200c,#15130e_58%,#1e1708)] px-4 py-5 shadow-[0_14px_36px_rgba(0,0,0,0.3)] sm:px-5">
       <div className="mb-4 flex items-end justify-between gap-3">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-500">Your journey, step by step</p>
