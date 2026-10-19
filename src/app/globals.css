@@ -27,12 +27,12 @@
 }
 
 :root {
-  --surface-page: #090909;
-  --surface-section: #101010;
-  --surface-raised: #171717;
+  --surface-page: #080808;
+  --surface-section: #171306;
+  --surface-raised: #1c190f;
   --text-primary: #f5f1e8;
   --text-secondary: #b8b2a7;
-  --border-subtle: #343434;
+  --border-subtle: rgba(252, 192, 0, 0.24);
   --accent-gold: #fcc000;
   --accent-gold-dark: #fcc000;
   --background: var(--surface-page);
@@ -75,25 +75,20 @@
 }
 
 .site-header-gradient {
-  background-image: linear-gradient(
-    90deg,
-    #887013 0,
-    #66551a clamp(150px, 17vw, 230px),
-    #39321b clamp(280px, 32vw, 440px),
-    #211e12 clamp(420px, 48vw, 660px),
-    #090909 100%
-  );
+  background-color: var(--surface-page);
+  background-image:
+    radial-gradient(ellipse at 12% 0%, rgba(252, 192, 0, 0.38), transparent 32%),
+    linear-gradient(105deg, #382806 0%, #211906 38%, #100f0b 68%, #080808 100%);
 }
 
 .site-page-gradient {
   background-color: var(--surface-page);
-  background-image: linear-gradient(
-    90deg,
-    #2b2512 0,
-    #211e12 clamp(280px, 32vw, 440px),
-    #15140f clamp(620px, 72vw, 960px),
-    #090909 100%
-  );
+  background-image:
+    radial-gradient(ellipse at 12% 8%, rgba(252, 192, 0, 0.38), transparent 28%),
+    radial-gradient(ellipse at 88% 18%, rgba(190, 128, 0, 0.3), transparent 30%),
+    radial-gradient(ellipse at 72% 82%, rgba(252, 192, 0, 0.22), transparent 32%),
+    radial-gradient(ellipse at 8% 78%, rgba(112, 76, 0, 0.28), transparent 30%),
+    linear-gradient(135deg, #080808 0%, #211906 38%, #100f0b 68%, #080808 100%);
   background-attachment: fixed;
 }
 
@@ -161,7 +156,10 @@
   [class*="bg-[radial-gradient"][class*="#f4f1eb"]
 ) {
   background-color: var(--surface-raised);
-  background-image: none;
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(252, 192, 0, 0.15), transparent 44%),
+    radial-gradient(ellipse at 100% 100%, rgba(130, 88, 0, 0.14), transparent 42%),
+    linear-gradient(145deg, #29200c 0%, #19170f 52%, #111 100%);
 }
 
 .site-theme :is(
@@ -181,8 +179,10 @@
   [class*="hover:bg-yellow-50"],
   [class*="hover:bg-yellow-100"]
 ):hover {
-  background-color: #282828;
-  background-image: none;
+  background-color: #29200c;
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(252, 192, 0, 0.24), transparent 48%),
+    linear-gradient(135deg, #32250a, #19170f 70%);
 }
 
 .site-theme :is(
@@ -823,7 +823,10 @@ select:focus-visible {
 
 /* Premium Card Styles */
 .card-premium {
-  background: var(--surface-raised);
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(252, 192, 0, 0.15), transparent 44%),
+    radial-gradient(ellipse at 100% 100%, rgba(130, 88, 0, 0.14), transparent 42%),
+    linear-gradient(145deg, #29200c 0%, #19170f 52%, #111 100%);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
