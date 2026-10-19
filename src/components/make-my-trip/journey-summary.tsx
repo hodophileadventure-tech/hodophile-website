@@ -125,11 +125,11 @@ export function JourneySummary(props: JourneySummaryProps) {
 
   return (
     <>
-      <aside className="sticky top-24 hidden self-start border border-stone-200 bg-[#fffdf8] p-5 lg:block" aria-label="Live journey summary">
+      <aside className="sticky top-24 hidden self-start rounded-2xl border border-[#FCC000]/20 bg-[radial-gradient(circle_at_top_right,rgba(252,192,0,0.1),transparent_40%),linear-gradient(155deg,#1d1a12,#131313_70%)] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.28)] lg:block" aria-label="Live journey summary">
         <SummaryContent {...props} />
       </aside>
 
-      <section className="fixed inset-x-0 bottom-0 z-40 border-t border-stone-300 bg-[#fffdf8] shadow-[0_-10px_30px_rgba(0,0,0,0.12)] lg:hidden" aria-label="Live journey summary">
+      <section className="fixed inset-x-0 bottom-0 z-40 border-t border-[#FCC000]/25 bg-[linear-gradient(120deg,#1c1a13,#111_65%,#18150c)] shadow-[0_-10px_30px_rgba(0,0,0,0.35)] lg:hidden" aria-label="Live journey summary">
         <div className="mx-auto max-w-3xl px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2">
           <div className="flex items-center gap-3">
             <button

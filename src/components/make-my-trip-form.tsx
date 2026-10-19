@@ -1989,7 +1989,7 @@ export function MakeMyTripForm() {
           .blink-fast { animation: fast-blink 0.6s ease-in-out infinite; }
         `}</style>
 
-        <div className="relative overflow-hidden rounded-[28px] border border-stone-200 bg-white p-4 shadow-[0_28px_80px_rgba(0,0,0,0.14)] sm:p-7 lg:p-9">
+        <div className="relative overflow-hidden rounded-[28px] border border-[#FCC000]/20 bg-[radial-gradient(ellipse_at_top_left,rgba(252,192,0,0.08),transparent_40%),linear-gradient(145deg,#19170f_0%,#111_56%,#17140c_100%)] p-4 shadow-[0_28px_80px_rgba(0,0,0,0.38)] sm:p-7 lg:p-9">
             {plannerSourceMessage ? (
               <p role="status" className="mb-5 rounded-xl border border-black/15 bg-white/85 px-4 py-3 text-sm font-medium text-stone-900">
                 {plannerSourceMessage}
@@ -2221,7 +2221,7 @@ export function MakeMyTripForm() {
             )}
 
             {/* Trip Details - Always visible */}
-            <div hidden={plannerStep !== 1} className="grid gap-4 rounded-[24px] border border-[#f4d77d] bg-white p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]">
+            <div hidden={plannerStep !== 1} className="grid gap-4 rounded-[24px] border border-[#FCC000]/30 bg-[radial-gradient(ellipse_at_top_left,rgba(252,192,0,0.1),transparent_44%),linear-gradient(145deg,#211e14_0%,#151515_58%,#111_100%)] p-4 shadow-[0_12px_36px_rgba(0,0,0,0.24)]">
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <label className="grid gap-2 text-sm font-medium text-black">
                   <span className="flex items-center gap-2">
