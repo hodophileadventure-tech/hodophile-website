@@ -12,7 +12,7 @@ export function MiqatHighlightSection() {
     <section
       id="miqat-highlight"
       aria-labelledby="miqat-highlight-heading"
-      className="relative overflow-hidden bg-[#171717] px-6 py-16 sm:px-8 lg:px-12 lg:py-20"
+      className="relative overflow-hidden bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.18),transparent_38%),linear-gradient(135deg,#11110f,#29271f)] px-6 py-16 sm:px-8 lg:px-12 lg:py-20"
     >
       <div className="mx-auto max-w-[96rem]">
         <div className="relative">
