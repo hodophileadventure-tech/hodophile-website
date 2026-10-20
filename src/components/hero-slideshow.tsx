@@ -83,7 +83,7 @@ export function HeroSlideshow() {
   return (
     <div 
       ref={containerRef}
-      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black"
+      className="theme-preserve-dark relative flex min-h-screen items-center justify-center overflow-hidden bg-black"
     >
       {/* Animated Background Slides */}
       {slides.map((slide, index) => (

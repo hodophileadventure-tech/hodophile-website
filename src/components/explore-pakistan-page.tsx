@@ -261,7 +261,7 @@ const faqItems = [
 export function ExplorePakistanPageContent() {
   return (
     <div className="space-y-5 pb-10 text-stone-900 sm:space-y-6">
-      <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-stone-950">
+      <section className="theme-preserve-dark relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-stone-950">
         <div className="absolute inset-0">
           <Image
             src="/images/package-cards/hero-images__kamran-ch-unsplash.webp"

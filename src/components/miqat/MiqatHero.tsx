@@ -6,7 +6,7 @@ import { whatsappUrl } from "@/lib/site";
 
 export function MiqatHero() {
   return (
-    <section className="relative isolate left-1/2 flex w-screen -translate-x-1/2 min-h-[min(760px,calc(100svh-var(--site-header-height)))] overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
+    <section className="theme-preserve-dark relative isolate left-1/2 flex w-screen -translate-x-1/2 min-h-[min(760px,calc(100svh-var(--site-header-height)))] overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
       <motion.div
         animate={{ scale: 1 }}
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}

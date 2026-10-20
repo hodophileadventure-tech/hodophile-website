@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function ContactUsPage() {
   return (
     <PageShell wide>
-      <section aria-labelledby="contact-page-title" className="relative isolate flex min-h-[25rem] items-center overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0b0b] px-6 py-12 text-white shadow-[0_28px_70px_rgba(0,0,0,0.25)] sm:min-h-[28rem] sm:px-10 lg:px-16">
+      <section aria-labelledby="contact-page-title" className="theme-preserve-dark relative isolate flex min-h-[25rem] items-center overflow-hidden rounded-[2rem] border border-white/10 bg-[#0b0b0b] px-6 py-12 text-white shadow-[0_28px_70px_rgba(0,0,0,0.25)] sm:min-h-[28rem] sm:px-10 lg:px-16">
         <Image
           src="/images/editorial/about-us-hero.webp"
           alt="Autumn colors reflected in a mountain lake in northern Pakistan"

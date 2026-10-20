@@ -395,7 +395,7 @@ function TourSection({
 export function AdventureToursContent() {
   return (
     <>
-      <section className="relative left-1/2 -mt-20 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
+      <section className="theme-preserve-dark relative left-1/2 -mt-20 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
         <div className="relative min-h-[88vh]">
           <Image
             src="/images/editorial/adventure-routes.webp"

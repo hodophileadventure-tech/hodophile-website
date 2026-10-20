@@ -34,7 +34,7 @@ export default function ToursPage() {
   return (
     <PageShell wide noTopPadding>
       <div className="-mx-4 overflow-hidden md:-mx-6 lg:-mx-10 xl:-mx-14">
-        <section className="relative isolate flex min-h-[min(760px,calc(100svh-var(--site-header-height)))] items-center overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
+        <section className="theme-preserve-dark relative isolate flex min-h-[min(760px,calc(100svh-var(--site-header-height)))] items-center overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
           <Image
             src="/images/package-cards/images__editorial__editorial-8.webp"
             alt=""

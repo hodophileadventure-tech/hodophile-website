@@ -120,7 +120,7 @@ export default function Home() {
 
   return (
     <PageShell wide>
-      <section className="relative left-1/2 -mt-20 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
+      <section className="theme-preserve-dark relative left-1/2 -mt-20 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
         <div className="relative min-h-[88vh]">
           <video
             src="/hero-video.mp4"
@@ -241,14 +241,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-16 w-full bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.18),transparent_38%),linear-gradient(135deg,#11110f,#29271f)] px-6 py-10 text-white lg:px-10 lg:py-14">
+      <section className="signature-departures-section mt-16 w-full bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.18),transparent_38%),linear-gradient(135deg,#11110f,#29271f)] px-6 py-10 text-white lg:px-10 lg:py-14">
         <div>
           <div>
-            <p className="eyebrow">Signature departures</p>
-            <h2 className="display-serif mt-3 text-5xl font-normal leading-tight sm:text-6xl">
+            <p className="signature-departures-eyebrow eyebrow">Signature departures</p>
+            <h2 className="signature-departures-heading display-serif mt-3 text-5xl font-normal leading-tight sm:text-6xl">
               Journeys with a point of view.
             </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">
+            <p className="signature-departures-copy mt-3 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">
               Compare top routes at a glance and jump directly into the package that matches your travel style.
             </p>
           </div>
