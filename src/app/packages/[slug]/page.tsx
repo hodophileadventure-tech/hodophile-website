@@ -387,10 +387,10 @@ export default async function PackagePage({ params }: PackagePageProps) {
           />
           <div className="relative z-10 mx-auto flex min-h-[62vh] max-w-[96rem] flex-col justify-end px-4 pb-12 pt-24 text-white md:min-h-[68vh] md:px-6 lg:px-10 xl:px-14">
             <p className="text-xs uppercase tracking-[0.34em] text-white/75">Destination Package</p>
-            <h1 className="mt-3 max-w-4xl font-serif text-4xl leading-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mt-3 max-w-4xl font-serif text-3xl leading-tight sm:text-4xl">
               {pkg.title}
             </h1>
-            <p className="mt-5 max-w-3xl text-sm leading-7 text-white/85 sm:text-base">
+            <p className="mt-4 max-w-3xl text-xs leading-6 text-white/85 sm:text-sm sm:leading-7">
               {pkg.summary}
             </p>
           </div>

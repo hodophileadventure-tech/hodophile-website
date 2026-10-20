@@ -330,7 +330,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
             <Link href="/destinations" className="text-sm font-medium text-[#ffc000] hover:text-[#ffd24d]">
               ← Back to destinations
             </Link>
-            <h1 className="mt-6 font-serif text-5xl font-semibold text-stone-950">{destination.name}</h1>
+            <h1 className="mt-6 font-serif text-3xl font-semibold text-stone-950 sm:text-4xl">{destination.name}</h1>
             <p className="mt-4 max-w-3xl text-lg leading-8 text-stone-600">{destination.description}</p>
           </div>
 

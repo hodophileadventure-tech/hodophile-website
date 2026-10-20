@@ -35,9 +35,9 @@ export function MiqatHero() {
         >
           <p className="text-sm font-semibold uppercase tracking-[0.42em] text-[#FCC000]">Introducing</p>
 
-          <h1 className="mt-6 font-[var(--font-display)] text-6xl leading-[0.94] tracking-[-0.04em] text-white sm:text-7xl lg:text-[6rem] xl:text-[6.5rem]">
+          <h1 className="mt-6 font-[var(--font-display)] text-3xl leading-[1.08] tracking-[-0.03em] text-white sm:text-4xl">
             <span className="block">MIQAT</span>
-            <span className="mt-2 block text-2xl font-light tracking-[0.01em] text-white/90 sm:text-3xl lg:text-4xl">
+            <span className="mt-2 block text-lg font-light tracking-[0.01em] text-white/90 sm:text-xl">
               by Hodophile
             </span>
           </h1>
@@ -50,11 +50,11 @@ export function MiqatHero() {
             className="mt-6 h-[2px] bg-[#FCC000]"
           />
 
-          <p className="mt-6 font-[var(--font-display)] text-2xl italic text-[#FCC000] sm:text-3xl">
+          <p className="mt-6 font-[var(--font-display)] text-xl italic text-[#FCC000] sm:text-2xl">
             Your Sacred Journey, Thoughtfully Arranged.
           </p>
 
-          <p className="mt-5 max-w-2xl text-base leading-8 text-[#B5B5B5] sm:text-lg">
+          <p className="mt-5 max-w-2xl text-sm leading-7 text-[#B5B5B5] sm:text-base sm:leading-8">
             Premium Umrah experiences designed with comfort, care and complete peace of mind.
           </p>
 

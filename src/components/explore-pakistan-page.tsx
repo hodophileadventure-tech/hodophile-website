@@ -291,10 +291,10 @@ export function ExplorePakistanPageContent() {
             <p className="mt-5 text-xs font-semibold uppercase tracking-[0.26em] text-[#fcc000]">
               Pakistan is the destination. Hodophile is your local expert.
             </p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-none tracking-[-0.06em] sm:text-5xl lg:text-[5.3rem]">
+            <h1 className="mt-5 max-w-3xl text-3xl font-semibold leading-[1.08] tracking-[-0.03em] sm:text-4xl">
               Discover Pakistan, Your Way.
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-white/80 sm:text-lg">
+            <p className="mt-5 max-w-2xl text-sm leading-6 text-white/80 sm:text-base sm:leading-7">
               From the peaks of the Karakoram to ancient cultures and unforgettable road journeys,
               discover Pakistan through carefully crafted experiences with local experts.
             </p>

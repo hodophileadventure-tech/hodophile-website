@@ -25,10 +25,6 @@ export const metadata: Metadata = {
     "travel agency Pakistan",
   ],
   icons: {
-    icon: [
-      { url: "/images/package-cards/favicon.ico", sizes: "any" },
-      { url: "/images/package-cards/logo.webp", type: "image/webp" },
-    ],
     apple: "/images/package-cards/logo.webp",
   },
   openGraph: {

@@ -49,11 +49,11 @@ export default function ToursPage() {
                 <span className="h-px w-10 bg-[#FCC000]" />
                 Domestic journeys by Hodophile
               </p>
-              <h1 className="mt-6 font-[var(--font-display)] text-6xl leading-[0.94] tracking-[-0.04em] sm:text-7xl lg:text-[6rem] xl:text-[6.5rem]">
+              <h1 className="mt-6 font-[var(--font-display)] text-3xl leading-[1.08] tracking-[-0.03em] sm:text-4xl">
                 Find your
                 <span className="mt-2 block text-[#FCC000]">next journey.</span>
               </h1>
-              <p className="mt-7 max-w-xl text-base leading-8 text-white/75 sm:text-lg">
+              <p className="mt-6 max-w-xl text-sm leading-7 text-white/75 sm:text-base sm:leading-8">
                 Thoughtfully planned escapes across Pakistan, with considered routes, clear details, and a local team beside you.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">

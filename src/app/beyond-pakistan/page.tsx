@@ -523,11 +523,11 @@ export default function BeyondPakistanPage() {
                 <span className="h-px w-10 bg-[#FCC000]" />
                 International journeys by Hodophile
               </p>
-              <h1 className="mt-6 font-[var(--font-display)] text-6xl leading-[0.94] tracking-[-0.04em] sm:text-7xl lg:text-[6rem] xl:text-[6.5rem]">
+              <h1 className="mt-6 font-[var(--font-display)] text-3xl leading-[1.08] tracking-[-0.03em] sm:text-4xl">
                 Beyond
                 <span className="mt-2 block text-[#FCC000]">Pakistan.</span>
               </h1>
-              <p className="mt-7 max-w-xl text-base leading-8 text-white/75 sm:text-lg">
+              <p className="mt-6 max-w-xl text-sm leading-7 text-white/75 sm:text-base sm:leading-8">
                 Thoughtfully arranged escapes across Asia and beyond, with clear inclusions,
                 considered details, and a Hodophile team beside you from departure to return.
               </p>

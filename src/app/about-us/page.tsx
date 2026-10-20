@@ -51,11 +51,11 @@ export default function AboutUsPage() {
               <span className="text-sm font-semibold uppercase tracking-wide text-[#fcc000]">Our Story</span>
             </div>
 
-            <h1 className="mb-6 font-serif text-5xl font-bold tracking-tight text-white lg:text-6xl">
+            <h1 className="mb-5 font-serif text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Journey With Pakistan&apos;s Most Trusted Travel Partner
             </h1>
 
-            <p className="max-w-2xl text-xl leading-relaxed text-gray-100">
+            <p className="max-w-2xl text-base leading-relaxed text-gray-100 sm:text-lg">
               Travel has the power to broaden perspectives, create lasting memories, and bring people closer to the world around them.
             </p>
           </div>

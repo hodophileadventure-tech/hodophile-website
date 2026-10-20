@@ -2040,7 +2040,7 @@ export function MakeMyTripForm() {
                   <Compass className="h-3.5 w-3.5" aria-hidden="true" />
                   Hodophile · Journey builder
                 </p>
-                <h2 id="planner-inspiration-heading" className="mt-5 font-serif text-4xl font-medium leading-[1.02] text-white drop-shadow sm:text-5xl lg:text-6xl">
+                <h2 id="planner-inspiration-heading" className="mt-5 font-serif text-3xl font-medium leading-[1.05] text-white drop-shadow sm:text-4xl lg:text-5xl">
                   Design a journey that feels like yours.
                 </h2>
                 <p aria-live="polite" className="mt-4 max-w-lg text-sm leading-7 text-white/85 sm:text-base">

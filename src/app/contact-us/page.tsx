@@ -36,10 +36,10 @@ export default function ContactUsPage() {
             <span className="h-px w-9 bg-[#FCC000]" aria-hidden="true" />
             Contact our team
           </p>
-          <h1 id="contact-page-title" className="mt-5 max-w-3xl font-[var(--font-display)] text-4xl leading-[1.04] tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+          <h1 id="contact-page-title" className="mt-5 max-w-3xl font-[var(--font-display)] text-3xl leading-[1.08] tracking-[-0.03em] sm:text-4xl">
             Let’s plan a trip that feels like yours.
           </h1>
-          <p className="mt-5 max-w-xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
+          <p className="mt-5 max-w-xl text-sm leading-6 text-white/75 sm:text-base sm:leading-7">
             Tell us what you have in mind. Our Pakistan travel specialists will help shape the route, pace, and details around you.
           </p>
           <a

@@ -28,14 +28,14 @@ export function TourLanding({
           <Image src={image} alt={title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
           <div className="absolute inset-x-0 bottom-0 p-6 text-white lg:p-8">
             <p className="eyebrow">{eyebrow}</p>
-            <h1 className="display-serif mt-4 max-w-3xl text-5xl font-normal leading-[1.02] sm:text-6xl lg:text-7xl">{title}</h1>
+            <h1 className="display-serif mt-4 max-w-3xl text-3xl font-normal leading-[1.08] sm:text-4xl">{title}</h1>
           </div>
         </div>
 
         <div className="flex flex-col justify-between p-8 lg:p-10 xl:p-12">
           <div>
             <p className="eyebrow text-[#fcc000]">Tour overview</p>
-            <p className="mt-4 max-w-2xl text-base leading-8 text-white/65">{description}</p>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">{description}</p>
             <div className="mt-8 flex flex-wrap gap-2">
               {highlights.map((item) => (
                 <span
