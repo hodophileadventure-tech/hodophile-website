@@ -2105,7 +2105,7 @@ export function MakeMyTripForm() {
                 
                 {/* Featured Tours Dropdown */}
                 {showHoneymoonDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-max max-h-64 overflow-y-auto rounded-[16px] border border-[#fcc000]/40 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.15)] z-50">
+                  <div className="absolute top-full left-1/2 z-50 mt-2 max-h-64 w-[min(24rem,calc(100vw-2rem))] -translate-x-1/2 overflow-y-auto rounded-[16px] border border-[#fcc000]/40 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.15)]">
                     <div className="py-2">
                       {orderedFeaturedTourCards.map((tour) => (
                         <button
@@ -2134,7 +2134,7 @@ export function MakeMyTripForm() {
                 
                 {/* Dropdown Menu */}
                 {showLuxuryDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-max rounded-[16px] border-2 border-[#fcc000] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.15)] z-50">
+                  <div className="absolute top-full left-1/2 z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] -translate-x-1/2 rounded-[16px] border-2 border-[#fcc000] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.15)]">
                     <div className="py-2">
                       {Object.entries(luxuryPackages).map(([key, pkg]) => (
                         <button

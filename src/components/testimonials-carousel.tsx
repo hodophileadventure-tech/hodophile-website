@@ -50,11 +50,11 @@ export function TestimonialsCarousel({ testimonials }: TestimonialsCarouselProps
   }, [testimonials.length]);
 
   return (
-    <div ref={scrollerRef} className="mt-8 -mx-2 flex snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]">
+    <div ref={scrollerRef} className="mt-8 flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]">
       {testimonials.map((story, index) => (
         <article
           key={`${story.name}-${index}`}
-          className="w-[20rem] shrink-0 snap-start rounded-2xl border-4 border-[#fcc000] bg-stone-50 p-5 sm:w-[22rem]"
+          className="w-[min(20rem,100%)] shrink-0 snap-start rounded-2xl border-4 border-[#fcc000] bg-stone-50 p-5 sm:w-[22rem]"
         >
           <div className="mb-4 flex items-center gap-3">
             <Image

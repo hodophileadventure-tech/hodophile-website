@@ -32,7 +32,7 @@ export default function DestinationsPage() {
         description="Explore destination-led pages designed for discovery, route comparison, and premium itinerary planning."
       />
 
-      <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
+      <section className="mx-auto mt-12 grid max-w-[96rem] gap-6 md:grid-cols-2 xl:grid-cols-3">
         {destinations.map((destination) => (
             <JourneyCard
               key={destination.name}
