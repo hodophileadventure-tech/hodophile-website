@@ -40,8 +40,8 @@ export function JourneyCard({
   children,
 }: JourneyCardProps) {
   const card = (
-    <article id={id} className={`group flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-[#d4b34d]/25 bg-[#141414] text-white shadow-[0_22px_60px_rgba(0,0,0,0.2)] transition duration-500 hover:-translate-y-1 hover:border-[#c7a32a] hover:shadow-[0_30px_75px_rgba(0,0,0,0.36)] ${className}`}>
-      <div className={`relative ${imageHeight} shrink-0 overflow-hidden bg-[#161616]`}>
+    <article id={id} className={`journey-card group flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-[#d4b34d]/25 bg-[#141414] text-white shadow-[0_22px_60px_rgba(0,0,0,0.2)] transition duration-500 hover:-translate-y-1 hover:border-[#c7a32a] hover:shadow-[0_30px_75px_rgba(0,0,0,0.36)] ${className}`}>
+      <div className={`journey-card-image relative ${imageHeight} shrink-0 overflow-hidden bg-[#161616]`}>
         {media ? (
           <div className="absolute inset-0">{media}</div>
         ) : image ? (
@@ -56,7 +56,7 @@ export function JourneyCard({
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_20%,rgba(206,170,75,0.3),transparent_35%),linear-gradient(135deg,#111723,#2b3140_62%,#71603f)]" />
         )}
       </div>
-      <div className={`relative flex flex-1 flex-col ${glassBody ? "bg-[#1c190f]" : ""} ${bodyClassName}`}>
+      <div className={`journey-card-body relative flex flex-1 flex-col ${glassBody ? "bg-[#1c190f]" : ""} ${bodyClassName}`}>
         {(badge || counter) ? (
           <div className="mb-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs">
             {badge ? (
