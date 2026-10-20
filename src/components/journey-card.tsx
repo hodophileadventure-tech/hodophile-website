@@ -55,7 +55,6 @@ export function JourneyCard({
         ) : (
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_20%,rgba(206,170,75,0.3),transparent_35%),linear-gradient(135deg,#111723,#2b3140_62%,#71603f)]" />
         )}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.3)_0%,transparent_34%,rgba(0,0,0,0.82)_100%)]" />
         {(badge || counter) ? (
           <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-3 p-5 sm:p-6">
             {badge ? (

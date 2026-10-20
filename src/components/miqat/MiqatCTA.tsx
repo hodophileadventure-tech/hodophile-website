@@ -23,8 +23,6 @@ export function MiqatCTA() {
             sizes="100vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.66)_50%,rgba(0,0,0,0.32)_100%)]" />
-
           <div className="relative z-10 flex h-full items-center px-6 sm:px-10 lg:px-14">
             <div className="max-w-3xl">
               <p className="text-sm font-semibold uppercase tracking-[0.38em] text-[#FCC000]">Final Invitation</p>

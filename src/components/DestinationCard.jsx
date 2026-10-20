@@ -25,8 +25,6 @@ export default function DestinationCard({ item }) {
             loading="lazy"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/35 to-transparent transition-opacity duration-400" />
-
           <div className="absolute -left-6 -top-6 h-24 w-[2px] rotate-6 bg-amber-400 opacity-60 blur-sm" />
 
           <div className="absolute left-6 bottom-6 right-6 flex items-end justify-between">

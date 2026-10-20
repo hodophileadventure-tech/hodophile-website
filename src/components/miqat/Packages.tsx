@@ -59,7 +59,6 @@ export function Packages() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover transition duration-700 hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
                 <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-[#FCC000]/35 bg-black/70 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.25em] text-[#FCC000]">
                   <Crown className="h-3.5 w-3.5" aria-hidden="true" />
                   Premium

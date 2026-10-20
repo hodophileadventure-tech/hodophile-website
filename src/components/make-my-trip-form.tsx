@@ -2034,8 +2034,6 @@ export function MakeMyTripForm() {
                 />
               </motion.div>
             </AnimatePresence>
-            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-black/5" />
-            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
             <div className="relative z-10 flex min-h-[30rem] flex-col justify-between p-6 sm:min-h-[34rem] sm:p-10 lg:p-12">
               <div className="max-w-2xl">
                 <p className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-black/20 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#ffd84d] backdrop-blur-sm">
@@ -2421,7 +2419,6 @@ export function MakeMyTripForm() {
                           className="-z-10 object-cover transition duration-500 group-hover:scale-[1.03]"
                         />
                       ) : null}
-                      <span aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-black/85 via-black/30 to-black/5" />
                       <input
                         type="checkbox"
                         checked={effectiveSelectedCities.includes(city)}

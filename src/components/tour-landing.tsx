@@ -26,7 +26,6 @@ export function TourLanding({
       <div className="grid gap-0 lg:grid-cols-[1.08fr_.92fr]">
         <div className="relative min-h-[28rem]">
           <Image src={image} alt={title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,11,11,0.08)_0%,rgba(11,11,11,0.58)_100%)]" />
           <div className="absolute inset-x-0 bottom-0 p-6 text-white lg:p-8">
             <p className="eyebrow">{eyebrow}</p>
             <h1 className="display-serif mt-4 max-w-3xl text-5xl font-normal leading-[1.02] sm:text-6xl lg:text-7xl">{title}</h1>

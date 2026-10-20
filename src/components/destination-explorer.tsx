@@ -95,10 +95,6 @@ export function DestinationExplorer({ destinations }: { destinations: Destinatio
               </motion.div>
             </AnimatePresence>
 
-            {/* Gradient Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-black/40 to-black/70" />
-            <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.4)]" />
-
             {/* Content Overlay */}
             <motion.div
               key={`content-${activeIndex}`}

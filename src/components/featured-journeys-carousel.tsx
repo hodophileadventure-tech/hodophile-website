@@ -122,7 +122,6 @@ export function FeaturedJourneysCarousel({ tours }: FeaturedJourneysCarouselProp
                     className="absolute inset-0 object-cover transition duration-800 ease-out group-hover:scale-[1.03]"
                     priority={index === 0}
                   />
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(0,0,0,0.26),transparent_36%),linear-gradient(180deg,transparent_36%,rgba(0,0,0,0.56))]" />
                 </div>
 
                 <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">

@@ -82,12 +82,6 @@ export function FeaturedTours({ tours }: { tours: FeaturedJourney[] }) {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-black/10 via-black/30 to-black/70" />
-              
-              {/* Vignette */}
-              <div className="absolute inset-0 shadow-[inset_0_0_80px_rgba(0,0,0,0.3)]" />
-
               {/* Content Overlay */}
               <motion.div
                 key={`content-${activeIndex}`}

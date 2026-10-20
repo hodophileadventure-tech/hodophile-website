@@ -1364,7 +1364,7 @@ export function CompareTripsClient() {
                   <div className="overflow-hidden rounded-[1.3rem] border border-[#e8dbb6] bg-[linear-gradient(155deg,_#fffdf7,_#f5f0e1)] p-3 shadow-[0_12px_28px_rgba(50,40,10,0.08)] sm:p-4">
                     <div className="relative mb-3 aspect-[16/9] overflow-hidden rounded-xl bg-stone-200">
                       <Image src={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"} alt="" fill sizes="(max-width: 768px) 70vw, 220px" className="object-cover" />
-                      <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-3 pb-2 pt-7 text-[10px] font-bold uppercase tracking-[0.18em] text-white">Journey {comparePackages.indexOf(packageItem) + 1}</span>
+                      <span className="absolute inset-x-0 bottom-0 px-3 pb-2 pt-7 text-[10px] font-bold uppercase tracking-[0.18em] text-white">Journey {comparePackages.indexOf(packageItem) + 1}</span>
                     </div>
                     <p className="font-serif text-lg leading-tight text-stone-950">{packageItem.title}</p>
                     <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">{packageItem.duration} · {packageItem.pace ?? "Pace to confirm"}</p>

@@ -23,8 +23,6 @@ export function MiqatHero() {
         >
           <source src="/videos/qasim-opt.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(0,0,0,0.84)_0%,rgba(0,0,0,0.62)_45%,rgba(0,0,0,0.22)_100%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(252,192,0,0.16),transparent_32%)]" />
       </motion.div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-start">

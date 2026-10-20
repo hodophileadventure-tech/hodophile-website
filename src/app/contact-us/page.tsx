@@ -31,8 +31,6 @@ export default function ContactUsPage() {
           sizes="(max-width: 1536px) 100vw, 1536px"
           className="absolute inset-0 -z-20 object-cover"
         />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(8,8,8,0.94)_0%,rgba(8,8,8,0.78)_48%,rgba(8,8,8,0.28)_100%)]" />
-        <div className="absolute -right-24 -top-32 -z-10 h-80 w-80 rounded-full bg-[#FCC000]/10 blur-3xl" />
         <div className="max-w-3xl">
           <p className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.32em] text-[#FCC000]">
             <span className="h-px w-9 bg-[#FCC000]" aria-hidden="true" />

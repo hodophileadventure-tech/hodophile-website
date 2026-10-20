@@ -283,7 +283,6 @@ export function ExplorePakistanPageContent() {
           >
             <source src="/videos/explore-pakistan-hero.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,8,8,0.76)_0%,rgba(8,8,8,0.46)_34%,rgba(8,8,8,0.24)_100%)]" />
         </div>
 
         <div className="relative mx-auto flex min-h-[82vh] w-full max-w-[1600px] items-end px-4 pb-12 pt-28 sm:px-6 lg:px-10 lg:pb-16 xl:px-14">
@@ -377,7 +376,6 @@ export function ExplorePakistanPageContent() {
                     className="object-cover transition duration-700 group-hover:scale-105"
                   />
                 </div>
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,11,11,0.14)_0%,rgba(11,11,11,0.62)_100%)]" />
                 <div className="relative z-10 flex h-full flex-col justify-end p-5 sm:p-6">
                   <div className="rounded-[1.1rem] bg-black/20 p-3 backdrop-blur-[2px]">
                     <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#fcc000]">{tile.accent}</p>
@@ -418,7 +416,6 @@ export function ExplorePakistanPageContent() {
                     className="object-cover transition duration-700 group-hover:scale-105"
                   />
                 </div>
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,18,18,0.18)_0%,rgba(17,18,18,0.75)_100%)]" />
                 <div className="relative z-10 flex h-full flex-col justify-end p-5 sm:p-6">
                   <h3 className="text-2xl font-semibold tracking-[-0.05em] text-white">{card.title}</h3>
                   <p className="mt-3 max-w-sm text-sm leading-6 text-white/80">{card.description}</p>
@@ -646,7 +643,6 @@ export function ExplorePakistanPageContent() {
               sizes="100vw"
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,15,15,0.74)_0%,rgba(15,15,15,0.46)_30%,rgba(15,15,15,0.28)_100%)]" />
           </div>
 
           <div className="relative z-10 flex min-h-[26rem] items-center justify-center px-5 py-12 text-center text-white sm:px-8 lg:px-10">

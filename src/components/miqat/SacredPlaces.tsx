@@ -38,7 +38,6 @@ export function SacredPlaces() {
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover transition duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               </div>
               <div className="absolute inset-x-0 bottom-0 p-6">
                 <h3 className="font-[var(--font-display)] text-3xl text-white">{place.title}</h3>

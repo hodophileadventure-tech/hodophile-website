@@ -133,8 +133,6 @@ export default function Home() {
             className="absolute inset-0 h-full w-full object-cover"
             style={{ display: 'block' }}
           />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,24,28,0.35)_0%,rgba(18,24,28,0.6)_100%)]" />
-
           <div className="relative z-10 flex min-h-[88vh] w-full items-end px-6 pb-14 pt-40 lg:px-16 lg:pb-20">
             <div className="max-w-5xl text-white">
               <p className="eyebrow">Hodophile Adventures · Pakistan</p>
@@ -173,7 +171,6 @@ export default function Home() {
               alt="A quiet mountain landscape in Pakistan"
               className="h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
             <p className="absolute bottom-5 left-5 text-xs uppercase tracking-[0.28em] text-white/80">Pakistan · In between places</p>
           </div>
           <div className="max-w-2xl">

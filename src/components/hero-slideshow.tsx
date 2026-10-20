@@ -108,12 +108,6 @@ export function HeroSlideshow() {
         </motion.div>
       ))}
 
-      {/* Premium Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60 pointer-events-none" />
-      
-      {/* Vignette Effect */}
-      <div className="absolute inset-0 shadow-[inset_0_0_120px_rgba(0,0,0,0.5)] pointer-events-none" />
-
       {/* Content Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

@@ -23,8 +23,6 @@ export function CTASection() {
             sizes="100vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(12,42,29,0.88)_0%,rgba(12,42,29,0.68)_52%,rgba(12,42,29,0.45)_100%)]" />
-
           <div className="absolute inset-0 flex items-center p-6 sm:p-10 lg:p-14">
             <div className="max-w-3xl">
               <h2 id="miqat-cta-heading" className="font-[var(--font-miqat-heading)] text-4xl text-[#FDFBF7] sm:text-5xl lg:text-6xl">

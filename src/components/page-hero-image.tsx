@@ -28,9 +28,6 @@ export function PageHeroImage({ image, imageAlt, videoSrc, eyebrow, title, descr
           <source src={videoSrc} type="video/mp4" />
         </video>
       )}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(105deg,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.62)_52%,rgba(0,0,0,0.22)_100%),linear-gradient(0deg,rgba(0,0,0,0.42),transparent_48%)]" />
-      <div className="pointer-events-none absolute -right-40 -top-48 -z-10 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
-
       <div className="relative mx-auto grid w-full max-w-7xl items-center">
         <div className="max-w-4xl py-3 lg:py-10">
           <p className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.34em] text-[#FCC000]">

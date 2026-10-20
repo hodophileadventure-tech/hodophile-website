@@ -138,7 +138,6 @@ export function TripMakerRecommendations() {
               className={`group relative min-h-32 overflow-hidden border text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] sm:min-h-40 ${isSelected ? "border-[#c49300] ring-2 ring-[#fcc000]/50" : "border-stone-200 hover:border-[#c49300]"}`}
             >
               <Image src={image} alt="" fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
-              <span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/5" />
               <span className="absolute inset-x-0 bottom-0 p-3 text-white sm:p-4">
                 <span className="block text-[10px] font-bold uppercase tracking-[0.14em] sm:text-xs">{mood.title}</span>
                 <span className="mt-1 hidden text-[11px] leading-4 text-white/85 sm:block">{mood.description}</span>

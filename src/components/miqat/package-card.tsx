@@ -35,7 +35,6 @@ export function PackageCard({ pkg, index }: PackageCardProps) {
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-contain object-center transition duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
         <span className="absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full border border-[#C9A227]/60 bg-[#0F5132]/90 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-[#FDFBF7]">
           <Crown className="h-3.5 w-3.5 text-[#C9A227]" aria-hidden="true" />
           Luxury Badge
