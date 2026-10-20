@@ -109,7 +109,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
           <div className="xl:pl-4 flex flex-col items-center">
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-center">Customer Service</h3>
-            <div className="mt-5 overflow-hidden rounded-xl bg-white p-3">
+            <div className="mt-5 w-full max-w-[13rem]">
               <Image
                 src="/images/footer/footer-service-24-7.png"
                 alt="24/7 customer service"
@@ -152,9 +152,9 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
           <div className="xl:pl-4 flex flex-col items-center">
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-center">100% Satisfaction</h3>
-            <div className="mt-5 overflow-hidden rounded-xl bg-white p-3">
+            <div className="mt-5 w-full max-w-[13rem]">
               <Image
-                src="/images/footer/footer-satisfaction.jpg"
+                src="/images/footer/footer-satisfaction.png"
                 alt="100 percent satisfaction guaranteed"
                 width={520}
                 height={460}
@@ -167,7 +167,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-left">Our Affiliations</h3>
             <div className="mt-5 flex flex-col gap-6">
               <div className="flex flex-row gap-6 items-center">
-                <div className="h-20 w-20 flex-shrink-0 rounded-xl bg-white p-2">
+                <div className="h-20 w-20 flex-shrink-0">
                   <Image
                     src="/images/footer/footer-govt-pakistan.png"
                     alt="Government of Pakistan"
@@ -182,7 +182,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 </div>
               </div>
               <div className="flex flex-row gap-6 items-center justify-start">
-                <div className="h-20 w-20 flex-shrink-0 rounded-xl bg-white p-2">
+                <div className="h-20 w-20 flex-shrink-0">
                   <Image
                     src="/images/footer/footer-taap.png"
                     alt="TAAP"
@@ -191,7 +191,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                     className="h-full w-full object-contain"
                   />
                 </div>
-                <div className="h-20 w-20 flex-shrink-0 rounded-xl bg-white p-2">
+                <div className="h-20 w-20 flex-shrink-0">
                   <Image
                     src="/images/footer/footer-pato.png"
                     alt="PATO"
