@@ -196,7 +196,7 @@ export function WhyChooseUs() {
                 {/* Number Badge */}
                 <motion.div
                   variants={pillarItemVariants}
-                  className="mb-3 inline-flex items-center gap-3"
+                  className="mb-2 inline-flex items-center gap-3 self-center"
                 >
                   <span className="text-3xl lg:text-4xl font-serif font-bold text-yellow-400">
                     {pillar.number}
@@ -205,7 +205,7 @@ export function WhyChooseUs() {
                 </motion.div>
 
                 {/* Image Section */}
-                <div className="mb-4 flex h-36 items-center justify-center overflow-hidden sm:h-40">
+                <div className="mb-3 flex h-28 items-center justify-center overflow-hidden sm:h-32">
                   <motion.div
                     variants={pillarItemVariants}
                     className="flex justify-center transition duration-300 group-hover:scale-105"
@@ -213,16 +213,16 @@ export function WhyChooseUs() {
                     <img
                       src={pillar.image}
                       alt={pillar.eyebrow}
-                      className="h-auto max-h-36 w-auto max-w-[90%] object-contain drop-shadow-lg sm:max-h-40"
+                      className="h-auto max-h-28 w-auto max-w-[90%] object-contain drop-shadow-lg sm:max-h-32"
                     />
                   </motion.div>
                 </div>
 
                 {/* Text Content */}
-                <motion.div className="flex-1 flex flex-col" variants={textGroupVariants}>
+                <motion.div className="flex flex-1 flex-col items-center text-center" variants={textGroupVariants}>
                   <motion.p
                     variants={textItemVariants}
-                    className="mb-2 text-xs font-bold uppercase leading-tight tracking-[0.2em] text-[#8b6b00]"
+                    className="mb-2 text-center text-xs font-bold uppercase leading-tight tracking-[0.2em] text-[#8b6b00]"
                   >
                     {pillar.eyebrow.split("\n").map((line, lineIndex) => (
                       <span key={`${pillar.number}-eyebrow-${lineIndex}`} className="block">
@@ -234,7 +234,7 @@ export function WhyChooseUs() {
                   {pillar.highlight && (
                     <motion.div
                       variants={textItemVariants}
-                      className="inline-flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-yellow-100/60 border border-yellow-200/50"
+                      className="mb-2 inline-flex items-center gap-2 rounded-lg border border-yellow-200/50 bg-yellow-100/60 px-3 py-2"
                     >
                       <span className="text-xs font-bold text-yellow-700">{pillar.highlight}</span>
                     </motion.div>
@@ -242,7 +242,7 @@ export function WhyChooseUs() {
 
                   <motion.p
                     variants={textItemVariants}
-                    className="flex-1 text-justify text-sm leading-relaxed text-stone-700"
+                    className="text-center text-sm leading-relaxed text-stone-700"
                   >
                     {pillar.description}
                   </motion.p>
@@ -250,7 +250,7 @@ export function WhyChooseUs() {
                   {/* Accent line */}
                   <motion.div
                     variants={textItemVariants}
-                    className="mt-4 h-1 w-8 bg-gradient-to-r from-yellow-400 to-transparent rounded-full"
+                    className="mx-auto mt-3 h-1 w-8 rounded-full bg-gradient-to-r from-yellow-400 to-transparent"
                   />
                 </motion.div>
               </div>
