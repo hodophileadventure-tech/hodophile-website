@@ -157,6 +157,11 @@ html[data-theme="light"] .site-page-gradient {
     linear-gradient(135deg, rgba(252, 192, 0, 0.04), rgba(0, 0, 0, 0.06));
 }
 
+.footer-affiliation-logo {
+  border: 1px solid rgba(139, 105, 0, 0.2);
+  background: linear-gradient(145deg, #fff9e6, #f1e2b8);
+}
+
 html[data-theme="light"] .site-footer-gradient {
   background-color: #f1e7c9;
   background-image:

@@ -163,11 +163,11 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             </div>
           </div>
 
-          <div className="xl:pl-4">
+          <div className="min-w-0 xl:pl-4">
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-left">Our Affiliations</h3>
-            <div className="footer-logo-glow mt-5 flex flex-col gap-6 rounded-2xl p-4">
-              <div className="flex flex-row gap-6 items-center">
-                <div className="h-20 w-20 flex-shrink-0">
+            <div className="mt-5 grid min-w-0 gap-3">
+              <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-[#fcc000]/20 bg-white/[0.035] p-3">
+                <div className="footer-affiliation-logo h-[4.5rem] w-[4.5rem] shrink-0 rounded-xl p-1.5">
                   <Image
                     src="/images/footer/footer-govt-pakistan.png"
                     alt="Government of Pakistan"
@@ -176,28 +176,28 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                     className="h-full w-full object-contain"
                   />
                 </div>
-                <div className="text-sm font-semibold text-white/70">
-                  <p>Lisence No.</p>
-                  <p>5436</p>
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-white/65">License No.</p>
+                  <p className="mt-1 text-lg font-semibold leading-none tracking-wide text-white">5436</p>
                 </div>
               </div>
-              <div className="flex flex-row gap-6 items-center justify-start">
-                <div className="h-20 w-20 flex-shrink-0">
+              <div className="grid min-w-0 grid-cols-2 gap-3">
+                <div className="footer-affiliation-logo flex min-w-0 items-center justify-center rounded-xl p-2">
                   <Image
                     src="/images/footer/footer-taap.png"
                     alt="TAAP"
-                    width={80}
-                    height={80}
-                    className="h-full w-full object-contain"
+                    width={551}
+                    height={453}
+                    className="h-20 w-full object-contain"
                   />
                 </div>
-                <div className="h-20 w-20 flex-shrink-0">
+                <div className="footer-affiliation-logo flex min-w-0 items-center justify-center rounded-xl p-2">
                   <Image
                     src="/images/footer/footer-pato.png"
                     alt="PATO"
-                    width={80}
-                    height={80}
-                    className="h-full w-full object-contain"
+                    width={500}
+                    height={500}
+                    className="h-20 w-full object-contain"
                   />
                 </div>
               </div>
