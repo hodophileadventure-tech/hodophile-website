@@ -14,7 +14,6 @@ export function ContactForm() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -81,12 +80,12 @@ export function ContactForm() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="rounded-3xl border border-stone-200/50 bg-gradient-to-br from-white/80 to-stone-50/80 backdrop-blur-lg p-8 lg:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
+      className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,#201a0b,#11110e_55%,#0b0b0b)] p-6 text-white shadow-[0_24px_60px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10"
       noValidate
     >
       <div className="mb-8">
-        <h3 className="text-2xl font-serif font-bold text-stone-950 mb-2">Get in Touch</h3>
-        <p className="text-stone-600 text-sm">We'll get back to you within 24 hours to discuss your dream journey.</p>
+        <h3 className="mb-2 font-[var(--font-display)] text-3xl font-normal text-white">Send us a message</h3>
+        <p className="text-sm leading-6 text-white/60">Share a few details and our team will get back to you within 24 hours.</p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
@@ -99,32 +98,21 @@ export function ContactForm() {
             transition={{ duration: 0.4 }}
             className="relative"
           >
-            <label htmlFor={field.id} className="block text-sm font-semibold text-stone-700 mb-2">
+            <label htmlFor={field.id} className="mb-2 block text-sm font-semibold text-white/80">
               {field.label}
             </label>
-            <div className="relative">
-              <input
-                id={field.id}
-                type={field.type}
-                name={field.name}
-                value={formData[field.name as keyof typeof formData]}
-                onChange={handleChange}
-                onFocus={() => setFocusedField(field.name)}
-                onBlur={() => setFocusedField(null)}
-                placeholder={field.placeholder}
-                required
-                aria-required="true"
-                aria-invalid={status === "error" && !formData[field.name as keyof typeof formData]}
-                className="w-full rounded-xl border border-stone-200/60 bg-white/70 px-4 py-3 text-stone-900 placeholder:text-stone-400 transition-all duration-300 focus:bg-white focus:border-yellow-400/60 focus:outline-none focus:ring-2 focus:ring-yellow-400/20 backdrop-blur-sm"
-              />
-              {focusedField === field.name && (
-                <motion.div
-                  layoutId={`focus-ring-${field.id}`}
-                  className="absolute inset-0 rounded-xl border border-yellow-400/40 pointer-events-none"
-                  transition={{ duration: 0.2 }}
-                />
-              )}
-            </div>
+            <input
+              id={field.id}
+              type={field.type}
+              name={field.name}
+              value={formData[field.name as keyof typeof formData]}
+              onChange={handleChange}
+              placeholder={field.placeholder}
+              required
+              aria-required="true"
+              aria-invalid={status === "error" && !formData[field.name as keyof typeof formData]}
+              className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/35 transition-all duration-200 focus:border-[#FCC000]/60 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-[#FCC000]/15"
+            />
           </motion.div>
         ))}
       </div>
@@ -136,31 +124,21 @@ export function ContactForm() {
         transition={{ duration: 0.4, delay: 0.1 }}
         className="mt-6 relative"
       >
-        <label htmlFor="contact-email" className="block text-sm font-semibold text-stone-700 mb-2">
+        <label htmlFor="contact-email" className="mb-2 block text-sm font-semibold text-white/80">
           {formFields[2].label}
         </label>
-        <div className="relative">
-          <input
-            id="contact-email"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            onFocus={() => setFocusedField("email")}
-            onBlur={() => setFocusedField(null)}
-            placeholder={formFields[2].placeholder}
-            required
-            aria-required="true"
-            aria-invalid={status === "error" && !formData.email}
-            className="w-full rounded-xl border border-stone-200/60 bg-white/70 px-4 py-3 text-stone-900 placeholder:text-stone-400 transition-all duration-300 focus:bg-white focus:border-yellow-400/60 focus:outline-none focus:ring-2 focus:ring-yellow-400/20 backdrop-blur-sm"
-          />
-          {focusedField === "email" && (
-            <motion.div
-              className="absolute inset-0 rounded-xl border border-yellow-400/40 pointer-events-none"
-              transition={{ duration: 0.2 }}
-            />
-          )}
-        </div>
+        <input
+          id="contact-email"
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder={formFields[2].placeholder}
+          required
+          aria-required="true"
+          aria-invalid={status === "error" && !formData.email}
+          className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/35 transition-all duration-200 focus:border-[#FCC000]/60 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-[#FCC000]/15"
+        />
       </motion.div>
 
       <motion.div
@@ -170,30 +148,20 @@ export function ContactForm() {
         transition={{ duration: 0.4, delay: 0.2 }}
         className="mt-6 relative"
       >
-        <label htmlFor="contact-message" className="block text-sm font-semibold text-stone-700 mb-2">
+        <label htmlFor="contact-message" className="mb-2 block text-sm font-semibold text-white/80">
           Message
         </label>
-        <div className="relative">
-          <textarea
-            id="contact-message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            onFocus={() => setFocusedField("message")}
-            onBlur={() => setFocusedField(null)}
-            placeholder="Tell us about your destination dreams, travel dates, and number of travelers..."
-            required
-            aria-required="true"
-            aria-invalid={status === "error" && !formData.message}
-            className="w-full min-h-[140px] rounded-xl border border-stone-200/60 bg-white/70 px-4 py-3 text-stone-900 placeholder:text-stone-400 transition-all duration-300 focus:bg-white focus:border-yellow-400/60 focus:outline-none focus:ring-2 focus:ring-yellow-400/20 backdrop-blur-sm resize-none"
-          />
-          {focusedField === "message" && (
-            <motion.div
-              className="absolute inset-0 rounded-xl border border-yellow-400/40 pointer-events-none"
-              transition={{ duration: 0.2 }}
-            />
-          )}
-        </div>
+        <textarea
+          id="contact-message"
+          name="message"
+          value={formData.message}
+          onChange={handleChange}
+          placeholder="Tell us about your destination dreams, travel dates, and number of travelers..."
+          required
+          aria-required="true"
+          aria-invalid={status === "error" && !formData.message}
+          className="min-h-[150px] w-full resize-y rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-white placeholder:text-white/35 transition-all duration-200 focus:border-[#FCC000]/60 focus:bg-white/[0.07] focus:outline-none focus:ring-2 focus:ring-[#FCC000]/15"
+        />
       </motion.div>
 
       {/* Status Messages */}
@@ -253,7 +221,7 @@ export function ContactForm() {
         )}
       </motion.button>
 
-      <p className="mt-6 text-xs text-stone-500 text-center">
+      <p className="mt-6 text-center text-xs text-white/40">
         We respect your privacy. Your information will never be shared.
       </p>
     </motion.form>
