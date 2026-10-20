@@ -340,23 +340,18 @@ export default function Home() {
           target="_blank"
           rel="noreferrer"
           aria-label="Chat on Messenger"
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-[#006AFF] text-white shadow-[0_18px_40px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+          className="flex h-14 w-14 items-center justify-center transition hover:-translate-y-0.5"
         >
-          <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current">
-            <path d="M12 2C6.5 2 2 6.1 2 11.2c0 2.9 1.5 5.6 3.9 7.3V22l3.4-1.9c.9.3 1.9.5 2.9.5 5.5 0 10-4.1 10-9.2S17.5 2 12 2Zm1 11.6-2.6-2.8-5 2.8 5.5-5.8 2.7 2.8 4.9-2.8-5.5 5.8Z" />
-          </svg>
+          <img src="/images/icons/messenger-cta.png" alt="" width={56} height={56} className="h-14 w-14 object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.28)]" />
         </a>
         <a
           href="https://wa.me/923377777460"
           target="_blank"
           rel="noreferrer"
           aria-label="Chat on WhatsApp"
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-[#1f6b4a] text-white shadow-[0_18px_40px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
+          className="flex h-14 w-14 items-center justify-center transition hover:-translate-y-0.5"
         >
-          <svg viewBox="0 0 24 24" className="h-6 w-6 fill-none stroke-current stroke-[1.8]">
-            <path d="M20.1 11.9a8 8 0 0 1-11.4 7L4 20l1.2-4.2A8 8 0 1 1 20.1 12Z" />
-            <path d="M8.7 9.7c.2-.5.4-.5.8-.5h.5c.2 0 .4 0 .6.4l.8 1.9c.1.3.1.5 0 .7l-.5.6c-.1.2-.2.4 0 .7a9.2 9.2 0 0 0 1.9 1.9c.3.2.5.1.7 0l.6-.5c.2-.1.4-.1.7 0l1.9.8c.4.2.4.4.4.6v.5c0 .4 0 .6-.5.8-.6.2-1.4.5-3.3-.2-2.4-.9-5.1-3.5-5.9-5.9-.7-1.9-.4-2.7-.2-3.3Z" />
-          </svg>
+          <img src="/images/icons/whatsapp-cta.png" alt="" width={56} height={56} className="h-14 w-14 object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.28)]" />
         </a>
       </div>
     </PageShell>
