@@ -91,6 +91,13 @@
   background-attachment: fixed;
 }
 
+.site-footer-gradient {
+  background-color: var(--surface-page);
+  background-image:
+    radial-gradient(ellipse at 12% 0%, rgba(252, 192, 0, 0.14), transparent 38%),
+    linear-gradient(135deg, #211906 0%, #100f0b 48%, #080808 100%);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
