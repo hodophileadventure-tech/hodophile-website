@@ -326,14 +326,14 @@ function TourCard({ tour }: { tour: AdventureTour }) {
       image={tour.image}
       imageAlt={`${tour.title} mountain view`}
       imageSizes="(max-width: 1024px) 100vw, 50vw"
-      imageHeight="h-64 sm:h-[19rem]"
+      imageHeight="h-40 sm:h-48"
       eyebrow={tour.duration}
       title={tour.title}
       badge={tour.grade}
       counter={tour.altitude}
       bodyClassName="p-5 sm:p-6"
     >
-      <p className="flex-1 text-sm leading-7 text-white/75">{tour.summary}</p>
+      <p className="line-clamp-2 flex-1 text-sm leading-6 text-white/75">{tour.summary}</p>
       <details className="group mt-5 border-t border-white/15 pt-4">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-white [&::-webkit-details-marker]:hidden">
           View itinerary

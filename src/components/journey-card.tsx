@@ -35,8 +35,8 @@ export function JourneyCard({
   media,
   glassBody = true,
   imageSizes = "(max-width: 768px) 100vw, 50vw",
-  imageHeight = "h-64 sm:h-[19rem]",
-  bodyClassName = "p-6 sm:p-8",
+  imageHeight = "h-40 sm:h-48",
+  bodyClassName = "p-4 sm:p-5",
   children,
 }: JourneyCardProps) {
   const card = (
@@ -55,52 +55,35 @@ export function JourneyCard({
         ) : (
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_20%,rgba(206,170,75,0.3),transparent_35%),linear-gradient(135deg,#111723,#2b3140_62%,#71603f)]" />
         )}
+      </div>
+      <div className={`relative flex flex-1 flex-col ${glassBody ? "bg-[#1c190f]" : ""} ${bodyClassName}`}>
         {(badge || counter) ? (
-          <div className="absolute inset-x-0 top-0 flex items-center justify-between gap-3 p-5 sm:p-6">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs">
             {badge ? (
-              <span className="rounded-full border border-white/30 bg-black/30 px-3.5 py-2 text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-md">
+              <span className="rounded-full border border-[#fcc000]/30 bg-[#fcc000]/10 px-2.5 py-1 font-semibold uppercase tracking-[0.12em] text-[#fcc000]">
                 {badge}
               </span>
-            ) : <span />}
+            ) : null}
             {counter ? (
-              <span className="font-[var(--font-display)] text-sm tracking-[0.18em] text-white">
-                {counter}
-              </span>
+              <span className="font-medium text-white/70">{counter}</span>
             ) : null}
           </div>
         ) : null}
-        <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-8">
-          {eyebrow ? (
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/75">{eyebrow}</p>
-          ) : null}
-          <h3 className={`${eyebrow ? "mt-2" : ""} font-[var(--font-display)] text-3xl leading-[1.02] tracking-[-0.02em] sm:text-4xl`}>
-            {title}
-          </h3>
-          {imageCaption ? (
-            <div className="mt-3 text-sm font-medium text-white/85">{imageCaption}</div>
-          ) : null}
-        </div>
-      </div>
-      {children ? (
-        <div className={`relative flex flex-1 flex-col ${glassBody ? "isolate overflow-hidden bg-black/40" : ""} ${bodyClassName}`}>
-          {glassBody && image ? (
-            <>
-              <Image
-                src={image}
-                alt=""
-                fill
-                sizes={imageSizes}
-                aria-hidden="true"
-                className="absolute inset-0 -z-20 scale-110 object-cover opacity-75 blur-xl"
-              />
-              <div className="absolute inset-0 -z-10 bg-black/45 backdrop-blur-sm" aria-hidden="true" />
-            </>
-          ) : null}
-          <div className={glassBody ? "relative z-10 flex flex-1 flex-col" : "contents"}>
-            {children}
+        {eyebrow || title || imageCaption ? (
+          <div>
+            {eyebrow ? (
+              <p className="text-[0.68rem] font-medium uppercase tracking-[0.15em] text-white/65">{eyebrow}</p>
+            ) : null}
+            <h3 className={`${eyebrow ? "mt-1" : ""} line-clamp-2 font-[var(--font-display)] text-xl leading-tight tracking-[-0.01em] sm:text-2xl`}>
+              {title}
+            </h3>
+            {imageCaption ? (
+              <div className="mt-2 text-xs font-medium text-white/75">{imageCaption}</div>
+            ) : null}
           </div>
-        </div>
-      ) : null}
+        ) : null}
+        {children}
+      </div>
     </article>
   );
 

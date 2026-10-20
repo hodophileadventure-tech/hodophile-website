@@ -56,7 +56,7 @@ function RecommendationCard({ recommendation, hasPreferences }: { recommendation
       badge={label}
       eyebrow={`${trip.duration} · ${trip.region === "northern" ? "Northern Pakistan" : "Southern Pakistan"}${trip.pace ? ` · ${trip.pace} pace` : ""}`}
       title={trip.title}
-      imageHeight="h-56 sm:h-64"
+      imageHeight="h-40 sm:h-48"
       bodyClassName="bg-white p-5 text-stone-950"
     >
         <p className="mt-2 text-sm leading-6 text-stone-600">{trip.routeStops.join(" · ")}</p>
@@ -135,14 +135,18 @@ export function TripMakerRecommendations() {
               type="button"
               onClick={() => setSelectedMood(isSelected ? "" : mood.key)}
               aria-pressed={isSelected}
-              className={`group relative min-h-32 overflow-hidden border text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] sm:min-h-40 ${isSelected ? "border-[#c49300] ring-2 ring-[#fcc000]/50" : "border-stone-200 hover:border-[#c49300]"}`}
+              className={`group overflow-hidden border text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isSelected ? "border-[#c49300] ring-2 ring-[#fcc000]/50" : "border-stone-200 hover:border-[#c49300]"}`}
             >
-              <Image src={image} alt="" fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
-              <span className="absolute inset-x-0 bottom-0 p-3 text-white sm:p-4">
-                <span className="block text-[10px] font-bold uppercase tracking-[0.14em] sm:text-xs">{mood.title}</span>
-                <span className="mt-1 hidden text-[11px] leading-4 text-white/85 sm:block">{mood.description}</span>
+              <div className="relative h-24 sm:h-28">
+                <Image src={image} alt="" fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
+              </div>
+              <span className="flex items-start justify-between gap-2 p-3">
+                <span>
+                  <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-stone-900 sm:text-xs">{mood.title}</span>
+                  <span className="mt-1 block text-[11px] leading-4 text-stone-600">{mood.description}</span>
+                </span>
+                {isSelected ? <span aria-hidden="true" className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#fcc000] text-xs font-bold text-stone-950">✓</span> : null}
               </span>
-              {isSelected ? <span aria-hidden="true" className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center bg-[#fcc000] text-xs font-bold text-stone-950">✓</span> : null}
             </button>
           );
         })}

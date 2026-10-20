@@ -109,12 +109,12 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
           <div className="xl:pl-4 flex flex-col items-center">
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-center">Customer Service</h3>
-            <div className="mt-5 w-full max-w-[13rem]">
+            <div className="footer-logo-glow mt-5 w-full max-w-[13rem] rounded-2xl p-3">
               <Image
-                src="/images/footer/footer-service-24-7.png"
+                src="/images/footer/service-24-7-support.png"
                 alt="24/7 customer service"
-                width={520}
-                height={400}
+                width={578}
+                height={431}
                 className="mx-auto h-auto w-full max-w-[13rem] object-contain"
               />
             </div>
@@ -152,7 +152,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
           <div className="xl:pl-4 flex flex-col items-center">
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-center">100% Satisfaction</h3>
-            <div className="mt-5 w-full max-w-[13rem]">
+            <div className="footer-logo-glow mt-5 w-full max-w-[13rem] rounded-2xl p-3">
               <Image
                 src="/images/footer/footer-satisfaction.png"
                 alt="100 percent satisfaction guaranteed"
@@ -165,7 +165,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
           <div className="xl:pl-4">
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-left">Our Affiliations</h3>
-            <div className="mt-5 flex flex-col gap-6">
+            <div className="footer-logo-glow mt-5 flex flex-col gap-6 rounded-2xl p-4">
               <div className="flex flex-row gap-6 items-center">
                 <div className="h-20 w-20 flex-shrink-0">
                   <Image

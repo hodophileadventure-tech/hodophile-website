@@ -80,6 +80,50 @@
     linear-gradient(105deg, #f5e9c9 0%, #e7d59e 17%, #8b7336 28%, #211906 42%, #100f0b 68%, #080808 100%);
 }
 
+html[data-theme="light"] {
+  color-scheme: light;
+  --surface-page: #f7f5ef;
+  --surface-section: #fffdf8;
+  --surface-raised: #ffffff;
+  --text-primary: #211f1a;
+  --text-secondary: #5d5a54;
+  --border-subtle: rgba(139, 107, 0, 0.22);
+  --background: var(--surface-page);
+  --foreground: var(--text-primary);
+  --stone-50: #faf9f6;
+  --stone-100: #f4f1eb;
+  --stone-200: #e7e2d8;
+  --stone-300: #d6d1c5;
+  --stone-400: #aaa49a;
+  --stone-500: #777168;
+  --stone-600: #625e56;
+  --stone-700: #48443d;
+  --stone-800: #302d28;
+  --stone-900: #211f1a;
+}
+
+html[data-theme="light"] .site-header-gradient {
+  background-color: #f7f5ef;
+  background-image: linear-gradient(105deg, #fff5d8 0%, #f7e9b8 24%, #f7f5ef 58%, #fffdf8 100%);
+  border-bottom-color: rgba(48, 45, 40, 0.16);
+}
+
+html[data-theme="light"] .site-header-gradient nav a,
+html[data-theme="light"] .site-header-gradient nav summary {
+  color: #302d28;
+}
+
+html[data-theme="light"] .site-header-gradient nav a:hover,
+html[data-theme="light"] .site-header-gradient nav summary:hover {
+  color: #806000;
+}
+
+html[data-theme="light"] .site-header-gradient > div > div > div > button:not(.theme-toggle) {
+  border-color: rgba(48, 45, 40, 0.35);
+  background-color: rgba(255, 255, 255, 0.65);
+  color: #302d28;
+}
+
 .site-page-gradient {
   background-color: var(--surface-page);
   background-image:
@@ -91,11 +135,48 @@
   background-attachment: fixed;
 }
 
+html[data-theme="light"] .site-page-gradient {
+  background-color: var(--surface-page);
+  background-image:
+    radial-gradient(ellipse at 12% 8%, rgba(252, 192, 0, 0.12), transparent 28%),
+    radial-gradient(ellipse at 88% 18%, rgba(190, 128, 0, 0.08), transparent 30%),
+    linear-gradient(135deg, #fbfaf7 0%, #f4f1e8 48%, #fffdf8 100%);
+}
+
 .site-footer-gradient {
   background-color: var(--surface-page);
   background-image:
     radial-gradient(ellipse at 12% 0%, rgba(252, 192, 0, 0.14), transparent 38%),
     linear-gradient(135deg, #211906 0%, #100f0b 48%, #080808 100%);
+}
+
+.footer-logo-glow {
+  border: 1px solid rgba(252, 192, 0, 0.2);
+  background-image:
+    radial-gradient(ellipse at center, rgba(252, 192, 0, 0.16), rgba(252, 192, 0, 0.05) 48%, transparent 78%),
+    linear-gradient(135deg, rgba(252, 192, 0, 0.04), rgba(0, 0, 0, 0.06));
+}
+
+html[data-theme="light"] .site-footer-gradient {
+  background-color: #f1e7c9;
+  background-image:
+    radial-gradient(ellipse at 12% 0%, rgba(252, 192, 0, 0.18), transparent 38%),
+    linear-gradient(135deg, #f8f0d9 0%, #eee3c5 48%, #f7f5ef 100%);
+  border-top-color: rgba(48, 45, 40, 0.16);
+  color: #302d28;
+}
+
+html[data-theme="light"] .site-footer-gradient :is(h1, h2, h3, p, a, span[class*="text-white"]) {
+  color: #302d28;
+}
+
+html[data-theme="light"] .site-footer-gradient a {
+  border-color: rgba(48, 45, 40, 0.28);
+}
+
+html[data-theme="light"] .site-footer-gradient .eyebrow,
+html[data-theme="light"] .site-footer-gradient a:hover {
+  color: #806000;
 }
 
 @theme inline {
@@ -105,11 +186,11 @@
   --font-serif: var(--font-display);
 }
 
-.site-theme {
+html:not([data-theme="light"]) .site-theme {
   color-scheme: dark;
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class~="bg-white"],
   [class~="bg-stone-50"],
   [class~="bg-stone-100"],
@@ -168,7 +249,7 @@
     linear-gradient(145deg, #29200c 0%, #19170f 52%, #111 100%);
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class*="hover:bg-white"],
   [class*="hover:bg-stone-50"],
   [class*="hover:bg-stone-100"],
@@ -191,7 +272,7 @@
     linear-gradient(135deg, #32250a, #19170f 70%);
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class*="bg-green-50"],
   [class*="bg-red-50"],
   [class*="bg-amber-50"],
@@ -200,28 +281,28 @@
   background-color: #1c1c1c;
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class*="text-green-700"],
   [class*="text-green-800"]
 ) {
   color: #86d69a;
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class*="text-red-700"],
   [class*="text-red-800"]
 ) {
   color: #ff9a9a;
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class*="text-amber-800"],
   [class*="text-yellow-900"]
 ) {
   color: #ffd84d;
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class~="text-black"],
   [class~="text-stone-950"],
   [class~="text-stone-900"],
@@ -247,7 +328,7 @@
   color: #f5f1e8;
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class~="text-stone-700"],
   [class~="text-stone-600"],
   [class~="text-gray-700"],
@@ -260,7 +341,7 @@
   color: #b8b2a7;
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class~="text-stone-500"],
   [class~="text-stone-400"],
   [class~="text-gray-500"],
@@ -278,7 +359,7 @@
   color: #918b81;
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class*="text-[#5d4b00"],
   [class*="text-[#5f4900"],
   [class*="text-[#624b00"],
@@ -307,7 +388,7 @@
   color: var(--accent-gold);
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class~="bg-[#fcc000]"],
   [class~="bg-[#FCC000]"],
   [class~="bg-[#ffc000]"],
@@ -317,7 +398,7 @@
   color: #090909;
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   [class~="border-stone-100"],
   [class~="border-stone-200"],
   [class~="border-stone-300"],
@@ -492,7 +573,7 @@ section {
   backdrop-filter: blur(22px) saturate(125%);
 }
 
-.site-theme :is(
+html:not([data-theme="light"]) .site-theme :is(
   article[class*="rounded-"]:not([class*="rounded-full"]),
   details[class*="rounded-"]:not([class*="rounded-full"]),
   div[class*="rounded-"]:not([class*="rounded-full"])[class*="border"][class*="bg-"],
@@ -557,10 +638,16 @@ select {
   outline: none;
 }
 
-input,
-textarea,
-select {
+html:not([data-theme="light"]) input,
+html:not([data-theme="light"]) textarea,
+html:not([data-theme="light"]) select {
   color-scheme: dark;
+}
+
+html[data-theme="light"] input,
+html[data-theme="light"] textarea,
+html[data-theme="light"] select {
+  color-scheme: light;
 }
 
 input::placeholder,

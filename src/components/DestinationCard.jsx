@@ -8,14 +8,14 @@ export default function DestinationCard({ item }) {
   return (
     <Link href={item.href ?? '/tours'} className="group block">
       <motion.article
-        className="relative overflow-hidden rounded-[18px] bg-black/5 shadow-[0_8px_30px_rgba(2,6,23,0.08)]"
+        className="overflow-hidden rounded-[18px] border border-stone-200 bg-white shadow-[0_8px_30px_rgba(2,6,23,0.08)]"
         initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.6 }}
         whileHover={{ y: -8 }}
       >
-        <div className="relative h-[30rem] w-full rounded-[18px]">
+        <div className="relative h-40 w-full sm:h-48">
           <Image
             src={item.image}
             alt={item.title}
@@ -25,29 +25,25 @@ export default function DestinationCard({ item }) {
             loading="lazy"
           />
 
-          <div className="absolute -left-6 -top-6 h-24 w-[2px] rotate-6 bg-amber-400 opacity-60 blur-sm" />
-
-          <div className="absolute left-6 bottom-6 right-6 flex items-end justify-between">
-            <div className="max-w-[60%] text-white">
-              <h3 className="text-2xl font-semibold leading-tight transition-transform duration-400">
-                {item.title}
-              </h3>
-              <p className="mt-2 text-sm text-white/90">{item.description}</p>
-            </div>
-
-            <motion.button
-              type="button"
-              aria-label={`Explore ${item.title}`}
-              className="ml-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#FCC000] shadow-[0_8px_24px_rgba(252,192,0,0.18)]"
-              whileHover={{ x: 6, rotate: 12 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12h14" stroke="#000" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M12 5l7 7-7 7" stroke="#000" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </motion.button>
+        </div>
+        <div className="flex min-h-32 items-start justify-between gap-4 p-4">
+          <div>
+            <h3 className="text-lg font-semibold leading-tight text-stone-950 sm:text-xl">
+              {item.title}
+            </h3>
+            <p className="mt-1 line-clamp-2 text-sm leading-5 text-stone-600">{item.description}</p>
           </div>
+          <motion.span
+            aria-hidden="true"
+            className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FCC000] shadow-[0_8px_24px_rgba(252,192,0,0.18)]"
+            whileHover={{ x: 4 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 12h14" stroke="#000" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M12 5l7 7-7 7" stroke="#000" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </motion.span>
         </div>
       </motion.article>
     </Link>

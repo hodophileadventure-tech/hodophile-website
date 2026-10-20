@@ -65,45 +65,45 @@ export function DestinationExplorer({ destinations }: { destinations: Destinatio
           </Link>
         </motion.div>
 
-        <div className="grid gap-8 lg:grid-cols-[1.8fr_1fr] lg:items-start">
+        <div className="grid gap-5 lg:grid-cols-[1.8fr_1fr] lg:items-start">
           {/* Main Image Section */}
           <motion.div
             key={`featured-${activeIndex}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="relative overflow-hidden rounded-3xl bg-stone-950 shadow-2xl"
-            style={{ minHeight: 480 }}
+            className="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-lg"
           >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0, scale: 1.05 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.6 }}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={active.image}
-                  alt={active.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 70vw"
-                  priority
-                />
-              </motion.div>
-            </AnimatePresence>
+            <div className="relative h-48 overflow-hidden sm:h-56">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeIndex}
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.6 }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={active.image}
+                    alt={active.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 70vw"
+                    priority
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
-            {/* Content Overlay */}
             <motion.div
               key={`content-${activeIndex}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="absolute inset-0 flex flex-col justify-end p-10 z-10"
+              className="p-4 sm:p-5"
             >
-              <div className="space-y-6">
+              <div className="space-y-3">
                 {/* Destination Counter */}
                 <div className="inline-flex items-center gap-4 w-fit">
                   <span className="text-xs font-bold uppercase tracking-[0.25em] text-yellow-400">
@@ -113,19 +113,19 @@ export function DestinationExplorer({ destinations }: { destinations: Destinatio
                 </div>
 
                 {/* Title */}
-                <h3 className="text-5xl sm:text-6xl lg:text-7xl font-serif font-bold text-white drop-shadow-lg leading-tight">
+                <h3 className="text-2xl font-serif font-bold leading-tight text-stone-950 sm:text-3xl">
                   {active.name}
                 </h3>
 
                 {/* Description */}
-                <p className="text-base text-white/90 leading-relaxed max-w-xl drop-shadow-md">
+                <p className="max-w-xl text-sm leading-6 text-stone-600">
                   {active.description}
                 </p>
 
                 {/* CTA */}
                 <Link
                   href={active.href}
-                  className="group inline-flex items-center gap-3 pt-4"
+                  className="group inline-flex items-center gap-2 pt-1"
                 >
                   <span className="text-sm font-bold uppercase tracking-[0.2em] text-yellow-400 group-hover:text-yellow-300 transition-colors">
                     Explore Destination

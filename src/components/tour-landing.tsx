@@ -24,11 +24,13 @@ export function TourLanding({
   return (
     <section className="overflow-hidden rounded-[2.5rem] bg-[#0b0b0b] text-white shadow-[0_30px_90px_rgba(11,11,11,0.2)]">
       <div className="grid gap-0 lg:grid-cols-[1.08fr_.92fr]">
-        <div className="relative min-h-[28rem]">
-          <Image src={image} alt={title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
-          <div className="absolute inset-x-0 bottom-0 p-6 text-white lg:p-8">
+        <div className="flex flex-col">
+          <div className="relative h-48 sm:h-56">
+            <Image src={image} alt={title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
+          </div>
+          <div className="p-5 sm:p-6 lg:p-8">
             <p className="eyebrow">{eyebrow}</p>
-            <h1 className="display-serif mt-4 max-w-3xl text-3xl font-normal leading-[1.08] sm:text-4xl">{title}</h1>
+            <h1 className="display-serif mt-2 max-w-3xl text-2xl font-normal leading-[1.08] sm:text-3xl">{title}</h1>
           </div>
         </div>
 

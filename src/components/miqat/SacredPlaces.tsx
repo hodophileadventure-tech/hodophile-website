@@ -28,9 +28,9 @@ export function SacredPlaces() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, delay: index * 0.06 }}
               whileHover={{ scale: 1.01, y: -4 }}
-              className="group relative overflow-hidden rounded-[1.25rem] border border-stone-300"
+              className="group overflow-hidden rounded-[1.25rem] border border-stone-300 bg-white shadow-sm"
             >
-              <div className="relative h-80 sm:h-96">
+              <div className="relative h-40 sm:h-48">
                 <Image
                   src={place.image}
                   alt={place.title}
@@ -39,9 +39,9 @@ export function SacredPlaces() {
                   className="object-cover transition duration-700 group-hover:scale-105"
                 />
               </div>
-              <div className="absolute inset-x-0 bottom-0 p-6">
-                <h3 className="font-[var(--font-display)] text-3xl text-white">{place.title}</h3>
-                <p className="mt-2 max-w-xs text-sm leading-7 text-white/80">
+              <div className="p-4">
+                <h3 className="font-[var(--font-display)] text-xl text-stone-950">{place.title}</h3>
+                <p className="mt-1 max-w-xs text-sm leading-6 text-stone-600">
                   A sacred setting framed by architecture, calm and deeply meaningful presence.
                 </p>
               </div>

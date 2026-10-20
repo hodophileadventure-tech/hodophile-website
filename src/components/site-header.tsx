@@ -8,6 +8,9 @@ import { usePathname } from "next/navigation";
 import { navigation, tourMenu, whatsappUrl } from "@/lib/site";
 
 type NavigationItem = (typeof navigation)[number];
+type ColorTheme = "dark" | "light";
+
+const THEME_STORAGE_KEY = "hodophile-theme";
 
 const desktopPrimaryHrefs = new Set([
   "/",
@@ -24,6 +27,7 @@ const desktopMoreLinks = navigation.filter((item) => !desktopPrimaryHrefs.has(it
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const [theme, setTheme] = useState<ColorTheme>("dark");
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [toursOpen, setToursOpen] = useState(false);
@@ -39,11 +43,52 @@ export function SiteHeader() {
   const aboutUsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    const savedTheme = document.documentElement.dataset.theme;
+    if (savedTheme === "light" || savedTheme === "dark") {
+      setTheme(savedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const toggleTheme = () => {
+    const nextTheme: ColorTheme = theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = nextTheme;
+    setTheme(nextTheme);
+
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+    } catch (error) {
+      console.error("Unable to save the appearance preference.", error);
+    }
+  };
+
+  const renderThemeToggle = (visibility: string) => (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className={`theme-toggle inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/35 bg-black/20 text-white transition hover:border-[#fcc000] hover:text-[#fcc000] ${visibility}`}
+      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      aria-pressed={theme === "light"}
+      title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+    >
+      {theme === "dark" ? (
+        <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-[1.8]" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-[1.8]" aria-hidden="true">
+          <path d="M20.4 15.3A8.6 8.6 0 0 1 8.7 3.6 8.7 8.7 0 1 0 20.4 15.3Z" />
+        </svg>
+      )}
+    </button>
+  );
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -332,6 +377,8 @@ export function SiteHeader() {
             </details>
           </nav>
 
+          {renderThemeToggle("hidden xl:inline-flex")}
+
           <Link
             href="/make-my-trip"
             className="hidden shrink-0 items-center justify-center rounded-full bg-[#fcc000] px-5 py-2.5 text-xs font-bold tracking-wide text-stone-950 transition hover:bg-[#e6ae00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] xl:inline-flex"
@@ -354,22 +401,25 @@ export function SiteHeader() {
           </Link>
           {/* mobile search removed */}
 
-          <button
-            ref={mobileMenuButtonRef}
-            type="button"
-            onClick={() => {
-              setToursOpen(false);
-              setMobileOpen((prev) => !prev);
-            }}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-black/20 text-white transition duration-300 hover:border-[#fcc000] hover:text-[#fcc000] xl:hidden"
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-navigation"
-            aria-label="Toggle navigation menu"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-[1.9]">
-              {mobileOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-            </svg>
-          </button>
+          <div className="flex items-center gap-2 xl:hidden">
+            {renderThemeToggle("xl:hidden")}
+            <button
+              ref={mobileMenuButtonRef}
+              type="button"
+              onClick={() => {
+                setToursOpen(false);
+                setMobileOpen((prev) => !prev);
+              }}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-black/20 text-white transition duration-300 hover:border-[#fcc000] hover:text-[#fcc000] xl:hidden"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-navigation"
+              aria-label="Toggle navigation menu"
+            >
+              <svg viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current stroke-[1.9]">
+                {mobileOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 

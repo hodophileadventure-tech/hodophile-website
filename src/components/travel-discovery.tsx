@@ -264,7 +264,7 @@ function RouteCard({
       image={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"}
       imageAlt={packageItem.title}
       imageSizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-      imageHeight="h-56 sm:h-64"
+      imageHeight="h-40 sm:h-48"
       badge={destinationLabel ?? packageItem.routeStops[0] ?? (packageItem.region === "northern" ? "Northern" : "Southern")}
       counter={matchScore !== undefined ? `${matchScore}% match` : undefined}
       eyebrow={`${packageItem.duration}${packageItem.pace ? ` · ${packageItem.pace} pace` : ""}`}
@@ -563,7 +563,7 @@ function TripMatchPanel({
                   badge={`${score}% match`}
                   eyebrow={`${trip.duration} · ${trip.region}`}
                   title={trip.title}
-                  imageHeight="h-48 sm:h-52"
+                  imageHeight="h-40 sm:h-48"
                   bodyClassName="p-4 sm:p-5"
                 >
                     <p className="mt-1 text-sm font-semibold text-[#FCC000]">{trip.pricePerPerson === undefined ? "Price on request" : `${formatCurrency(trip.pricePerPerson)} per person`}</p>
@@ -1362,10 +1362,10 @@ export function CompareTripsClient() {
               {comparePackages.map((packageItem) => (
                 <th key={packageItem.id} className="min-w-[220px] pr-4 align-top">
                   <div className="overflow-hidden rounded-[1.3rem] border border-[#e8dbb6] bg-[linear-gradient(155deg,_#fffdf7,_#f5f0e1)] p-3 shadow-[0_12px_28px_rgba(50,40,10,0.08)] sm:p-4">
-                    <div className="relative mb-3 aspect-[16/9] overflow-hidden rounded-xl bg-stone-200">
+                    <div className="relative mb-2 h-24 overflow-hidden rounded-xl bg-stone-200">
                       <Image src={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"} alt="" fill sizes="(max-width: 768px) 70vw, 220px" className="object-cover" />
-                      <span className="absolute inset-x-0 bottom-0 px-3 pb-2 pt-7 text-[10px] font-bold uppercase tracking-[0.18em] text-white">Journey {comparePackages.indexOf(packageItem) + 1}</span>
                     </div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-stone-500">Journey {comparePackages.indexOf(packageItem) + 1}</p>
                     <p className="font-serif text-lg leading-tight text-stone-950">{packageItem.title}</p>
                     <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-500">{packageItem.duration} · {packageItem.pace ?? "Pace to confirm"}</p>
                     <p className="mt-3 text-xl font-bold text-[#806000]">{listedPrice(packageItem)}</p>

@@ -68,12 +68,12 @@ export default function HoneymoonPackagesPage() {
             href={`/honeymoon-packages/${item.slug}`}
             image={item.image}
             imageAlt={item.name}
-            imageHeight="h-[18rem] sm:h-[20rem]"
+            imageHeight="h-40 sm:h-48"
             badge={item.duration}
             title={item.name}
             bodyClassName="p-5 sm:p-6"
           >
-            <p className="flex-1 text-sm leading-6 text-white/75">{item.detail}</p>
+            <p className="line-clamp-2 flex-1 text-sm leading-6 text-white/75">{item.detail}</p>
             <div className="mt-5 flex items-end justify-between gap-4 border-t border-white/15 pt-5">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-white/50">From</p>

@@ -313,17 +313,6 @@ function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number 
       <div className="absolute right-2 top-20 h-48 w-48 rounded-full border border-white/10" />
       <div className="absolute inset-x-8 top-[43%] h-px bg-gradient-to-r from-transparent via-[#FCC000]/70 to-transparent" />
       <div className="absolute inset-x-8 top-[43%] h-20 -translate-y-1/2 border-x border-[#FCC000]/20" />
-      <div className="absolute inset-x-0 top-8 text-center font-[var(--font-display)] text-[0.62rem] uppercase tracking-[0.42em] text-white/45">
-        A Hodophile route
-      </div>
-      <div className="absolute inset-x-7 top-1/2 -translate-y-1/2 text-center">
-        <p className="font-[var(--font-display)] text-3xl leading-tight text-white sm:text-4xl">
-          {pkg.artwork?.title}
-        </p>
-        <p className="mx-auto mt-3 max-w-sm text-[0.62rem] uppercase leading-5 tracking-[0.2em] text-white/55">
-          {pkg.artwork?.route}
-        </p>
-      </div>
     </div>
   );
 
@@ -334,19 +323,24 @@ function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number 
       image={pkg.image}
       imageAlt={pkg.imageAlt ?? ""}
       imageSizes="(max-width: 768px) 100vw, 50vw"
-      imageHeight="h-72 sm:h-[22rem]"
+      imageHeight="h-40 sm:h-48"
       media={fallbackArtwork}
       badge={pkg.region}
       counter={<>{String(index + 1).padStart(2, "0")} <span className="text-[#FCC000]">/ 06</span></>}
       eyebrow={pkg.duration}
       title={pkg.name}
-      imageCaption={<>From <span className="text-[#FCC000]">{pkg.price}</span></>}
+      imageCaption={
+        <>
+          From <span className="text-[#FCC000]">{pkg.price}</span>
+          {pkg.artwork?.route ? <span className="ml-2 text-white/55">· {pkg.artwork.route}</span> : null}
+        </>
+      }
       bodyClassName="bg-[#fffefa] p-6 sm:p-8"
     >
         <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#806700]">
           The journey
         </p>
-        <p className="mt-3 text-[0.96rem] leading-7 text-stone-600">{pkg.summary}</p>
+        <p className="mt-2 line-clamp-2 text-sm leading-6 text-stone-600">{pkg.summary}</p>
 
         <ul className="mt-6 flex flex-wrap gap-2">
           {pkg.highlights.map((highlight) => (

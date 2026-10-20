@@ -224,14 +224,14 @@ export default function Home() {
                 />
               }
               imageAlt={destination.name}
-              imageHeight="h-[30rem]"
+              imageHeight="h-40 sm:h-48"
               badge={destination.season}
               counter={destination.duration}
               title={destination.name}
               glassBody
               bodyClassName="p-5"
             >
-              <p className="flex-1 text-sm leading-6 text-white/75">{destination.description}</p>
+              <p className="line-clamp-2 flex-1 text-sm leading-6 text-white/75">{destination.description}</p>
               <span className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-[#FCC000] px-5 text-sm font-semibold text-black transition group-hover:bg-[#ffda4d]">
                 Explore destination
               </span>
@@ -267,7 +267,7 @@ export default function Home() {
                 }
                 imageAlt={tour.name}
                 imageSizes="(max-width: 1280px) 50vw, 25vw"
-                imageHeight="h-[15rem]"
+                imageHeight="h-40 sm:h-48"
                 title={tour.titleParts.length > 1 ? tour.titleParts.join(" ") : tour.name}
                 bodyClassName="p-5"
               >
@@ -331,7 +331,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-3">
         <a
           href="https://www.messenger.com/t/hodophileadventure"
           target="_blank"

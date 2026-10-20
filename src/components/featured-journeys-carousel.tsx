@@ -111,9 +111,9 @@ export function FeaturedJourneysCarousel({ tours }: FeaturedJourneysCarouselProp
                   cardRefs.current[index] = element;
                 }}
                 data-index={index}
-                className="group relative snap-start shrink-0 min-w-[88vw] max-w-[1050px] rounded-[22px] overflow-hidden border border-white/10 bg-[#111111] shadow-[0_22px_55px_rgba(15,23,42,0.08)] md:min-w-[70vw] xl:min-w-[68vw]"
+                className="group relative snap-start shrink-0 min-w-[88vw] max-w-[760px] rounded-[22px] overflow-hidden border border-stone-200 bg-white text-stone-950 shadow-[0_22px_55px_rgba(15,23,42,0.08)] md:min-w-[48vw] xl:min-w-[38vw]"
               >
-                <div className="relative h-[52rem] min-h-[28rem] md:h-[56rem] lg:h-[60rem]">
+                <div className="relative h-40 sm:h-48 md:h-52">
                   <Image
                     src={tour.image}
                     alt={tour.name}
@@ -124,18 +124,18 @@ export function FeaturedJourneysCarousel({ tours }: FeaturedJourneysCarouselProp
                   />
                 </div>
 
-                <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+                <div className="p-4 sm:p-5">
                   <div className="max-w-2xl">
-                    <p className="text-xs uppercase tracking-[0.36em] text-white/70">
+                    <p className="text-[0.65rem] uppercase tracking-[0.24em] text-stone-500">
                       0{index + 1} / {String(tours.length).padStart(2, "0")}
                     </p>
-                    <h3 className="mt-4 text-4xl font-normal leading-[0.95] text-white sm:text-[4.4rem]">
+                    <h3 className="mt-2 line-clamp-2 text-xl font-semibold leading-tight text-stone-950 sm:text-2xl">
                       {tour.name}
                     </h3>
-                    <p className="mt-5 text-sm uppercase tracking-[0.28em] text-white/75 sm:text-base">
+                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-stone-600">
                       {tour.duration} · {tour.priceFrom.toUpperCase()}
                     </p>
-                    <div className="mt-8 inline-flex items-center gap-3 text-sm uppercase tracking-[0.32em] text-white transition duration-200 group-hover:text-[#fcc000]">
+                    <div className="mt-3 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-stone-800 transition duration-200 group-hover:text-[#806000]">
                       <span>Explore journey</span>
                       <span className="inline-block transition-transform duration-200 group-hover:translate-x-1">
                         →

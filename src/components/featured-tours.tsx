@@ -61,36 +61,37 @@ export function FeaturedTours({ tours }: { tours: FeaturedJourney[] }) {
             transition={{ duration: 0.5 }}
             className="col-span-12 lg:col-span-7"
           >
-            <div className="relative overflow-hidden rounded-2xl group" style={{ aspectRatio: '16/9' }}>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeIndex}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.6 }}
-                  className="absolute inset-0"
-                >
-                  <Image
-                    src={active.image}
-                    alt={active.name}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 60vw"
-                    className="object-cover"
-                    priority
-                  />
-                </motion.div>
-              </AnimatePresence>
+            <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
+              <div className="group relative h-48 overflow-hidden sm:h-56">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.6 }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={active.image}
+                      alt={active.name}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 60vw"
+                      className="object-cover"
+                      priority
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
-              {/* Content Overlay */}
               <motion.div
                 key={`content-${activeIndex}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="absolute inset-0 flex flex-col justify-end p-8 lg:p-10 z-10"
+                className="p-4 sm:p-5"
               >
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {/* Journey Counter */}
                   <div className="flex items-center gap-4">
                     <span className="text-sm font-bold uppercase tracking-[0.2em] text-yellow-400">
@@ -101,7 +102,7 @@ export function FeaturedTours({ tours }: { tours: FeaturedJourney[] }) {
 
                   {/* Title */}
                   <div className="space-y-2">
-                    <h3 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight drop-shadow-lg">
+                    <h3 className="text-2xl font-serif font-bold leading-tight text-stone-950 sm:text-3xl">
                       {active.titleParts && active.titleParts.length > 1 ? (
                         <>
                           <span className="block">{active.titleParts[0]}</span>
@@ -114,7 +115,7 @@ export function FeaturedTours({ tours }: { tours: FeaturedJourney[] }) {
                   </div>
 
                   {/* Meta Info */}
-                  <div className="flex items-center gap-6 text-sm text-white/90">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-stone-700">
                     <div className="flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -122,11 +123,11 @@ export function FeaturedTours({ tours }: { tours: FeaturedJourney[] }) {
                       <span className="uppercase tracking-[0.15em] font-semibold">{active.duration}</span>
                     </div>
                     <div className="h-1 w-1 bg-yellow-400 rounded-full" />
-                    <span className="text-yellow-400 font-bold">{active.priceFrom}</span>
+                    <span className="font-bold text-[#806000]">{active.priceFrom}</span>
                   </div>
 
                   {/* CTA Button */}
-                  <div className="pt-4">
+                  <div className="pt-1">
                     <Link
                       href={active.href}
                       className="btn-primary inline-flex gap-2 group"
