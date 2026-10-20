@@ -8,7 +8,6 @@ type WhyChoosePillar = {
   title: string;
   description: string;
   image: string;
-  imageLift: number;
   highlight?: string;
 };
 
@@ -20,7 +19,6 @@ const pillars: WhyChoosePillar[] = [
     description:
       "Every itinerary is thoughtfully designed around your interests, travel style, budget, and pace. From adventure and family holidays to luxury escapes and Umrah, every journey is uniquely yours.",
     image: "/images/package-cards/images__editorial__tailor-made-journeys.webp",
-    imageLift: 8,
   },
   {
     number: "02",
@@ -29,7 +27,6 @@ const pillars: WhyChoosePillar[] = [
     description:
       "Explore destinations with experienced local guides and trusted travel partners. Enjoy authentic experiences, seamless planning, and professional service at every step.",
     image: "/images/package-cards/images__editorial__hodophile_cutout_4.webp",
-    imageLift: 24,
   },
   {
     number: "03",
@@ -38,7 +35,6 @@ const pillars: WhyChoosePillar[] = [
     description:
       "We take care of flights, accommodation, visas, transportation, and logistics. Relax and enjoy your journey while we handle every detail from start to finish.",
     image: "/images/package-cards/images__editorial__hodophile_cutout_1.webp",
-    imageLift: 0,
   },
   {
     number: "04",
@@ -47,7 +43,6 @@ const pillars: WhyChoosePillar[] = [
     description:
       "Go beyond sightseeing with carefully curated cultural, adventure, and spiritual journeys. Create meaningful memories through experiences that inspire, connect, and last a lifetime.",
     image: "/images/package-cards/images__editorial__hodophile_cutout_3.webp",
-    imageLift: 18,
   },
   {
     number: "05",
@@ -57,7 +52,6 @@ const pillars: WhyChoosePillar[] = [
       "Our dedicated team is available before, during, and after your trip. Count on prompt assistance and reliable guidance whenever you need it.",
     highlight: "24/7 TRAVEL SUPPORT",
     image: "/images/package-cards/images__editorial__hodophile_cutout_2.webp",
-    imageLift: 6,
   },
 ];
 
@@ -198,11 +192,11 @@ export function WhyChooseUs() {
               {/* Gradient accent on hover */}
               <div className="absolute inset-0 rounded-2xl p-px bg-gradient-to-br from-yellow-400/0 via-transparent to-yellow-400/0 group-hover:from-yellow-400/20 group-hover:to-yellow-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               
-              <div className="relative p-6 lg:p-7 flex flex-col h-full">
+              <div className="relative flex h-full flex-col p-5 lg:p-6">
                 {/* Number Badge */}
                 <motion.div
                   variants={pillarItemVariants}
-                  className="inline-flex items-center gap-3 mb-6"
+                  className="mb-3 inline-flex items-center gap-3"
                 >
                   <span className="text-3xl lg:text-4xl font-serif font-bold text-yellow-400">
                     {pillar.number}
@@ -211,16 +205,15 @@ export function WhyChooseUs() {
                 </motion.div>
 
                 {/* Image Section */}
-                <div className="mb-6 h-48 lg:h-56 flex items-center justify-center overflow-hidden -mx-6 px-6">
+                <div className="mb-4 flex h-36 items-center justify-center overflow-hidden sm:h-40">
                   <motion.div
                     variants={pillarItemVariants}
                     className="flex justify-center transition duration-300 group-hover:scale-105"
-                    style={{ transform: `translateY(${pillar.imageLift}px)` }}
                   >
                     <img
                       src={pillar.image}
                       alt={pillar.eyebrow}
-                      className="h-auto max-h-56 w-auto max-w-[90%] object-contain drop-shadow-lg"
+                      className="h-auto max-h-36 w-auto max-w-[90%] object-contain drop-shadow-lg sm:max-h-40"
                     />
                   </motion.div>
                 </div>
@@ -229,7 +222,7 @@ export function WhyChooseUs() {
                 <motion.div className="flex-1 flex flex-col" variants={textGroupVariants}>
                   <motion.p
                     variants={textItemVariants}
-                    className="text-xs font-bold uppercase tracking-[0.2em] text-[#8b6b00] leading-tight mb-3"
+                    className="mb-2 text-xs font-bold uppercase leading-tight tracking-[0.2em] text-[#8b6b00]"
                   >
                     {pillar.eyebrow.split("\n").map((line, lineIndex) => (
                       <span key={`${pillar.number}-eyebrow-${lineIndex}`} className="block">
@@ -249,7 +242,7 @@ export function WhyChooseUs() {
 
                   <motion.p
                     variants={textItemVariants}
-                    className="text-sm leading-relaxed text-stone-700 flex-1"
+                    className="flex-1 text-justify text-sm leading-relaxed text-stone-700"
                   >
                     {pillar.description}
                   </motion.p>
