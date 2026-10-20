@@ -335,12 +335,6 @@ export default function Home() {
       </section>
 
       <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-        <Link
-          href="/contact-us"
-          className="rounded-full border border-[#ffc000] bg-[#ffc000] px-5 py-3 text-sm font-medium !text-[#0b0b0b] shadow-[0_18px_40px_rgba(0,0,0,0.2)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
-        >
-          Contact us
-        </Link>
         <a
           href="https://www.messenger.com/t/hodophileadventure"
           target="_blank"

@@ -77,8 +77,8 @@
 .site-header-gradient {
   background-color: var(--surface-page);
   background-image:
-    radial-gradient(ellipse at 12% 0%, rgba(252, 192, 0, 0.38), transparent 32%),
-    linear-gradient(105deg, #382806 0%, #211906 38%, #100f0b 68%, #080808 100%);
+    radial-gradient(ellipse at 12% 50%, rgba(252, 192, 0, 0.58), transparent 32%),
+    linear-gradient(105deg, #4a3b18 0%, #211906 38%, #100f0b 68%, #080808 100%);
 }
 
 .site-page-gradient {
