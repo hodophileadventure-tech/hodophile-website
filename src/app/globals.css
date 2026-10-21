@@ -529,6 +529,30 @@ html[data-theme="light"] .site-footer-gradient a:hover {
   --font-serif: var(--font-display);
 }
 
+h1 {
+  font-size: clamp(1.8rem, 4.5vw, 3.6rem);
+}
+
+h2 {
+  font-size: clamp(1.45rem, 3.6vw, 2.7rem);
+}
+
+h3 {
+  font-size: clamp(1.15rem, 2.25vw, 1.7rem);
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+h5 {
+  font-size: 1.125rem;
+}
+
+h6 {
+  font-size: 1rem;
+}
+
 html:not([data-theme="light"]) .site-theme {
   color-scheme: dark;
 }
@@ -892,6 +916,34 @@ section {
 
 .display-serif {
   font-family: var(--font-display), Georgia, serif;
+}
+
+.journey-card-image img,
+.journey-card-image video {
+  object-fit: contain !important;
+}
+
+.journey-card:hover .journey-card-image img,
+.journey-card:hover .journey-card-image video {
+  transform: none !important;
+}
+
+.plan-trip-cta {
+  animation: plan-trip-pulse 8s ease-in-out infinite;
+}
+
+@keyframes plan-trip-pulse {
+  0%,
+  82%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(252, 192, 0, 0);
+    filter: brightness(1);
+  }
+
+  88% {
+    box-shadow: 0 0 0 5px rgba(252, 192, 0, 0.18), 0 0 20px rgba(252, 192, 0, 0.28);
+    filter: brightness(1.08);
+  }
 }
 
 .eyebrow {

@@ -381,7 +381,7 @@ export function SiteHeader() {
             {renderThemeToggle("")}
             <Link
               href="/make-my-trip"
-              className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#fcc000] px-5 py-2.5 text-xs font-bold tracking-wide text-stone-950 transition hover:bg-[#e6ae00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
+              className="plan-trip-cta inline-flex shrink-0 items-center justify-center rounded-full bg-[#fcc000] px-5 py-2.5 text-xs font-bold tracking-wide text-stone-950 transition hover:bg-[#e6ae00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]"
             >
               Plan your trip
             </Link>
@@ -512,7 +512,7 @@ export function SiteHeader() {
           <Link
             href="/make-my-trip"
             onClick={() => setMobileOpen(false)}
-            className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-bold text-stone-950 transition hover:bg-[#e6ae00]"
+            className="plan-trip-cta mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#fcc000] px-5 py-3 text-sm font-bold text-stone-950 transition hover:bg-[#e6ae00]"
           >
             Plan My Trip
           </Link>

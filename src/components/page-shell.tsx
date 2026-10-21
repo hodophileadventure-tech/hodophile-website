@@ -166,12 +166,12 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-left">Our Affiliations</h3>
             <div className="mt-5 grid min-w-0 gap-3">
               <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-[#fcc000]/20 bg-white/[0.035] p-3">
-                <div className="footer-affiliation-logo h-[4.5rem] w-[4.5rem] shrink-0 rounded-xl p-1.5">
+                <div className="footer-affiliation-logo h-20 w-20 shrink-0 rounded-xl p-1.5">
                   <Image
                     src="/images/footer/footer-govt-pakistan.png"
                     alt="Government of Pakistan"
-                    width={80}
-                    height={80}
+                    width={96}
+                    height={96}
                     className="h-full w-full object-contain"
                   />
                 </div>

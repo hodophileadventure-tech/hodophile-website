@@ -214,11 +214,11 @@ export default function Home() {
             <JourneyCard
               key={destination.name}
               href={destinationPackageLinks[destination.name] ?? "/destinations"}
-              image={destination.image}
+              image={destination.slug === "hunza" ? "/images/destinations/hunza-home-lake.png" : destination.image}
               media={
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={destination.image}
+                  src={destination.slug === "hunza" ? "/images/destinations/hunza-home-lake.png" : destination.image}
                   alt={destination.name}
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
@@ -300,8 +300,8 @@ export default function Home() {
       <section className="relative left-1/2 mt-16 w-screen -translate-x-1/2 overflow-hidden bg-[#fcc000] px-6 py-12 lg:px-16">
         <div>
           <div className="mx-auto max-w-5xl overflow-hidden rounded-xl bg-black shadow-[0_24px_70px_rgba(0,0,0,0.22)]">
-            <div className="relative bg-black">
-            <video
+            <div className="flex max-h-[min(70vh,42rem)] items-center justify-center bg-black">
+              <video
                 src="/travel-kit.mp4"
                 autoPlay
                 muted
@@ -309,8 +309,7 @@ export default function Home() {
                 playsInline
                 preload="metadata"
                 controls={false}
-                className="w-full max-h-[26rem] h-auto object-cover block"
-                style={{ display: 'block' }}
+                className="max-h-[min(70vh,42rem)] max-w-full w-auto object-contain"
               />
             </div>
             <div className="p-8 text-center text-white lg:p-12">
