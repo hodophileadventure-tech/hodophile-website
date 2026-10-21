@@ -182,13 +182,13 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 </div>
               </div>
               <div className="grid min-w-0 grid-cols-2 gap-3">
-                <div className="footer-affiliation-logo flex min-w-0 items-center justify-center rounded-xl p-2">
+                <div className="footer-affiliation-logo flex min-h-24 min-w-0 items-center justify-center rounded-xl p-2">
                   <Image
                     src="/images/footer/footer-taap.png"
                     alt="TAAP"
                     width={551}
                     height={453}
-                    className="h-20 w-full object-contain"
+                    className="h-auto max-h-20 w-auto max-w-full object-contain"
                   />
                 </div>
                 <div className="footer-affiliation-logo flex min-w-0 items-center justify-center rounded-xl p-2">

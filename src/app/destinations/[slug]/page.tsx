@@ -171,7 +171,7 @@ const destinationGalleries = {
   shogran: {
     name: "Shogran",
     description: "A cool forested hill retreat with meadow views and an easy escape into the Kaghan Valley.",
-    images: [{ src: "/images/package-cards/images__destinations__naran.webp", alt: "Shogran valley landscape" }],
+    images: [{ src: "/images/destinations/shogran-siri-paye.png", alt: "Siri Paye meadows in Shogran" }],
     highlights: ["Forest trails", "Siri Paye", "Meadow views", "Kaghan Valley"],
     journeyStyle: "Short, comfortable mountain breaks built around nature, rest, and scenic weather.",
     bestSeason: "May to October",

@@ -235,7 +235,7 @@ export const destinations: Destination[] = [
   {
     slug: "shogran",
     name: "Shogran",
-    image: "/images/package-cards/images__destinations__naran.webp",
+    image: "/images/destinations/shogran-siri-paye.png",
     description: "A cool forested hill retreat with meadow views and an easy escape into the Kaghan Valley.",
     season: "May to October",
     duration: "9 Days",
