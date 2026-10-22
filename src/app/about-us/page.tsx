@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-
 import { AboutTeamTabDropdown } from "@/components/about-team-tab-dropdown";
 import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
@@ -165,8 +164,8 @@ export default function AboutUsPage() {
             </div>
           </section>
 
-          <section className="rounded-[1.5rem] border border-stone-200 bg-white p-8 shadow-[0_16px_36px_rgba(55,55,48,0.06)]">
-            <div className="mb-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <section className="rounded-[1.5rem] border border-stone-200 bg-white p-6 sm:p-8 shadow-[0_16px_36px_rgba(55,55,48,0.06)]">
+            <div className="mb-6 grid items-start gap-6 lg:mb-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
               <div>
                 <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-[#b76d00]">Local Expertise</p>
                 <h3 className="font-serif text-3xl font-semibold tracking-tight text-stone-900 lg:text-4xl">
@@ -192,13 +191,13 @@ export default function AboutUsPage() {
                 </ul>
               </div>
 
-              <div className="overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-[#fff8e3] p-3 shadow-[0_22px_50px_-28px_rgba(252,192,0,0.28)]">
+              <div className="overflow-hidden rounded-[2rem] border border-[#fcc000]/30 bg-[#fff8e3] p-2 sm:p-3 shadow-[0_22px_50px_-28px_rgba(252,192,0,0.28)]">
                 <Image
-                  src="/images/package-cards/images__editorial__local-expertise-global-standards.webp"
+                  src="/images/package-cards/images__editorial__local-expertise-global-standards.jpg"
                   alt="Local expertise with global standards"
                   width={1200}
                   height={800}
-                  className="h-full w-full rounded-[1.5rem] object-cover"
+                  className="h-auto max-h-[24rem] w-full rounded-[1.5rem] object-contain lg:max-h-[28rem]"
                 />
               </div>
             </div>
@@ -310,6 +309,32 @@ export default function AboutUsPage() {
                   </div>
                 </div>
                 <p className="mt-4 text-sm text-stone-600">*Terms & Conditions Apply.</p>
+                <label className="loyalty-card-scene mt-6">
+                  <input
+                    type="checkbox"
+                    className="loyalty-card-toggle sr-only"
+                    aria-label="Flip loyalty card to see the back"
+                  />
+                  <span className="loyalty-card-inner">
+                    <span aria-hidden="true" className="loyalty-card-face">
+                      <Image
+                        src="/images/loyalty-card-front.jpg"
+                        alt=""
+                        fill
+                        sizes="(max-width: 768px) 100vw, 672px"
+                      />
+                    </span>
+                    <span aria-hidden="true" className="loyalty-card-face loyalty-card-back">
+                      <Image
+                        src="/images/loyalty-card-back.jpg"
+                        alt=""
+                        fill
+                        sizes="(max-width: 768px) 100vw, 672px"
+                      />
+                    </span>
+                  </span>
+                </label>
+                <p className="mt-3 text-center text-xs text-stone-600">Hover or tap the card to see the back.</p>
               </div>
 
               <div className="rounded-3xl border border-stone-200 bg-[#fff8e3] p-6">
