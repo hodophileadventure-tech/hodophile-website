@@ -5,8 +5,9 @@ import { notFound } from "next/navigation";
 import { JourneyCard } from "@/components/journey-card";
 import { PageShell } from "@/components/page-shell";
 import { TourLanding } from "@/components/tour-landing";
+import { northernAirTours } from "@/lib/data/northern-air-tours";
 import { getTourPackagesForRegion } from "@/lib/data/tour-packages";
-import { absoluteUrl, destinations, tourMenu } from "@/lib/site";
+import { absoluteUrl, destinations, tourMenu, whatsappUrl } from "@/lib/site";
 
 type RegionPageProps = {
   params: Promise<{ region: string }>;
@@ -97,6 +98,64 @@ export default async function RegionPage({ params }: RegionPageProps) {
           ))}
         </div>
       </section>
+
+      {region === "northern-tours" ? (
+        <section
+          className="relative mt-10 overflow-hidden rounded-[2rem] border border-[#fcc000]/20 bg-[#141414] p-6 text-white shadow-[0_24px_70px_rgba(11,11,11,0.16)] md:p-8"
+          aria-labelledby="northern-by-air-heading"
+        >
+          <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-6">
+            <div>
+              <p className="text-xs uppercase tracking-[0.32em] text-[#fcc000]">Northern Tours</p>
+              <h2 id="northern-by-air-heading" className="mt-3 font-serif text-3xl text-white">
+                Northern by Air Tours
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/60">
+                Choose a Skardu air-tour package and ask our team for current itinerary, dates, and availability.
+              </p>
+            </div>
+          </div>
+
+          <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+            {northernAirTours.map((tour) => (
+              <li key={tour.id} className="rounded-2xl border border-white/10 bg-[#0b0b0b] p-4 sm:p-5">
+                <details className="group">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
+                    <span className="font-semibold text-white">{tour.title}</span>
+                    <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-[#fcc000] group-open:hidden">
+                      View itinerary +
+                    </span>
+                    <span className="hidden shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-[#fcc000] group-open:inline">
+                      Hide itinerary −
+                    </span>
+                  </summary>
+                  <ol className="mt-4 space-y-3 border-t border-white/10 pt-4">
+                    {tour.itinerary.map((day) => (
+                      <li key={day.day} className="grid gap-1 sm:grid-cols-[5rem_1fr] sm:gap-3">
+                        <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#fcc000]">
+                          Day {day.day}
+                        </span>
+                        <div>
+                          <h3 className="text-sm font-semibold text-white">{day.title}</h3>
+                          <p className="mt-1 text-sm leading-6 text-white/60">{day.description}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
+                  <a
+                    href={whatsappUrl(`Hi Hodophile, I am interested in the ${tour.title} package. Please confirm the itinerary, current dates, and availability.`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 inline-flex min-h-10 items-center rounded-full bg-[#fcc000] px-4 text-xs font-semibold uppercase tracking-[0.1em] text-black transition hover:bg-[#ffda4d]"
+                  >
+                    Ask about this tour
+                  </a>
+                </details>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section className="relative mt-10 overflow-hidden rounded-[2rem] bg-[#0b0b0b] p-6 text-white shadow-[0_24px_70px_rgba(11,11,11,0.16)] md:p-8">
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full border border-[#fcc000]/20" />
