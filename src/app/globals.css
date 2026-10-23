@@ -973,7 +973,9 @@ section {
 }
 
 .journey-card-image img,
-.journey-card-image video {
+.journey-card-image video,
+article img,
+[class*="-card"] img {
   object-fit: contain !important;
 }
 

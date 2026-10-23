@@ -123,8 +123,8 @@ export function TeamMemberArtwork({
           width: 100%;
           height: 100%;
           max-width: none;
-          object-fit: cover;
-          object-position: center bottom;
+          object-fit: contain;
+          object-position: center;
         }
 
         .avatar-icon {
