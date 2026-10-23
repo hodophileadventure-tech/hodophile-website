@@ -377,15 +377,15 @@ function TripMatchPanel({
   };
 
   return (
-    <section className="mt-8 overflow-hidden rounded-[2rem] border border-[#FCC000]/25 bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.11),transparent_35%),linear-gradient(135deg,#171715,#0d0d0c_62%,#18150b)] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:p-7 lg:p-8" aria-labelledby="trip-match-heading">
+    <section className="theme-preserve-dark mt-8 overflow-hidden rounded-[2rem] border border-[#e5d8b8] bg-[#fff8e8] p-5 text-stone-900 shadow-[0_24px_70px_rgba(50,40,10,0.12)] sm:p-7 lg:p-8" aria-labelledby="trip-match-heading">
       <div className="flex flex-wrap items-start justify-between gap-5">
         <div className="max-w-2xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-[#FCC000]/30 bg-[#FCC000]/[0.07] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#FCC000]">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#FCC000]" />
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#d8b84b] bg-[#fff0bf] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#654d00]">
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#a17b00]" />
             Five-step guide
           </p>
-          <h3 id="trip-match-heading" className="mt-3 font-[var(--font-display)] text-3xl text-white sm:text-4xl">Your journey, matched to you.</h3>
-          <p className="mt-2 text-sm leading-6 text-white/65">
+          <h3 id="trip-match-heading" className="mt-3 font-[var(--font-display)] text-3xl text-stone-950 sm:text-4xl">Your journey, matched to you.</h3>
+          <p className="mt-2 text-sm leading-6 text-stone-600">
             Choose what matters to you. We’ll match it to real journeys and explain the fit.
           </p>
         </div>
@@ -396,25 +396,25 @@ function TripMatchPanel({
               onComplete(false);
               setStep(0);
             }}
-            className="min-h-11 rounded-full border border-white/20 px-4 text-sm font-semibold text-white transition hover:border-[#FCC000]/70 hover:text-[#FCC000] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000]"
+            className="min-h-11 rounded-full border border-stone-300 bg-white px-4 text-sm font-semibold text-stone-800 transition hover:border-[#a17b00] hover:text-[#654d00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a17b00]"
           >
             Change answers
           </button>
         ) : (
-          <span className="rounded-full border border-white/10 bg-black/20 px-3 py-2 text-xs font-medium text-white/60">
+          <span className="rounded-full border border-stone-300 bg-white px-3 py-2 text-xs font-medium text-stone-600">
             Step {step + 1} of {stepTitles.length}
           </span>
         )}
       </div>
 
       {!isComplete ? (
-        <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-black/25 p-4 sm:p-6">
+        <div className="mt-6 rounded-[1.5rem] border border-[#e8ddc4] bg-white p-4 shadow-[0_8px_24px_rgba(50,40,10,0.05)] sm:p-6">
           <div className="flex items-center justify-between gap-3">
-            <h4 className="text-base font-semibold text-white sm:text-lg">{stepTitles[step]}</h4>
-            <span className="text-xs text-white/45">{String(step + 1).padStart(2, "0")} / 05</span>
+            <h4 className="text-base font-semibold text-stone-900 sm:text-lg">{stepTitles[step]}</h4>
+            <span className="text-xs font-medium text-stone-500">{String(step + 1).padStart(2, "0")} / 05</span>
           </div>
-          <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-label="Trip Match progress" aria-valuemin={1} aria-valuemax={stepTitles.length} aria-valuenow={step + 1}>
-            <div className="h-full rounded-full bg-[#FCC000] transition-[width]" style={{ width: `${(step + 1) / stepTitles.length * 100}%` }} />
+          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-stone-200" role="progressbar" aria-label="Trip Match progress" aria-valuemin={1} aria-valuemax={stepTitles.length} aria-valuenow={step + 1}>
+            <div className="h-full rounded-full bg-[#d6a900] transition-[width]" style={{ width: `${(step + 1) / stepTitles.length * 100}%` }} />
           </div>
 
           {step === 0 ? (
@@ -423,17 +423,17 @@ function TripMatchPanel({
                 {TRIP_MATCH_MOODS.map((option) => {
                   const selected = answers.moods.includes(option.value);
                   return (
-                    <button key={option.value} type="button" aria-pressed={selected} onClick={() => toggleMood(option.value)} className={`min-h-[4.5rem] rounded-2xl border p-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-white" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
+                    <button key={option.value} type="button" aria-pressed={selected} onClick={() => toggleMood(option.value)} className={`min-h-[4.5rem] rounded-2xl border p-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a17b00] ${selected ? "border-[#b78f08] bg-[#fff1bd] text-stone-950 shadow-[0_4px_14px_rgba(161,123,0,0.12)]" : "border-stone-200 bg-[#fffdf8] text-stone-800 hover:border-[#c4a43a] hover:bg-[#fff8e5]"}`}>
                       <span className="flex items-center justify-between gap-2 text-sm font-semibold">
-                        <span className="flex items-center gap-2"><span aria-hidden="true" className="text-base text-[#FCC000]">{option.icon}</span>{option.label}</span>
-                        <span aria-hidden="true" className={`flex h-5 w-5 items-center justify-center rounded-full border text-[10px] ${selected ? "border-[#FCC000] bg-[#FCC000] text-stone-950" : "border-white/30 text-transparent"}`}>✓</span>
+                        <span className="flex items-center gap-2"><span aria-hidden="true" className="text-base text-[#806000]">{option.icon}</span>{option.label}</span>
+                        <span aria-hidden="true" className={`flex h-5 w-5 items-center justify-center rounded-full border text-[10px] ${selected ? "border-[#a17b00] bg-[#fcc000] text-stone-950" : "border-stone-300 text-transparent"}`}>✓</span>
                       </span>
-                      <span className="mt-1 block text-xs text-white/45">{option.description}</span>
+                      <span className="mt-1 block text-xs text-stone-600">{option.description}</span>
                     </button>
                   );
                 })}
               </div>
-              <label className="mt-4 block max-w-2xl text-xs font-semibold text-white/75">
+              <label className="mt-4 block max-w-2xl text-xs font-semibold text-stone-700">
                 Why do you want to go on a trip?
                 <select
                   value={answers.reason ?? ""}
@@ -441,7 +441,7 @@ function TripMatchPanel({
                     ...answers,
                     reason: TRIP_MATCH_REASONS.find((option) => option.value === event.target.value)?.value,
                   })}
-                  className="mt-2 block min-h-12 w-full rounded-xl border border-white/15 bg-[#fdfcf8] px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#fcc000] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/30"
+                  className="mt-2 block min-h-12 w-full rounded-xl border border-stone-300 bg-white px-3 text-sm font-medium text-stone-900 shadow-sm transition focus:border-[#a17b00] focus:outline-none focus:ring-2 focus:ring-[#fcc000]/40"
                 >
                   <option value="">Choose a reason (optional)</option>
                   {TRIP_MATCH_REASONS.map((option) => (
@@ -457,7 +457,7 @@ function TripMatchPanel({
               {TRIP_MATCH_DURATIONS.map((option) => {
                 const selected = answers.duration === option.value;
                 return (
-                  <button key={option.value} type="button" aria-pressed={selected} onClick={() => onAnswersChange({ ...answers, duration: selected ? undefined : option.value })} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-[#FCC000]" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
+                  <button key={option.value} type="button" aria-pressed={selected} onClick={() => onAnswersChange({ ...answers, duration: selected ? undefined : option.value })} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a17b00] ${selected ? "border-[#b78f08] bg-[#fff1bd] text-[#5f4900]" : "border-stone-200 bg-[#fffdf8] text-stone-800 hover:border-[#c4a43a] hover:bg-[#fff8e5]"}`}>
                     {option.label}
                   </button>
                 );
@@ -470,8 +470,8 @@ function TripMatchPanel({
               {TRIP_MATCH_EXPERIENCES.map((option) => {
                 const selected = answers.experiences.includes(option.value);
                 return (
-                  <button key={option.value} type="button" aria-pressed={selected} onClick={() => toggleExperience(option.value)} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-[#FCC000]" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
-                    <span className="flex items-center justify-center gap-2"><span aria-hidden="true" className="text-base text-[#FCC000]">{option.icon}</span>{option.label}</span>
+                  <button key={option.value} type="button" aria-pressed={selected} onClick={() => toggleExperience(option.value)} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a17b00] ${selected ? "border-[#b78f08] bg-[#fff1bd] text-[#5f4900]" : "border-stone-200 bg-[#fffdf8] text-stone-800 hover:border-[#c4a43a] hover:bg-[#fff8e5]"}`}>
+                    <span className="flex items-center justify-center gap-2"><span aria-hidden="true" className="text-base text-[#806000]">{option.icon}</span>{option.label}</span>
                   </button>
                 );
               })}
@@ -483,12 +483,12 @@ function TripMatchPanel({
               {budgetRanges.map((range) => {
                 const selected = answers.budget?.id === range.id;
                 return (
-                  <button key={range.id} type="button" aria-pressed={selected} onClick={() => onAnswersChange({ ...answers, budget: selected ? undefined : range })} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-[#FCC000]" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
+                  <button key={range.id} type="button" aria-pressed={selected} onClick={() => onAnswersChange({ ...answers, budget: selected ? undefined : range })} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a17b00] ${selected ? "border-[#b78f08] bg-[#fff1bd] text-[#5f4900]" : "border-stone-200 bg-[#fffdf8] text-stone-800 hover:border-[#c4a43a] hover:bg-[#fff8e5]"}`}>
                     {range.label}
                   </button>
                 );
               })}
-              {budgetRanges.length === 0 ? <p className="text-sm text-white/60">There are no currently listed prices to build a budget range.</p> : null}
+              {budgetRanges.length === 0 ? <p className="text-sm text-stone-600">There are no currently listed prices to build a budget range.</p> : null}
             </div>
           ) : null}
 
@@ -498,13 +498,13 @@ function TripMatchPanel({
                 {TRIP_MATCH_SEASONS.map((season) => {
                   const selected = answers.season === season.value;
                   return (
-                    <button key={season.value} type="button" aria-pressed={selected} onClick={() => onAnswersChange({ ...answers, season: selected ? undefined : season.value, month: undefined })} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000] ${selected ? "border-[#FCC000]/70 bg-[#FCC000]/10 text-[#FCC000]" : "border-white/10 bg-white/[0.025] text-white/75 hover:border-white/25"}`}>
+                    <button key={season.value} type="button" aria-pressed={selected} onClick={() => onAnswersChange({ ...answers, season: selected ? undefined : season.value, month: undefined })} className={`min-h-14 rounded-xl border px-4 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a17b00] ${selected ? "border-[#b78f08] bg-[#fff1bd] text-[#5f4900]" : "border-stone-200 bg-[#fffdf8] text-stone-800 hover:border-[#c4a43a] hover:bg-[#fff8e5]"}`}>
                       {season.label}
                     </button>
                   );
                 })}
               </div>
-              <label className="mt-3 block max-w-sm text-xs font-semibold text-white/70">
+              <label className="mt-3 block max-w-sm text-xs font-semibold text-stone-700">
                 Or choose an exact month
                 <select
                   value={answers.month ?? ""}
@@ -512,7 +512,7 @@ function TripMatchPanel({
                     const month = TRIP_MATCH_MONTHS.find((option) => option.value === event.target.value);
                     onAnswersChange({ ...answers, month: month?.value, season: month?.season });
                   }}
-                  className="mt-2 block min-h-11 w-full rounded-xl border border-white/15 bg-stone-900 px-3 text-sm text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000]"
+                  className="mt-2 block min-h-11 w-full rounded-xl border border-stone-300 bg-white px-3 text-sm text-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a17b00]"
                 >
                   <option value="">Any month / season</option>
                   {TRIP_MATCH_MONTHS.map((month) => <option key={month.value} value={month.value}>{month.label}</option>)}
@@ -521,12 +521,12 @@ function TripMatchPanel({
             </div>
           ) : null}
 
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
-            <button type="button" onClick={() => setStep((current) => Math.max(0, current - 1))} disabled={step === 0} className="min-h-11 rounded-full px-4 text-sm font-semibold text-white/65 transition hover:text-white disabled:invisible focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCC000]">
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-stone-200 pt-4">
+            <button type="button" onClick={() => setStep((current) => Math.max(0, current - 1))} disabled={step === 0} className="min-h-11 rounded-full px-4 text-sm font-semibold text-stone-600 transition hover:text-stone-950 disabled:invisible focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a17b00]">
               Back
             </button>
-            <p className="text-xs text-white/40">Each answer is optional; skip any step.</p>
-            <button type="button" onClick={advance} className="min-h-11 rounded-full bg-[#FCC000] px-5 text-sm font-bold text-stone-950 transition hover:bg-[#ffda4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+            <p className="text-xs text-stone-500">Each answer is optional; skip any step.</p>
+            <button type="button" onClick={advance} className="min-h-11 rounded-full bg-[#FCC000] px-5 text-sm font-bold text-stone-950 transition hover:bg-[#ffda4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#806000]">
               {step === stepTitles.length - 1 ? "See my matches" : "Continue"}
             </button>
           </div>
