@@ -224,7 +224,7 @@ export function SiteHeader() {
       );
     }
 
-    if (item.href === "/destinations") {
+    if (item.href === "/tours") {
       return (
         <div
           key={item.href}
@@ -290,6 +290,24 @@ export function SiteHeader() {
                       >
                         {group.label}
                       </Link>
+                      {group.href === "/tours/northern-tours" ? (
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                          <Link
+                            href={`${group.href}#by-road`}
+                            className="rounded-lg border border-[#fcc000]/40 bg-[#fff8df] px-4 py-3 transition hover:border-[#fcc000] hover:bg-[#fff1bd]"
+                          >
+                            <div className="text-sm font-semibold text-stone-900">By Road</div>
+                            <div className="mt-1 text-xs leading-5 text-stone-600">Browse northern road journeys.</div>
+                          </Link>
+                          <Link
+                            href={`${group.href}#by-air`}
+                            className="rounded-lg border border-[#fcc000]/40 bg-[#fff8df] px-4 py-3 transition hover:border-[#fcc000] hover:bg-[#fff1bd]"
+                          >
+                            <div className="text-sm font-semibold text-stone-900">By Air</div>
+                            <div className="mt-1 text-xs leading-5 text-stone-600">Explore Skardu flights and itineraries.</div>
+                          </Link>
+                        </div>
+                      ) : null}
                       <div className="mt-4 grid gap-3">
                         {group.items.map((subItem) => (
                           <Link
@@ -480,6 +498,24 @@ export function SiteHeader() {
                               >
                                 View {group.label}
                               </Link>
+                              {group.href === "/tours/northern-tours" ? (
+                                <div className="grid grid-cols-2 gap-2">
+                                  <Link
+                                    href={`${group.href}#by-road`}
+                                    onClick={() => setMobileOpen(false)}
+                                    className="rounded-lg border border-[#fcc000]/50 bg-[#fff8df] px-3 py-3 text-sm font-semibold text-stone-800 transition hover:bg-[#fff1bd]"
+                                  >
+                                    By Road
+                                  </Link>
+                                  <Link
+                                    href={`${group.href}#by-air`}
+                                    onClick={() => setMobileOpen(false)}
+                                    className="rounded-lg border border-[#fcc000]/50 bg-[#fff8df] px-3 py-3 text-sm font-semibold text-stone-800 transition hover:bg-[#fff1bd]"
+                                  >
+                                    By Air
+                                  </Link>
+                                </div>
+                              ) : null}
                               {group.items.map((subItem) => (
                                 <Link
                                   key={subItem.href}

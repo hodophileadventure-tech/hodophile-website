@@ -61,6 +61,10 @@ export default async function RegionPage({ params }: RegionPageProps) {
   }
 
   const regionalPackages = getTourPackagesForRegion(region === "southern-tours" ? "southern" : "northern");
+  const isNorthernToursPage = region === "northern-tours";
+  const roadPackages = isNorthernToursPage
+    ? regionalPackages.filter((item) => !/by air|kdu-to-kdu|air-linked/i.test(`${item.title} ${item.scheduleNote ?? ""}`))
+    : regionalPackages;
 
   return (
     <PageShell wide>
@@ -101,6 +105,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
 
       {region === "northern-tours" ? (
         <section
+          id="by-air"
           className="relative mt-10 overflow-hidden rounded-[2rem] border border-[#fcc000]/20 bg-[#141414] p-6 text-white shadow-[0_24px_70px_rgba(11,11,11,0.16)] md:p-8"
           aria-labelledby="northern-by-air-heading"
         >
@@ -157,18 +162,25 @@ export default async function RegionPage({ params }: RegionPageProps) {
         </section>
       ) : null}
 
-      <section className="relative mt-10 overflow-hidden rounded-[2rem] bg-[#0b0b0b] p-6 text-white shadow-[0_24px_70px_rgba(11,11,11,0.16)] md:p-8">
+      <section
+        id={isNorthernToursPage ? "by-road" : undefined}
+        className="relative mt-10 scroll-mt-24 overflow-hidden rounded-[2rem] bg-[#0b0b0b] p-6 text-white shadow-[0_24px_70px_rgba(11,11,11,0.16)] md:p-8"
+      >
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full border border-[#fcc000]/20" />
         <div className="relative flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.32em] text-[#fcc000]">Journeys</p>
-            <h2 className="mt-3 font-serif text-3xl text-white">{regionalPackages.length} {group.label} journeys.</h2>
+            <p className="text-xs uppercase tracking-[0.32em] text-[#fcc000]">
+              {isNorthernToursPage ? "Northern Tours · By Road" : "Journeys"}
+            </p>
+            <h2 className="mt-3 font-serif text-3xl text-white">
+              {isNorthernToursPage ? "Northern by Road Tours" : `${roadPackages.length} ${group.label} journeys.`}
+            </h2>
           </div>
           <Link href="/tours" className="text-sm font-semibold text-white/65 transition hover:text-[#fcc000]">View all journeys ↗</Link>
         </div>
 
         <div className="relative mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {regionalPackages.map((item) => (
+          {roadPackages.map((item) => (
             <JourneyCard
               key={item.id}
               href={`/packages/${item.id}`}
