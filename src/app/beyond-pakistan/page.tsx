@@ -319,6 +319,7 @@ function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number 
   return (
     <JourneyCard
       id={pkg.id}
+      variant="legacy"
       className="scroll-mt-28"
       image={pkg.image}
       imageAlt={pkg.imageAlt ?? ""}

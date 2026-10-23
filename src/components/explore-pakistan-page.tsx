@@ -458,6 +458,7 @@ export function ExplorePakistanPageContent() {
             {journeyCards.map((journey, index) => (
               <JourneyCard
                 key={journey.route}
+                variant="legacy"
                 image={journey.image}
                 imageAlt={`${journey.route} in Pakistan`}
                 imageSizes="(max-width: 768px) 100vw, 50vw"

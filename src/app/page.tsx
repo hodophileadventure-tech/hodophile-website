@@ -231,7 +231,7 @@ export default function Home() {
               glassBody
               bodyClassName="p-5"
             >
-              <p className="line-clamp-2 flex-1 text-sm leading-6 text-white/75">{destination.description}</p>
+              <p className="line-clamp-2 flex-1 text-sm leading-6 text-stone-600">{destination.description}</p>
               <span className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-[#FCC000] px-5 text-sm font-semibold text-black transition group-hover:bg-[#ffda4d]">
                 Explore destination
               </span>

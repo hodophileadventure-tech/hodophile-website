@@ -420,12 +420,12 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
                   imageHeight="aspect-square"
                   bodyClassName="p-6 sm:p-7"
                 >
-                  <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">
+                  <div className="flex items-start justify-between gap-4 border-b border-stone-300 pb-5">
                     <div>
-                      <p className="text-[0.65rem] uppercase tracking-[0.18em] text-white/45">From</p>
-                      <p className="mt-1 text-xl font-semibold text-[#fcc000]">{tourPackage.priceOnRequest ? "Price on request" : `PKR ${tourPackage.pricePerPerson.toLocaleString()}`}</p>
-                      <p className="text-xs text-white/45">per person</p>
-                      {tourPackage.couplePrice && <p className="mt-2 text-xs text-white/60">PKR {tourPackage.couplePrice.toLocaleString()} / couple</p>}
+                      <p className="text-[0.65rem] uppercase tracking-[0.18em] text-stone-500">From</p>
+                      <p className="mt-1 text-xl font-semibold text-[#806000]">{tourPackage.priceOnRequest ? "Price on request" : `PKR ${tourPackage.pricePerPerson.toLocaleString()}`}</p>
+                      <p className="text-xs text-stone-500">per person</p>
+                      {tourPackage.couplePrice && <p className="mt-2 text-xs text-stone-600">PKR {tourPackage.couplePrice.toLocaleString()} / couple</p>}
                     </div>
                     <Link
                       href={`/packages/${tourPackage.id}`}
@@ -434,13 +434,13 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
                       View details
                     </Link>
                   </div>
-                  <div className="mt-5 space-y-3 text-sm leading-6 text-white/75">
-                    {tourPackage.scheduleNote && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Schedule note</span>{tourPackage.scheduleNote}</p>}
-                    {tourPackage.transport && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Transport</span>{tourPackage.transport.join("; ")}</p>}
-                    {tourPackage.includes && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Includes</span>{tourPackage.includes.join("; ")}</p>}
-                    {tourPackage.excludes && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/40">Excludes</span>{tourPackage.excludes.join("; ")}</p>}
+                  <div className="mt-5 space-y-3 text-sm leading-6 text-stone-600">
+                    {tourPackage.scheduleNote && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-stone-500">Schedule note</span>{tourPackage.scheduleNote}</p>}
+                    {tourPackage.transport && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-stone-500">Transport</span>{tourPackage.transport.join("; ")}</p>}
+                    {tourPackage.includes && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-stone-500">Includes</span>{tourPackage.includes.join("; ")}</p>}
+                    {tourPackage.excludes && <p><span className="mr-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-stone-500">Excludes</span>{tourPackage.excludes.join("; ")}</p>}
                   </div>
-                  {tourPackage.notes?.map((note) => <p key={note} className="mt-5 border-t border-white/10 pt-4 text-xs leading-6 text-white/45">{note}</p>)}
+                  {tourPackage.notes?.map((note) => <p key={note} className="mt-5 border-t border-stone-300 pt-4 text-xs leading-6 text-stone-500">{note}</p>)}
                 </JourneyCard>
               ))}
             </div>

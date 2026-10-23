@@ -124,19 +124,30 @@ export default async function RegionPage({ params }: RegionPageProps) {
 
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {northernAirTours.map((tour) => (
-              <li key={tour.id} className="rounded-2xl border border-white/10 bg-[#0b0b0b] p-4 sm:p-5">
-                <div className="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl bg-[#161616]">
-                  <Image
-                    src={tour.image}
-                    alt={`${tour.title} tour scenery`}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 50vw"
-                    className="object-cover"
-                  />
-                </div>
+              <li key={tour.id} className="overflow-hidden rounded-[1.5rem] border border-[#d4b34d]/35 bg-[#fff2d5] p-4 text-stone-900 shadow-[0_18px_42px_rgba(50,40,10,0.1)] sm:p-5">
+                <Link href={`/tours/northern-tours/by-air/${tour.id}`} className="group/tour block">
+                  <div className="relative mb-4 aspect-square overflow-hidden rounded-xl bg-[#f1e5c8]">
+                    <Image
+                      src={tour.image}
+                      alt={`${tour.title} tour scenery`}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 50vw"
+                      className="object-contain transition duration-500"
+                    />
+                  </div>
+                  <span className="flex items-center justify-between gap-3">
+                    <span className="font-serif text-2xl leading-tight text-stone-900 sm:text-3xl">{tour.title}</span>
+                    <span aria-hidden="true" className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-[#806000]">
+                      ↗
+                    </span>
+                  </span>
+                  <span className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#fcc000] px-5 text-sm font-semibold uppercase tracking-[0.14em] text-black transition group-hover/tour:bg-[#ffda4d]">
+                    View Details
+                  </span>
+                </Link>
                 <details className="group">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
-                    <span className="font-semibold text-white">{tour.title}</span>
+                  <summary className="mt-4 flex cursor-pointer list-none items-center justify-between gap-3 border-t border-stone-300 pt-4 [&::-webkit-details-marker]:hidden">
+                    <span className="text-sm font-medium text-stone-700">Day-by-day itinerary</span>
                     <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-[#fcc000] group-open:hidden">
                       View itinerary +
                     </span>
@@ -144,15 +155,15 @@ export default async function RegionPage({ params }: RegionPageProps) {
                       Hide itinerary −
                     </span>
                   </summary>
-                  <ol className="mt-4 space-y-3 border-t border-white/10 pt-4">
+                  <ol className="mt-4 space-y-3 border-t border-stone-300 pt-4">
                     {tour.itinerary.map((day) => (
                       <li key={day.day} className="grid gap-1 sm:grid-cols-[5rem_1fr] sm:gap-3">
-                        <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#fcc000]">
+                        <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#806000]">
                           Day {day.day}
                         </span>
                         <div>
-                          <h3 className="text-sm font-semibold text-white">{day.title}</h3>
-                          <p className="mt-1 text-sm leading-6 text-white/60">{day.description}</p>
+                          <h3 className="text-sm font-semibold text-stone-900">{day.title}</h3>
+                          <p className="mt-1 text-sm leading-6 text-stone-600">{day.description}</p>
                         </div>
                       </li>
                     ))}
@@ -202,8 +213,8 @@ export default async function RegionPage({ params }: RegionPageProps) {
               bodyClassName="p-5"
             >
               <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4 text-sm">
-                <span className="text-white/55">From</span>
-                <span className="font-semibold text-[#fcc000]">{item.priceOnRequest ? "Price on request" : `PKR ${item.pricePerPerson.toLocaleString()}`}</span>
+                <span className="text-stone-500">From</span>
+                <span className="font-semibold text-[#806000]">{item.priceOnRequest ? "Price on request" : `PKR ${item.pricePerPerson.toLocaleString()}`}</span>
               </div>
               <span className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-[#fcc000] px-5 text-sm font-semibold text-black transition group-hover:bg-[#ffda4d]">
                 Explore package ↗

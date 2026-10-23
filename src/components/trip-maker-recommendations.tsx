@@ -60,7 +60,7 @@ function RecommendationCard({ recommendation, hasPreferences }: { recommendation
       bodyClassName="bg-white p-5 text-stone-950"
     >
         <p className="mt-2 text-sm leading-6 text-stone-600">{trip.routeStops.join(" · ")}</p>
-        <div className="mt-4 flex items-end justify-between gap-3 border-t border-stone-100 pt-4">
+        <div className="mt-4 flex items-end justify-between gap-3 border-t border-stone-300 pt-4">
           <div>
             <p className="text-[10px] uppercase tracking-[0.16em] text-stone-500">Price</p>
             <p className="mt-1 text-lg font-semibold text-[#8b6b00]">{trip.pricePerPerson === undefined ? "Price on request" : `PKR ${trip.pricePerPerson.toLocaleString()}`}</p>

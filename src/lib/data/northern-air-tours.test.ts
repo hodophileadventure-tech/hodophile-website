@@ -3,9 +3,9 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { northernAirTours } from "./northern-air-tours";
+import { northernAirTourBookingTerms, northernAirTours } from "./northern-air-tours";
 
-test("Northern by Air lists all ten requested packages with complete day-by-day itineraries", () => {
+test("Northern by Air detail pages have itinerary, pricing, and package information", () => {
   const expectedTours = [
     ["Skardu & Hunza · 8 Days by Air", 8],
     ["Skardu · 4 Days", 4],
@@ -25,6 +25,8 @@ test("Northern by Air lists all ten requested packages with complete day-by-day 
   );
   assert.equal(new Set(northernAirTours.map((tour) => tour.id)).size, expectedTours.length);
   assert.equal(new Set(northernAirTours.map((tour) => tour.image)).size, expectedTours.length);
+  assert.ok(existsSync(resolve(process.cwd(), "src/app/tours/northern-tours/by-air/[slug]/page.tsx")));
+  assert.ok(northernAirTourBookingTerms.length > 0);
 
   for (const tour of northernAirTours) {
     assert.ok(
@@ -40,5 +42,10 @@ test("Northern by Air lists all ten requested packages with complete day-by-day 
       assert.ok(day.title.trim().length > 0);
       assert.ok(day.description.trim().length > 0);
     }
+    assert.ok(tour.summary.trim().length > 0, `${tour.title} should have a detail-page summary`);
+    assert.ok(tour.pricing.length > 0, `${tour.title} should include pricing options`);
+    assert.ok(tour.pricing.every((option) => option.rates.length > 0), `${tour.title} should include rates`);
+    assert.ok(tour.airfare.trim().length > 0, `${tour.title} should explain airfare`);
+    assert.ok(tour.inclusions.length > 0, `${tour.title} should list package inclusions`);
   }
 });

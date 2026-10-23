@@ -272,16 +272,16 @@ function RouteCard({
       bodyClassName="p-4 sm:p-5"
     >
         <div className="mt-3">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">Why you’ll love it</p>
-          <p className="mt-1 line-clamp-2 text-sm leading-6 text-white/75">{packageItem.summary}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-stone-500">Why you’ll love it</p>
+          <p className="mt-1 line-clamp-2 text-sm leading-6 text-stone-600">{packageItem.summary}</p>
         </div>
         {packageItem.routeHighlights.length ? (
           <div className="mt-3">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">Trip highlights</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-stone-500">Trip highlights</p>
             <ul className="mt-1 flex flex-wrap gap-1.5">
               {packageItem.routeHighlights.slice(0, 3).map((highlight) => (
-                <li key={`${packageItem.id}-${highlight}`} className="rounded-full border border-white/15 bg-white/[0.06] px-2.5 py-1 text-[11px] font-medium text-white/75">
-                  <span aria-hidden="true" className="mr-1 text-[#fcc000]">✦</span>{highlight}
+                <li key={`${packageItem.id}-${highlight}`} className="rounded-full border border-stone-300 bg-[#fffaf0] px-2.5 py-1 text-[11px] font-medium text-stone-700">
+                  <span aria-hidden="true" className="mr-1 text-[#806000]">✦</span>{highlight}
                 </li>
               ))}
             </ul>
@@ -289,34 +289,34 @@ function RouteCard({
         ) : null}
         {relatedContext ? (
           <div className="mt-3 border-l border-[#fcc000] pl-3">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/55">Related to {relatedContext.savedTripTitle}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-stone-500">Related to {relatedContext.savedTripTitle}</p>
             {relatedContext.reasons.length ? (
-              <ul className="mt-1 space-y-0.5 text-xs leading-5 text-white/70">
+              <ul className="mt-1 space-y-0.5 text-xs leading-5 text-stone-600">
                 {relatedContext.reasons.map((reason) => <li key={`${packageItem.id}-${reason}`}>{reason}</li>)}
               </ul>
             ) : null}
           </div>
         ) : null}
 
-        <div className="mt-auto flex items-end justify-between gap-3 border-t border-white/10 pt-4">
+        <div className="mt-auto flex items-end justify-between gap-3 border-t border-stone-300 pt-4">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-white/50">{packageItem.pricePerPerson === undefined ? "Pricing" : "From"}</p>
-            <p className="mt-1 text-xl font-semibold text-[#fcc000]">{priceText}</p>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500">{packageItem.pricePerPerson === undefined ? "Pricing" : "From"}</p>
+            <p className="mt-1 text-xl font-semibold text-[#806000]">{priceText}</p>
           </div>
-          <span className="max-w-[48%] text-right text-xs leading-5 text-white/60">
-            <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">Best for</span>
-            <span className="font-semibold text-white/85">{packageItem.bestFor ?? "Not specified"}</span>
+          <span className="max-w-[48%] text-right text-xs leading-5 text-stone-600">
+            <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-stone-500">Best for</span>
+            <span className="font-semibold text-stone-800">{packageItem.bestFor ?? "Not specified"}</span>
           </span>
         </div>
 
-        <div className="mt-4 flex items-center gap-2 border-t border-white/10 pt-4">
+        <div className="mt-4 flex items-center gap-2 border-t border-stone-300 pt-4">
           <Link href={journeyHref(packageItem)} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#fcc000] px-4 text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#ffda4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000]">
             {packageItem.requestOnly ? "Request details" : "View journey"}
           </Link>
-          <button type="button" onClick={() => onToggleWishlist(packageItem.id)} title={isWishlistEnabled ? "Remove from saved journeys" : "Save journey"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000] ${isWishlistEnabled ? "border-[#1b7a4b] bg-[#1b7a4b] text-white" : "border-white/25 bg-white/[0.05] text-white/75 hover:border-[#1b7a4b] hover:text-[#4ade80]"}`} aria-label={isWishlistEnabled ? `Remove ${packageItem.title} from wishlist` : `Save ${packageItem.title} to wishlist`}>
+          <button type="button" onClick={() => onToggleWishlist(packageItem.id)} title={isWishlistEnabled ? "Remove from saved journeys" : "Save journey"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000] ${isWishlistEnabled ? "border-[#1b7a4b] bg-[#1b7a4b] text-white" : "border-stone-300 bg-[#fffaf0] text-stone-700 hover:border-[#1b7a4b] hover:text-[#1b7a4b]"}`} aria-label={isWishlistEnabled ? `Remove ${packageItem.title} from wishlist` : `Save ${packageItem.title} to wishlist`}>
             ♥
           </button>
-          <button type="button" onClick={() => onToggleCompare(packageItem.id)} title={isCompareEnabled ? "Remove from comparison" : "Add to comparison"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000] ${isCompareEnabled ? "border-[#fcc000] bg-[#fcc000] text-[#0b0b0b]" : "border-white/25 bg-white/[0.05] text-white/75 hover:border-[#fcc000] hover:text-[#fcc000]"}`} aria-label={isCompareEnabled ? `Remove ${packageItem.title} from compare` : `Add ${packageItem.title} to compare`}>
+          <button type="button" onClick={() => onToggleCompare(packageItem.id)} title={isCompareEnabled ? "Remove from comparison" : "Add to comparison"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000] ${isCompareEnabled ? "border-[#fcc000] bg-[#fcc000] text-[#0b0b0b]" : "border-stone-300 bg-[#fffaf0] text-stone-700 hover:border-[#806000] hover:text-[#806000]"}`} aria-label={isCompareEnabled ? `Remove ${packageItem.title} from compare` : `Add ${packageItem.title} to compare`}>
             ⇄
           </button>
         </div>
@@ -567,19 +567,19 @@ function TripMatchPanel({
                   bodyClassName="p-4 sm:p-5"
                 >
                     <p className="mt-1 text-sm font-semibold text-[#FCC000]">{trip.pricePerPerson === undefined ? "Price on request" : `${formatCurrency(trip.pricePerPerson)} per person`}</p>
-                    <p className="mt-2 text-xs leading-5 text-white/55">{trip.routeHighlights.length ? trip.routeHighlights.slice(0, 3).join(" · ") : trip.routeStops.join(" · ")}</p>
+                    <p className="mt-2 text-xs leading-5 text-stone-600">{trip.routeHighlights.length ? trip.routeHighlights.slice(0, 3).join(" · ") : trip.routeStops.join(" · ")}</p>
                     <ul className="mt-4 space-y-2">
                       {reasons.length ? reasons.map((reason) => (
-                        <li key={`${trip.id}-${reason.category}-${reason.label}`} className="flex gap-2 text-xs leading-5 text-white/75">
+                        <li key={`${trip.id}-${reason.category}-${reason.label}`} className="flex gap-2 text-xs leading-5 text-stone-700">
                           <span aria-hidden="true" className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#FCC000]" />
                           {reason.label}
                         </li>
                       )) : (
-                        <li className="text-xs leading-5 text-white/50">No selected preference is supported by the listed details yet.</li>
+                        <li className="text-xs leading-5 text-stone-500">No selected preference is supported by the listed details yet.</li>
                       )}
                     </ul>
-                    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/10 pt-4 text-xs font-semibold">
-                      <Link href={journeyHref(trip)} className="text-white underline decoration-[#FCC000] decoration-2 underline-offset-4">{trip.requestOnly ? "Request details" : "View journey"}</Link>
+                    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-stone-300 pt-4 text-xs font-semibold">
+                      <Link href={journeyHref(trip)} className="text-stone-900 underline decoration-[#FCC000] decoration-2 underline-offset-4">{trip.requestOnly ? "Request details" : "View journey"}</Link>
                       <JourneyActions packageId={trip.id} packageTitle={trip.title} />
                     </div>
                 </JourneyCard>

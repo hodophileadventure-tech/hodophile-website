@@ -73,13 +73,13 @@ export default function HoneymoonPackagesPage() {
             title={item.name}
             bodyClassName="p-5 sm:p-6"
           >
-            <p className="line-clamp-2 flex-1 text-sm leading-6 text-white/75">{item.detail}</p>
-            <div className="mt-5 flex items-end justify-between gap-4 border-t border-white/15 pt-5">
+            <p className="line-clamp-2 flex-1 text-sm leading-6 text-stone-600">{item.detail}</p>
+            <div className="mt-5 flex items-end justify-between gap-4 border-t border-stone-300 pt-5">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-white/50">From</p>
-                <p className="mt-1 text-xl font-semibold text-[#fcc000]">{item.price ?? "Contact us"}</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-stone-500">From</p>
+                <p className="mt-1 text-xl font-semibold text-[#806000]">{item.price ?? "Contact us"}</p>
               </div>
-              <span className="text-sm font-bold uppercase tracking-[0.12em] text-white transition group-hover:text-[#fcc000]">
+              <span className="text-sm font-bold uppercase tracking-[0.12em] text-stone-900 transition group-hover:text-[#806000]">
                 View journey ↗
               </span>
             </div>

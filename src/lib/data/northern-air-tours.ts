@@ -2,6 +2,15 @@ export type NorthernAirTour = {
   id: string;
   title: string;
   image: string;
+  summary: string;
+  pricing: {
+    packageType: string;
+    rates: string[];
+  }[];
+  airfare: string;
+  flightSchedule?: string;
+  inclusions: string[];
+  stayOptions: string[];
   itinerary: {
     day: number;
     title: string;
@@ -9,11 +18,34 @@ export type NorthernAirTour = {
   }[];
 };
 
+export const northernAirTourBookingTerms = [
+  "Confirm the booking with a 50% advance payment per person. The remaining 50% is handed to the tour manager at departure.",
+  "Children under 3 years travel free; air ticket charges still apply.",
+  "Children aged 3–7 are charged 50% and receive a jumper seat.",
+  "Children above 7 years are charged 100%.",
+  "Air tickets are arranged on request, require 100% advance payment, and are charged at the current fare.",
+];
+
 export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-hunza-8-days",
     title: "Skardu & Hunza · 8 Days by Air",
     image: "/images/northern-air-tours/skardu-hunza-8-days.webp",
+    summary: "An air-linked Skardu and Hunza journey combining Baltistan valleys, high-altitude lakes, forts, and Upper Hunza.",
+    pricing: [
+      { packageType: "Standard", rates: ["PKR 85,000 per head (without air tickets)", "PKR 173,000 per couple"] },
+      { packageType: "Deluxe", rates: ["PKR 120,000 per head (without air tickets)", "PKR 260,000 per couple"] },
+      { packageType: "With TZ/TX Prado", rates: ["PKR 140,000 per head (without air tickets)", "PKR 280,000 per couple"] },
+      { packageType: "Executive", rates: ["Hotels and resorts available as per choice"] },
+    ],
+    airfare: "Air ticket cost shown on the poster: PKR 55,000–95,000 per adult, depending on booking date and current fare.",
+    flightSchedule: "PIA flights from Karachi to Skardu operate once a week on Saturday, as stated on the supplied poster.",
+    inclusions: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and parking"],
+    stayOptions: [
+      "Standard: Rock View, Mountain View, or equivalent.",
+      "Deluxe: Al-Noor, Snowland Resort, or equivalent.",
+      "Executive: Khoj, Shangrila, Himmel Resort, or as per choice.",
+    ],
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Fly to Skardu, visit Shangrila Resort and Upper Kachura Lake, then stay overnight in Skardu." },
       { day: 2, title: "Shigar Valley", description: "Visit Manthoka Waterfall, Shigar Fort and Sarfaranga Cold Desert. Optional activities include jeep safari, quad biking, horse riding and paragliding. Overnight in Skardu." },
@@ -29,6 +61,21 @@ export const northernAirTours: NorthernAirTour[] = [
     id: "skardu-4-days",
     title: "Skardu · 4 Days",
     image: "/images/northern-air-tours/skardu-4-days.webp",
+    summary: "A four-day Skardu escape featuring Deosai, Sheosar Lake, Kharmang waterfalls, and Shigar Valley.",
+    pricing: [
+      { packageType: "Standard", rates: ["PKR 45,000 per head (without air tickets)", "PKR 70,000 per couple"] },
+      { packageType: "Deluxe", rates: ["PKR 70,000 per head (without air tickets)", "PKR 103,000 per couple"] },
+      { packageType: "With TZ/TX Prado", rates: ["PKR 103,000 per head (without air tickets)", "PKR 150,000 per couple"] },
+      { packageType: "Executive", rates: ["Hotels available as per choice"] },
+    ],
+    airfare: "Air tickets are not included. The poster lists an adult return fare of PKR 55,000–95,000, depending on booking date and current fare.",
+    flightSchedule: "PIA flights from Karachi, Lahore, and Islamabad are listed on Wednesday and Saturday.",
+    inclusions: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and parking"],
+    stayOptions: [
+      "Standard: Skardu View Point, Rock View, Polo Land, or equivalent.",
+      "Deluxe: Al-Noor, Himalaya, Red Coral, or equivalent.",
+      "Executive: Khoj, Shangrila, Himmel Resort, or as per choice.",
+    ],
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Airport pickup, visit Shangrila Resort and Upper Kachura Lake, then stay overnight in Skardu." },
       { day: 2, title: "Deosai National Park", description: "Travel by 4x4 to Deosai, stopping at Sadpara Lake, Bara Pani and Kala Pani, and visit Sheosar Lake. Overnight in Skardu." },
@@ -40,6 +87,22 @@ export const northernAirTours: NorthernAirTour[] = [
     id: "skardu-5-days",
     title: "Skardu · 5 Days",
     image: "/images/northern-air-tours/skardu-5-days.webp",
+    summary: "A five-day Skardu stay with Basho Meadows, Shigar Valley, and a 4x4 excursion to Chunda Valley.",
+    pricing: [
+      { packageType: "Standard", rates: ["PKR 65,000 per head (without air tickets)", "PKR 115,000 per couple"] },
+      { packageType: "Standard with TZ/TX Prado", rates: ["PKR 90,000 per head (without air tickets)", "PKR 170,000 per couple"] },
+      { packageType: "Deluxe", rates: ["PKR 80,000 per head (without air tickets)", "PKR 135,000 per couple"] },
+      { packageType: "Deluxe with TZ/TX Prado", rates: ["PKR 90,000 per head (without air tickets)", "PKR 170,000 per couple"] },
+      { packageType: "Executive", rates: ["Hotels available as per choice"] },
+    ],
+    airfare: "Air tickets are not included. The poster states tickets are arranged on request, paid 100% in advance at the current fare.",
+    flightSchedule: "PIA flights from Karachi, Lahore, and Islamabad are listed on Wednesday and Saturday.",
+    inclusions: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and parking"],
+    stayOptions: [
+      "Standard: Skardu View Point, Rock View, Polo Land, or equivalent.",
+      "Deluxe: Snowland Resort, Himalaya, Sye Residency, or equivalent.",
+      "Executive: Khoj, Shangrila, Himmel Resort, or as per choice.",
+    ],
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Airport pickup, visit Shangrila Resort, Upper Kachura Lake and Soq Valley. Overnight in Skardu." },
       { day: 2, title: "Basho Meadows", description: "Travel by 4x4 to Basho Meadows and Basho Bridge, enjoy the valley, then return to Skardu for the night." },
@@ -52,6 +115,21 @@ export const northernAirTours: NorthernAirTour[] = [
     id: "skardu-6-days",
     title: "Skardu · 6 Days",
     image: "/images/northern-air-tours/skardu-6-days.webp",
+    summary: "A six-day Skardu itinerary including Shigar, Deosai, Basho Meadows, and Chunda Valley.",
+    pricing: [
+      { packageType: "Standard", rates: ["PKR 65,000 per head (without air tickets)", "PKR 125,000 per couple", "PKR 145,000 for 3 persons"] },
+      { packageType: "Deluxe", rates: ["PKR 105,000 per head (without air tickets)", "PKR 165,000 per couple"] },
+      { packageType: "Deluxe with TZ/TX Prado", rates: ["PKR 120,000 per head (without air tickets)", "PKR 195,000 per couple"] },
+      { packageType: "Executive", rates: ["Hotels available as per choice"] },
+    ],
+    airfare: "Air tickets are not included. The poster states tickets are arranged on request, paid 100% in advance at the current fare.",
+    flightSchedule: "PIA flights from Karachi, Lahore, and Islamabad are listed on Wednesday and Saturday.",
+    inclusions: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and parking"],
+    stayOptions: [
+      "Standard: Skardu View Point, Rock View, Polo Land, or equivalent.",
+      "Deluxe: Snowland Resort, Himalaya, Sye Residency, or equivalent.",
+      "Executive: Khoj, Shangrila, Himmel Resort, or as per choice.",
+    ],
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Airport pickup, visit Shangrila Resort, Upper Kachura Lake and Soq Valley. Overnight in Skardu." },
       { day: 2, title: "Shigar Valley", description: "Visit Manthoka Waterfall, Shigar Valley, Shigar Fort and Sarfaranga Cold Desert. Optional local activities are available. Overnight in Skardu." },
@@ -65,6 +143,21 @@ export const northernAirTours: NorthernAirTour[] = [
     id: "skardu-7-days",
     title: "Skardu · 7 Days",
     image: "/images/northern-air-tours/skardu-7-days.webp",
+    summary: "A seven-day Skardu tour with Deosai, Shigar, Khaplu, Basho Meadows, and Kharmang Valley.",
+    pricing: [
+      { packageType: "Standard", rates: ["PKR 95,000 per head (without air tickets)", "PKR 190,000 per couple"] },
+      { packageType: "Deluxe", rates: ["PKR 120,000 per head (without air tickets)", "PKR 220,000 per couple"] },
+      { packageType: "Deluxe with TZ/TX Prado", rates: ["PKR 140,000 per head (without air tickets)", "PKR 260,000 per couple"] },
+      { packageType: "Executive", rates: ["Hotels available as per choice"] },
+    ],
+    airfare: "Air tickets are not included. The poster lists an adult return fare of PKR 55,000–95,000, depending on booking date and current fare.",
+    flightSchedule: "The supplied poster lists PIA flights from Karachi, Lahore, and Islamabad on Wednesday and Saturday.",
+    inclusions: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and parking"],
+    stayOptions: [
+      "Standard: Skardu View Point, Rock View, Polo Land, or equivalent.",
+      "Deluxe: Dynasty, Himalaya, Red Coral, or equivalent.",
+      "Executive: Khoj, Shangrila, Himmel Resort, or as per choice.",
+    ],
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Airport pickup, visit Shangrila Resort and Upper Kachura Lake. Dinner and overnight stay in Skardu." },
       { day: 2, title: "Deosai National Park", description: "Travel by 4x4 to Deosai, stopping at Sadpara Lake, Bara Pani and Kala Pani, and visit Sheosar Lake. Overnight in Skardu." },
@@ -79,6 +172,21 @@ export const northernAirTours: NorthernAirTour[] = [
     id: "skardu-8-days",
     title: "Skardu · 8 Days",
     image: "/images/northern-air-tours/skardu-8-days.webp",
+    summary: "An eight-day Skardu circuit linking Deosai, Kharmang, Naltar Valley, Basho Meadows, and Shigar.",
+    pricing: [
+      { packageType: "Standard", rates: ["PKR 105,000 per head (without air tickets)", "PKR 280,000 per couple"] },
+      { packageType: "Deluxe", rates: ["PKR 191,000 per head (without air tickets)", "PKR 383,000 per couple"] },
+      { packageType: "Deluxe with TZ/TX Prado", rates: ["PKR 210,000 per head (without air tickets)", "PKR 411,000 per couple"] },
+      { packageType: "Executive", rates: ["Hotels and resorts available as per choice"] },
+    ],
+    airfare: "The poster lists adult return air tickets at PKR 55,000–95,000, depending on booking date and current fare.",
+    flightSchedule: "PIA flights from Karachi, Lahore, and Islamabad operate once a week on Saturday, as stated on the supplied poster.",
+    inclusions: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and parking"],
+    stayOptions: [
+      "Standard: Skardu View Point, Rock View, Royal Guest House, or equivalent.",
+      "Deluxe: Dynasty, Himalaya, Red Coral, or equivalent.",
+      "Executive: Khoj, Shangrila, Himmel Resort, or as per choice.",
+    ],
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Airport pickup, visit Shangrila Resort and Upper Kachura Lake. Overnight in Skardu." },
       { day: 2, title: "Deosai National Park", description: "Travel by 4x4 to Deosai, stopping at Sadpara Lake, Bara Pani and Kala Pani, and visit Sheosar Lake. Overnight in Skardu." },
@@ -94,6 +202,22 @@ export const northernAirTours: NorthernAirTour[] = [
     id: "skardu-hunza-7-days",
     title: "Skardu & Hunza · 7 Days",
     image: "/images/northern-air-tours/skardu-hunza-7-days.webp",
+    summary: "A seven-day air-linked Skardu and Hunza tour with Upper Hunza, Khunjerab Pass, and Baltistan highlights.",
+    pricing: [
+      { packageType: "Standard", rates: ["PKR 85,000 per head (without air tickets)", "PKR 155,000 for 2–3 persons"] },
+      { packageType: "Standard with TZ/TX Prado", rates: ["PKR 190,000 per couple or 3 persons"] },
+      { packageType: "Deluxe", rates: ["PKR 120,000 per head (without air tickets)", "PKR 260,000 per couple"] },
+      { packageType: "Deluxe with TZ/TX Prado", rates: ["PKR 140,000 per head (without air tickets)", "PKR 280,000 per couple"] },
+      { packageType: "Executive", rates: ["Hotels and resorts available as per choice"] },
+    ],
+    airfare: "The poster lists adult return air tickets at PKR 55,000–95,000, depending on booking date and current fare.",
+    flightSchedule: "PIA flights from Karachi to Skardu operate once a week on Saturday, as stated on the supplied poster.",
+    inclusions: ["Accommodation", "Luxury transport", "Breakfast and dinner", "Tolls and parking"],
+    stayOptions: [
+      "Standard: Rock View, Mountain View, or equivalent.",
+      "Deluxe: Al-Noor, Snowland Resort, or equivalent.",
+      "Executive: Khoj, Shangrila, Himmel Resort, or as per choice.",
+    ],
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Fly to Skardu, visit Shangrila Resort, Upper Kachura Lake and Soq Valley. Overnight in Skardu." },
       { day: 2, title: "Travel to Hunza", description: "Travel via Three Mountains Junction and Rakaposhi View Point. Visit Altit and Baltit Forts, then stay overnight in Hunza." },
@@ -108,6 +232,13 @@ export const northernAirTours: NorthernAirTour[] = [
     id: "skardu-deosai-8-days",
     title: "Skardu & Deosai · 8 Days",
     image: "/images/northern-air-tours/skardu-deosai-8-days.webp",
+    summary: "An eight-day air option between Karachi and Skardu. The supplied poster also shows a separate 12-day road/rail plan; confirm which option and inclusions apply when requesting a quote.",
+    pricing: [
+      { packageType: "By air · Karachi–Skardu–Karachi", rates: ["PKR 1,880,132 total for 12 persons, as printed on the poster"] },
+    ],
+    airfare: "The poster shows a separate 8-day by-air plan and states airfare charges are based on the current fare. Confirm whether the printed group total includes flights.",
+    inclusions: ["Hotel accommodation", "Transport", "Breakfast and dinner", "Tolls and taxes", "Tour guide", "Bonfire", "Jeep ride"],
+    stayOptions: [],
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "The poster itinerary starts with arrival at Skardu Airport, a visit to Shangrila Resort and Upper Kachura Lake, then an overnight stay in Skardu." },
       { day: 2, title: "Travel to Hunza", description: "Travel via Three Mountains Junction and Rakaposhi View Point. Visit Baltit Fort and Karimabad Bazaar, then stay overnight in Hunza." },
@@ -123,6 +254,21 @@ export const northernAirTours: NorthernAirTour[] = [
     id: "skardu-minimerg-8-days",
     title: "Skardu & Minimerg · 8 Days",
     image: "/images/northern-air-tours/skardu-minimerg-8-days.webp",
+    summary: "An eight-day Skardu and Minimerg route through Deosai and Burzil Top, with nights in Domel and a camp stay.",
+    pricing: [
+      { packageType: "Standard", rates: ["PKR 135,000 per head (without air tickets)", "PKR 255,000 per couple"] },
+      { packageType: "Deluxe", rates: ["PKR 180,000 per head (without air tickets)", "PKR 346,000 per couple"] },
+      { packageType: "Deluxe with TZ/TX Prado", rates: ["PKR 195,000 per head (without air tickets)", "PKR 370,000 per couple"] },
+      { packageType: "Executive", rates: ["Hotels and resorts available as per choice"] },
+    ],
+    airfare: "The poster lists adult return air tickets at PKR 55,000–65,000, depending on booking date and current fare.",
+    flightSchedule: "PIA flights from Karachi to Skardu operate once a week on Saturday, as stated on the supplied poster.",
+    inclusions: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and parking"],
+    stayOptions: [
+      "Standard: Rock View, Mountain View, or equivalent.",
+      "Deluxe: Al-Noor, Snowland Resort, or equivalent.",
+      "Executive: Khoj, Shangrila, Himmel Resort, or as per choice.",
+    ],
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "The poster itinerary starts with arrival at Skardu Airport, hotel check-in and time to explore Skardu Bazaar and Katpana Cold Desert. Overnight in Skardu." },
       { day: 2, title: "Shigar Valley", description: "Visit Blue Lake, Serena Shigar Fort and Sarfaranga Cold Desert. Optional jeep safari, quad biking, horse riding and paragliding are available. Overnight in Skardu." },
@@ -138,6 +284,21 @@ export const northernAirTours: NorthernAirTour[] = [
     id: "skardu-minimerg-bilamik-8-days",
     title: "Skardu, Minimerg & Bilamik · 8 Days",
     image: "/images/northern-air-tours/skardu-minimerg-bilamik-8-days.webp",
+    summary: "An eight-day journey through Skardu, Minimerg, Domel Valley, and Bilamik Valley with remote 4x4 excursions.",
+    pricing: [
+      { packageType: "Standard", rates: ["PKR 135,000 per head (without air tickets)", "PKR 255,000 per couple"] },
+      { packageType: "Deluxe", rates: ["PKR 180,000 per head (without air tickets)", "PKR 346,000 per couple"] },
+      { packageType: "Deluxe with TZ/TX Prado", rates: ["PKR 195,000 per head (without air tickets)", "PKR 370,000 per couple"] },
+      { packageType: "Executive", rates: ["Hotels and resorts available as per choice"] },
+    ],
+    airfare: "The poster lists adult return air tickets at PKR 55,000–65,000, depending on booking date and current fare.",
+    flightSchedule: "PIA flights from Karachi to Skardu operate once a week on Saturday, as stated on the supplied poster.",
+    inclusions: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and parking"],
+    stayOptions: [
+      "Standard: Rock View, Mountain View, or equivalent.",
+      "Deluxe: Al-Noor, Snowland Resort, or equivalent.",
+      "Executive: Khoj, Shangrila, Himmel Resort, or as per choice.",
+    ],
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Fly from Karachi to Skardu, visit Shangrila Resort and Upper Kachura Lake, then check in and stay overnight in Skardu." },
       { day: 2, title: "Shigar Valley", description: "Visit Blue Lake, Serena Shigar Fort and Sarfaranga Cold Desert. Optional jeep safari, quad biking, horse riding and paragliding are available. Overnight in Skardu." },

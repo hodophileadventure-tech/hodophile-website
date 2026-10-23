@@ -45,10 +45,10 @@ export default function DestinationsPage() {
               title={destination.name}
               bodyClassName="p-6"
             >
-              <p className="text-sm leading-7 text-white/75">{destination.description}</p>
-              <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-white/15 pt-4 text-sm text-white/70">
+              <p className="text-sm leading-7 text-stone-600">{destination.description}</p>
+              <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-stone-300 pt-4 text-sm text-stone-600">
                 {destination.duration ? <span>Ideal duration: {destination.duration}</span> : null}
-                {destination.priceFrom && <span className="font-semibold text-[#fcc000]">{destination.priceFrom}</span>}
+                {destination.priceFrom && <span className="font-semibold text-[#806000]">{destination.priceFrom}</span>}
               </div>
               <span className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-[#fcc000] px-5 text-sm font-semibold text-black transition group-hover:bg-[#ffda4d]">
                 Explore destination

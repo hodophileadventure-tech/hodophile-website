@@ -333,9 +333,9 @@ function TourCard({ tour }: { tour: AdventureTour }) {
       counter={tour.altitude}
       bodyClassName="p-5 sm:p-6"
     >
-      <p className="line-clamp-2 flex-1 text-sm leading-6 text-white/75">{tour.summary}</p>
-      <details className="group mt-5 border-t border-white/15 pt-4">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-white [&::-webkit-details-marker]:hidden">
+      <p className="line-clamp-2 flex-1 text-sm leading-6 text-stone-600">{tour.summary}</p>
+      <details className="group mt-5 border-t border-stone-300 pt-4">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-stone-900 [&::-webkit-details-marker]:hidden">
           View itinerary
           <span className="text-lg text-[#fcc000] transition-transform group-open:rotate-45" aria-hidden="true">
             +
@@ -344,8 +344,8 @@ function TourCard({ tour }: { tour: AdventureTour }) {
         <ol className="mt-4 space-y-3">
           {tour.itinerary.map((item) => (
             <li key={`${tour.title}-${item.day}`} className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 text-sm leading-6">
-              <span className="font-semibold text-[#fcc000]">{item.day}</span>
-              <span className="text-white/75">{item.plan}</span>
+              <span className="font-semibold text-[#806000]">{item.day}</span>
+              <span className="text-stone-600">{item.plan}</span>
             </li>
           ))}
         </ol>
