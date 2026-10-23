@@ -1,5 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 
 import { northernAirTours } from "./northern-air-tours";
 
@@ -22,8 +24,13 @@ test("Northern by Air lists all ten requested packages with complete day-by-day 
     expectedTours,
   );
   assert.equal(new Set(northernAirTours.map((tour) => tour.id)).size, expectedTours.length);
+  assert.equal(new Set(northernAirTours.map((tour) => tour.image)).size, expectedTours.length);
 
   for (const tour of northernAirTours) {
+    assert.ok(
+      existsSync(resolve(process.cwd(), "public", tour.image.slice(1))),
+      `missing card image for ${tour.id}`,
+    );
     assert.deepEqual(
       tour.itinerary.map((day) => day.day),
       Array.from({ length: tour.itinerary.length }, (_, index) => index + 1),

@@ -1,6 +1,7 @@
 export type NorthernAirTour = {
   id: string;
   title: string;
+  image: string;
   itinerary: {
     day: number;
     title: string;
@@ -12,6 +13,7 @@ export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-hunza-8-days",
     title: "Skardu & Hunza · 8 Days by Air",
+    image: "/images/northern-air-tours/skardu-hunza-8-days.webp",
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Fly to Skardu, visit Shangrila Resort and Upper Kachura Lake, then stay overnight in Skardu." },
       { day: 2, title: "Shigar Valley", description: "Visit Manthoka Waterfall, Shigar Fort and Sarfaranga Cold Desert. Optional activities include jeep safari, quad biking, horse riding and paragliding. Overnight in Skardu." },
@@ -26,6 +28,7 @@ export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-4-days",
     title: "Skardu · 4 Days",
+    image: "/images/northern-air-tours/skardu-4-days.webp",
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Airport pickup, visit Shangrila Resort and Upper Kachura Lake, then stay overnight in Skardu." },
       { day: 2, title: "Deosai National Park", description: "Travel by 4x4 to Deosai, stopping at Sadpara Lake, Bara Pani and Kala Pani, and visit Sheosar Lake. Overnight in Skardu." },
@@ -36,6 +39,7 @@ export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-5-days",
     title: "Skardu · 5 Days",
+    image: "/images/northern-air-tours/skardu-5-days.webp",
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Airport pickup, visit Shangrila Resort, Upper Kachura Lake and Soq Valley. Overnight in Skardu." },
       { day: 2, title: "Basho Meadows", description: "Travel by 4x4 to Basho Meadows and Basho Bridge, enjoy the valley, then return to Skardu for the night." },
@@ -47,6 +51,7 @@ export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-6-days",
     title: "Skardu · 6 Days",
+    image: "/images/northern-air-tours/skardu-6-days.webp",
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Airport pickup, visit Shangrila Resort, Upper Kachura Lake and Soq Valley. Overnight in Skardu." },
       { day: 2, title: "Shigar Valley", description: "Visit Manthoka Waterfall, Shigar Valley, Shigar Fort and Sarfaranga Cold Desert. Optional local activities are available. Overnight in Skardu." },
@@ -59,6 +64,7 @@ export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-7-days",
     title: "Skardu · 7 Days",
+    image: "/images/northern-air-tours/skardu-7-days.webp",
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Airport pickup, visit Shangrila Resort and Upper Kachura Lake. Dinner and overnight stay in Skardu." },
       { day: 2, title: "Deosai National Park", description: "Travel by 4x4 to Deosai, stopping at Sadpara Lake, Bara Pani and Kala Pani, and visit Sheosar Lake. Overnight in Skardu." },
@@ -72,6 +78,7 @@ export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-8-days",
     title: "Skardu · 8 Days",
+    image: "/images/northern-air-tours/skardu-8-days.webp",
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Airport pickup, visit Shangrila Resort and Upper Kachura Lake. Overnight in Skardu." },
       { day: 2, title: "Deosai National Park", description: "Travel by 4x4 to Deosai, stopping at Sadpara Lake, Bara Pani and Kala Pani, and visit Sheosar Lake. Overnight in Skardu." },
@@ -86,6 +93,7 @@ export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-hunza-7-days",
     title: "Skardu & Hunza · 7 Days",
+    image: "/images/northern-air-tours/skardu-hunza-7-days.webp",
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Fly to Skardu, visit Shangrila Resort, Upper Kachura Lake and Soq Valley. Overnight in Skardu." },
       { day: 2, title: "Travel to Hunza", description: "Travel via Three Mountains Junction and Rakaposhi View Point. Visit Altit and Baltit Forts, then stay overnight in Hunza." },
@@ -99,6 +107,7 @@ export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-deosai-8-days",
     title: "Skardu & Deosai · 8 Days",
+    image: "/images/northern-air-tours/skardu-deosai-8-days.webp",
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "The poster itinerary starts with arrival at Skardu Airport, a visit to Shangrila Resort and Upper Kachura Lake, then an overnight stay in Skardu." },
       { day: 2, title: "Travel to Hunza", description: "Travel via Three Mountains Junction and Rakaposhi View Point. Visit Baltit Fort and Karimabad Bazaar, then stay overnight in Hunza." },
@@ -113,6 +122,7 @@ export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-minimerg-8-days",
     title: "Skardu & Minimerg · 8 Days",
+    image: "/images/northern-air-tours/skardu-minimerg-8-days.webp",
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "The poster itinerary starts with arrival at Skardu Airport, hotel check-in and time to explore Skardu Bazaar and Katpana Cold Desert. Overnight in Skardu." },
       { day: 2, title: "Shigar Valley", description: "Visit Blue Lake, Serena Shigar Fort and Sarfaranga Cold Desert. Optional jeep safari, quad biking, horse riding and paragliding are available. Overnight in Skardu." },
@@ -127,6 +137,7 @@ export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-minimerg-bilamik-8-days",
     title: "Skardu, Minimerg & Bilamik · 8 Days",
+    image: "/images/northern-air-tours/skardu-minimerg-bilamik-8-days.webp",
     itinerary: [
       { day: 1, title: "Arrive in Skardu", description: "Fly from Karachi to Skardu, visit Shangrila Resort and Upper Kachura Lake, then check in and stay overnight in Skardu." },
       { day: 2, title: "Shigar Valley", description: "Visit Blue Lake, Serena Shigar Fort and Sarfaranga Cold Desert. Optional jeep safari, quad biking, horse riding and paragliding are available. Overnight in Skardu." },

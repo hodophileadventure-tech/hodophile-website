@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -124,6 +125,15 @@ export default async function RegionPage({ params }: RegionPageProps) {
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {northernAirTours.map((tour) => (
               <li key={tour.id} className="rounded-2xl border border-white/10 bg-[#0b0b0b] p-4 sm:p-5">
+                <div className="relative mb-4 aspect-[16/9] overflow-hidden rounded-xl bg-[#161616]">
+                  <Image
+                    src={tour.image}
+                    alt={`${tour.title} tour scenery`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                </div>
                 <details className="group">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
                     <span className="font-semibold text-white">{tour.title}</span>
