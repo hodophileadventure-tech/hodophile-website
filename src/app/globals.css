@@ -976,7 +976,7 @@ section {
 .journey-card-image video,
 article img,
 [class*="-card"] img {
-  object-fit: contain !important;
+  object-fit: cover !important;
 }
 
 .journey-card:hover .journey-card-image img,

@@ -132,7 +132,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
                       alt={`${tour.title} tour scenery`}
                       fill
                       sizes="(max-width: 640px) 100vw, 50vw"
-                      className="object-contain transition duration-500"
+                      className="object-cover transition duration-500"
                     />
                   </div>
                   <span className="flex items-center justify-between gap-3">
