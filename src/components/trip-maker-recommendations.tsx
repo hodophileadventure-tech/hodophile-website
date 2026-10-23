@@ -56,7 +56,7 @@ function RecommendationCard({ recommendation, hasPreferences }: { recommendation
       badge={label}
       eyebrow={`${trip.duration} · ${trip.region === "northern" ? "Northern Pakistan" : "Southern Pakistan"}${trip.pace ? ` · ${trip.pace} pace` : ""}`}
       title={trip.title}
-      imageHeight="h-40 sm:h-48"
+      imageHeight="aspect-square"
       bodyClassName="bg-white p-5 text-stone-950"
     >
         <p className="mt-2 text-sm leading-6 text-stone-600">{trip.routeStops.join(" · ")}</p>

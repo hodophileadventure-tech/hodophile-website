@@ -40,7 +40,7 @@ export default function DestinationsPage() {
               image={destination.image}
               imageAlt={destination.name}
               imageSizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-              imageHeight="h-40 sm:h-48"
+              imageHeight="aspect-square"
               eyebrow={`Best time to visit · ${destination.season}`}
               title={destination.name}
               bodyClassName="p-6"

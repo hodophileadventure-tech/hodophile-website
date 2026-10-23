@@ -224,7 +224,7 @@ export default function Home() {
                 />
               }
               imageAlt={destination.name}
-              imageHeight="h-40 sm:h-48"
+              imageHeight="aspect-square"
               badge={destination.season}
               counter={destination.duration}
               title={destination.name}
@@ -267,7 +267,7 @@ export default function Home() {
                 }
                 imageAlt={tour.name}
                 imageSizes="(max-width: 1280px) 50vw, 25vw"
-                imageHeight="h-40 sm:h-48"
+                imageHeight="aspect-square"
                 title={tour.titleParts.length > 1 ? tour.titleParts.join(" ") : tour.name}
                 bodyClassName="p-5"
               >

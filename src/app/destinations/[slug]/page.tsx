@@ -417,7 +417,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
                   imageAlt={tourPackage.title}
                   eyebrow={tourPackage.duration}
                   title={tourPackage.title}
-                  imageHeight="h-40 sm:h-48"
+                  imageHeight="aspect-square"
                   bodyClassName="p-6 sm:p-7"
                 >
                   <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">

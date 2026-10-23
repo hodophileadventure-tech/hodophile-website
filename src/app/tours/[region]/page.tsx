@@ -117,7 +117,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
               imageAlt={item.title}
               eyebrow={item.duration}
               title={item.title}
-              imageHeight="h-40 sm:h-48"
+              imageHeight="aspect-square"
               bodyClassName="p-5"
             >
               <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4 text-sm">

@@ -264,7 +264,7 @@ function RouteCard({
       image={packageItem.image ?? "/images/package-cards/images__destinations__swat-hd.webp"}
       imageAlt={packageItem.title}
       imageSizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-      imageHeight="h-40 sm:h-48"
+      imageHeight="aspect-square"
       badge={destinationLabel ?? packageItem.routeStops[0] ?? (packageItem.region === "northern" ? "Northern" : "Southern")}
       counter={matchScore !== undefined ? `${matchScore}% match` : undefined}
       eyebrow={`${packageItem.duration}${packageItem.pace ? ` · ${packageItem.pace} pace` : ""}`}
@@ -563,7 +563,7 @@ function TripMatchPanel({
                   badge={`${score}% match`}
                   eyebrow={`${trip.duration} · ${trip.region}`}
                   title={trip.title}
-                  imageHeight="h-40 sm:h-48"
+                  imageHeight="aspect-square"
                   bodyClassName="p-4 sm:p-5"
                 >
                     <p className="mt-1 text-sm font-semibold text-[#FCC000]">{trip.pricePerPerson === undefined ? "Price on request" : `${formatCurrency(trip.pricePerPerson)} per person`}</p>

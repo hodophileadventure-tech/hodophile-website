@@ -35,7 +35,7 @@ export function JourneyCard({
   media,
   glassBody = true,
   imageSizes = "(max-width: 768px) 100vw, 50vw",
-  imageHeight = "h-40 sm:h-48",
+  imageHeight = "aspect-square",
   bodyClassName = "p-4 sm:p-5",
   children,
 }: JourneyCardProps) {
