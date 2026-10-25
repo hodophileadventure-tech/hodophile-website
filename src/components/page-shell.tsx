@@ -27,11 +27,11 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
       </main>
 
       <footer className="site-footer-gradient border-t border-white/10 text-white">
-        <div className="mx-auto max-w-[96rem] grid gap-10 px-4 py-10 md:grid-cols-2 xl:grid-cols-[minmax(0,1.6fr)_repeat(4,minmax(0,1fr))] lg:px-10 xl:px-14">
-          <div className="max-w-2xl">
+        <div className="mx-auto grid max-w-[96rem] grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-12 xl:gap-10 lg:px-10 xl:px-14">
+          <div className="max-w-2xl sm:col-span-2 lg:col-span-2 xl:col-span-4">
             <p className="eyebrow">Hodophile Adventures</p>
             <h3 className="display-serif mt-3 text-3xl font-normal text-white">Travel farther. Feel more.</h3>
-            <div className="mt-5 grid gap-1 text-sm leading-7 text-white/60">
+            <div className="mt-5 grid gap-1 text-sm leading-6 text-white/60">
               <p>Hodophile Adventure, Plot# 111-113C, Dupatta Gali, PECHS, Block2, Tariq Road, Karachi, Pakistan, 75400</p>
               <p>+92 337 7777460</p>
               <p>+92 337 8233777</p>
@@ -106,7 +106,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             </div>
           </div>
 
-          <div className="xl:pl-4 flex flex-col items-center">
+          <div className="flex flex-col items-center sm:col-span-1 xl:col-span-2 xl:pl-4">
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-center">Customer Service</h3>
             <div className="footer-logo-glow mt-5 w-full max-w-[13rem] rounded-2xl p-3">
               <Image
@@ -119,7 +119,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             </div>
           </div>
 
-          <div className="xl:pl-4">
+          <div className="sm:col-span-1 xl:col-span-2 xl:pl-4">
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-left">Quick Links</h3>
             <div className="mt-5 grid gap-3 text-sm font-medium text-white/65">
               <Link href="/about-us" className="inline-flex items-center gap-2 transition hover:translate-x-1">
@@ -149,7 +149,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             </div>
           </div>
 
-          <div className="xl:pl-4 flex flex-col items-center">
+          <div className="flex flex-col items-center sm:col-span-1 xl:col-span-2 xl:pl-4">
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-center">100% Satisfaction</h3>
             <div className="footer-logo-glow mt-5 w-full max-w-[13rem] rounded-2xl p-3">
               <Image
@@ -162,7 +162,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             </div>
           </div>
 
-          <div className="min-w-0 xl:pl-4">
+          <div className="min-w-0 sm:col-span-2 lg:col-span-3 xl:col-span-2 xl:pl-4">
             <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-left">Our Affiliations</h3>
             <div className="mt-5 grid min-w-0 gap-3">
               <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-[#fcc000]/20 bg-white/[0.035] p-3">
