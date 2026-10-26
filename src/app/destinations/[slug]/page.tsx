@@ -417,7 +417,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
                   imageAlt={tourPackage.title}
                   eyebrow={tourPackage.duration}
                   title={tourPackage.title}
-                  imageHeight="aspect-square"
+                  imageHeight="aspect-[16/10]"
                   bodyClassName="p-6 sm:p-7"
                 >
                   <div className="flex items-start justify-between gap-4 border-b border-stone-300 pb-5">
@@ -464,7 +464,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {destination.images.map((image) => (
               <div key={image.src} className="group overflow-hidden rounded-2xl border border-stone-200 shadow-sm">
-                <div className="relative aspect-square overflow-hidden bg-stone-100">
+                <div className="relative aspect-[16/10] overflow-hidden bg-stone-100">
                   <Image
                     src={image.src}
                     alt={image.alt}

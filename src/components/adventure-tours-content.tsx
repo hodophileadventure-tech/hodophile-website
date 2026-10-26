@@ -326,7 +326,7 @@ function TourCard({ tour }: { tour: AdventureTour }) {
       image={tour.image}
       imageAlt={`${tour.title} mountain view`}
       imageSizes="(max-width: 1024px) 100vw, 50vw"
-      imageHeight="aspect-square"
+      imageHeight="aspect-[16/10]"
       eyebrow={tour.duration}
       title={tour.title}
       badge={tour.grade}

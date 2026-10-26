@@ -68,7 +68,7 @@ export default function HoneymoonPackagesPage() {
             href={`/honeymoon-packages/${item.slug}`}
             image={item.image}
             imageAlt={item.name}
-            imageHeight="aspect-square"
+            imageHeight="aspect-[16/10]"
             badge={item.duration}
             title={item.name}
             bodyClassName="p-5 sm:p-6"

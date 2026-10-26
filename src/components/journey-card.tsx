@@ -37,7 +37,7 @@ export function JourneyCard({
   variant = "editorial",
   glassBody = true,
   imageSizes = "(max-width: 768px) 100vw, 50vw",
-  imageHeight = "aspect-square",
+  imageHeight = "aspect-[16/10]",
   bodyClassName = "p-4 sm:p-5",
   children,
 }: JourneyCardProps) {

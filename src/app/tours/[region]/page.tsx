@@ -126,7 +126,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
             {northernAirTours.map((tour) => (
               <li key={tour.id} className="overflow-hidden rounded-[1.5rem] border border-[#d4b34d]/35 bg-[#fff2d5] p-4 text-stone-900 shadow-[0_18px_42px_rgba(50,40,10,0.1)] sm:p-5">
                 <Link href={`/tours/northern-tours/by-air/${tour.id}`} className="group/tour block">
-                  <div className="relative mb-4 aspect-square overflow-hidden rounded-xl bg-[#f1e5c8]">
+                  <div className="relative mb-4 aspect-[16/10] overflow-hidden rounded-xl bg-[#f1e5c8]">
                     <Image
                       src={tour.image}
                       alt={`${tour.title} tour scenery`}
@@ -209,7 +209,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
               imageAlt={item.title}
               eyebrow={item.duration}
               title={item.title}
-              imageHeight="aspect-square"
+              imageHeight="aspect-[16/10]"
               bodyClassName="p-5"
             >
               <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4 text-sm">

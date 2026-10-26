@@ -324,7 +324,7 @@ function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number 
       image={pkg.image}
       imageAlt={pkg.imageAlt ?? ""}
       imageSizes="(max-width: 768px) 100vw, 50vw"
-      imageHeight="aspect-square"
+      imageHeight="aspect-[16/10]"
       media={fallbackArtwork}
       badge={pkg.region}
       counter={<>{String(index + 1).padStart(2, "0")} <span className="text-[#FCC000]">/ 06</span></>}
