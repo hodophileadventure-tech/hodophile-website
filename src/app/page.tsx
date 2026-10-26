@@ -165,7 +165,7 @@ export default function Home() {
 
       <section className="relative mt-16 w-full overflow-hidden border-y border-stone-300/70 py-12 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-20">
-          <div className="relative h-[26rem] overflow-hidden sm:h-[34rem]">
+          <div className="relative aspect-[4/3] w-full overflow-hidden sm:max-h-[30rem]">
             <img
               src="/images/package-cards/images__editorial__editorial-8.webp"
               alt="A quiet mountain landscape in Pakistan"
