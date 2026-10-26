@@ -108,7 +108,7 @@ export function AboutTeamShowcase() {
           margin: 1.1rem auto 0;
           color: #b8b2a7;
           font-size: 1rem;
-          line-height: 1.65;
+          line-height: 1.4;
         }
 
         .team-row {

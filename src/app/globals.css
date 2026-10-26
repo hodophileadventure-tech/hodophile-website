@@ -804,14 +804,10 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.5;
+  line-height: 1.4;
   letter-spacing: 0;
   position: relative;
   overflow-x: hidden;
-}
-
-.site-theme .leading-relaxed {
-  line-height: 1.55;
 }
 
 *, *::before, *::after {
@@ -893,7 +889,7 @@ button:active {
   h6 {
     font-family: var(--font-display);
     letter-spacing: 0;
-    line-height: 1.05;
+    line-height: 1.02;
     font-weight: 600;
   }
 
@@ -910,7 +906,7 @@ button:active {
   }
 
   p {
-    line-height: 1.55;
+    line-height: 1.4;
   }
 }
 
@@ -1237,6 +1233,14 @@ select:focus-visible {
     box-shadow var(--transition-base) var(--ease-smooth),
     color var(--transition-base) var(--ease-smooth);
   text-decoration: none;
+}
+
+.site-theme :is(p, li, dd, dt, blockquote, .leading-5, .leading-6, .leading-7, .leading-8, .leading-relaxed) {
+  line-height: 1.4;
+}
+
+.site-theme :is(h1, h2, h3, h4, h5, h6) {
+  line-height: 1.02;
 }
 
 .btn-primary {
