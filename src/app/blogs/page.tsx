@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function BlogsPage() {
   return (
-    <PageShell wide>
+    <PageShell wide noTopPadding>
       <PageHeroImage
         image="/images/package-cards/images__editorial__editorial-2.webp"
         imageAlt="Valley road through mountains"
@@ -31,7 +31,7 @@ export default function BlogsPage() {
         description="Short travel articles that support route pages and answer common planning questions before booking."
       />
 
-      <section className="mt-12 grid gap-6 lg:grid-cols-3 mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10">
+      <section className="site-section-gap mx-auto grid max-w-[96rem] gap-6 px-6 lg:grid-cols-3 lg:px-8 xl:px-10">
         {blogPosts.map((post) => (
           <Link
             key={post.title}

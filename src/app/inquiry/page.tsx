@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function InquiryPage() {
   return (
-    <PageShell wide>
+    <PageShell wide noTopPadding>
       <PageHeroImage
         image="/images/package-cards/images__editorial__editorial-6.webp"
         imageAlt="Travelers in scenic valley"
@@ -30,7 +30,7 @@ export default function InquiryPage() {
         description="This page gives you a direct inquiry route for family trips, group tours, and private domestic Pakistan itineraries."
       />
 
-      <form className="mt-12 grid gap-4 rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur lg:grid-cols-2">
+      <form className="site-section-gap grid gap-4 rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur lg:grid-cols-2">
         <label className="grid gap-2 text-sm text-stone-700">
           Full name
           <input className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-stone-900 outline-none placeholder:text-stone-500 focus:border-[#fcc000]/50" type="text" placeholder="Traveler name" />

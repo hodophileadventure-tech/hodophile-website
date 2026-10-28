@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function GalleryPage() {
   return (
-    <PageShell wide>
+    <PageShell wide noTopPadding>
       <PageHeroImage
         image="/images/package-cards/images__editorial__editorial-2.webp"
         imageAlt="Panoramic destination view"
@@ -41,7 +41,7 @@ export default function GalleryPage() {
         description="A curated gallery of destination moments used throughout the Hodophile travel experience."
       />
 
-      <section className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <section className="site-section-gap grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {galleryImages.map((image) => (
           <article key={image.src} className="group overflow-hidden rounded-[2rem] border border-black/10 bg-white/95 shadow-[0_22px_50px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_28px_60px_rgba(15,23,42,0.12)]">
             <div className="relative aspect-[4/3] overflow-hidden">

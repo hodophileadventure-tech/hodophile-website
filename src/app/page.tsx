@@ -1,4 +1,5 @@
-// Use native <img> on homepage to avoid Next.js image optimizer proxy
+// Keep homepage fallback imagery unoptimized to avoid the image optimizer proxy.
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -119,9 +120,18 @@ export default function Home() {
   });
 
   return (
-    <PageShell wide>
-      <section className="site-hero-height theme-preserve-dark relative left-1/2 -mt-20 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
+    <PageShell wide noTopPadding>
+      <section className="site-full-bleed site-hero-height theme-preserve-dark isolate overflow-hidden bg-[#101010] text-white">
         <div className="site-hero-height relative">
+          <Image
+            src={heroImage}
+            alt=""
+            aria-hidden="true"
+            fill
+            sizes="100vw"
+            unoptimized
+            className="absolute inset-0 object-cover"
+          />
           <video
             src="/hero-video.mp4"
             autoPlay
@@ -130,9 +140,9 @@ export default function Home() {
             playsInline
             preload="metadata"
             controls={false}
-            className="absolute inset-0 h-full w-full object-cover"
-            style={{ display: 'block' }}
+            className="site-hero-video absolute inset-0 h-full w-full object-cover"
           />
+          <div className="site-hero-overlay" aria-hidden="true" />
           <div className="site-hero-height relative z-10 flex w-full items-end px-6 pb-14 pt-40 lg:px-16 lg:pb-20">
             <div className="max-w-5xl text-white">
               <p className="eyebrow">Hodophile Adventures · Pakistan</p>
@@ -146,19 +156,19 @@ export default function Home() {
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link
                   href="/make-my-trip"
-                  className="inline-flex items-center rounded-full border border-[#ffc000] bg-[#ffc000] px-6 py-3 text-sm font-semibold !text-[#0b0b0b] shadow-[0_10px_22px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
+                  className="site-button-primary gap-2 !text-[#0b0b0b]"
                 >
                   Design my journey <span aria-hidden="true">↗</span>
                 </Link>
                 <Link
                   href="/destinations"
-                  className="inline-flex items-center rounded-full border border-white/65 bg-black/45 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-black/60"
+                  className="site-button-secondary gap-2 border-white/65 text-white"
                 >
                   Explore Pakistan <span aria-hidden="true">↗</span>
                 </Link>
                 <Link
                   href="/trip-suggestions"
-                  className="inline-flex items-center rounded-full border border-white/65 bg-black/45 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:-translate-y-0.5 hover:border-[#ffc000] hover:text-[#ffc000]"
+                  className="site-button-secondary gap-2 border-white/65 text-white"
                 >
                   Get trip suggestions <span aria-hidden="true">↗</span>
                 </Link>
@@ -169,7 +179,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative mt-16 w-full overflow-hidden border-y border-stone-300/70 py-12 lg:py-16">
+      <section className="site-section-gap relative w-full overflow-hidden border-y border-stone-300/70 py-10 sm:py-12 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-20">
           <div className="relative aspect-[4/3] w-full overflow-hidden sm:max-h-[30rem]">
             <img
@@ -197,7 +207,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mt-16 w-full">
+      <section className="site-section-gap w-full">
         <div>
           <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
@@ -247,7 +257,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="signature-departures-section mt-16 w-full bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.18),transparent_38%),linear-gradient(135deg,#11110f,#29271f)] px-6 py-10 text-white lg:px-10 lg:py-14">
+      <section className="signature-departures-section site-section-gap w-full bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.18),transparent_38%),linear-gradient(135deg,#11110f,#29271f)] px-6 py-8 sm:py-10 text-white lg:px-10 lg:py-14">
         <div>
           <div>
             <p className="signature-departures-eyebrow eyebrow">Signature departures</p>
@@ -293,7 +303,7 @@ export default function Home() {
 
       <WhyChooseUs />
 
-      <section className="mt-16 w-full overflow-hidden bg-white px-6 py-8 lg:px-10 lg:py-12">
+      <section className="site-section-gap w-full overflow-hidden bg-white px-6 py-8 lg:px-10 lg:py-12">
         <div>
           <p className="eyebrow text-stone-600">From the road</p>
           <h2 className="display-serif mt-3 text-5xl font-normal">
@@ -303,7 +313,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative left-1/2 mt-16 w-screen -translate-x-1/2 overflow-hidden bg-[#fcc000] px-6 py-12 lg:px-16">
+      <section className="site-full-bleed site-section-gap overflow-hidden bg-[#fcc000] px-6 py-10 sm:py-12 lg:px-16">
         <div>
           <div className="mx-auto max-w-5xl overflow-hidden rounded-xl bg-black shadow-[0_24px_70px_rgba(0,0,0,0.22)]">
             <div className="flex max-h-[min(70vh,42rem)] items-center justify-center bg-black">

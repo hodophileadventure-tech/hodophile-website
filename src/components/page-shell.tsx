@@ -12,22 +12,22 @@ type PageShellProps = {
 };
 
 export function PageShell({ children, wide = false, noTopPadding = false, mainClassName = "" }: PageShellProps) {
-  const shellWidthClass = wide ? "max-w-[96rem]" : "max-w-7xl";
-  const mainPaddingClass = wide ? "px-4 md:px-6 lg:px-10 xl:px-14" : "px-4 md:px-6 lg:px-8";
+  const shellWidthClass = wide ? "site-container-wide" : "site-container";
+  const mainPaddingClass = wide ? "site-gutter-wide" : "site-gutter";
   const topPaddingClass = noTopPadding ? "pt-0" : "pt-[var(--site-header-height)]";
 
   return (
-    <div className="min-h-screen font-[var(--font-body)] text-[var(--text-primary)]">
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen overflow-x-clip font-[var(--font-body)] text-[var(--text-primary)]">
+      <div className="mx-auto site-container">
         <SiteHeader />
       </div>
 
-      <main className={`mx-auto ${shellWidthClass} pb-16 ${topPaddingClass} ${mainPaddingClass} ${mainClassName}`}>
+      <main className={`mx-auto ${shellWidthClass} ${mainPaddingClass} pb-16 ${topPaddingClass} ${mainClassName}`}>
         {children}
       </main>
 
       <footer className="site-footer-gradient border-t border-white/10 text-white">
-        <div className="mx-auto grid max-w-[96rem] grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-12 xl:gap-10 lg:px-10 xl:px-14">
+        <div className="site-container-wide mx-auto grid grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-12 xl:gap-10 lg:px-10 xl:px-14">
           <div className="max-w-2xl sm:col-span-2 lg:col-span-2 xl:col-span-4">
             <p className="eyebrow">Hodophile Adventures</p>
             <h3 className="display-serif mt-3 text-3xl font-normal text-white">Travel farther. Feel more.</h3>

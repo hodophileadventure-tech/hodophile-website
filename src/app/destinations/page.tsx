@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function DestinationsPage() {
   return (
-    <PageShell wide>
+    <PageShell wide noTopPadding>
       <PageHeroImage
         image="/images/package-cards/images__editorial__editorial-4.webp"
         imageAlt="Mountain valley with river"
@@ -32,7 +32,7 @@ export default function DestinationsPage() {
         description="Explore destination-led pages designed for discovery, route comparison, and premium itinerary planning."
       />
 
-      <section className="mx-auto mt-12 grid max-w-[96rem] gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <section className="site-section-gap mx-auto grid max-w-[96rem] gap-6 md:grid-cols-2 xl:grid-cols-3">
         {destinations.map((destination) => (
             <JourneyCard
               key={destination.name}

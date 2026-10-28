@@ -43,7 +43,7 @@ export function JourneyCard({
 }: JourneyCardProps) {
   const editorial = variant === "editorial";
   const card = (
-    <article id={id} className={`journey-card ${editorial ? "journey-card--editorial" : "journey-card--legacy"} group flex h-full flex-col overflow-hidden rounded-[1.5rem] border ${editorial ? "border-[#d4b34d]/35 bg-[#fff2d5] text-stone-900 shadow-[0_18px_42px_rgba(50,40,10,0.1)] hover:border-[#c7a32a] hover:shadow-[0_24px_52px_rgba(50,40,10,0.16)]" : "border-[#d4b34d]/25 bg-[#141414] text-white shadow-[0_22px_60px_rgba(0,0,0,0.2)] hover:border-[#c7a32a] hover:shadow-[0_30px_75px_rgba(0,0,0,0.36)]"} transition duration-500 hover:-translate-y-1 ${className}`}>
+    <article id={id} className={`site-card journey-card ${editorial ? "journey-card--editorial" : "journey-card--legacy"} group flex h-full flex-col overflow-hidden border ${editorial ? "bg-[#fff2d5] text-stone-900 hover:border-[#c7a32a]" : "bg-[#141414] text-white hover:border-[#c7a32a]"} transition duration-500 hover:-translate-y-1 ${className}`}>
       <div className={`journey-card-image relative ${imageHeight} shrink-0 overflow-hidden ${editorial ? "bg-[#f1e5c8]" : "bg-[#161616]"}`}>
         {media ? (
           <div className="absolute inset-0">{media}</div>

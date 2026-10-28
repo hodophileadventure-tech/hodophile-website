@@ -51,7 +51,7 @@ export const metadata: Metadata = {
 
 export default function TermsAndConditionsPage() {
   return (
-    <PageShell wide>
+    <PageShell wide noTopPadding>
       <PageHeroImage
         image="/images/package-cards/images__editorial__editorial-7.webp"
         imageAlt="Mountain road and clouds"
@@ -60,7 +60,7 @@ export default function TermsAndConditionsPage() {
         description="Review how tour requests become bookings, what your written quotation should confirm, and how changes and cancellations are handled. Package-specific terms are provided before payment."
       />
 
-      <section className="mt-12 grid gap-6 md:grid-cols-2">
+      <section className="site-section-gap grid gap-6 md:grid-cols-2">
         {terms.map((term) => (
           <article key={term.title} className="rounded-[2rem] border border-black/10 bg-white/80 p-6 backdrop-blur">
             <h2 className="text-2xl font-semibold">{term.title}</h2>

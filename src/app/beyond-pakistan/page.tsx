@@ -490,7 +490,7 @@ export default function BeyondPakistanPage() {
           ],
         })}
       />
-      <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
+      <div className="site-full-bleed overflow-hidden">
         <section className="site-hero-height theme-preserve-dark relative isolate flex items-center overflow-hidden bg-[#090909] px-5 py-8 text-white sm:px-8 sm:py-10 lg:px-14 lg:py-10">
           <Image
             src="/images/international/dubai-thailand.png"
@@ -501,7 +501,7 @@ export default function BeyondPakistanPage() {
             className="absolute inset-0 -z-20 object-cover"
           />
           <video
-            className="absolute inset-0 -z-20 h-full w-full object-cover"
+            className="site-hero-video absolute inset-0 -z-20 h-full w-full object-cover"
             autoPlay
             muted
             loop
@@ -510,8 +510,9 @@ export default function BeyondPakistanPage() {
             poster="/images/international/dubai-thailand.png"
             aria-hidden="true"
           >
-            <source src="/videos/beyond-pakistan.mp4" type="video/mp4" />
+            <source src="/videos/beyond-pakistan.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
           </video>
+          <div className="site-hero-overlay -z-10" aria-hidden="true" />
           <div className="relative mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
             <div className="flex flex-col justify-center py-3 lg:py-10">
               <p className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.34em] text-[#FCC000]">
@@ -529,7 +530,7 @@ export default function BeyondPakistanPage() {
               <div className="mt-9 flex flex-wrap gap-3">
                 <a
                   href="#packages"
-                  className="inline-flex items-center justify-center rounded-full bg-[#FCC000] px-6 py-3.5 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:bg-[#ffda4d]"
+                  className="site-button-primary text-black"
                 >
                   Explore the collection
                 </a>
@@ -537,7 +538,7 @@ export default function BeyondPakistanPage() {
                   href={whatsappUrl("Hi Hodophile, I would like help choosing an international holiday package.")}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-full border border-white/35 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur transition hover:border-[#FCC000] hover:text-[#FCC000]"
+                  className="site-button-secondary border-white/35 text-white"
                 >
                   Speak with our team
                 </a>

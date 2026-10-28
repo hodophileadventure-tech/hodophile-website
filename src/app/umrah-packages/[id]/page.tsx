@@ -39,8 +39,8 @@ export default async function UmrahPackageDetailPage({ params }: PageProps) {
 
   return (
     <PageShell wide>
-      <main className="text-[var(--text-primary)]">
-        <section className="border-b border-[#d6d1c5] px-4 py-12 sm:px-8 sm:py-14 lg:px-14">
+      <div className="text-[var(--text-primary)]">
+        <section className="border-b border-[#d6d1c5] px-4 site-section-space sm:px-8 lg:px-14">
           <div className="mx-auto max-w-5xl">
             <Link href="/umrah-packages" className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8b7000] hover:text-black">Back to MIQAT packages</Link>
             <div className="mt-10 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
@@ -57,7 +57,7 @@ export default async function UmrahPackageDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="px-4 py-12 sm:px-8 lg:px-14">
+        <section className="px-4 site-section-space sm:px-8 lg:px-14">
           <div className="mx-auto max-w-5xl">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8b7000]">Package overview</p>
             <div className="mt-5 grid gap-5 md:grid-cols-2">
@@ -67,7 +67,7 @@ export default async function UmrahPackageDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="border-y border-[#d6d1c5] bg-white px-4 py-12 sm:px-8 lg:px-14">
+        <section className="border-y border-[#d6d1c5] bg-white px-4 site-section-space sm:px-8 lg:px-14">
           <div className="mx-auto max-w-5xl">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8b7000]">Room options and pricing</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -77,14 +77,14 @@ export default async function UmrahPackageDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="px-4 py-12 sm:px-8 lg:px-14">
+        <section className="px-4 site-section-space sm:px-8 lg:px-14">
           <div className="mx-auto max-w-5xl border border-[#d6d1c5] bg-[#111] p-6 text-white sm:p-8">
             <h2 className="font-[var(--font-display)] text-3xl">Plan the next step with MIQAT.</h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-[#c8c8c8]">Share your preferred dates and requirements. Our team will review availability, routing, and final accommodation details with you.</p>
             <div className="mt-6 flex flex-wrap gap-3"><Link href="/umrah-packages/book" className="bg-[#FCC000] px-5 py-3 text-sm font-semibold text-black">Get package details</Link><a href={whatsappUrl(inquiry)} target="_blank" rel="noopener noreferrer" className="border border-white/30 px-5 py-3 text-sm font-semibold text-white hover:border-[#FCC000] hover:text-[#FCC000]">Ask a MIQAT expert</a></div>
           </div>
         </section>
-      </main>
+      </div>
     </PageShell>
   );
 }

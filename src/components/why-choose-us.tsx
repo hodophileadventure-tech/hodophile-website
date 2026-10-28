@@ -145,7 +145,7 @@ export function WhyChooseUs() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.25 }}
-      className="relative mt-16 overflow-x-hidden px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16 xl:px-12"
+      className="site-section-gap relative overflow-x-hidden px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-16 xl:px-12"
       style={{
         backgroundImage:
           "radial-gradient(circle at 20% 30%, rgba(252,192,0,0.08), transparent 35%), radial-gradient(circle at 80% 70%, rgba(17,17,17,0.03), transparent 40%)",

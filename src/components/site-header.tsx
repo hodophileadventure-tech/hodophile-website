@@ -357,7 +357,7 @@ export function SiteHeader() {
       }`}
       aria-hidden={false}
     >
-      <div className="mx-auto w-full max-w-[96rem] px-4 sm:px-6 lg:px-8">
+      <div className="site-container-wide mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative flex min-w-0 items-center py-2.5 lg:py-2">
           <Link
             href="/"

@@ -35,7 +35,7 @@ function formatPrice(room: { price?: number; low?: number | number[]; high?: num
 
 export default function HotelsGalleryPage() {
   return (
-    <PageShell wide>
+    <PageShell wide noTopPadding>
       <PageHeroImage
         image="/images/package-cards/images__editorial__editorial-2.webp"
         imageAlt="Hotel room gallery"

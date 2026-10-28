@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function AdventureToursPage() {
   return (
-    <PageShell wide>
+    <PageShell wide noTopPadding>
       <AdventureToursContent />
     </PageShell>
   );

@@ -28,7 +28,7 @@ export function FeaturedTours({ tours }: { tours: FeaturedJourney[] }) {
   const remaining = useMemo(() => tours.map((t, i) => ({ ...t, i })), [tours]);
 
   return (
-    <section className="mt-16 px-6 py-12 lg:px-8 lg:py-16">
+    <section className="site-section-gap px-6 py-8 sm:py-12 lg:px-8 lg:py-16">
       <div className="mx-auto max-w-7xl">
         {/* Section Header */}
         <motion.div

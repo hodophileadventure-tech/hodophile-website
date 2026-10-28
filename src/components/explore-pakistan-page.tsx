@@ -260,8 +260,8 @@ const faqItems = [
 
 export function ExplorePakistanPageContent() {
   return (
-    <div className="space-y-5 pb-10 text-stone-900 sm:space-y-6">
-      <section className="site-hero-height theme-preserve-dark relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-stone-950">
+    <div className="pb-8 text-stone-900">
+      <section className="site-full-bleed site-hero-height theme-preserve-dark isolate overflow-hidden bg-stone-950">
         <div className="absolute inset-0">
           <Image
             src="/images/package-cards/hero-images__kamran-ch-unsplash.webp"
@@ -279,10 +279,11 @@ export function ExplorePakistanPageContent() {
             preload="metadata"
             poster="/images/package-cards/hero-images__kamran-ch-unsplash.webp"
             aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover"
+            className="site-hero-video absolute inset-0 h-full w-full object-cover"
           >
-            <source src="/videos/explore-pakistan-hero.mp4" type="video/mp4" />
+            <source src="/videos/explore-pakistan-hero.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
           </video>
+          <div className="site-hero-overlay" aria-hidden="true" />
         </div>
 
         <div className="site-hero-height relative mx-auto flex w-full max-w-[1600px] items-end px-4 pb-12 pt-28 sm:px-6 lg:px-10 lg:pb-16 xl:px-14">
@@ -301,13 +302,13 @@ export function ExplorePakistanPageContent() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/make-my-trip"
-                className="inline-flex items-center justify-center rounded-full bg-[#fcc000] px-6 py-3 text-sm font-semibold !text-black transition duration-300 hover:-translate-y-0.5 hover:bg-[#ffd24d]"
+                className="site-button-primary !text-black"
               >
                 Plan Your Journey
               </Link>
               <a
                 href="#experiences"
-                className="inline-flex items-center justify-center rounded-full border border-white/80 bg-black/20 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(255,255,255,0.15)] transition duration-300 hover:-translate-y-0.5 hover:bg-black/30"
+                className="site-button-secondary border-white/80 text-white"
               >
                 Explore Experiences
               </a>
@@ -426,7 +427,7 @@ export function ExplorePakistanPageContent() {
         </div>
       </section>
 
-      <section className="relative isolate left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#0b0b0b] px-5 py-12 text-white sm:px-8 lg:px-14 lg:py-16">
+      <section className="site-full-bleed relative isolate overflow-hidden bg-[#0b0b0b] px-5 py-10 text-white sm:px-8 sm:py-12 lg:px-14 lg:py-16">
         <div className="pointer-events-none absolute -left-48 top-12 -z-10 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
         <div className="pointer-events-none absolute -right-48 top-[38%] -z-10 h-[38rem] w-[38rem] rounded-full bg-[#b47b12]/[0.09] blur-3xl" />
         <div className="mx-auto max-w-7xl">

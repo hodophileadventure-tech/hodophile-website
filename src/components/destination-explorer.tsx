@@ -24,7 +24,7 @@ export function DestinationExplorer({ destinations }: { destinations: Destinatio
   );
 
   return (
-    <section className="mt-16 overflow-hidden py-12 sm:py-16">
+    <section className="site-section-gap overflow-hidden py-8 sm:py-12 lg:py-16">
       {/* Animated Background Elements */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-[-10%] top-20 h-80 w-96 rounded-full bg-yellow-400/5 blur-3xl animate-pulse" />

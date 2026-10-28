@@ -66,7 +66,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
           ],
         })}
       />
-      <PageShell wide>
+      <PageShell wide noTopPadding={Boolean(post.hero)}>
       {post.hero && (
         <div className="mb-8">
           <PageHeroImage

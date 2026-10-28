@@ -79,7 +79,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
         ctaLabel="Customize This Route"
       />
 
-      <section className="mt-12 rounded-[2.5rem] bg-[#0b0b0b] p-6 text-white shadow-[0_30px_90px_rgba(11,11,11,0.16)] md:p-8">
+      <section className="site-section-gap rounded-[2.5rem] bg-[#0b0b0b] p-6 text-white shadow-[0_30px_90px_rgba(11,11,11,0.16)] md:p-8">
         <div className="flex items-end justify-between gap-4 border-b border-white/10 pb-6">
           <div>
             <p className="text-xs uppercase tracking-[0.32em] text-[#fcc000]">Packages</p>

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function ExplorePakistanPage() {
   return (
-    <PageShell wide>
+    <PageShell wide noTopPadding>
       <ExplorePakistanPageContent />
     </PageShell>
   );

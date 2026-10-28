@@ -1,19 +1,27 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { whatsappUrl } from "@/lib/site";
 
 export function MiqatHero() {
   return (
-    <section className="site-hero-height theme-preserve-dark relative isolate left-1/2 flex w-screen -translate-x-1/2 overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
+    <section className="site-hero-height theme-preserve-dark isolate flex overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
       <motion.div
         animate={{ scale: 1 }}
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
         className="absolute inset-0"
       >
+        <Image
+          src="/images/package-cards/images__umrah__kabah.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
         <video
-          className="h-full w-full object-cover"
+          className="site-hero-video h-full w-full object-cover"
           poster="/images/package-cards/images__umrah__kabah.webp"
           autoPlay
           muted
@@ -21,7 +29,7 @@ export function MiqatHero() {
           playsInline
           preload="metadata"
         >
-          <source src="/videos/qasim-opt.mp4" type="video/mp4" />
+          <source src="/videos/qasim-opt.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
         </video>
       </motion.div>
 

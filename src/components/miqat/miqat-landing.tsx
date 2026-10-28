@@ -10,10 +10,8 @@ import { WhyMiqat } from "@/components/miqat/WhyMiqat";
 
 export function MiqatLanding() {
   return (
-    <div className="site-page-gradient relative left-1/2 w-screen -translate-x-1/2 overflow-x-clip text-[var(--text-primary)] scroll-smooth">
-      <div className="">
-        <MiqatHero />
-      </div>
+    <div className="site-page-gradient site-full-bleed overflow-x-clip text-[var(--text-primary)] scroll-smooth">
+      <MiqatHero />
 
       <section className="border-y border-stone-300 px-4 py-8 sm:px-6 lg:px-10 xl:px-14" aria-label="MIQAT package information">
         <div className="mx-auto grid max-w-7xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -31,29 +29,12 @@ export function MiqatLanding() {
         </div>
       </section>
 
-      <div className="">
-        <WhyMiqat />
-      </div>
-
-      <div className="">
-        <UmrahPackages />
-      </div>
-
-      <div className="">
-        <JourneyTimeline />
-      </div>
-
-      <div className="">
-        <SacredPlaces />
-      </div>
-
-      <div className="">
-        <Testimonials />
-      </div>
-
-      <div className="">
-        <MiqatCTA />
-      </div>
+      <WhyMiqat />
+      <UmrahPackages />
+      <JourneyTimeline />
+      <SacredPlaces />
+      <Testimonials />
+      <MiqatCTA />
     </div>
   );
 }

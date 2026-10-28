@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function OurTeamPage() {
   return (
-    <PageShell wide>
+    <PageShell wide noTopPadding>
       <PageHeroImage
         image="/images/package-cards/images__team__our-team-header.webp"
         imageAlt="Hodophile Adventures travel team"

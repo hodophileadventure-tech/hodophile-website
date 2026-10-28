@@ -51,7 +51,7 @@ const honeymoonPackages = [
 
 export default function HoneymoonPackagesPage() {
   return (
-    <PageShell wide>
+    <PageShell wide noTopPadding>
       <PageHeroImage
         image="/images/package-cards/images__honeymoon__hero.webp"
         imageAlt="Honeymoon header"
@@ -61,7 +61,7 @@ export default function HoneymoonPackagesPage() {
         description="Choose from premium domestic routes in Pakistan and let us craft an elegant honeymoon itinerary around your preferred pace."
       />
 
-      <section className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      <section className="site-section-gap grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {honeymoonPackages.map((item) => (
           <JourneyCard
             key={item.slug}

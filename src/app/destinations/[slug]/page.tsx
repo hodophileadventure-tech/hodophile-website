@@ -346,7 +346,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
           </div>
         </section>
 
-        <section className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+        <section className="site-section-gap grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {[
             { label: "Best time", value: destination.bestSeason },
             { label: "Ideal duration", value: destination.idealDuration },
@@ -360,7 +360,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
           ))}
         </section>
 
-        <section className="mt-12 grid gap-7 lg:grid-cols-[1.2fr_0.8fr]">
+        <section className="site-section-gap grid gap-7 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="rounded-[2rem] border border-stone-200 bg-white p-7 shadow-[0_18px_40px_rgba(15,23,42,0.04)]">
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#b98a00]">Why travelers choose it</p>
             <h2 className="mt-4 font-serif text-3xl font-semibold text-stone-950">A destination built for memorable route planning.</h2>
@@ -396,7 +396,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
         </section>
 
         {packages.length > 0 && (
-          <section className="relative mt-16 overflow-hidden rounded-[2rem] bg-[#0b0b0b] px-5 py-8 text-white shadow-[0_28px_70px_rgba(11,11,11,0.16)] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
+          <section className="site-section-gap relative overflow-hidden rounded-[2rem] bg-[#0b0b0b] px-5 py-8 text-white shadow-[0_28px_70px_rgba(11,11,11,0.16)] sm:px-8 sm:py-10 lg:px-12 lg:py-12">
             <div className="pointer-events-none absolute right-[-5rem] top-[-7rem] h-64 w-64 rounded-full border border-[#fcc000]/20" />
             <div className="pointer-events-none absolute right-8 top-8 h-24 w-24 rounded-full border border-[#fcc000]/10" />
 
@@ -447,7 +447,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
           </section>
         )}
 
-        <section className="mt-12 rounded-[2rem] border border-stone-200 bg-white p-7 shadow-[0_18px_40px_rgba(15,23,42,0.04)]">
+        <section className="site-section-gap rounded-[2rem] border border-stone-200 bg-white p-7 shadow-[0_18px_40px_rgba(15,23,42,0.04)]">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-stone-500">Frequently asked questions</p>
           <div className="mt-6 space-y-5">
             {destination.faq.map((item) => (
@@ -459,7 +459,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
           </div>
         </section>
 
-        <section className="mt-12">
+        <section className="site-section-gap">
           <h2 className="mb-8 font-serif text-3xl font-semibold">Gallery</h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {destination.images.map((image) => (
@@ -481,7 +481,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
           </div>
         </section>
 
-        <section className="mt-12 rounded-3xl border border-stone-200 bg-stone-50 p-8">
+        <section className="site-section-gap rounded-3xl border border-stone-200 bg-stone-50 p-8">
           <h2 className="font-serif text-3xl font-semibold">Ready to visit {destination.name}?</h2>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-stone-600">
             Let us craft a personalized itinerary for your {destination.name} adventure. Share your dates, budget, and preferences.

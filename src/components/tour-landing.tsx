@@ -53,7 +53,7 @@ export function TourLanding({
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
               href={ctaHref}
-              className="inline-flex rounded-full border border-[#fcc000] bg-[#fcc000] px-5 py-3 text-sm font-semibold !text-[#0b0b0b] shadow-[0_10px_22px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:bg-[#ffd24d]"
+              className="site-button-primary !text-[#0b0b0b]"
             >
               {ctaLabel}
             </Link>
@@ -61,13 +61,13 @@ export function TourLanding({
               href={whatsappUrl(`Hi Hodophile, I'm interested in ${title}. Please share availability and booking details.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex rounded-full border border-[#b8d5bf] px-5 py-3 text-sm font-semibold text-[#b8d5bf] transition hover:border-[#fcc000] hover:bg-[#fcc000]/10 hover:text-[#fcc000]"
+              className="site-button-secondary"
             >
               WhatsApp an expert
             </a>
             <Link
               href="/tours"
-              className="inline-flex rounded-full border border-white/25 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white transition hover:border-[#fcc000] hover:bg-[#fcc000]/10 hover:text-[#fcc000]"
+              className="site-button-secondary border-white/25 text-white hover:border-[#fcc000] hover:text-[#fcc000]"
             >
               Back to Tours
             </Link>

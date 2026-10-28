@@ -374,9 +374,9 @@ export default async function PackagePage({ params }: PackagePageProps) {
           ],
         })}
       />
-      <PageShell wide>
-      <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-        <div className="relative min-h-[62vh] md:min-h-[68vh]">
+      <PageShell wide noTopPadding>
+      <section className="site-full-bleed overflow-hidden">
+        <div className="site-detail-hero-height relative">
           <Image
             src={pkg.heroImage}
             alt={pkg.title}
@@ -385,7 +385,8 @@ export default async function PackagePage({ params }: PackagePageProps) {
             sizes="100vw"
             className="object-cover"
           />
-          <div className="relative z-10 mx-auto flex min-h-[62vh] max-w-[96rem] flex-col justify-end px-4 pb-12 pt-24 text-white md:min-h-[68vh] md:px-6 lg:px-10 xl:px-14">
+          <div className="site-hero-overlay" aria-hidden="true" />
+          <div className="site-detail-hero-height relative z-10 mx-auto flex max-w-[96rem] flex-col justify-end px-4 pb-10 pt-20 text-white sm:pb-12 sm:pt-24 md:px-6 lg:px-10 xl:px-14">
             <p className="text-xs uppercase tracking-[0.34em] text-white/75">Destination Package</p>
             <h1 className="mt-3 max-w-4xl font-serif text-3xl leading-tight sm:text-4xl">
               {pkg.title}
@@ -397,7 +398,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
         </div>
       </section>
 
-      <section className="mt-12 grid gap-8 lg:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)] xl:gap-12">
+      <section className="site-section-gap grid gap-8 lg:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)] xl:gap-12">
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="rounded-[2rem] border border-stone-200 bg-white p-3 shadow-[0_12px_36px_rgba(15,23,42,0.08)]">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-stone-100">

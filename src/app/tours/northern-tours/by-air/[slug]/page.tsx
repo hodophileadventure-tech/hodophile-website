@@ -68,9 +68,9 @@ export default async function NorthernAirTourPage({ params }: NorthernAirTourPag
           ],
         })}
       />
-      <PageShell wide>
-        <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-[#090909]">
-          <div className="relative min-h-[52vh] md:min-h-[60vh]">
+      <PageShell wide noTopPadding>
+        <section className="site-full-bleed overflow-hidden bg-[#090909]">
+          <div className="site-detail-hero-height relative">
             <Image
               src={tour.image}
               alt={`${tour.title} mountain scenery`}
@@ -80,7 +80,7 @@ export default async function NorthernAirTourPage({ params }: NorthernAirTourPag
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/10" />
-            <div className="relative z-10 mx-auto flex min-h-[52vh] max-w-[96rem] flex-col justify-end px-4 pb-10 pt-24 text-white md:min-h-[60vh] md:px-6 md:pb-14 lg:px-10 xl:px-14">
+            <div className="site-detail-hero-height relative z-10 mx-auto flex max-w-[96rem] flex-col justify-end px-4 pb-10 pt-20 text-white sm:pb-12 sm:pt-24 md:px-6 lg:px-10 xl:px-14">
               <Link
                 href="/tours/northern-tours#by-air"
                 className="mb-6 w-fit text-sm font-semibold text-[#fcc000] transition hover:text-white"
