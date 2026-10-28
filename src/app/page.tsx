@@ -120,8 +120,8 @@ export default function Home() {
 
   return (
     <PageShell wide>
-      <section className="theme-preserve-dark relative left-1/2 -mt-20 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
-        <div className="relative min-h-[88vh]">
+      <section className="site-hero-height theme-preserve-dark relative left-1/2 -mt-20 w-screen -translate-x-1/2 overflow-hidden bg-[#101010] text-white">
+        <div className="site-hero-height relative">
           <video
             src="/hero-video.mp4"
             autoPlay
@@ -133,7 +133,7 @@ export default function Home() {
             className="absolute inset-0 h-full w-full object-cover"
             style={{ display: 'block' }}
           />
-          <div className="relative z-10 flex min-h-[88vh] w-full items-end px-6 pb-14 pt-40 lg:px-16 lg:pb-20">
+          <div className="site-hero-height relative z-10 flex w-full items-end px-6 pb-14 pt-40 lg:px-16 lg:pb-20">
             <div className="max-w-5xl text-white">
               <p className="eyebrow">Hodophile Adventures · Pakistan</p>
               <h1 className="display-serif mt-5 max-w-4xl text-5xl font-normal leading-[0.98] sm:text-6xl lg:text-7xl">

@@ -261,7 +261,7 @@ const faqItems = [
 export function ExplorePakistanPageContent() {
   return (
     <div className="space-y-5 pb-10 text-stone-900 sm:space-y-6">
-      <section className="theme-preserve-dark relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-stone-950">
+      <section className="site-hero-height theme-preserve-dark relative left-1/2 w-screen -translate-x-1/2 overflow-hidden bg-stone-950">
         <div className="absolute inset-0">
           <Image
             src="/images/package-cards/hero-images__kamran-ch-unsplash.webp"
@@ -285,7 +285,7 @@ export function ExplorePakistanPageContent() {
           </video>
         </div>
 
-        <div className="relative mx-auto flex min-h-[82vh] w-full max-w-[1600px] items-end px-4 pb-12 pt-28 sm:px-6 lg:px-10 lg:pb-16 xl:px-14">
+        <div className="site-hero-height relative mx-auto flex w-full max-w-[1600px] items-end px-4 pb-12 pt-28 sm:px-6 lg:px-10 lg:pb-16 xl:px-14">
           <div className="max-w-4xl text-white">
             <p className="eyebrow">Travel Deeper</p>
             <p className="mt-5 text-xs font-semibold uppercase tracking-[0.26em] text-[#fcc000]">
