@@ -28,6 +28,7 @@ const routes = [...new Set([
   "/inquiry",
   "/make-my-trip",
   "/terms-and-conditions",
+  "/trip-suggestions",
   "/tours",
   "/tours/adventure",
   "/umrah-packages",

@@ -233,6 +233,16 @@ export function TripMakerRecommendations() {
           </div>
         ) : null}
 
+        <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-stone-200 pt-6">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8b6b00]">Compare your shortlist</p>
+            <p className="mt-1 text-sm leading-6 text-stone-600">Select the ⇄ control on up to four journeys, then compare their routes, prices, and details side by side.</p>
+          </div>
+          <Link href="/compare" className="inline-flex min-h-11 items-center justify-center rounded-full bg-stone-950 px-5 text-xs font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-stone-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
+            Compare selected trips
+          </Link>
+        </div>
+
         <div className="mt-7 border-t border-stone-200 pt-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>

@@ -156,6 +156,12 @@ export default function Home() {
                 >
                   Explore Pakistan <span aria-hidden="true">↗</span>
                 </Link>
+                <Link
+                  href="/trip-suggestions"
+                  className="inline-flex items-center rounded-full border border-white/65 bg-black/45 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:-translate-y-0.5 hover:border-[#ffc000] hover:text-[#ffc000]"
+                >
+                  Get trip suggestions <span aria-hidden="true">↗</span>
+                </Link>
               </div>
             </div>
           </div>
