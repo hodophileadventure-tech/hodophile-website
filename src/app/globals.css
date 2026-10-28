@@ -75,7 +75,7 @@
 }
 
 .site-hero-height {
-  min-height: min(760px, calc(100svh - var(--site-header-height)));
+  height: min(760px, calc(100svh - var(--site-header-height)));
 }
 
 .site-header-gradient {

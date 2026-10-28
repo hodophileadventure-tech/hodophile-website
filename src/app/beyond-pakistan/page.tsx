@@ -491,7 +491,7 @@ export default function BeyondPakistanPage() {
         })}
       />
       <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-        <section className="site-hero-height theme-preserve-dark relative isolate flex items-center overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
+        <section className="site-hero-height theme-preserve-dark relative isolate flex items-center overflow-hidden bg-[#090909] px-5 py-8 text-white sm:px-8 sm:py-10 lg:px-14 lg:py-10">
           <Image
             src="/images/international/dubai-thailand.png"
             alt=""
