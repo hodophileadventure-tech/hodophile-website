@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { JourneyCard } from "@/components/journey-card";
 import { PageShell } from "@/components/page-shell";
 import { TourLanding } from "@/components/tour-landing";
-import { northernAirTours } from "@/lib/data/northern-air-tours";
+import { getNorthernAirTourPath, northernAirTours } from "@/lib/data/northern-air-tours";
 import { getTourPackagesForRegion } from "@/lib/data/tour-packages";
 import { absoluteUrl, destinations, tourMenu, whatsappUrl } from "@/lib/site";
 
@@ -125,7 +125,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
             {northernAirTours.map((tour) => (
               <li key={tour.id} className="overflow-hidden rounded-[1.5rem] border border-[#d4b34d]/35 bg-[#fff2d5] p-4 text-stone-900 shadow-[0_18px_42px_rgba(50,40,10,0.1)] sm:p-5">
-                <Link href={`/tours/northern-tours/by-air/${tour.id}`} className="group/tour block">
+                <Link href={getNorthernAirTourPath(tour.id)} className="group/tour block">
                   <div className="relative mb-4 aspect-[16/10] overflow-hidden rounded-xl bg-[#f1e5c8]">
                     <Image
                       src={tour.image}

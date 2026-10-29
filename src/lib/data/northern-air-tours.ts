@@ -1,6 +1,7 @@
 export type NorthernAirTour = {
   id: string;
   title: string;
+  travelModes?: ("air" | "road")[];
   image: string;
   summary: string;
   pricing: {
@@ -29,16 +30,17 @@ export const northernAirTourBookingTerms = [
 export const northernAirTours: NorthernAirTour[] = [
   {
     id: "skardu-hunza-8-days",
-    title: "Skardu & Hunza · 8 Days by Air",
+    title: "Skardu & Hunza · 8 Days by Air or Road",
+    travelModes: ["air", "road"],
     image: "/images/northern-air-tours/skardu-hunza-8-days.webp",
-    summary: "An air-linked Skardu and Hunza journey combining Baltistan valleys, high-altitude lakes, forts, and Upper Hunza.",
+    summary: "An eight-day Skardu and Hunza journey combining Baltistan valleys, high-altitude lakes, forts, and Upper Hunza, with air and road travel options.",
     pricing: [
-      { packageType: "Standard", rates: ["PKR 85,000 per head (without air tickets)", "PKR 173,000 per couple"] },
+      { packageType: "Standard", rates: ["PKR 60,000 per head by road; air tickets are extra for the air option", "PKR 173,000 per couple"] },
       { packageType: "Deluxe", rates: ["PKR 120,000 per head (without air tickets)", "PKR 260,000 per couple"] },
       { packageType: "With TZ/TX Prado", rates: ["PKR 140,000 per head (without air tickets)", "PKR 280,000 per couple"] },
       { packageType: "Executive", rates: ["Hotels and resorts available as per choice"] },
     ],
-    airfare: "Air ticket cost shown on the poster: PKR 55,000–95,000 per adult, depending on booking date and current fare.",
+    airfare: "The PKR 60,000 per-person rate is for the road package. If choosing the air option, air tickets are not included; the poster lists PKR 55,000–95,000 per adult depending on booking date and current fare.",
     flightSchedule: "PIA flights from Karachi to Skardu operate once a week on Saturday, as stated on the supplied poster.",
     inclusions: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and parking"],
     stayOptions: [
@@ -47,14 +49,14 @@ export const northernAirTours: NorthernAirTour[] = [
       "Executive: Khoj, Shangrila, Himmel Resort, or as per choice.",
     ],
     itinerary: [
-      { day: 1, title: "Arrive in Skardu", description: "Fly to Skardu, visit Shangrila Resort and Upper Kachura Lake, then stay overnight in Skardu." },
+      { day: 1, title: "Arrive in Skardu", description: "For the air option, fly to Skardu; for the road option, follow the confirmed overland arrival plan. Visit Shangrila Resort and Upper Kachura Lake, then stay overnight in Skardu." },
       { day: 2, title: "Shigar Valley", description: "Visit Manthoka Waterfall, Shigar Fort and Sarfaranga Cold Desert. Optional activities include jeep safari, quad biking, horse riding and paragliding. Overnight in Skardu." },
       { day: 3, title: "Basho Meadows", description: "Travel by 4x4 toward Basho Meadows, with stops at Sadpara Lake, Bara Pani, Kala Pani and Sheosar Lake. Return to Skardu for the night." },
       { day: 4, title: "Chunda Valley", description: "Explore Chunda Valley and Skardu local bazaar. Overnight in Skardu." },
       { day: 5, title: "Travel to Hunza", description: "Drive to Hunza via Three Mountains Junction and Rakaposhi View Point. Visit Altit and Baltit Forts, then stay overnight in Hunza." },
       { day: 6, title: "Upper Hunza and Khunjerab", description: "Visit Attabad Lake, Passu Cones, Hussaini Suspension Bridge and Khunjerab Pass. Boating and jet-ski activities are optional. Overnight in Hunza." },
       { day: 7, title: "Travel to Gilgit", description: "Travel to Gilgit City and stay overnight." },
-      { day: 8, title: "Departure", description: "Travel toward Islamabad; confirm the return flight and final transfer arrangements when booking." },
+      { day: 8, title: "Departure", description: "Travel toward Islamabad by the confirmed road or air arrangement for your selected option. Confirm return transport and any flight details when booking." },
     ],
   },
   {
@@ -311,3 +313,11 @@ export const northernAirTours: NorthernAirTour[] = [
     ],
   },
 ];
+
+export function getNorthernAirTourPath(tourId: string) {
+  if (tourId === "skardu-hunza-8-days") {
+    return "/tours/northern-tours/by-air-or-road/skardu-hunza-8-days";
+  }
+
+  return `/tours/northern-tours/by-air/${tourId}`;
+}

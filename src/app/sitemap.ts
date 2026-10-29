@@ -6,7 +6,7 @@ import { umrahPackages } from "@/lib/data/umrah-packages";
 import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "@/lib/data/premiumDestinations.js";
 import { tourPackages } from "@/lib/data/tour-packages";
 import { additionalHoneymoonPackages } from "@/lib/data/additional-honeymoon-packages";
-import { northernAirTours } from "@/lib/data/northern-air-tours";
+import { getNorthernAirTourPath, northernAirTours } from "@/lib/data/northern-air-tours";
 
 const packageRoutes = [...premiumDestinations, ...readyToBookDestinations, ...exclusiveOffers, ...tourPackages]
   .map((item) => `/packages/${item.id}`);
@@ -36,7 +36,7 @@ const routes = [...new Set([
   ...umrahPackages.map((pkg) => `/umrah-packages/${pkg.id}`),
   ...packageRoutes,
   ...allTourRoutes,
-  ...northernAirTours.map((tour) => `/tours/northern-tours/by-air/${tour.id}`),
+  ...northernAirTours.map((tour) => getNorthernAirTourPath(tour.id)),
   ...indexableFeaturedTourRoutePaths,
   ...destinationGalleryRoutes,
 ])];

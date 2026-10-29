@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 
 import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
-import { northernAirTourBookingTerms, northernAirTours } from "@/lib/data/northern-air-tours";
+import { getNorthernAirTourPath, northernAirTourBookingTerms, northernAirTours } from "@/lib/data/northern-air-tours";
 import { absoluteUrl, whatsappUrl } from "@/lib/site";
 import { buildPageSchema } from "@/lib/seo/structured-data";
 
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: NorthernAirTourPageProps): Pr
 
   if (!tour) return {};
 
-  const url = `/tours/northern-tours/by-air/${tour.id}`;
+  const url = getNorthernAirTourPath(tour.id);
   return {
     title: tour.title,
     description: tour.summary,
@@ -41,15 +41,21 @@ export async function generateMetadata({ params }: NorthernAirTourPageProps): Pr
   };
 }
 
-export default async function NorthernAirTourPage({ params }: NorthernAirTourPageProps) {
+export async function NorthernAirTourPage({ params }: NorthernAirTourPageProps) {
   const { slug } = await params;
+  const tourPath = getNorthernAirTourPath(slug);
+  if (tourPath !== `/tours/northern-tours/by-air/${slug}`) {
+    permanentRedirect(tourPath);
+  }
+
   const tour = getNorthernAirTour(slug);
 
   if (!tour) notFound();
 
-  const pageUrl = `/tours/northern-tours/by-air/${tour.id}`;
+  const pageUrl = getNorthernAirTourPath(tour.id);
+  const travelModeLabel = tour.travelModes?.map((mode) => mode === "air" ? "Air" : "Road").join(" or ") ?? "Air";
   const inquiryUrl = whatsappUrl(
-    `Hi Hodophile, I am interested in ${tour.title}. Please confirm the package price, room options, flight availability, and current itinerary.`,
+    `Hi Hodophile, I am interested in ${tour.title}. Please confirm the package price, room options, ${travelModeLabel.toLowerCase()} travel availability, and current itinerary.`,
   );
 
   return (
@@ -63,7 +69,7 @@ export default async function NorthernAirTourPage({ params }: NorthernAirTourPag
             { name: "Home", url: "/" },
             { name: "Tours", url: "/tours" },
             { name: "Northern Tours", url: "/tours/northern-tours" },
-            { name: "By Air", url: "/tours/northern-tours#by-air" },
+            { name: `By ${travelModeLabel}`, url: "/tours/northern-tours#by-air" },
             { name: tour.title, url: pageUrl },
           ],
         })}
@@ -85,9 +91,9 @@ export default async function NorthernAirTourPage({ params }: NorthernAirTourPag
                 href="/tours/northern-tours#by-air"
                 className="mb-6 w-fit text-sm font-semibold text-[#fcc000] transition hover:text-white"
               >
-                ← All Northern by Air Tours
+                ← All Northern Tours
               </Link>
-              <p className="text-xs uppercase tracking-[0.34em] text-[#fcc000]">Northern Tours · By Air</p>
+              <p className="text-xs uppercase tracking-[0.34em] text-[#fcc000]">Northern Tours · By {travelModeLabel}</p>
               <h1 className="mt-3 max-w-4xl font-serif text-4xl leading-tight sm:text-5xl">{tour.title}</h1>
               <p className="mt-4 max-w-3xl text-sm leading-7 text-white/85 sm:text-base">{tour.summary}</p>
             </div>
@@ -102,7 +108,7 @@ export default async function NorthernAirTourPage({ params }: NorthernAirTourPag
               </div>
               <div className="p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Package overview</p>
-                <p className="mt-2 font-serif text-2xl text-stone-900">{tour.itinerary.length} days · By air</p>
+                <p className="mt-2 font-serif text-2xl text-stone-900">{tour.itinerary.length} days · {travelModeLabel}</p>
                 <p className="mt-3 text-sm leading-6 text-stone-600">{tour.summary}</p>
                 {tour.flightSchedule ? (
                   <p className="mt-4 rounded-xl border-l-2 border-[#fcc000] bg-[#fff8df] p-3 text-sm leading-6 text-stone-700">
@@ -213,3 +219,5 @@ export default async function NorthernAirTourPage({ params }: NorthernAirTourPag
     </>
   );
 }
+
+export default NorthernAirTourPage;

@@ -3,11 +3,11 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { northernAirTourBookingTerms, northernAirTours } from "./northern-air-tours";
+import { getNorthernAirTourPath, northernAirTourBookingTerms, northernAirTours } from "./northern-air-tours";
 
 test("Northern by Air detail pages have itinerary, pricing, and package information", () => {
   const expectedTours = [
-    ["Skardu & Hunza · 8 Days by Air", 8],
+    ["Skardu & Hunza · 8 Days by Air or Road", 8],
     ["Skardu · 4 Days", 4],
     ["Skardu · 5 Days", 5],
     ["Skardu · 6 Days", 6],
@@ -25,6 +25,13 @@ test("Northern by Air detail pages have itinerary, pricing, and package informat
   );
   assert.equal(new Set(northernAirTours.map((tour) => tour.id)).size, expectedTours.length);
   assert.equal(new Set(northernAirTours.map((tour) => tour.image)).size, expectedTours.length);
+  assert.equal(getNorthernAirTourPath("skardu-hunza-8-days"), "/tours/northern-tours/by-air-or-road/skardu-hunza-8-days");
+  assert.equal(getNorthernAirTourPath("skardu-4-days"), "/tours/northern-tours/by-air/skardu-4-days");
+  const skarduHunzaEightDayTour = northernAirTours.find((tour) => tour.id === "skardu-hunza-8-days");
+  assert.ok(skarduHunzaEightDayTour);
+  assert.deepEqual(skarduHunzaEightDayTour.travelModes, ["air", "road"]);
+  assert.ok(skarduHunzaEightDayTour.pricing[0].rates.includes("PKR 60,000 per head by road; air tickets are extra for the air option"));
+  assert.match(skarduHunzaEightDayTour.airfare, /air tickets are not included/i);
   assert.ok(existsSync(resolve(process.cwd(), "src/app/tours/northern-tours/by-air/[slug]/page.tsx")));
   assert.ok(northernAirTourBookingTerms.length > 0);
 

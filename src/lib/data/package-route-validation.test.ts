@@ -5,6 +5,7 @@ import { resolve } from "node:path";
 
 import { destinationTourPageRedirects, tourMenu } from "../site";
 import { featuredTourCards, indexableFeaturedTourRoutePaths } from "./featured-tour-cards";
+import { routes } from "./routes";
 import { tourDiscoveryIdeas } from "./tour-discovery-ideas";
 import { getHeritageTourPackages, getTourPackagesForDestination, getTourPackagesForRegion, tourPackages } from "./tour-packages";
 
@@ -15,6 +16,7 @@ const expectedJourneyIds = [
   "skardu-hunza-air-7-days",
   "ormara-beach-camping",
   "swat-kalam-shogran-10-days",
+  "swat-kalam-malam-jabba-khanpur-4-days",
   "kashmir-shogran-9-days",
   "hunza-skardu-naran-12-days",
   "skardu-deosai-naran-10-days",
@@ -23,7 +25,7 @@ const expectedJourneyIds = [
   "seasonal-54",
 ];
 
-test("the canonical list contains exactly the 12 unique journeys with required source fields", () => {
+test("the canonical list contains exactly the 13 unique journeys with required source fields", () => {
   const ids = tourPackages.map((tourPackage) => tourPackage.id);
   const titles = tourPackages.map((tourPackage) => tourPackage.title);
   const images = tourPackages.map((tourPackage) => tourPackage.image);
@@ -68,6 +70,7 @@ test("the heritage collection includes only packages with explicit historic itin
     heritagePackages.map((tourPackage) => tourPackage.id),
     [
       "skardu-deosai-air-3-days",
+      "skardu-deosai-basho-air-5-days",
       "skardu-khaplu-deosai-basho-air-7-days",
       "kashmir-shogran-9-days",
       "hunza-skardu-naran-12-days",
@@ -92,7 +95,7 @@ test("the tour discovery catalog restores unique historical route ideas without 
     `${[...journey.destinationSlugs].sort().join(",")}|${[...journey.routeStops].sort().join(",")}|${Number.parseInt(journey.duration, 10)}`,
   );
 
-  assert.equal(journeys.length, 20);
+  assert.equal(journeys.length, 21);
   assert.equal(new Set(ids).size, ids.length, "journey ids must be unique across catalog and ideas");
   assert.equal(new Set(images).size, images.length, "each journey must use a unique image");
   assert.equal(new Set(routeDurations).size, routeDurations.length, "the same destination set and duration must not be listed twice");
@@ -111,14 +114,32 @@ test("the tour discovery catalog restores unique historical route ideas without 
   }
 });
 
-test("the five-day air journey is accurately listed as Skardu and Basho without Deosai", () => {
+test("the Skardu and Basho package matches its six-day road itinerary and listed price", () => {
   const journey = tourPackages.find((tourPackage) => tourPackage.id === "skardu-deosai-basho-air-5-days");
+  const sourceRoute = routes.find((route) => route.id === "skardu-basho-6days");
 
   assert.ok(journey);
-  assert.equal(journey.title, "Skardu & Basho by Air");
-  assert.deepEqual(journey.routeStops, ["Skardu", "Basho"]);
-  assert.ok(!journey.description.includes("Deosai"));
-  assert.ok(!(journey.routeHighlights ?? []).some((highlight) => highlight.includes("Deosai")));
+  assert.ok(sourceRoute?.dayByDayItinerary);
+  assert.equal(journey.title, "Skardu & Basho by Road");
+  assert.equal(journey.duration, "6 Days / 5 Nights");
+  assert.equal(journey.pricePerPerson, 55000);
+  assert.equal(journey.priceOnRequest, undefined);
+  assert.deepEqual(journey.itinerary, sourceRoute.dayByDayItinerary);
+  assert.ok(journey.transport?.some((item) => /road transport/i.test(item)));
+  assert.ok(!journey.excludes?.some((item) => /air tickets|airport/i.test(item)));
+});
+
+test("the four-day Swat, Kalam, and Malam Jabba package uses the supplied itinerary and rate", () => {
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "swat-kalam-malam-jabba-khanpur-4-days");
+
+  assert.ok(journey);
+  assert.equal(journey.duration, "4 Days / 3 Nights");
+  assert.equal(journey.pricePerPerson, 28000);
+  assert.equal(journey.priceOnRequest, undefined);
+  assert.deepEqual(journey.itinerary?.map((day) => day.day), ["Day 1", "Day 2", "Day 3", "Day 4"]);
+  assert.ok(journey.includes?.includes("Breakfast"));
+  assert.ok(journey.excludes?.some((item) => /chairlift.*zipline/i.test(item)));
+  assert.ok(journey.excludes?.some((item) => /Khanpur Dam.*activities/i.test(item)));
 });
 
 test("Ormara Beach Night Camping uses its dedicated beach-camping image", () => {
@@ -147,10 +168,11 @@ test("provided Ormara and Skardu-Deosai-Naran itineraries match their listed tri
 
 test("poster-matched packages use the supplied names, durations, itinerary, and current price status", () => {
   const posterJourneys = [
-    { id: "skardu-deosai-air-3-days", title: "Skardu, Deosai & Naran by Road", days: 6 },
-    { id: "swat-kalam-shogran-10-days", title: "Swat, Kalam, Malam Jabba & Shogran", days: 6 },
-    { id: "kashmir-shogran-9-days", title: "Kashmir, Shogran & Murree", days: 6 },
-    { id: "hunza-skardu-naran-12-days", title: "Skardu & Hunza", days: 8 },
+    { id: "skardu-deosai-air-3-days", title: "Skardu, Deosai & Naran by Road", days: 6, priceOnRequest: true },
+    { id: "skardu-deosai-basho-air-5-days", title: "Skardu & Basho by Road", days: 6, priceOnRequest: undefined },
+    { id: "swat-kalam-shogran-10-days", title: "Swat, Kalam, Malam Jabba, Balakot & Shogran", days: 6, priceOnRequest: undefined },
+    { id: "kashmir-shogran-9-days", title: "Kashmir, Shogran & Murree", days: 6, priceOnRequest: true },
+    { id: "hunza-skardu-naran-12-days", title: "Skardu & Hunza", days: 8, priceOnRequest: true },
   ];
 
   for (const expected of posterJourneys) {
@@ -159,8 +181,14 @@ test("poster-matched packages use the supplied names, durations, itinerary, and 
     assert.equal(journey.title, expected.title);
     assert.ok(journey.duration.startsWith(`${expected.days} Days`));
     assert.equal(journey.itinerary?.length, expected.days);
-    assert.equal(journey.priceOnRequest, true);
+    assert.equal(journey.priceOnRequest, expected.priceOnRequest);
   }
+
+  const swatShogranJourney = tourPackages.find((tourPackage) => tourPackage.id === "swat-kalam-shogran-10-days");
+  assert.ok(swatShogranJourney);
+  assert.equal(swatShogranJourney.pricePerPerson, 40000);
+  assert.equal(swatShogranJourney.duration, "6 Days / 5 Nights");
+  assert.deepEqual(swatShogranJourney.itinerary?.map((day) => day.day), Array.from({ length: 6 }, (_, index) => `Day ${index + 1}`));
 
   const pricedPosterJourney = tourPackages.find((tourPackage) => tourPackage.id === "skardu-deosai-naran-10-days");
   assert.ok(pricedPosterJourney);
@@ -220,7 +248,7 @@ test("the eight audited destinations resolve only their canonical journeys", () 
       "skardu-deosai-naran-10-days",
     ],
     naran: ["skardu-deosai-air-3-days", "hunza-skardu-naran-12-days", "skardu-deosai-naran-10-days"],
-    swat: ["swat-kalam-shogran-10-days"],
+    swat: ["swat-kalam-shogran-10-days", "swat-kalam-malam-jabba-khanpur-4-days"],
     kashmir: ["kashmir-shogran-9-days", "seasonal-11"],
     ormara: ["ormara-beach-camping"],
     gorakh: ["seasonal-53"],
