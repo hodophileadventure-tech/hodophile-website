@@ -8,7 +8,7 @@ import { POST } from "./route";
 const promoPackages = [
   ["skardu-hunza-air-7-days", "HODOHS10"],
   ["skardu-khaplu-deosai-basho-air-7-days", "HODOSK10"],
-  ["skardu-deosai-basho-air-5-days", "HODOSB10"],
+  ["skardu-basho-6-days", "HODOSB10"],
 ] as const;
 
 async function validatePackage(tourId: string, promoCode: string, phone?: string) {

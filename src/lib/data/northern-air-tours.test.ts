@@ -30,7 +30,7 @@ test("Northern by Air detail pages have itinerary, pricing, and package informat
   const skarduHunzaEightDayTour = northernAirTours.find((tour) => tour.id === "skardu-hunza-8-days");
   assert.ok(skarduHunzaEightDayTour);
   assert.deepEqual(skarduHunzaEightDayTour.travelModes, ["air", "road"]);
-  assert.ok(skarduHunzaEightDayTour.pricing[0].rates.includes("PKR 60,000 per head by road; air tickets are extra for the air option"));
+  assert.ok(skarduHunzaEightDayTour.pricing[0].rates.includes("PKR 55,000 per head by road; air tickets are extra for the air option"));
   assert.match(skarduHunzaEightDayTour.airfare, /air tickets are not included/i);
   assert.ok(existsSync(resolve(process.cwd(), "src/app/tours/northern-tours/by-air/[slug]/page.tsx")));
   assert.ok(northernAirTourBookingTerms.length > 0);

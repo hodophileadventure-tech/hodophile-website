@@ -5,13 +5,14 @@ import { resolve } from "node:path";
 
 import { destinationTourPageRedirects, tourMenu } from "../site";
 import { featuredTourCards, indexableFeaturedTourRoutePaths } from "./featured-tour-cards";
+import { getPackagePath, packageRouteEntries, packageRouteRedirects } from "./package-routes";
 import { routes } from "./routes";
 import { tourDiscoveryIdeas } from "./tour-discovery-ideas";
 import { getHeritageTourPackages, getTourPackagesForDestination, getTourPackagesForRegion, tourPackages } from "./tour-packages";
 
 const expectedJourneyIds = [
   "skardu-deosai-air-3-days",
-  "skardu-deosai-basho-air-5-days",
+  "skardu-basho-6-days",
   "skardu-khaplu-deosai-basho-air-7-days",
   "skardu-hunza-air-7-days",
   "ormara-beach-camping",
@@ -63,6 +64,27 @@ test("the canonical list contains exactly the 13 unique journeys with required s
   }
 });
 
+test("all package URLs use unique name-based slugs and redirect previous ID URLs", () => {
+  const expectedPackageCount = tourPackages.length + 10;
+
+  assert.equal(packageRouteEntries.length, expectedPackageCount);
+  assert.equal(new Set(packageRouteEntries.map((entry) => entry.id)).size, expectedPackageCount);
+  assert.equal(new Set(packageRouteEntries.map((entry) => entry.slug)).size, expectedPackageCount);
+  assert.equal(getPackagePath("skardu-basho-6-days"), "/packages/skardu-and-basho-by-road-6-days");
+  assert.equal(getPackagePath("hunza-skardu-naran-12-days"), "/packages/skardu-and-hunza");
+  assert.equal(getPackagePath("ready-kashmir"), "/packages/3-days-kashmir-ready-to-book");
+  assert.ok(packageRouteRedirects.some(
+    (redirect) =>
+      redirect.source === "/packages/skardu-basho-6-days" &&
+      redirect.destination === "/packages/skardu-and-basho-by-road-6-days",
+  ));
+  assert.ok(packageRouteRedirects.some(
+    (redirect) =>
+      redirect.source === "/packages/skardu-deosai-basho-air-5-days" &&
+      redirect.destination === "/packages/skardu-and-basho-by-road-6-days",
+  ));
+});
+
 test("the heritage collection includes only packages with explicit historic itinerary stops", () => {
   const heritagePackages = getHeritageTourPackages();
 
@@ -70,7 +92,7 @@ test("the heritage collection includes only packages with explicit historic itin
     heritagePackages.map((tourPackage) => tourPackage.id),
     [
       "skardu-deosai-air-3-days",
-      "skardu-deosai-basho-air-5-days",
+      "skardu-basho-6-days",
       "skardu-khaplu-deosai-basho-air-7-days",
       "kashmir-shogran-9-days",
       "hunza-skardu-naran-12-days",
@@ -115,12 +137,12 @@ test("the tour discovery catalog restores unique historical route ideas without 
 });
 
 test("the Skardu and Basho package matches its six-day road itinerary and listed price", () => {
-  const journey = tourPackages.find((tourPackage) => tourPackage.id === "skardu-deosai-basho-air-5-days");
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "skardu-basho-6-days");
   const sourceRoute = routes.find((route) => route.id === "skardu-basho-6days");
 
   assert.ok(journey);
   assert.ok(sourceRoute?.dayByDayItinerary);
-  assert.equal(journey.title, "Skardu & Basho by Road");
+  assert.equal(journey.title, "Skardu & Basho by Road · 6 Days");
   assert.equal(journey.duration, "6 Days / 5 Nights");
   assert.equal(journey.pricePerPerson, 55000);
   assert.equal(journey.priceOnRequest, undefined);
@@ -169,7 +191,7 @@ test("provided Ormara and Skardu-Deosai-Naran itineraries match their listed tri
 test("poster-matched packages use the supplied names, durations, itinerary, and current price status", () => {
   const posterJourneys = [
     { id: "skardu-deosai-air-3-days", title: "Skardu, Deosai & Naran by Road", days: 6, priceOnRequest: true },
-    { id: "skardu-deosai-basho-air-5-days", title: "Skardu & Basho by Road", days: 6, priceOnRequest: undefined },
+    { id: "skardu-basho-6-days", title: "Skardu & Basho by Road · 6 Days", days: 6, priceOnRequest: undefined },
     { id: "swat-kalam-shogran-10-days", title: "Swat, Kalam, Malam Jabba, Balakot & Shogran", days: 6, priceOnRequest: undefined },
     { id: "kashmir-shogran-9-days", title: "Kashmir, Shogran & Murree", days: 6, priceOnRequest: true },
     { id: "hunza-skardu-naran-12-days", title: "Skardu & Hunza", days: 8, priceOnRequest: true },
@@ -241,7 +263,7 @@ test("the eight audited destinations resolve only their canonical journeys", () 
     hunza: ["skardu-hunza-air-7-days", "hunza-skardu-naran-12-days"],
     skardu: [
       "skardu-deosai-air-3-days",
-      "skardu-deosai-basho-air-5-days",
+      "skardu-basho-6-days",
       "skardu-khaplu-deosai-basho-air-7-days",
       "skardu-hunza-air-7-days",
       "hunza-skardu-naran-12-days",

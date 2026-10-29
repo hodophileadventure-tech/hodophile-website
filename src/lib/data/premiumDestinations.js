@@ -42,7 +42,7 @@ export const readyToBookDestinations = [
     title: '3 Days Kashmir',
     description: 'Haji Peer, alpine lakes, and premium mountain pacing.',
     image: '/images/package-cards/images__kashmir-ready-16487392183_705815274f_k-e1542188621179.webp',
-    href: '/packages/ready-kashmir',
+    href: '/packages/3-days-kashmir-ready-to-book',
   },
   {
     id: 'ready-skardu',
@@ -56,7 +56,7 @@ export const readyToBookDestinations = [
     title: '6 Days Astore Minimerg',
     description: 'Wild valleys, meadow lakes, and refined remote luxury.',
     image: '/images/package-cards/images__astore-loIxq8L6uvsV0bGY7pglChXinBokABu1NfdQWu4SP22b-6MDPXqjLqKVPcLQ2SVv1_3ohYx_793-F3d8A-hTM-DxvwyCF3dzgyQefU5ziO9ScV2PMa4mS7mwfDyammrtuiL27WSI28kYv6qcf_JyIytg8chC9XYQI-pxDK8YpBZNXHMKsrVQgcM-Ca0Wl8jm.webp',
-    href: '/packages/ready-astore',
+    href: '/packages/6-days-astore-minimerg',
   },
 ];
 
@@ -66,21 +66,21 @@ export const exclusiveOffers = [
     title: '5 Days Skardu by Air',
     description: 'Fly into Skardu for a high-comfort northern mountain escape.',
     image: '/images/package-cards/images__skardu-ready.webp',
-    href: '/packages/offer-skardu-air',
+    href: '/packages/5-days-skardu-by-air',
   },
   {
     id: 'offer-hunza-skardu-air',
     title: '6 Days Hunza Skardu by Air',
     description: 'Aerial access to Hunza and Skardu with premium route planning.',
     image: '/images/package-cards/images__nabeel_ahmed-rakaposhi-mountain-4862122.webp',
-    href: '/packages/offer-hunza-skardu-air',
+    href: '/packages/6-days-hunza-skardu-by-air',
   },
   {
     id: 'offer-nathia-gali',
     title: '3 Days Nathia Gali',
     description: 'Hill station escapes with popular trails, forest views, and charming Murree stops.',
     image: '/images/package-cards/images__nathia-ready.webp',
-    href: '/packages/offer-nathia-gali',
+    href: '/packages/3-days-nathia-gali',
   },
 ];
 

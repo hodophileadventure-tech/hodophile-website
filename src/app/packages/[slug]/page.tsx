@@ -8,6 +8,7 @@ import { PageShell } from "@/components/page-shell";
 import { PackagePromoCode } from "@/components/package-promo-code";
 import { absoluteUrl } from "@/lib/site";
 import { buildPageSchema } from "@/lib/seo/structured-data";
+import { getPackageRouteSlug } from "@/lib/data/package-routes";
 import { tourPackages } from "@/lib/data/tour-packages";
 import { PROMOTIONS } from "@/lib/promotions/promotion-config";
 import {
@@ -22,6 +23,7 @@ type PackagePageProps = {
 
 type PackageDetail = {
   slug: string;
+  routeSlug: string;
   title: string;
   heroImage: string;
   homeImage: string;
@@ -62,6 +64,7 @@ const allPackages: PackageDetail[] = [
   const destinationName = titleText.replace(/^\d+\s*Days\s+/, "").trim();
   const base = {
     slug: item.id,
+    routeSlug: getPackageRouteSlug(item.id),
     title: titleText,
     heroImage: item.image,
     homeImage: item.image,
@@ -230,6 +233,7 @@ allPackages.push(
 
       return {
         slug: tourPackage.id,
+        routeSlug: getPackageRouteSlug(tourPackage.id),
         title: tourPackage.title,
         heroImage: tourPackage.image,
         homeImage: tourPackage.image,
@@ -280,12 +284,12 @@ allPackages.push(
 );
 
 export async function generateStaticParams() {
-  return allPackages.map(({ slug }) => ({ slug }));
+  return allPackages.map(({ routeSlug }) => ({ slug: routeSlug }));
 }
 
 export async function generateMetadata({ params }: PackagePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const pkg = allPackages.find((item) => item.slug === slug);
+  const pkg = allPackages.find((item) => item.routeSlug === slug);
 
   if (!pkg) {
     return {};
@@ -295,19 +299,19 @@ export async function generateMetadata({ params }: PackagePageProps): Promise<Me
     title: pkg.title,
     description: pkg.summary,
     alternates: {
-      canonical: `/packages/${pkg.slug}`,
+      canonical: `/packages/${pkg.routeSlug}`,
     },
     openGraph: {
       title: pkg.title,
       description: pkg.summary,
-      url: absoluteUrl(`/packages/${pkg.slug}`),
+      url: absoluteUrl(`/packages/${pkg.routeSlug}`),
     },
   };
 }
 
 export default async function PackagePage({ params }: PackagePageProps) {
   const { slug } = await params;
-  const pkg = allPackages.find((item) => item.slug === slug);
+  const pkg = allPackages.find((item) => item.routeSlug === slug);
 
   if (!pkg) {
     notFound();
@@ -366,11 +370,11 @@ export default async function PackagePage({ params }: PackagePageProps) {
         data={buildPageSchema({
           title: pkg.title,
           description: pkg.summary,
-          url: `/packages/${pkg.slug}`,
+          url: `/packages/${pkg.routeSlug}`,
           breadcrumbs: [
             { name: "Home", url: "/" },
             { name: "Destinations", url: "/destinations" },
-            { name: pkg.title, url: `/packages/${pkg.slug}` },
+            { name: pkg.title, url: `/packages/${pkg.routeSlug}` },
           ],
         })}
       />

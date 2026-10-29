@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 
 import { tourPackages, type TravelStyle } from "@/lib/data/tour-packages";
 import { JourneyCard } from "@/components/journey-card";
+import { getPackagePath } from "@/lib/data/package-routes";
 import { JourneyActions } from "@/components/travel-discovery";
 import { rankTripRecommendations, type DurationPreference, type TripPreferences, type RankedTripRecommendation } from "@/lib/trip-intelligence";
 
@@ -77,7 +78,7 @@ function RecommendationCard({ recommendation, hasPreferences }: { recommendation
         </div>
         <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-stone-100 pt-5">
           <Link href={buildPlannerHref(trip.id, trip.destinationSlugs[0])} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#0b0b0b] px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[#282828] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">Build this trip</Link>
-          <Link href={`/packages/${trip.id}`} className="inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 bg-white px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-stone-900 transition hover:border-[#8b6b00] hover:text-[#5f4900] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">View journey</Link>
+          <Link href={getPackagePath(trip.id)} className="inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 bg-white px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-stone-900 transition hover:border-[#8b6b00] hover:text-[#5f4900] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">View journey</Link>
           <JourneyActions packageId={trip.id} packageTitle={trip.title} />
         </div>
     </JourneyCard>

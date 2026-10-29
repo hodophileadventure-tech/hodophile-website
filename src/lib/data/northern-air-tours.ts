@@ -35,12 +35,12 @@ export const northernAirTours: NorthernAirTour[] = [
     image: "/images/northern-air-tours/skardu-hunza-8-days.webp",
     summary: "An eight-day Skardu and Hunza journey combining Baltistan valleys, high-altitude lakes, forts, and Upper Hunza, with air and road travel options.",
     pricing: [
-      { packageType: "Standard", rates: ["PKR 60,000 per head by road; air tickets are extra for the air option", "PKR 173,000 per couple"] },
+      { packageType: "Standard", rates: ["PKR 55,000 per head by road; air tickets are extra for the air option", "PKR 173,000 per couple"] },
       { packageType: "Deluxe", rates: ["PKR 120,000 per head (without air tickets)", "PKR 260,000 per couple"] },
       { packageType: "With TZ/TX Prado", rates: ["PKR 140,000 per head (without air tickets)", "PKR 280,000 per couple"] },
       { packageType: "Executive", rates: ["Hotels and resorts available as per choice"] },
     ],
-    airfare: "The PKR 60,000 per-person rate is for the road package. If choosing the air option, air tickets are not included; the poster lists PKR 55,000–95,000 per adult depending on booking date and current fare.",
+    airfare: "The PKR 55,000 per-person rate is for the road package. If choosing the air option, air tickets are not included; the poster lists PKR 55,000–95,000 per adult depending on booking date and current fare.",
     flightSchedule: "PIA flights from Karachi to Skardu operate once a week on Saturday, as stated on the supplied poster.",
     inclusions: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and parking"],
     stayOptions: [

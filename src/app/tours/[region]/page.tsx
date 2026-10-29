@@ -7,6 +7,7 @@ import { JourneyCard } from "@/components/journey-card";
 import { PageShell } from "@/components/page-shell";
 import { TourLanding } from "@/components/tour-landing";
 import { getNorthernAirTourPath, northernAirTours } from "@/lib/data/northern-air-tours";
+import { getPackagePath } from "@/lib/data/package-routes";
 import { getTourPackagesForRegion } from "@/lib/data/tour-packages";
 import { absoluteUrl, destinations, tourMenu, whatsappUrl } from "@/lib/site";
 
@@ -204,7 +205,7 @@ export default async function RegionPage({ params }: RegionPageProps) {
           {roadPackages.map((item) => (
             <JourneyCard
               key={item.id}
-              href={`/packages/${item.id}`}
+              href={getPackagePath(item.id)}
               image={item.image}
               imageAlt={item.title}
               eyebrow={item.duration}

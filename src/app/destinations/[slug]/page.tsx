@@ -8,6 +8,7 @@ import { JourneyCard } from "@/components/journey-card";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl, destinationTourPageRedirects } from "@/lib/site";
 import { getTourPackageById, getTourPackagesForDestination } from "@/lib/data/tour-packages";
+import { getPackagePath } from "@/lib/data/package-routes";
 import { buildPageSchema } from "@/lib/seo/structured-data";
 
 type DestinationPageProps = {
@@ -379,7 +380,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
             <div className="mt-5 space-y-3">
               {destination.routeSuggestions.map((route) => {
                 const linkedPackage = "journeyId" in route && route.journeyId ? getTourPackageById(route.journeyId) : undefined;
-                const href = linkedPackage ? `/packages/${linkedPackage.id}` : "href" in route ? route.href ?? "/tours" : "/tours";
+                const href = linkedPackage ? getPackagePath(linkedPackage.id) : "href" in route ? route.href ?? "/tours" : "/tours";
                 const title = linkedPackage?.title ?? ("title" in route ? route.title : "");
 
                 return <Link
@@ -428,7 +429,7 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
                       {tourPackage.couplePrice && <p className="mt-2 text-xs text-stone-600">PKR {tourPackage.couplePrice.toLocaleString()} / couple</p>}
                     </div>
                     <Link
-                      href={`/packages/${tourPackage.id}`}
+                      href={getPackagePath(tourPackage.id)}
                       className="inline-flex min-h-10 items-center justify-center rounded-full bg-[#fcc000] px-4 text-xs font-semibold uppercase tracking-[0.1em] text-black transition hover:bg-[#ffda4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000]"
                     >
                       View details

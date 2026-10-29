@@ -6,6 +6,7 @@ import { PageShell } from "@/components/page-shell";
 import { TravelDiscoveryCatalog } from "@/components/travel-discovery";
 import { tourDiscoveryIdeas } from "@/lib/data/tour-discovery-ideas";
 import { tourPackages } from "@/lib/data/tour-packages";
+import { getPackagePath } from "@/lib/data/package-routes";
 import { absoluteUrl, tourMenu } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -113,7 +114,7 @@ export default function ToursPage() {
                     <h3 className="font-[var(--font-display)] text-2xl text-stone-950">{journey.title}</h3>
                     <p className="mt-1 text-xs uppercase tracking-[0.16em] text-stone-500">{journey.duration} · {journey.departures.length} departures</p>
                   </div>
-                  <Link href={`/packages/${journey.id}`} className="shrink-0 text-xs font-bold uppercase tracking-[0.1em] text-[#8b6b00]">Journey ↗</Link>
+                  <Link href={getPackagePath(journey.id)} className="shrink-0 text-xs font-bold uppercase tracking-[0.1em] text-[#8b6b00]">Journey ↗</Link>
                 </div>
                 <ul className="divide-y divide-stone-200 text-sm text-stone-700">
                   {journey.departures.map((departure) => (

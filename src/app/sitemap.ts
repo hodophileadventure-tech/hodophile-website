@@ -5,11 +5,12 @@ import { indexableFeaturedTourRoutePaths } from "@/lib/data/featured-tour-cards"
 import { umrahPackages } from "@/lib/data/umrah-packages";
 import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "@/lib/data/premiumDestinations.js";
 import { tourPackages } from "@/lib/data/tour-packages";
+import { getPackagePath } from "@/lib/data/package-routes";
 import { additionalHoneymoonPackages } from "@/lib/data/additional-honeymoon-packages";
 import { getNorthernAirTourPath, northernAirTours } from "@/lib/data/northern-air-tours";
 
 const packageRoutes = [...premiumDestinations, ...readyToBookDestinations, ...exclusiveOffers, ...tourPackages]
-  .map((item) => `/packages/${item.id}`);
+  .map((item) => getPackagePath(item.id));
 
 const routes = [...new Set([
   "/",

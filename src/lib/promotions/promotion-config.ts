@@ -5,7 +5,7 @@ export const PROMOTIONS: Record<string, PromotionDefinition> = {
     code: "HODOSB10",
     discountType: "percentage",
     discountPercent: 10,
-    eligibleTourIds: ["skardu-basho-6days", "skardu-deosai-basho-air-5-days"],
+    eligibleTourIds: ["skardu-basho-6days", "skardu-basho-6-days"],
     active: true,
   },
   HODOHS10: {

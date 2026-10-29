@@ -110,8 +110,8 @@ export const tourPackages: TourPackage[] = [
     ],
   },
   {
-    id: "skardu-deosai-basho-air-5-days",
-    title: "Skardu & Basho by Road",
+    id: "skardu-basho-6-days",
+    title: "Skardu & Basho by Road · 6 Days",
     description: "A six-day road journey from Islamabad to Skardu and Basho Valley, returning via Naran.",
     region: "northern",
     destinationSlugs: ["skardu"],

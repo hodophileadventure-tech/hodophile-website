@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
 import { TourLanding } from "@/components/tour-landing";
 import { getTourPackagesForDestination } from "@/lib/data/tour-packages";
+import { getPackagePath } from "@/lib/data/package-routes";
 import { absoluteUrl, destinations, tourMenu, whatsappUrl } from "@/lib/site";
 import { buildPageSchema } from "@/lib/seo/structured-data";
 
@@ -231,14 +232,14 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
               {matchingPackages.map((pkg) => (
                 <article key={pkg.id} className="group rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5 transition hover:-translate-y-1 hover:border-[#fcc000] hover:bg-[#fff8df]">
                   <p className="text-[10px] uppercase tracking-[0.2em] text-[#9a7600]">{pkg.duration}</p>
-                  <Link href={`/packages/${pkg.id}`} className="block">
+                  <Link href={getPackagePath(pkg.id)} className="block">
                     <h3 className="mt-3 font-serif text-2xl leading-tight text-stone-900">{pkg.title}</h3>
                   </Link>
                   <p className="mt-3 text-sm text-stone-600">{pkg.description}</p>
                   {pkg.scheduleNote ? <p className="mt-3 text-xs text-stone-500">Schedule note: {pkg.scheduleNote}</p> : null}
                   <div className="mt-4 flex items-center justify-between gap-3 border-t border-stone-200 pt-3">
                     <span className="text-sm font-semibold text-stone-900">{pkg.priceOnRequest ? "Price on request" : `PKR ${pkg.pricePerPerson.toLocaleString()}`}</span>
-                    <Link href={`/packages/${pkg.id}`} className="text-xs uppercase tracking-[0.16em] text-stone-500 group-hover:text-[#8b6b00]">View journey ↗</Link>
+                    <Link href={getPackagePath(pkg.id)} className="text-xs uppercase tracking-[0.16em] text-stone-500 group-hover:text-[#8b6b00]">View journey ↗</Link>
                   </div>
                   <a
                     href={whatsappUrl(`Hi Hodophile, I am interested in ${pkg.title}. Please confirm availability and the best current price.`)}

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore } from "react";
 
 import { JourneyCard } from "@/components/journey-card";
+import { getPackagePath } from "@/lib/data/package-routes";
 import type { RouteItineraryDay } from "@/lib/data/routes";
 import { tourPackages, type TourExperience, type TravelStyle, type TourDeparture } from "@/lib/data/tour-packages";
 import { tourDiscoveryIdeas } from "@/lib/data/tour-discovery-ideas";
@@ -69,7 +70,7 @@ function formatCurrency(value: number) {
 }
 
 function journeyHref(packageItem: DiscoveryPackage) {
-  if (!packageItem.requestOnly) return `/packages/${packageItem.id}`;
+  if (!packageItem.requestOnly) return getPackagePath(packageItem.id);
 
   return `/make-my-trip?destination=${encodeURIComponent(packageItem.destinationSlugs[0] ?? "")}&inspiration=${encodeURIComponent(packageItem.title)}`;
 }

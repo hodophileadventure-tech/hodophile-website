@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+import { packageRouteRedirects } from "./src/lib/data/package-routes";
+
 const nextConfig: NextConfig = {
   // Production optimizations
   reactStrictMode: true,
@@ -87,6 +89,7 @@ const nextConfig: NextConfig = {
         destination: "/blogs",
         permanent: true,
       },
+      ...packageRouteRedirects,
     ];
   },
 };

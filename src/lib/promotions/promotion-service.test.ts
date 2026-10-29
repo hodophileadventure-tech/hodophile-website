@@ -9,7 +9,7 @@ const codeTourPairs = [
   ["HODOSK10", "skardu-khaplu-deosai-basho-air-7-days"],
 ] as const;
 const packagePromoPairs = [
-  ["HODOSB10", "skardu-deosai-basho-air-5-days"],
+  ["HODOSB10", "skardu-basho-6-days"],
   ["HODOHS10", "skardu-hunza-air-7-days"],
   ["HODOSK10", "skardu-khaplu-deosai-basho-air-7-days"],
 ] as const;

@@ -89,7 +89,7 @@ test("getSimilarTrips returns only genuinely related trips and excludes the curr
 test("similar trip scoring is deterministic and removes duplicates", () => {
   const uniqueResults = getSimilarTrips(tourPackages[0], [tourPackages[0], tourPackages[0], tourPackages[1]]);
   assert.equal(uniqueResults.length, 1);
-  assert.equal(uniqueResults[0].trip.id, "skardu-deosai-basho-air-5-days");
+  assert.equal(uniqueResults[0].trip.id, "skardu-basho-6-days");
 });
 
 test("saved-trip related journeys reuse canonical similarity for one seed", () => {
