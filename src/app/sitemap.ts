@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 import { absoluteUrl, allTourRoutes, blogPosts, destinationGalleryRoutes } from "@/lib/site";
 import { indexableFeaturedTourRoutePaths } from "@/lib/data/featured-tour-cards";
 import { umrahPackages } from "@/lib/data/umrah-packages";
-import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "@/lib/data/premiumDestinations.js";
+import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "@/lib/data/premiumDestinations";
 import { tourPackages } from "@/lib/data/tour-packages";
 import { getPackagePath } from "@/lib/data/package-routes";
 import { additionalHoneymoonPackages } from "@/lib/data/additional-honeymoon-packages";

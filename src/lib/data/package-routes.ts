@@ -1,4 +1,4 @@
-import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "./premiumDestinations.js";
+import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "./premiumDestinations";
 import { tourPackages } from "./tour-packages";
 
 type PackageRouteEntry = {
