@@ -215,7 +215,11 @@ export default async function RegionPage({ params }: RegionPageProps) {
             >
               <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4 text-sm">
                 <span className="text-stone-500">From</span>
-                <span className="font-semibold text-[#806000]">{item.priceOnRequest ? "Price on request" : `PKR ${item.pricePerPerson.toLocaleString()}`}</span>
+                <span className="font-semibold text-[#806000]">
+                  {item.priceOnRequest
+                    ? `Listed from PKR ${item.pricePerPerson.toLocaleString()} · confirm current rate`
+                    : `PKR ${item.pricePerPerson.toLocaleString()}`}
+                </span>
               </div>
               <span className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-[#fcc000] px-5 text-sm font-semibold text-black transition group-hover:bg-[#ffda4d]">
                 Explore package ↗

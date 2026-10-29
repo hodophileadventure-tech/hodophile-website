@@ -33,7 +33,7 @@ test("budget tiers are derived from listed prices and never fabricate prices", (
   assert.equal(ranges.length, 3);
   assert.deepEqual(
     ranges.map(({ minimum, maximum }) => [minimum, maximum]),
-    [[0, 16000], [16001, 47500], [47501, undefined]],
+    [[0, 16000], [16001, 46500], [46501, undefined]],
   );
   assert.ok(priceValues.every((price) => ranges.some((range) => price >= range.minimum && (range.maximum === undefined || price <= range.maximum))));
   assert.deepEqual(createTripBudgetRanges([]), []);

@@ -14,6 +14,8 @@ export type TourDiscoveryIdea = {
   routeHighlights: string[];
   bestFor: string;
   pace: "Fast" | "Moderate" | "Relaxed";
+  pricePerPerson?: number;
+  detailHref?: string;
 };
 
 export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
@@ -64,18 +66,20 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
   },
   {
     id: "hunza-naltar-10-days",
-    title: "Hunza & Naltar Valley",
-    description: "A ten-day mountain journey through Hunza and Naltar Valley. Ask us to confirm the route, dates, and current quotation.",
+    title: "10 Days Naran, Hunza & Naltar",
+    description: "A ten-day group journey through Naran, Hunza, and Naltar Valley, including Naltar's alpine lakes and Hunza's historic forts.",
     region: "northern",
-    destinationSlugs: ["hunza", "naltar"],
-    routeStops: ["Hunza", "Naltar Valley"],
+    destinationSlugs: ["naran", "hunza", "naltar"],
+    routeStops: ["Naran", "Hunza", "Naltar Valley"],
     duration: "10 Days / 9 Nights",
     image: "/images/package-cards/images__tour-packages__13.webp",
     travelStyles: ["family", "couples", "adventure", "tailored"],
     experiences: ["mountains", "lakes-valleys", "nature", "romance"],
-    routeHighlights: ["Hunza", "Naltar Valley"],
-    bestFor: "A two-valley mountain escape",
+    routeHighlights: ["Naltar Alpine Lakes", "Baltit Fort", "Attabad Lake", "Khunjerab Pass"],
+    bestFor: "A northern group circuit",
     pace: "Relaxed",
+    pricePerPerson: 39000,
+    detailHref: "/tours/featured/hunza-naltar",
   },
   {
     id: "hunza-skardu-12-days",

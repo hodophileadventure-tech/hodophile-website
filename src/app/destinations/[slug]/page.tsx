@@ -424,7 +424,11 @@ export default async function DestinationGalleryPage({ params }: DestinationPage
                   <div className="flex items-start justify-between gap-4 border-b border-stone-300 pb-5">
                     <div>
                       <p className="text-[0.65rem] uppercase tracking-[0.18em] text-stone-500">From</p>
-                      <p className="mt-1 text-xl font-semibold text-[#806000]">{tourPackage.priceOnRequest ? "Price on request" : `PKR ${tourPackage.pricePerPerson.toLocaleString()}`}</p>
+                      <p className="mt-1 text-xl font-semibold text-[#806000]">
+                        {tourPackage.priceOnRequest
+                          ? `Listed from PKR ${tourPackage.pricePerPerson.toLocaleString()} · confirm current rate`
+                          : `PKR ${tourPackage.pricePerPerson.toLocaleString()}`}
+                      </p>
                       <p className="text-xs text-stone-500">per person</p>
                       {tourPackage.couplePrice && <p className="mt-2 text-xs text-stone-600">PKR {tourPackage.couplePrice.toLocaleString()} / couple</p>}
                     </div>

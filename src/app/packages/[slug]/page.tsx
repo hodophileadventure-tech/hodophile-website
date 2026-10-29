@@ -10,6 +10,7 @@ import { absoluteUrl } from "@/lib/site";
 import { buildPageSchema } from "@/lib/seo/structured-data";
 import { getPackageRouteSlug } from "@/lib/data/package-routes";
 import { tourPackages } from "@/lib/data/tour-packages";
+import { tourDiscoveryIdeas } from "@/lib/data/tour-discovery-ideas";
 import { PROMOTIONS } from "@/lib/promotions/promotion-config";
 import {
   premiumDestinations,
@@ -225,9 +226,7 @@ const allPackages: PackageDetail[] = [
 allPackages.push(
   ...tourPackages.map((tourPackage): PackageDetail => {
       const routeStops = tourPackage.routeStops;
-      const startingPrice = tourPackage.priceOnRequest
-        ? "Price on request"
-        : `PKR ${tourPackage.pricePerPerson.toLocaleString()}`;
+      const startingPrice = `PKR ${tourPackage.pricePerPerson.toLocaleString()}`;
       const sharingPrice = tourPackage.sharingPrices?.quad ?? tourPackage.pricePerPerson;
       const sharingPriceWithoutIslamabad = tourPackage.sharingPricesWithoutIslamabadStay?.quad ?? tourPackage.priceWithoutIslamabadStay;
 
@@ -243,9 +242,11 @@ allPackages.push(
         transportSummary: tourPackage.transport?.join("; ") ?? "Transport details are not specified in the source listing.",
         factsNeedConfirmation: true,
         priceDisplay: {
-          label: tourPackage.priceOnRequest ? "Package rate" : "Listed starting rate",
+          label: tourPackage.priceOnRequest ? "Listed reference rate" : "Starting rate",
           value: startingPrice,
-          note: "Confirm the current price and package configuration for your requested dates.",
+          note: tourPackage.priceOnRequest
+            ? "This rate is listed in our tour catalog; confirm the current price and package configuration for your dates."
+            : "Confirm the current price and package configuration for your requested dates.",
         },
         summary: tourPackage.description,
         description: tourPackage.description,
@@ -281,6 +282,60 @@ allPackages.push(
         childPolicy: [],
       };
     }),
+);
+
+allPackages.push(
+  ...tourDiscoveryIdeas
+    .filter((idea) => !idea.detailHref)
+    .map((idea): PackageDetail => ({
+      slug: idea.id,
+      routeSlug: getPackageRouteSlug(idea.id),
+      title: idea.title,
+      heroImage: idea.image,
+      homeImage: idea.image,
+      duration: idea.duration,
+      bestFor: idea.bestFor,
+      factsNeedConfirmation: true,
+      priceDisplay: idea.pricePerPerson
+        ? {
+            label: "Listed starting rate",
+            value: `PKR ${idea.pricePerPerson.toLocaleString()}`,
+            note: "This listed rate is a reference; confirm the current price and package configuration for your dates.",
+          }
+        : {
+            label: "Package rate",
+            value: "Price on request",
+            note: "A specific rate is not listed for this journey. Request a quote for your dates and group size.",
+          },
+      summary: idea.description,
+      description: idea.description,
+      overview: idea.description,
+      highlights: idea.routeHighlights,
+      attractions: idea.routeStops,
+      itinerary: [],
+      includes: [],
+      excludes: [],
+      bookingPolicy: [
+        "Share your preferred dates and group size so the team can confirm availability, itinerary, and the current package rate.",
+      ],
+      detailSections: [
+        {
+          title: "Journey details",
+          content: [
+            `Destinations: ${idea.routeStops.join(" → ")}.`,
+            `Travel pace: ${idea.pace.toLowerCase()}.`,
+            ...(idea.pricePerPerson ? [`Listed starting rate: PKR ${idea.pricePerPerson.toLocaleString()} per person.`] : []),
+          ],
+        },
+      ],
+      priceWithIslamabadStay: "Confirm configuration",
+      priceWithoutIslamabadStay: "Confirm configuration",
+      tourNotes: [],
+      refundPolicy: ["The applicable refund terms are shared with your confirmed itinerary and booking before payment."],
+      terms: ["Routes and stop access may change with weather, road conditions, local guidance, or permissions."],
+      travelerInstruction: ["Share your dates, group size, and preferred room configuration so the team can confirm the itinerary and current rate."],
+      childPolicy: [],
+    })),
 );
 
 export async function generateStaticParams() {

@@ -4,7 +4,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { destinationTourPageRedirects, tourMenu } from "../site";
-import { featuredTourCards, indexableFeaturedTourRoutePaths } from "./featured-tour-cards";
+import { featuredTourCards, getFeaturedTourBySlug, indexableFeaturedTourRoutePaths } from "./featured-tour-cards";
 import { getPackagePath, packageRouteEntries, packageRouteRedirects } from "./package-routes";
 import { routes } from "./routes";
 import { tourDiscoveryIdeas } from "./tour-discovery-ideas";
@@ -65,11 +65,15 @@ test("the canonical list contains exactly the 13 unique journeys with required s
 });
 
 test("all package URLs use unique name-based slugs and redirect previous ID URLs", () => {
-  const expectedPackageCount = tourPackages.length + 10;
+  const packageableIdeas = tourDiscoveryIdeas.filter((idea) => !idea.detailHref);
+  const expectedPackageCount = tourPackages.length + 10 + packageableIdeas.length;
 
   assert.equal(packageRouteEntries.length, expectedPackageCount);
   assert.equal(new Set(packageRouteEntries.map((entry) => entry.id)).size, expectedPackageCount);
   assert.equal(new Set(packageRouteEntries.map((entry) => entry.slug)).size, expectedPackageCount);
+  for (const idea of packageableIdeas) {
+    assert.ok(packageRouteEntries.some((entry) => entry.id === idea.id), `${idea.id} needs a detail route`);
+  }
   assert.equal(getPackagePath("skardu-basho-6-days"), "/packages/skardu-and-basho-by-road-6-days");
   assert.equal(getPackagePath("hunza-skardu-naran-12-days"), "/packages/skardu-and-hunza");
   assert.equal(getPackagePath("ready-kashmir"), "/packages/3-days-kashmir-ready-to-book");
@@ -131,7 +135,12 @@ test("the tour discovery catalog restores unique historical route ideas without 
     assert.ok(idea.routeHighlights.length > 0);
     assert.ok(idea.bestFor.trim().length > 0);
     assert.ok(existsSync(resolve(process.cwd(), "public", idea.image.slice(1))), `missing image for ${idea.id}`);
-    assert.ok(!("pricePerPerson" in idea), `${idea.id} must not expose historical pricing`);
+    if (idea.id === "hunza-naltar-10-days") {
+      assert.equal(idea.pricePerPerson, 39000);
+      assert.equal(idea.detailHref, "/tours/featured/hunza-naltar");
+    } else {
+      assert.ok(!("pricePerPerson" in idea), `${idea.id} must not expose historical pricing`);
+    }
     assert.ok(!/\b(?:departure|dates?)\s*[:(]/i.test(idea.title), `${idea.id} must not include an old departure date`);
   }
 });
@@ -149,6 +158,36 @@ test("the Skardu and Basho package matches its six-day road itinerary and listed
   assert.deepEqual(journey.itinerary, sourceRoute.dayByDayItinerary);
   assert.ok(journey.transport?.some((item) => /road transport/i.test(item)));
   assert.ok(!journey.excludes?.some((item) => /air tickets|airport/i.test(item)));
+});
+
+test("the seven-day Skardu and Hunza by-air tour is listed at PKR 55,000 per person", () => {
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "skardu-hunza-air-7-days");
+
+  assert.ok(journey);
+  assert.equal(journey.title, "Skardu & Hunza by Air");
+  assert.equal(journey.duration, "7 Days");
+  assert.equal(journey.pricePerPerson, 55000);
+});
+
+test("the eight-day Skardu and Hunza road tour uses the confirmed PKR 55,000 rate", () => {
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "hunza-skardu-naran-12-days");
+
+  assert.ok(journey);
+  assert.equal(journey.duration, "8 Days / 7 Nights");
+  assert.equal(journey.pricePerPerson, 55000);
+});
+
+test("the Naran, Hunza, and Naltar listing uses its detailed tour page and listed group rate", () => {
+  const idea = tourDiscoveryIdeas.find((item) => item.id === "hunza-naltar-10-days");
+  const detail = getFeaturedTourBySlug("hunza-naltar");
+
+  assert.ok(idea);
+  assert.ok(detail);
+  assert.equal(idea.title, detail.title);
+  assert.equal(idea.pricePerPerson, 39000);
+  assert.equal(idea.detailHref, "/tours/featured/hunza-naltar");
+  assert.equal(detail.pricingGroups?.[1]?.rows[0]?.price, "Rs. 39,000");
+  assert.equal(detail.itinerary.length, 10);
 });
 
 test("the four-day Swat, Kalam, and Malam Jabba package uses the supplied itinerary and rate", () => {
@@ -346,7 +385,7 @@ test("overlapping featured routes project canonical journey facts", () => {
     assert.equal(featuredCard.duration, tourPackage.duration);
     assert.equal(featuredCard.homeImage, tourPackage.image);
     assert.deepEqual(featuredCard.attractions, tourPackage.routeStops);
-    assert.equal(featuredCard.priceFrom, tourPackage.priceOnRequest ? "Price on request" : `PKR ${tourPackage.pricePerPerson.toLocaleString()} per person`);
+    assert.ok(featuredCard.priceFrom.includes(`PKR ${tourPackage.pricePerPerson.toLocaleString()} per person`));
     assert.deepEqual(featuredCard.itinerary, tourPackage.itinerary ?? []);
     assert.ok(!indexableFeaturedTourRoutePaths.includes(`/tours/featured/${slug}`));
   }

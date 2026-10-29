@@ -34,6 +34,9 @@ type DiscoveryPackage = {
   title: string;
   duration: string;
   pricePerPerson?: number;
+  listedPricePerPerson?: number;
+  detailHref?: string;
+  listedPriceNote?: string;
   requestOnly?: boolean;
   scheduleNote?: string;
   departureAvailability: "confirmed" | "on-request";
@@ -70,13 +73,13 @@ function formatCurrency(value: number) {
 }
 
 function journeyHref(packageItem: DiscoveryPackage) {
-  if (!packageItem.requestOnly) return getPackagePath(packageItem.id);
-
-  return `/make-my-trip?destination=${encodeURIComponent(packageItem.destinationSlugs[0] ?? "")}&inspiration=${encodeURIComponent(packageItem.title)}`;
+  if (packageItem.detailHref) return packageItem.detailHref;
+  return getPackagePath(packageItem.id);
 }
 
 function listedPrice(packageItem: DiscoveryPackage) {
-  return packageItem.pricePerPerson === undefined ? "Price on request" : formatCurrency(packageItem.pricePerPerson);
+  const price = packageItem.pricePerPerson ?? packageItem.listedPricePerPerson;
+  return price === undefined ? "Price on request" : formatCurrency(price);
 }
 
 const packageList: DiscoveryPackage[] = [
@@ -85,6 +88,8 @@ const packageList: DiscoveryPackage[] = [
     title: tourPackage.title,
     duration: tourPackage.duration,
     pricePerPerson: tourPackage.priceOnRequest ? undefined : tourPackage.pricePerPerson,
+    listedPricePerPerson: tourPackage.priceOnRequest ? tourPackage.pricePerPerson : undefined,
+    listedPriceNote: tourPackage.priceOnRequest ? "Confirm current rate" : undefined,
     scheduleNote: tourPackage.scheduleNote,
     departureAvailability: tourPackage.departureAvailability,
     region: tourPackage.region,
@@ -105,13 +110,15 @@ const packageList: DiscoveryPackage[] = [
   })),
   ...tourDiscoveryIdeas.map((idea): DiscoveryPackage => ({
     ...idea,
-    scheduleNote: "Dates, itinerary details, and current price to confirm",
+    scheduleNote: idea.pricePerPerson
+      ? "Confirm dates, availability, and the current rate"
+      : "Dates, itinerary details, and current price to confirm",
     departureAvailability: "on-request",
     notes: [],
     departures: [],
     transport: [],
     includes: [],
-    requestOnly: true,
+    requestOnly: idea.pricePerPerson === undefined,
     summary: idea.description,
   })),
 ];
@@ -301,7 +308,9 @@ function RouteCard({
 
         <div className="mt-auto flex items-end justify-between gap-3 border-t border-stone-300 pt-4">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500">{packageItem.pricePerPerson === undefined ? "Pricing" : "From"}</p>
+            <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500">
+              {packageItem.listedPriceNote ?? (packageItem.pricePerPerson === undefined && packageItem.listedPricePerPerson === undefined ? "Pricing" : "From")}
+            </p>
             <p className="mt-1 text-xl font-semibold text-[#806000]">{priceText}</p>
           </div>
           <span className="max-w-[48%] text-right text-xs leading-5 text-stone-600">
@@ -312,7 +321,7 @@ function RouteCard({
 
         <div className="mt-4 flex items-center gap-2 border-t border-stone-300 pt-4">
           <Link href={journeyHref(packageItem)} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#fcc000] px-4 text-xs font-bold uppercase tracking-[0.12em] text-black transition hover:bg-[#ffda4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000]">
-            {packageItem.requestOnly ? "Request details" : "View journey"}
+            View journey
           </Link>
           <button type="button" onClick={() => onToggleWishlist(packageItem.id)} title={isWishlistEnabled ? "Remove from saved journeys" : "Save journey"} className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-base transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#fcc000] ${isWishlistEnabled ? "border-[#1b7a4b] bg-[#1b7a4b] text-white" : "border-stone-300 bg-[#fffaf0] text-stone-700 hover:border-[#1b7a4b] hover:text-[#1b7a4b]"}`} aria-label={isWishlistEnabled ? `Remove ${packageItem.title} from wishlist` : `Save ${packageItem.title} to wishlist`}>
             ♥
@@ -567,7 +576,7 @@ function TripMatchPanel({
                   imageHeight="aspect-[16/10]"
                   bodyClassName="p-4 sm:p-5"
                 >
-                    <p className="mt-1 text-sm font-semibold text-[#FCC000]">{trip.pricePerPerson === undefined ? "Price on request" : `${formatCurrency(trip.pricePerPerson)} per person`}</p>
+                    <p className="mt-1 text-sm font-semibold text-[#FCC000]">{listedPrice(trip)} per person</p>
                     <p className="mt-2 text-xs leading-5 text-stone-600">{trip.routeHighlights.length ? trip.routeHighlights.slice(0, 3).join(" · ") : trip.routeStops.join(" · ")}</p>
                     <ul className="mt-4 space-y-2">
                       {reasons.length ? reasons.map((reason) => (
@@ -580,7 +589,7 @@ function TripMatchPanel({
                       )}
                     </ul>
                     <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-stone-300 pt-4 text-xs font-semibold">
-                      <Link href={journeyHref(trip)} className="text-stone-900 underline decoration-[#FCC000] decoration-2 underline-offset-4">{trip.requestOnly ? "Request details" : "View journey"}</Link>
+                      <Link href={journeyHref(trip)} className="text-stone-900 underline decoration-[#FCC000] decoration-2 underline-offset-4">View journey</Link>
                       <JourneyActions packageId={trip.id} packageTitle={trip.title} />
                     </div>
                 </JourneyCard>
@@ -1179,7 +1188,9 @@ export function CompareTripsClient() {
     first.title.localeCompare(second.title),
   )[0];
   const itineraryPackages = comparePackages.filter((packageItem) => packageItem.itinerary?.length);
-  const requestOnlyPackages = comparePackages.filter((packageItem) => packageItem.pricePerPerson === undefined);
+  const requestOnlyPackages = comparePackages.filter(
+    (packageItem) => packageItem.pricePerPerson === undefined && packageItem.listedPricePerPerson === undefined,
+  );
   const comparisonTakeaways = comparePackages.length > 1
     ? [
         lowestPricedPackage
@@ -1333,7 +1344,7 @@ export function CompareTripsClient() {
                   ))}
                 </ul>
                 <Link href={journeyHref(packageItem)} className="mt-4 inline-flex min-h-10 items-center text-xs font-semibold text-stone-950 underline decoration-[#fcc000] decoration-2 underline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
-                  {packageItem.requestOnly ? "Request details" : "View journey"}
+                  View journey
                 </Link>
               </article>
             ))}
@@ -1545,8 +1556,11 @@ export function CompareTripsClient() {
               const priceDifference = previousPackage && packageItem.pricePerPerson !== undefined && previousPackage.pricePerPerson !== undefined
                 ? packageItem.pricePerPerson - previousPackage.pricePerPerson
                 : undefined;
-              const hasUnlistedPrice = packageItem.pricePerPerson === undefined ||
-                (previousPackage !== undefined && previousPackage.pricePerPerson === undefined);
+              const hasUnlistedPrice =
+                (packageItem.pricePerPerson === undefined && packageItem.listedPricePerPerson === undefined) ||
+                (previousPackage !== undefined &&
+                  previousPackage.pricePerPerson === undefined &&
+                  previousPackage.listedPricePerPerson === undefined);
               const differences = [
                 addedStops.length ? `adds ${addedStops.join(", ")}` : null,
                 removedStops.length ? `does not include ${removedStops.join(", ")}` : null,
@@ -1565,7 +1579,7 @@ export function CompareTripsClient() {
                   <h3 className="mt-1 font-serif text-lg text-stone-950">{packageItem.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-stone-600">{description}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href={journeyHref(packageItem)} className="inline-flex min-h-10 items-center justify-center rounded-full bg-stone-950 px-4 text-xs font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[#343126] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]">{packageItem.requestOnly ? "Request details" : "View journey"}</Link>
+                    <Link href={journeyHref(packageItem)} className="inline-flex min-h-10 items-center justify-center rounded-full bg-stone-950 px-4 text-xs font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[#343126] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]">View journey</Link>
                     <Link href="/make-my-trip" className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#e3d7b4] bg-[#fffaf0] px-4 text-xs font-bold uppercase tracking-[0.1em] text-stone-900 transition hover:border-[#c89a00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#b38a00]">Customize trip</Link>
                   </div>
                 </article>
@@ -1682,7 +1696,7 @@ export function WishlistTripsClient() {
             <div className="mt-4 flex items-center justify-between border-t border-stone-200 pt-4">
               <span className="text-lg font-semibold text-[#9a7600]">{listedPrice(packageItem)}</span>
               <Link href={journeyHref(packageItem)} className="text-xs font-bold uppercase tracking-[0.12em] text-stone-950 transition hover:text-[#9a7600] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">
-                {packageItem.requestOnly ? "Request details ↗" : "View route ↗"}
+                View route ↗
               </Link>
             </div>
           </div>

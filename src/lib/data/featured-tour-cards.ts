@@ -521,9 +521,7 @@ const canonicalFeaturedTourCards = Object.entries(canonicalFeaturedAliases).map(
   const tourPackage = getTourPackageById(packageId);
   if (!tourPackage) throw new Error(`Missing canonical journey for featured alias ${slug}`);
 
-  const listedPrice = tourPackage.priceOnRequest
-    ? "Price on request"
-    : `PKR ${tourPackage.pricePerPerson.toLocaleString()}`;
+  const listedPrice = `PKR ${tourPackage.pricePerPerson.toLocaleString()}`;
   const pricingRows = tourPackage.sharingPrices
     ? [
         { label: "Quad sharing", price: `PKR ${tourPackage.sharingPrices.quad.toLocaleString()}` },
@@ -531,7 +529,7 @@ const canonicalFeaturedTourCards = Object.entries(canonicalFeaturedAliases).map(
         { label: "Twin sharing", price: `PKR ${tourPackage.sharingPrices.twin.toLocaleString()}` },
         { label: "Solo", price: `PKR ${tourPackage.sharingPrices.solo.toLocaleString()}` },
       ]
-    : [{ label: "Per person", price: listedPrice }];
+    : [{ label: tourPackage.priceOnRequest ? "Listed reference rate" : "Per person", price: listedPrice }];
 
   return {
     slug,
@@ -540,7 +538,7 @@ const canonicalFeaturedTourCards = Object.entries(canonicalFeaturedAliases).map(
     homeImage: tourPackage.image,
     heroImage: tourPackage.image,
     duration: tourPackage.duration,
-    priceFrom: tourPackage.priceOnRequest ? listedPrice : `${listedPrice} per person`,
+    priceFrom: `${listedPrice} per person${tourPackage.priceOnRequest ? " · confirm current rate" : ""}`,
     summary: tourPackage.description,
     description: tourPackage.description,
     overview: tourPackage.description,
@@ -549,7 +547,12 @@ const canonicalFeaturedTourCards = Object.entries(canonicalFeaturedAliases).map(
     includes: tourPackage.includes ?? [],
     servicesIncluded: tourPackage.includes ?? [],
     servicesExcluded: tourPackage.excludes ?? [],
-    importantNotes: tourPackage.notes ?? [],
+    importantNotes: [
+      ...(tourPackage.notes ?? []),
+      ...(tourPackage.priceOnRequest
+        ? ["The displayed amount is a listed reference rate; confirm the current price for your dates."]
+        : []),
+    ],
     bookingPolicy: ["Request your dates to confirm current availability and package details."],
     highlights: tourPackage.routeHighlights ?? tourPackage.routeStops,
     itinerary: tourPackage.itinerary ?? [],

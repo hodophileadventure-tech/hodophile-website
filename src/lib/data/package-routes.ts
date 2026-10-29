@@ -1,10 +1,11 @@
 import { exclusiveOffers, premiumDestinations, readyToBookDestinations } from "./premiumDestinations";
+import { tourDiscoveryIdeas } from "./tour-discovery-ideas";
 import { tourPackages } from "./tour-packages";
 
 type PackageRouteEntry = {
   id: string;
   title: string;
-  collection: "destination" | "ready-to-book" | "exclusive-offer" | "tour";
+  collection: "destination" | "ready-to-book" | "exclusive-offer" | "tour" | "tour-idea";
 };
 
 function slugifyPackageName(value: string) {
@@ -22,6 +23,9 @@ const entries: PackageRouteEntry[] = [
   ...readyToBookDestinations.map(({ id, title }) => ({ id, title, collection: "ready-to-book" as const })),
   ...exclusiveOffers.map(({ id, title }) => ({ id, title, collection: "exclusive-offer" as const })),
   ...tourPackages.map(({ id, title }) => ({ id, title, collection: "tour" as const })),
+  ...tourDiscoveryIdeas
+    .filter((idea) => !idea.detailHref)
+    .map(({ id, title }) => ({ id, title, collection: "tour-idea" as const })),
 ];
 
 const baseSlugCounts = new Map<string, number>();
