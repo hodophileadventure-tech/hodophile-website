@@ -121,7 +121,7 @@ test("the tour discovery catalog restores unique historical route ideas without 
     `${[...journey.destinationSlugs].sort().join(",")}|${[...journey.routeStops].sort().join(",")}|${Number.parseInt(journey.duration, 10)}`,
   );
 
-  assert.equal(journeys.length, 21);
+  assert.equal(journeys.length, 22);
   assert.equal(new Set(ids).size, ids.length, "journey ids must be unique across catalog and ideas");
   assert.equal(new Set(images).size, images.length, "each journey must use a unique image");
   assert.equal(new Set(routeDurations).size, routeDurations.length, "the same destination set and duration must not be listed twice");
@@ -138,11 +138,39 @@ test("the tour discovery catalog restores unique historical route ideas without 
     if (idea.id === "hunza-naltar-10-days") {
       assert.equal(idea.pricePerPerson, 39000);
       assert.equal(idea.detailHref, "/tours/featured/hunza-naltar");
+    } else if (idea.id === "swat-kalam-malam-jabba-8-days") {
+      assert.equal(idea.pricePerPerson, 33700);
+      assert.equal(idea.pricingGroups?.length, 2);
     } else {
       assert.ok(!("pricePerPerson" in idea), `${idea.id} must not expose historical pricing`);
     }
     assert.ok(!/\b(?:departure|dates?)\s*[:(]/i.test(idea.title), `${idea.id} must not include an old departure date`);
   }
+});
+
+test("the new Swat and Neelum Valley posters have complete, name-based package details", () => {
+  const swat = tourDiscoveryIdeas.find((idea) => idea.id === "swat-kalam-malam-jabba-8-days");
+  const kashmir = tourDiscoveryIdeas.find((idea) => idea.id === "kashmir-arangkel-3-days");
+
+  assert.ok(swat);
+  assert.equal(swat.title, "Swat, Kalam & Malam Jabba · 8 Days");
+  assert.equal(swat.duration, "8 Days / 7 Nights");
+  assert.equal(swat.pricePerPerson, 33700);
+  assert.deepEqual(swat.itinerary?.map((day) => day.day), Array.from({ length: 8 }, (_, index) => `Day ${index + 1}`));
+  assert.deepEqual(swat.pricingGroups?.map((group) => group.rows.map((row) => row.price)), [
+    ["PKR 33,700 per person", "PKR 35,700 per person", "PKR 39,500 per person", "PKR 58,700 per person"],
+    ["PKR 36,900 per person", "PKR 114,000 per person", "PKR 49,000 per person", "PKR 114,000 per couple"],
+  ]);
+  assert.ok(swat.includes?.includes("Jeep ride to Mahodand Lake"));
+  assert.equal(getPackagePath(swat.id), "/packages/swat-kalam-and-malam-jabba-8-days");
+
+  assert.ok(kashmir);
+  assert.equal(kashmir.title, "Neelum Valley, Kel & Arang Kel");
+  assert.equal(kashmir.duration, "3 Days / 2 Nights");
+  assert.equal(kashmir.pricePerPerson, undefined);
+  assert.deepEqual(kashmir.itinerary?.map((day) => day.day), ["Day 1", "Day 2", "Day 3"]);
+  assert.ok(kashmir.includes?.includes("Luxury transport"));
+  assert.equal(getPackagePath(kashmir.id), "/packages/neelum-valley-kel-and-arang-kel");
 });
 
 test("the Skardu and Basho package matches its six-day road itinerary and listed price", () => {

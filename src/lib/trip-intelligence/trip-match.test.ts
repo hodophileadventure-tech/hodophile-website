@@ -84,7 +84,8 @@ test("travel reasons use supported journey metadata to personalize matches", () 
 });
 
 test("request-only ideas without listed prices cannot match a selected budget", () => {
-  const idea = tourDiscoveryIdeas[0];
+  const idea = tourDiscoveryIdeas.find((item) => item.pricePerPerson === undefined);
+  assert.ok(idea);
   const preferences: TripMatchPreferences = {
     moods: [],
     experiences: [],

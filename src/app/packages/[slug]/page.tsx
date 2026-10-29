@@ -10,7 +10,7 @@ import { absoluteUrl } from "@/lib/site";
 import { buildPageSchema } from "@/lib/seo/structured-data";
 import { getPackageRouteSlug } from "@/lib/data/package-routes";
 import { tourPackages } from "@/lib/data/tour-packages";
-import { tourDiscoveryIdeas } from "@/lib/data/tour-discovery-ideas";
+import { tourDiscoveryIdeas, type TourDiscoveryPriceGroup } from "@/lib/data/tour-discovery-ideas";
 import { PROMOTIONS } from "@/lib/promotions/promotion-config";
 import {
   premiumDestinations,
@@ -34,6 +34,7 @@ type PackageDetail = {
   transportSummary?: string;
   factsNeedConfirmation?: boolean;
   priceDisplay?: { label: string; value: string; note: string };
+  pricingGroups?: TourDiscoveryPriceGroup[];
   itineraryHeading?: string;
   itineraryIntro?: string;
   summary: string;
@@ -298,9 +299,11 @@ allPackages.push(
       factsNeedConfirmation: true,
       priceDisplay: idea.pricePerPerson
         ? {
-            label: "Listed starting rate",
+            label: idea.pricingGroups?.length ? "Starting rate from Islamabad" : "Listed starting rate",
             value: `PKR ${idea.pricePerPerson.toLocaleString()}`,
-            note: "This listed rate is a reference; confirm the current price and package configuration for your dates.",
+            note: idea.pricingGroups?.length
+              ? "The listed starting rate is for quad sharing without an Islamabad stay. Confirm the current rate and configuration for your dates."
+              : "This listed rate is a reference; confirm the current price and package configuration for your dates.",
           }
         : {
             label: "Package rate",
@@ -312,9 +315,10 @@ allPackages.push(
       overview: idea.description,
       highlights: idea.routeHighlights,
       attractions: idea.routeStops,
-      itinerary: [],
-      includes: [],
-      excludes: [],
+      pricingGroups: idea.pricingGroups,
+      itinerary: idea.itinerary ?? [],
+      includes: idea.includes ?? [],
+      excludes: idea.excludes ?? [],
       bookingPolicy: [
         "Share your preferred dates and group size so the team can confirm availability, itinerary, and the current package rate.",
       ],
@@ -330,7 +334,7 @@ allPackages.push(
       ],
       priceWithIslamabadStay: "Confirm configuration",
       priceWithoutIslamabadStay: "Confirm configuration",
-      tourNotes: [],
+      tourNotes: idea.notes ?? [],
       refundPolicy: ["The applicable refund terms are shared with your confirmed itinerary and booking before payment."],
       terms: ["Routes and stop access may change with weather, road conditions, local guidance, or permissions."],
       travelerInstruction: ["Share your dates, group size, and preferred room configuration so the team can confirm the itinerary and current rate."],
@@ -567,6 +571,24 @@ export default async function PackagePage({ params }: PackagePageProps) {
                   <p className="mt-2 text-2xl font-black text-stone-900">{pkg.priceWithoutIslamabadStay}</p>
                 </div>
               </div>}
+              {pkg.pricingGroups?.length ? (
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  {pkg.pricingGroups.map((group) => (
+                    <div key={group.title} className="rounded-[1rem] bg-white p-4 shadow-sm">
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-700">{group.title}</p>
+                      <dl className="mt-3 space-y-2 text-sm text-stone-600">
+                        {group.rows.map((row) => (
+                          <div key={row.label} className="flex items-start justify-between gap-3">
+                            <dt>{row.label}</dt>
+                            <dd className="text-right font-semibold text-stone-900">{row.price}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      {group.note ? <p className="mt-3 text-xs leading-5 text-stone-600">{group.note}</p> : null}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             {pkg.attractions?.length ? (
