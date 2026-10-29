@@ -141,6 +141,7 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     routeHighlights: ["Keran", "Kel", "Arang Kel", "Kutton Waterfall"],
     bestFor: "A short Neelum Valley escape",
     pace: "Fast",
+    pricePerPerson: 22000,
     includes: ["Accommodation", "Luxury transport", "Breakfast", "Tolls and taxes", "Tour guide", "Bonfire"],
     itinerary: [
       {
@@ -161,7 +162,7 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     ],
     notes: [
       "The Arang Kel trek is approximately 30–45 minutes on a dusty, rugged trail and depends on access.",
-      "No price is shown on the supplied poster; request the current rate for your dates.",
+      "Confirm the current rate and package configuration for your requested dates.",
     ],
   },
   {
