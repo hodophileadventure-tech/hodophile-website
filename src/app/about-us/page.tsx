@@ -36,7 +36,7 @@ export default function AboutUsPage() {
         ],
       })} />
       <PageShell wide>
-      <section className="relative mt-0 mx-auto max-w-full overflow-hidden rounded-[1.5rem] border border-stone-200 shadow-[0_24px_70px_rgba(11,11,11,0.12)]">
+      <section className="theme-preserve-dark relative mt-0 mx-auto max-w-full overflow-hidden rounded-[1.5rem] border border-stone-200 shadow-[0_24px_70px_rgba(11,11,11,0.12)]">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{

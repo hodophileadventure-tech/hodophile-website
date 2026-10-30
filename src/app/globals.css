@@ -1273,6 +1273,35 @@ html[data-theme="light"] select {
   color-scheme: light;
 }
 
+html[data-theme="light"] .site-theme :is(
+  [class~="text-white"],
+  [class~="!text-white"],
+  [class*="text-white/"],
+  [class~="text-stone-50"],
+  [class~="text-stone-100"],
+  [class~="text-stone-200"],
+  [class~="text-stone-300"],
+  [class~="text-gray-50"],
+  [class~="text-gray-100"],
+  [class~="text-gray-200"],
+  [class~="text-gray-300"],
+  [class~="text-neutral-50"],
+  [class~="text-neutral-100"],
+  [class~="text-neutral-200"],
+  [class~="text-neutral-300"],
+  [class~="text-zinc-50"],
+  [class~="text-zinc-100"],
+  [class~="text-zinc-200"],
+  [class~="text-zinc-300"],
+  [class*="text-[#f5f1e8"],
+  [class*="text-[#d0cbc2"],
+  [class*="text-[#b8b2a7"],
+  [class*="text-[#ffffff"],
+  [class*="text-[#fff]"]
+):not(.theme-preserve-dark):not(.theme-preserve-dark *):not(button):not(button *):not(a[class*="bg-"]):not(a[class*="from-"]) {
+  color: #302d28;
+}
+
 input::placeholder,
 textarea::placeholder {
   color: #918b81;
