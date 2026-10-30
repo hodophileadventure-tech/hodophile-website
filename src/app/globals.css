@@ -1302,6 +1302,12 @@ html[data-theme="light"] .site-theme :is(
   color: #302d28;
 }
 
+html[data-theme="light"] #tour-discovery {
+  background-color: #ffffff;
+  background-image: none;
+  color: #302d28;
+}
+
 input::placeholder,
 textarea::placeholder {
   color: #918b81;
