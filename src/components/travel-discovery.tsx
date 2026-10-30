@@ -712,7 +712,7 @@ export function TravelDiscoveryCatalog() {
 
   return (
     <>
-    <section id="tour-discovery" className="relative isolate scroll-mt-20 overflow-hidden bg-[#0b0b0b] text-white">
+    <section id="tour-discovery" className="theme-preserve-dark relative isolate scroll-mt-20 overflow-hidden bg-[#0b0b0b] text-white">
       <div className="pointer-events-none absolute -left-48 top-12 h-[34rem] w-[34rem] rounded-full bg-[#FCC000]/[0.07] blur-3xl" />
       <div className="pointer-events-none absolute -right-48 top-[38%] h-[38rem] w-[38rem] rounded-full bg-[#b47b12]/[0.09] blur-3xl" />
       <div className="relative mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16">
