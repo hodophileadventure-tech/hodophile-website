@@ -1308,6 +1308,21 @@ html[data-theme="light"] #tour-discovery {
   color: #302d28;
 }
 
+html[data-theme="light"] #tour-discovery button,
+html[data-theme="light"] #tour-discovery fieldset > legend,
+html[data-theme="light"] #tour-discovery fieldset > div > label {
+  color: #302d28;
+}
+
+html[data-theme="light"] #tour-discovery [class~="text-[#ffd84d]"] {
+  color: #806000;
+}
+
+html[data-theme="light"] #tour-discovery input::placeholder {
+  color: #625e56;
+  opacity: 1;
+}
+
 input::placeholder,
 textarea::placeholder {
   color: #918b81;
