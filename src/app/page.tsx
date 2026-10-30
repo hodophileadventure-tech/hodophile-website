@@ -24,6 +24,9 @@ export const metadata: Metadata = {
       "A fast, SEO-friendly travel site for domestic Pakistan trips, package pages, and destination content.",
     url: absoluteUrl("/"),
   },
+  verification: {
+    google: "1UimvQ9V43uPDIDakWvMPScY-iy3jqyuPl3dX_pUjx8",
+  },
 };
 
 export default function Home() {
