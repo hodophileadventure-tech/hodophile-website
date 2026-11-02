@@ -5,6 +5,8 @@ import type { Metadata } from "next";
 
 import { PageShell } from "@/components/page-shell";
 import { JourneyCard } from "@/components/journey-card";
+import { HomeQuickLeadForm } from "@/components/home-quick-lead";
+import { HomeFaqSection, HomeKarachiSection, HomeSeoSections } from "@/components/home-seo-content";
 import { MiqatHighlightSection } from "@/components/miqat-highlight";
 import { WhyChooseUs } from "@/components/why-choose-us";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
@@ -12,16 +14,16 @@ import { featuredTourCards } from "@/lib/data/featured-tour-cards";
 import { absoluteUrl, destinations } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Domestic Tours in Pakistan",
+  title: "Best Affordable Tour Company in Pakistan",
   description:
-    "Hodophile Tours and Travels builds domestic Pakistan itineraries for Hunza, Skardu, Murree, Naran Kaghan, and more.",
+    "Hodophile is the best affordable tour company in Pakistan. Enjoy private, guided, family, and adventure tours with trusted local experts. Book today!",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Domestic Tours in Pakistan",
+    title: "Best Affordable Tour Company in Pakistan",
     description:
-      "A fast, SEO-friendly travel site for domestic Pakistan trips, package pages, and destination content.",
+      "Hodophile is the best affordable tour company in Pakistan. Enjoy private, guided, family, and adventure tours with trusted local experts. Book today!",
     url: absoluteUrl("/"),
   },
   verification: {
@@ -151,25 +153,19 @@ export default function Home() {
           <div className="site-hero-height relative z-10 flex w-full items-end px-6 pb-14 pt-40 lg:px-16 lg:pb-20">
             <div className="max-w-5xl text-white">
               <p className="eyebrow">Hodophile Adventures · Pakistan</p>
-              <h1 className="display-serif mt-5 max-w-4xl text-5xl font-normal leading-[0.98] sm:text-6xl lg:text-7xl">
-                Go where the view changes you.
+              <h1 className="display-serif mt-5 max-w-5xl text-4xl font-normal leading-[1.02] sm:text-5xl lg:text-6xl">
+                Best Affordable Tour Company in Pakistan for Private, Family, and Adventure Journeys
               </h1>
-              <p className="mt-6 max-w-2xl text-base leading-7 text-white/85 sm:text-lg">
-                Private journeys through Pakistan&apos;s most extraordinary landscapes, planned with local intelligence and delivered with quiet precision.
+              <p className="mt-6 max-w-3xl text-base leading-7 text-white/85 sm:text-lg">
+                Hodophile plans private, guided, family, and adventure journeys to Hunza, Skardu, Swat, Naran Kaghan, and destinations across Pakistan. Tell us your pace, budget, and interests, and we&apos;ll help you plan the details.
               </p>
 
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link
-                  href="/make-my-trip"
+                  href="#packages"
                   className="site-button-primary gap-2 !text-[#0b0b0b]"
                 >
-                  Design my journey <span aria-hidden="true">↗</span>
-                </Link>
-                <Link
-                  href="/destinations"
-                  className="site-button-secondary gap-2 border-white/65 text-white"
-                >
-                  Explore Pakistan <span aria-hidden="true">↗</span>
+                  View tour packages <span aria-hidden="true">↗</span>
                 </Link>
                 <Link
                   href="/trip-suggestions"
@@ -178,11 +174,20 @@ export default function Home() {
                   Get trip suggestions <span aria-hidden="true">↗</span>
                 </Link>
               </div>
+              <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium uppercase tracking-[0.14em] text-white/80">
+                <li>Local route knowledge</li>
+                <li>Safety-conscious planning</li>
+                <li>Clear pricing</li>
+              </ul>
             </div>
           </div>
 
         </div>
       </section>
+
+      <div id="trip-plan" className="scroll-mt-24">
+        <HomeQuickLeadForm />
+      </div>
 
       <section className="site-section-gap relative w-full overflow-hidden border-y border-stone-300/70 py-10 sm:py-12 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-20">
@@ -262,15 +267,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="signature-departures-section site-section-gap w-full bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.18),transparent_38%),linear-gradient(135deg,#11110f,#29271f)] px-6 py-8 sm:py-10 text-white lg:px-10 lg:py-14">
+      <section id="packages" className="signature-departures-section site-section-gap w-full scroll-mt-24 bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.18),transparent_38%),linear-gradient(135deg,#11110f,#29271f)] px-6 py-8 sm:py-10 text-white lg:px-10 lg:py-14">
         <div>
           <div>
-            <p className="signature-departures-eyebrow eyebrow">Signature departures</p>
-            <h2 className="signature-departures-heading display-serif mt-3 text-5xl font-normal leading-tight sm:text-6xl">
-              Journeys with a point of view.
+            <p className="signature-departures-eyebrow eyebrow">Our tour packages</p>
+            <h2 className="signature-departures-heading display-serif mt-3 text-4xl font-normal leading-tight sm:text-5xl">
+              Pakistan Tours and Travel Packages
             </h2>
             <p className="signature-departures-copy mt-3 max-w-2xl text-sm leading-7 text-white/60 sm:text-base">
-              Compare top routes at a glance and jump directly into the package that matches your travel style.
+              Explore guided journeys across Pakistan. Choose a ready route or ask us to tailor an itinerary to your plans.
             </p>
           </div>
 
@@ -301,12 +306,21 @@ export default function Home() {
               </JourneyCard>
             ))}
           </div>
+          <div className="mt-7 text-center">
+            <Link href="/tours" className="inline-flex min-h-11 items-center border-b border-[#fcc000]/60 px-1 text-sm font-semibold text-white transition hover:border-[#fcc000] hover:text-[#fcc000]">
+              See all tours <span className="ml-2" aria-hidden="true">↗</span>
+            </Link>
+          </div>
         </div>
       </section>
 
-      <MiqatHighlightSection />
+      <HomeSeoSections />
 
       <WhyChooseUs />
+
+      <MiqatHighlightSection />
+
+      <HomeKarachiSection />
 
       <section className="site-section-gap w-full overflow-hidden bg-white px-6 py-8 lg:px-10 lg:py-12">
         <div>
@@ -334,9 +348,9 @@ export default function Home() {
               />
             </div>
             <div className="p-8 text-center text-white lg:p-12">
-              <h2 className="display-serif text-5xl font-normal">Begin your next chapter.</h2>
+              <h2 className="display-serif text-5xl font-normal">Begin your next chapter</h2>
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/65">
-                Share your route, travel month, and group details. We will turn them into a considered itinerary with premium pacing and memorable scenic moments.
+                Tell us where you want to go, when you plan to travel, and who is coming. We&apos;ll help shape a thoughtful itinerary around your plans.
               </p>
               <div className="mt-7 flex flex-wrap justify-center gap-3">
                 <Link href="/make-my-trip" className="inline-flex rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold !text-white transition hover:bg-stone-800">
@@ -350,6 +364,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <HomeFaqSection />
 
       <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-3">
         <a

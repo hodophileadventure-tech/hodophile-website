@@ -67,6 +67,8 @@ GOOGLE_APPS_SCRIPT_URL=https://script.google.com/macros/d/YOUR_DEPLOYMENT_ID/use
 
 Replace `YOUR_DEPLOYMENT_ID` with the ID from the deployment URL.
 
+If you already have an Apps Script deployment, update its code and deploy a new version. Existing deployments will not include the new destination, travel month, and traveler-count fields until updated.
+
 ### Step 5: Test the System
 
 1. Start your dev server:
@@ -141,9 +143,9 @@ Comment out or remove lines ~82-90 if you don't want automatic WhatsApp opening.
 
 The system will create columns automatically:
 
-| Name | Email | WhatsApp | Timestamp | Source |
-|------|-------|----------|-----------|--------|
-| John Doe | john@example.com | +923001234567 | 2026-04-29T10:30:45.123Z | lead-capture-popup |
+| Name | Email | WhatsApp | Timestamp | Source | Destination | Travel Month | Travelers |
+|------|-------|----------|-----------|--------|-------------|--------------|-----------|
+| John Doe | john@example.com | +923001234567 | 2026-04-29T10:30:45.123Z | home-quick-quote | Hunza | June | 2 |
 
 ## 🐛 Troubleshooting
 

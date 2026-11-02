@@ -10,7 +10,7 @@ export function MiqatHighlightSection() {
 
   return (
     <section
-      id="miqat-highlight"
+      id="umrah"
       aria-labelledby="miqat-highlight-heading"
       className="miqat-highlight-section relative overflow-hidden bg-[radial-gradient(circle_at_90%_0%,rgba(252,192,0,0.18),transparent_38%),linear-gradient(135deg,#11110f,#29271f)] px-6 py-16 sm:px-8 lg:px-12 lg:py-20"
     >
@@ -36,7 +36,7 @@ export function MiqatHighlightSection() {
                 id="miqat-highlight-heading"
                 className="miqat-highlight-heading mt-8 font-[var(--font-miqat-heading)] text-[clamp(3.5rem,6vw,7rem)] font-normal leading-[0.88] text-[#f5f1e8]"
               >
-                A journey of the heart.
+                Umrah Travel Services Planned with Care
               </h2>
 
               <p className="miqat-highlight-lead mt-10 max-w-[450px] text-lg leading-[1.8] text-[#f5f1e8] sm:text-xl">

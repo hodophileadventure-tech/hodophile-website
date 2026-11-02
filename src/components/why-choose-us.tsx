@@ -169,7 +169,7 @@ export function WhyChooseUs() {
             variants={introItemVariants}
             className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold mb-4 text-stone-950 leading-tight"
           >
-            Every detail handled. Every moment yours.
+            Why Choose Hodophile
           </motion.h2>
           
           <motion.p

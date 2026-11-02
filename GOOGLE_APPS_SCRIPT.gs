@@ -14,7 +14,7 @@
  * 6. Copy the deployment URL and set it as GOOGLE_APPS_SCRIPT_URL in your .env.local
  * 
  * Your spreadsheet should have headers in the first row:
- * Name | Email | WhatsApp | Timestamp | Source
+ * Name | Email | WhatsApp | Timestamp | Source | Destination | Travel Month | Travelers
  */
 
 // CONFIGURATION: Replace with your actual spreadsheet ID
@@ -166,9 +166,24 @@ function addLeadToSheet(data) {
         'WhatsApp',
         'Timestamp',
         'Source',
+        'Destination',
+        'Travel Month',
+        'Travelers',
       ]);
       return addLeadToSheet(data); // Recursively call to add the data
     }
+
+    const headerRow = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), 1)).getValues()[0];
+    [
+      ['Destination', data.destination || ''],
+      ['Travel Month', data.travelMonth || ''],
+      ['Travelers', data.travelers || ''],
+    ].forEach(([header]) => {
+      if (!headerRow.includes(header)) {
+        sheet.getRange(1, sheet.getLastColumn() + 1).setValue(header);
+        headerRow.push(header);
+      }
+    });
 
     // Check for duplicate entries (same email or whatsapp within last 5 minutes)
     const lastRow = sheet.getLastRow();
@@ -196,13 +211,17 @@ function addLeadToSheet(data) {
     }
 
     // Add new row
-    sheet.appendRow([
-      data.name || '',
-      data.email || '',
-      data.whatsapp || '',
-      data.timestamp || new Date().toISOString(),
-      data.source || 'unknown',
-    ]);
+    const leadValues = {
+      'Name': data.name || '',
+      'Email': data.email || '',
+      'WhatsApp': data.whatsapp || '',
+      'Timestamp': data.timestamp || new Date().toISOString(),
+      'Source': data.source || 'unknown',
+      'Destination': data.destination || '',
+      'Travel Month': data.travelMonth || '',
+      'Travelers': data.travelers || '',
+    };
+    sheet.appendRow(headerRow.map((header) => leadValues[header] || ''));
 
     // Format timestamp column if it's the first entry
     if (lastRow === 1) {

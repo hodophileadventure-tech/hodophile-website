@@ -13,6 +13,9 @@ interface LeadData {
   timestamp: string;
   source?: string;
   tripType?: string;
+  destination?: string;
+  travelMonth?: string;
+  travelers?: number;
 }
 
 export async function POST(request: NextRequest) {
@@ -23,6 +26,18 @@ export async function POST(request: NextRequest) {
     if (!body.name || !body.email || !body.whatsapp) {
       return NextResponse.json(
         { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    if (
+      (body.destination !== undefined && typeof body.destination !== 'string') ||
+      (body.travelMonth !== undefined && typeof body.travelMonth !== 'string') ||
+      (body.travelers !== undefined &&
+        (!Number.isInteger(body.travelers) || body.travelers < 1))
+    ) {
+      return NextResponse.json(
+        { error: 'Invalid trip details' },
         { status: 400 }
       );
     }
@@ -51,6 +66,9 @@ export async function POST(request: NextRequest) {
           timestamp: body.timestamp,
           source: body.source || 'lead-capture-popup',
           tripType: body.tripType || '',
+          destination: body.destination || '',
+          travelMonth: body.travelMonth || '',
+          travelers: body.travelers || '',
         },
       }),
     });

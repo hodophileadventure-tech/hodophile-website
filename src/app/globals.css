@@ -223,9 +223,7 @@
 }
 
 .site-hero-overlay-video {
-  background:
-    linear-gradient(90deg, rgba(9, 9, 9, 0.28), rgba(9, 9, 9, 0.12) 58%, rgba(9, 9, 9, 0.02)),
-    linear-gradient(0deg, rgba(9, 9, 9, 0.1), transparent 60%);
+  background: none;
 }
 
 @media (min-width: 768px) {
