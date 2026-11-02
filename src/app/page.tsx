@@ -126,8 +126,8 @@ export default function Home() {
 
   return (
     <PageShell wide noTopPadding>
-      <section className="site-full-bleed site-hero-height theme-preserve-dark isolate overflow-hidden bg-[#101010] text-white">
-        <div className="site-hero-height relative">
+      <section className="site-full-bleed home-page-hero theme-preserve-dark isolate overflow-hidden bg-[#101010] text-white">
+        <div className="home-page-hero-scene">
           <Image
             src={heroImage}
             alt=""
@@ -150,38 +150,37 @@ export default function Home() {
             <source src="/videos/home-hero.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
           </video>
           <div className="site-hero-overlay site-hero-overlay-video" aria-hidden="true" />
-          <div className="site-hero-height relative z-10 flex w-full items-end px-6 pb-10 pt-24 sm:pb-12 sm:pt-28 lg:px-16 lg:pb-14 lg:pt-32">
-            <div className="max-w-5xl text-white">
-              <p className="eyebrow site-hero-copy-shadow">Hodophile Adventures · Pakistan</p>
-              <h1 className="display-serif site-hero-copy-shadow mt-5 max-w-5xl text-4xl font-normal leading-[1.02] sm:text-5xl lg:text-6xl">
-                Best Affordable Tour Company in Pakistan for Private, Family, and Adventure Journeys
-              </h1>
-              <p className="site-hero-copy-shadow mt-6 max-w-3xl text-base leading-7 text-white/85 sm:text-lg">
-                Hodophile plans private, guided, family, and adventure journeys to Hunza, Skardu, Swat, Naran Kaghan, and destinations across Pakistan. Tell us your pace, budget, and interests, and we&apos;ll help you plan the details.
-              </p>
+        </div>
+        <div className="home-page-hero-content relative z-10 flex w-full items-end px-6 pb-10 pt-24 sm:pb-12 sm:pt-28 lg:px-16 lg:pb-14 lg:pt-32">
+          <div className="max-w-5xl text-white">
+            <p className="eyebrow site-hero-copy-shadow">Hodophile Adventures · Pakistan</p>
+            <h1 className="display-serif site-hero-copy-shadow mt-5 max-w-5xl text-4xl font-normal leading-[1.02] sm:text-5xl lg:text-6xl">
+              Best Affordable Tour Company in Pakistan for Private, Family, and Adventure Journeys
+            </h1>
+            <p className="site-hero-copy-shadow mt-6 max-w-3xl text-base leading-7 text-white/85 sm:text-lg">
+              Hodophile plans private, guided, family, and adventure journeys to Hunza, Skardu, Swat, Naran Kaghan, and destinations across Pakistan. Tell us your pace, budget, and interests, and we&apos;ll help you plan the details.
+            </p>
 
-              <div className="mt-9 flex flex-wrap gap-3">
-                <Link
-                  href="#packages"
-                  className="site-button-primary gap-2 !text-[#0b0b0b]"
-                >
-                  View tour packages <span aria-hidden="true">↗</span>
-                </Link>
-                <Link
-                  href="/trip-suggestions"
-                  className="site-button-secondary site-hero-secondary gap-2 border-white/65 text-white"
-                >
-                  Get trip suggestions <span aria-hidden="true">↗</span>
-                </Link>
-              </div>
-              <ul className="mt-7 flex flex-wrap gap-2 text-xs font-medium uppercase tracking-[0.14em] text-white/90">
-                <li className="rounded-full border border-white/25 bg-black/55 px-3 py-2 shadow-lg backdrop-blur-sm">Local route knowledge</li>
-                <li className="rounded-full border border-white/25 bg-black/55 px-3 py-2 shadow-lg backdrop-blur-sm">Safety-conscious planning</li>
-                <li className="rounded-full border border-white/25 bg-black/55 px-3 py-2 shadow-lg backdrop-blur-sm">Clear pricing</li>
-              </ul>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link
+                href="#packages"
+                className="site-button-primary gap-2 !text-[#0b0b0b]"
+              >
+                View tour packages <span aria-hidden="true">↗</span>
+              </Link>
+              <Link
+                href="/trip-suggestions"
+                className="site-button-secondary site-hero-secondary gap-2 border-white/65 text-white"
+              >
+                Get trip suggestions <span aria-hidden="true">↗</span>
+              </Link>
             </div>
+            <ul className="mt-7 flex flex-wrap gap-2 text-xs font-medium uppercase tracking-[0.14em] text-white/90">
+              <li className="rounded-full border border-white/25 bg-black/55 px-3 py-2 shadow-lg backdrop-blur-sm">Local route knowledge</li>
+              <li className="rounded-full border border-white/25 bg-black/55 px-3 py-2 shadow-lg backdrop-blur-sm">Safety-conscious planning</li>
+              <li className="rounded-full border border-white/25 bg-black/55 px-3 py-2 shadow-lg backdrop-blur-sm">Clear pricing</li>
+            </ul>
           </div>
-
         </div>
       </section>
 

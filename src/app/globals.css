@@ -97,6 +97,20 @@
   height: min(var(--site-hero-max-height), calc(100svh - var(--site-header-height)));
 }
 
+.home-page-hero {
+  min-height: min(var(--site-hero-max-height), calc(100svh - var(--site-header-height)));
+}
+
+.home-page-hero-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.home-page-hero-content {
+  min-height: min(var(--site-hero-max-height), calc(100svh - var(--site-header-height)));
+}
+
 .site-detail-hero-height {
   min-height: min(68svh, 42rem);
 }
@@ -278,6 +292,11 @@
 @media (max-width: 640px) {
   .site-hero-height {
     height: min(var(--site-hero-mobile-max-height), 78svh);
+  }
+
+  .home-page-hero,
+  .home-page-hero-content {
+    min-height: min(var(--site-hero-mobile-max-height), 78svh);
   }
 
   .site-detail-hero-height {
