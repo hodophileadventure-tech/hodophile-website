@@ -1,3 +1,5 @@
+import { seoBlogPosts } from "@/lib/data/seo-blog-posts";
+
 export const siteConfig = {
   name: "Hodophile Adventures",
   shortName: "Hodophile Adventures",
@@ -290,6 +292,8 @@ export const destinationHighlights: DestinationHighlight[] = [
 export type BlogPost = {
   slug: string;
   title: string;
+  metaTitle?: string;
+  metaDescription?: string;
   category: string;
   excerpt: string;
   intro: string;
@@ -305,9 +309,10 @@ export type BlogPost = {
   }>;
   hero?: string;
   heroAlt?: string;
+  contentMarkdown?: string;
 };
 
-export const blogPosts: BlogPost[] = [
+const existingBlogPosts: BlogPost[] = [
   {
     slug: "hunza-valley-travel-guide",
     title: "Hunza Valley: the best route for a balanced mountain holiday",
@@ -1801,6 +1806,8 @@ export const blogPosts: BlogPost[] = [
     heroAlt: "Offbeat northern travel",
   },
 ];
+
+export const blogPosts: BlogPost[] = [...existingBlogPosts, ...seoBlogPosts];
 
 export const servicePillars = [
   "Private transport and flexible stops",
