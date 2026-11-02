@@ -8,9 +8,10 @@ type PageHeroImageProps = {
   title: string;
   description: string;
   imageClassName?: string;
+  videoOverlay?: "standard" | "subtle";
 };
 
-export function PageHeroImage({ image, imageAlt, videoSrc, eyebrow, title, description, imageClassName }: PageHeroImageProps) {
+export function PageHeroImage({ image, imageAlt, videoSrc, eyebrow, title, description, imageClassName, videoOverlay = "standard" }: PageHeroImageProps) {
   return (
     <section className="site-full-bleed site-hero-height theme-preserve-dark isolate flex overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
       <Image src={image} alt={imageAlt} fill preload sizes="100vw" className={`absolute inset-0 -z-20 ${imageClassName ?? "object-cover"}`} />
@@ -28,7 +29,7 @@ export function PageHeroImage({ image, imageAlt, videoSrc, eyebrow, title, descr
           <source src={videoSrc} type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
         </video>
       )}
-      <div className="site-hero-overlay -z-10" aria-hidden="true" />
+      <div className={`site-hero-overlay${videoSrc && videoOverlay === "subtle" ? " site-hero-overlay-video" : ""} -z-10`} aria-hidden="true" />
       <div className="relative mx-auto grid w-full max-w-7xl items-center">
         <div className="max-w-4xl py-3 lg:py-10">
           <p className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.34em] text-[#FCC000]">
