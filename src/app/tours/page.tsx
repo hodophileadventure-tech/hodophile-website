@@ -44,6 +44,18 @@ export default function ToursPage() {
             sizes="100vw"
             className="absolute inset-0 -z-20 object-cover"
           />
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+            className="site-hero-video absolute inset-0 -z-20 h-full w-full object-cover"
+          >
+            <source src="/videos/tours-hero.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
+          </video>
+          <div className="site-hero-overlay -z-10" aria-hidden="true" />
           <div className="relative mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
             <div className="flex flex-col justify-center py-3 lg:py-10">
               <p className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.34em] text-[#FCC000]">
