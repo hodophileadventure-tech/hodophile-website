@@ -179,7 +179,7 @@ export function HomeSeoSections() {
           <article className="group rounded-[1.5rem] border border-stone-200/80 bg-white p-6 shadow-[0_14px_38px_rgba(54,44,18,0.06)] transition duration-500 hover:-translate-y-1.5 hover:border-[#c39a21]/70 hover:shadow-[0_22px_48px_rgba(54,44,18,0.12)] sm:p-7">
             <span className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000]/15 text-2xl transition duration-500 group-hover:rotate-[-5deg]" aria-hidden="true">🧳</span>
             <p className="eyebrow text-stone-500">Flexible travel</p>
-            <h2 className="display-serif mt-4 text-3xl leading-tight text-stone-950">Tour Operator in Pakistan for Every Type of Traveler</h2>
+            <h2 className="display-serif mt-4 text-2xl leading-tight text-stone-950">Tour Operator in Pakistan for Every Type of Traveler</h2>
             <p className="mt-4 text-sm leading-7 text-stone-600">
               Choose a private departure, a group journey, or a more tailored itinerary. We plan around the travel style, pace, and practical needs you share with us.
             </p>
@@ -187,7 +187,7 @@ export function HomeSeoSections() {
           <article className="group rounded-[1.5rem] border border-stone-200/80 bg-white p-6 shadow-[0_14px_38px_rgba(54,44,18,0.06)] transition duration-500 hover:-translate-y-1.5 hover:border-[#c39a21]/70 hover:shadow-[0_22px_48px_rgba(54,44,18,0.12)] sm:p-7">
             <span className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000]/15 text-2xl transition duration-500 group-hover:rotate-[-5deg]" aria-hidden="true">✍️</span>
             <p className="eyebrow text-stone-500">Made for your route</p>
-            <h2 className="display-serif mt-4 text-3xl leading-tight text-stone-950">Best Travel Company in Pakistan for Customized Tours</h2>
+            <h2 className="display-serif mt-4 text-2xl leading-tight text-stone-950">Best Travel Company in Pakistan for Customized Tours</h2>
             <p className="mt-4 text-sm leading-7 text-stone-600">
               A customized trip can include your preferred destinations, dates, accommodation, and stops. We help shape the route and explain what can fit within your time and budget.
             </p>
@@ -195,7 +195,7 @@ export function HomeSeoSections() {
           <article className="group rounded-[1.5rem] border border-stone-200/80 bg-white p-6 shadow-[0_14px_38px_rgba(54,44,18,0.06)] transition duration-500 hover:-translate-y-1.5 hover:border-[#c39a21]/70 hover:shadow-[0_22px_48px_rgba(54,44,18,0.12)] sm:p-7">
             <span className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fcc000]/15 text-2xl transition duration-500 group-hover:rotate-[-5deg]" aria-hidden="true">🚘</span>
             <p className="eyebrow text-stone-500">Your own pace</p>
-            <h2 className="display-serif mt-4 text-3xl leading-tight text-stone-950">Private Tour Operator in Pakistan</h2>
+            <h2 className="display-serif mt-4 text-2xl leading-tight text-stone-950">Private Tour Operator in Pakistan</h2>
             <p className="mt-4 text-sm leading-7 text-stone-600">
               A private itinerary gives your group more flexibility to plan breaks and sightseeing. Mountain routes and activities are always subject to local conditions and availability.
             </p>
@@ -318,7 +318,7 @@ export function HomeFaqSection() {
           })),
         }}
       />
-      <section id="faq" className="site-section-gap w-full scroll-mt-24 bg-[#fbfaf7] px-6 py-12 lg:px-10 lg:py-16">
+      <section id="faq" className="home-faq-section site-section-gap w-full scroll-mt-24 bg-[#fbfaf7] px-6 py-12 lg:px-10 lg:py-16">
         <div className="mx-auto max-w-4xl">
           <p className="eyebrow text-stone-600">Quick answers</p>
           <h2 className="display-serif mt-4 text-4xl text-stone-950 sm:text-5xl">Frequently Asked Questions</h2>
