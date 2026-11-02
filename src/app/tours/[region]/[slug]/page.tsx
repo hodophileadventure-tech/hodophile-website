@@ -4,6 +4,10 @@ import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
+import {
+  SkarduTourPageContent,
+  skarduTourPageMetadata,
+} from "@/components/skardu-tour-page-content";
 import { TourLanding } from "@/components/tour-landing";
 import { getTourPackagesForDestination } from "@/lib/data/tour-packages";
 import { getPackagePath } from "@/lib/data/package-routes";
@@ -69,6 +73,10 @@ export async function generateMetadata({ params }: TourPackagePageProps): Promis
     return {};
   }
 
+  if (slug === "skardu-valley-tour-packages") {
+    return skarduTourPageMetadata;
+  }
+
   const description = item.description ?? `${item.label} by Hodophile Adventures with curated route support.`;
 
   return {
@@ -94,6 +102,10 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
   }
 
   const matchingPackages = getTourPackagesForDestination(item.destinationSlug);
+  if (slug === "skardu-valley-tour-packages") {
+    return <SkarduTourPageContent packages={matchingPackages} />;
+  }
+
   const packageIncludes = [...new Set(matchingPackages.flatMap((tourPackage) => tourPackage.includes ?? []))];
   const packageExcludes = [...new Set(matchingPackages.flatMap((tourPackage) => tourPackage.excludes ?? []))];
   const accommodationDetails = packageIncludes.filter((detail) => /hotel|accommodation|stay/i.test(detail));
