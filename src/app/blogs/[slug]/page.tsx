@@ -249,7 +249,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
         ]}
       />
       <PageShell wide noTopPadding={Boolean(post.hero)}>
-        <header className="theme-preserve-dark relative isolate mx-auto flex min-h-[34rem] max-w-[96rem] flex-col items-start justify-between overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#0b0b0b] px-6 py-7 shadow-[0_30px_90px_rgba(0,0,0,0.38)] sm:min-h-[38rem] sm:rounded-[2rem] sm:px-10 sm:py-10 lg:px-16 lg:py-12">
+        <header className={`relative isolate mx-auto flex min-h-[34rem] max-w-[96rem] flex-col items-start justify-between overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#0b0b0b] px-6 py-7 shadow-[0_30px_90px_rgba(0,0,0,0.38)] sm:min-h-[38rem] sm:rounded-[2rem] sm:px-10 sm:py-10 lg:px-16 lg:py-12 ${post.hero ? "theme-preserve-dark" : "blog-article-no-image"}`}>
           {post.hero && (
             <Image
               src={post.hero}
@@ -292,7 +292,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
           </div>
         </header>
 
-        <article className="theme-preserve-dark mx-auto mt-5 max-w-[96rem] rounded-[1.5rem] border border-white/10 bg-[#080808] px-6 py-10 sm:mt-7 sm:rounded-[2rem] sm:px-10 sm:py-14 lg:px-16 lg:py-16">
+        <article className="blog-article-content mx-auto mt-5 max-w-[96rem] rounded-[1.5rem] border border-white/10 bg-[#080808] px-6 py-10 shadow-[0_24px_70px_rgba(0,0,0,0.2)] sm:mt-7 sm:rounded-[2rem] sm:px-10 sm:py-14 lg:px-16 lg:py-16">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_21rem] lg:gap-16">
             <div className="min-w-0">
               <p className="mb-9 border-l-2 border-[#fcc000] pl-5 font-[var(--font-display)] text-xl leading-8 text-white/90 sm:mb-12 sm:pl-7 sm:text-2xl sm:leading-9">
@@ -320,7 +320,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
             </div>
 
             <aside className="space-y-5 lg:sticky lg:top-8 lg:self-start">
-              <section className="theme-preserve-dark rounded-[1.5rem] border border-white/10 bg-[linear-gradient(145deg,rgba(252,192,0,0.09),rgba(255,255,255,0.025)_48%,rgba(255,255,255,0.015))] p-6 sm:p-7">
+              <section className="blog-article-card rounded-[1.5rem] border border-white/10 bg-[linear-gradient(145deg,rgba(252,192,0,0.09),rgba(255,255,255,0.025)_48%,rgba(255,255,255,0.015))] p-6 sm:p-7">
                 <p className="text-[0.65rem] font-semibold uppercase tracking-[0.26em] text-[#fcc000]">At a glance</p>
                 <h2 className="mt-3 font-[var(--font-display)] text-2xl text-white">The essentials</h2>
                 <div className="mt-6 border-t border-white/10 pt-5">
@@ -342,7 +342,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
 
               {!post.contentMarkdown && (
                 <>
-                  <section className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
+                  <section className="blog-article-card rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
                     <p className="text-[0.65rem] font-semibold uppercase tracking-[0.26em] text-[#fcc000]">A thoughtful trip starts here</p>
                     <h2 className="mt-3 font-[var(--font-display)] text-2xl leading-tight text-white">Make the journey your own.</h2>
                     <p className="mt-3 text-sm leading-7 text-white/60">
@@ -353,7 +353,7 @@ export default async function BlogArticlePage({ params }: PageProps) {
                     </Link>
                   </section>
 
-                  <section className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
+                  <section className="blog-article-card rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
                     <h2 className="font-[var(--font-display)] text-2xl text-white">Frequently asked questions</h2>
                     <div className="mt-5 space-y-5">
                       {post.faqs.map((faq) => (

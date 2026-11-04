@@ -1385,6 +1385,82 @@ select:focus-visible {
   box-shadow: 0 0 0 2px #090909;
 }
 
+html[data-theme="light"] .site-theme .blog-article-content {
+  border-color: #e7e2d8;
+  background: #fffdf8;
+  box-shadow: 0 24px 70px rgba(50, 40, 10, 0.08);
+}
+
+html[data-theme="light"] .site-theme .blog-article-content :is(
+  [class~="text-white"],
+  [class*="text-white/"]
+) {
+  color: #48443d;
+}
+
+html[data-theme="light"] .site-theme .blog-article-content [class*="text-white/45"] {
+  color: #777168;
+}
+
+html[data-theme="light"] .site-theme .blog-article-content [class*="text-white/60"] {
+  color: #625e56;
+}
+
+html[data-theme="light"] .site-theme .blog-article-content [class*="text-white/80"] {
+  color: #302d28;
+}
+
+html[data-theme="light"] .site-theme .blog-article-content [class*="text-white/90"] {
+  color: #211f1a;
+}
+
+html[data-theme="light"] .site-theme .blog-article-content :is(h2, h3) {
+  color: #211f1a;
+}
+
+html[data-theme="light"] .site-theme .blog-article-content [class*="text-[#fcc000]"] {
+  color: #806000;
+}
+
+html[data-theme="light"] .site-theme .blog-article-content [class*="border-white/"] {
+  border-color: #e7e2d8;
+}
+
+html[data-theme="light"] .site-theme .blog-article-card {
+  border-color: #e7e2d8;
+  background-color: #faf7ef;
+  background-image: linear-gradient(145deg, #fffdf8, #f7f2e7);
+  box-shadow: 0 12px 30px rgba(50, 40, 10, 0.05);
+}
+
+html[data-theme="light"] .site-theme .blog-article-no-image {
+  border-color: #e7e2d8;
+  background-color: #fffdf8;
+  background-image:
+    radial-gradient(ellipse at 100% 0%, rgba(252, 192, 0, 0.12), transparent 42%),
+    linear-gradient(145deg, #fffdf8, #f7f2e7);
+  box-shadow: 0 24px 70px rgba(50, 40, 10, 0.08);
+}
+
+html[data-theme="light"] .site-theme .blog-article-no-image > [aria-hidden="true"] {
+  display: none;
+}
+
+html[data-theme="light"] .site-theme .blog-article-no-image :is(
+  [class~="text-white"],
+  [class*="text-white/"]
+) {
+  color: #48443d;
+}
+
+html[data-theme="light"] .site-theme .blog-article-no-image h1 {
+  color: #211f1a;
+}
+
+html[data-theme="light"] .site-theme .blog-article-no-image [class*="text-[#fcc000]"] {
+  color: #806000;
+}
+
 /* Premium Utility Animations */
 @keyframes fadeInUp {
   from {
