@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
-import { PageHeroImage } from "@/components/page-hero-image";
 import { absoluteUrl, blogPosts } from "@/lib/site";
 import { buildPageSchema } from "@/lib/seo/structured-data";
 
@@ -15,6 +15,18 @@ type PageProps = {
 
 function getBlogPost(slug: string) {
   return blogPosts.find((post) => post.slug === slug);
+}
+
+function getReadingTime(post: NonNullable<ReturnType<typeof getBlogPost>>) {
+  const content = [
+    post.intro,
+    post.contentMarkdown ?? "",
+    ...post.sections.flatMap((section) => [section.heading, ...section.body]),
+    ...post.faqs.flatMap((faq) => [faq.question, faq.answer]),
+  ].join(" ");
+  const wordCount = content.trim().split(/\s+/).length;
+
+  return Math.max(1, Math.ceil(wordCount / 200));
 }
 
 function renderInlineMarkdown(text: string, keyPrefix: string) {
@@ -29,14 +41,14 @@ function renderInlineMarkdown(text: string, keyPrefix: string) {
 
     if (href.startsWith("/")) {
       return (
-        <Link key={key} href={href} className="font-semibold text-[#806000] underline decoration-[#fcc000]/60 underline-offset-4">
+        <Link key={key} href={href} className="font-semibold text-[#fcc000] underline decoration-[#fcc000]/60 underline-offset-4">
           {label}
         </Link>
       );
     }
 
     return (
-      <a key={key} href={href} target="_blank" rel="noreferrer" className="font-semibold text-[#806000] underline decoration-[#fcc000]/60 underline-offset-4">
+      <a key={key} href={href} target="_blank" rel="noreferrer" className="font-semibold text-[#fcc000] underline decoration-[#fcc000]/60 underline-offset-4">
         {label}
       </a>
     );
@@ -59,8 +71,8 @@ function renderMarkdown(markdown: string) {
       const [, marks, text] = heading;
       const className =
         marks.length === 2
-          ? "mt-10 font-[var(--font-display)] text-3xl leading-tight text-stone-950 first:mt-0"
-          : "mt-7 font-[var(--font-display)] text-xl leading-tight text-stone-950";
+          ? "mt-12 font-[var(--font-display)] text-3xl leading-tight text-white first:mt-0 sm:text-4xl"
+          : "mt-8 font-[var(--font-display)] text-2xl leading-tight text-white";
       const children = renderInlineMarkdown(text, `heading-${index}`);
       elements.push(
         marks.length === 2
@@ -84,12 +96,12 @@ function renderMarkdown(markdown: string) {
       const [headers, ...bodyRows] = rows;
       if (headers) {
         elements.push(
-          <div key={`table-${index}`} className="my-6 overflow-x-auto rounded-xl border border-stone-200">
+          <div key={`table-${index}`} className="my-8 overflow-x-auto rounded-2xl border border-white/10">
             <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
-              <thead className="bg-stone-100 text-stone-950">
+              <thead className="bg-white/[0.06] text-white">
                 <tr>{headers.map((cell, cellIndex) => <th key={cellIndex} scope="col" className="px-4 py-3 font-semibold">{renderInlineMarkdown(cell, `table-head-${cellIndex}`)}</th>)}</tr>
               </thead>
-              <tbody className="divide-y divide-stone-200 text-stone-700">
+              <tbody className="divide-y divide-white/10 text-white/70">
                 {bodyRows.map((row, rowIndex) => (
                   <tr key={rowIndex}>
                     {headers.map((_, cellIndex) => <td key={cellIndex} className="px-4 py-3">{renderInlineMarkdown(row[cellIndex] ?? "", `table-${rowIndex}-${cellIndex}`)}</td>)}
@@ -121,7 +133,7 @@ function renderMarkdown(markdown: string) {
       }
       const List = orderedList ? "ol" : "ul";
       elements.push(
-        <List key={`list-${index}`} className={`${orderedList ? "list-decimal" : "list-disc"} my-4 space-y-2 pl-6 text-base leading-7 text-stone-700 marker:text-[#9a7600]`}>
+        <List key={`list-${index}`} className={`${orderedList ? "list-decimal" : "list-disc"} my-6 space-y-3 pl-6 text-base leading-8 text-white/70 marker:text-[#fcc000]`}>
           {items.map((item, itemIndex) => <li key={itemIndex}>{renderInlineMarkdown(item, `list-${index}-${itemIndex}`)}</li>)}
         </List>,
       );
@@ -144,7 +156,7 @@ function renderMarkdown(markdown: string) {
       index += 1;
     }
     elements.push(
-      <p key={`paragraph-${index}`} className="my-4 text-base leading-8 text-stone-700">
+      <p key={`paragraph-${index}`} className="my-6 text-base leading-8 text-white/70 sm:text-[1.0625rem] sm:leading-9">
         {paragraph.map((text, paragraphIndex) => (
           <span key={paragraphIndex}>
             {paragraphIndex > 0 ? " " : ""}
@@ -197,6 +209,8 @@ export default async function BlogArticlePage({ params }: PageProps) {
     notFound();
   }
 
+  const readingTime = getReadingTime(post);
+
   return (
     <>
       <JsonLd
@@ -235,108 +249,126 @@ export default async function BlogArticlePage({ params }: PageProps) {
         ]}
       />
       <PageShell wide noTopPadding={Boolean(post.hero)}>
-      {post.hero && (
-        <div className="mb-8">
-          <PageHeroImage
-            image={post.hero}
-            imageAlt={post.heroAlt || post.title}
-            eyebrow={post.category}
-            title={post.title}
-            description={post.excerpt}
+        <header className="theme-preserve-dark relative isolate mx-auto flex min-h-[34rem] max-w-[96rem] flex-col items-start justify-between overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#0b0b0b] px-6 py-7 shadow-[0_30px_90px_rgba(0,0,0,0.38)] sm:min-h-[38rem] sm:rounded-[2rem] sm:px-10 sm:py-10 lg:px-16 lg:py-12">
+          {post.hero && (
+            <Image
+              src={post.hero}
+              alt={post.heroAlt || post.title}
+              fill
+              preload
+              sizes="(max-width: 1024px) 100vw, 96rem"
+              className="absolute inset-0 -z-20 object-cover"
+            />
+          )}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(8,8,8,0.94)_0%,rgba(8,8,8,0.74)_46%,rgba(8,8,8,0.12)_100%),linear-gradient(0deg,rgba(8,8,8,0.76)_0%,transparent_62%)]"
           />
-        </div>
-      )}
-
-      <article className="mx-auto max-w-[96rem] px-6 lg:px-8 xl:px-10 py-6 lg:py-10">
-        <div className="grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-start">
-          <div className="space-y-6">
-            <span className="inline-flex rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-4 py-2 text-sm font-medium text-[#8a6a12]">
+          <nav aria-label="Breadcrumb" className="relative flex items-center gap-2 text-xs font-medium tracking-wide text-white/55">
+            <Link href="/" className="transition hover:text-[#fcc000]">Home</Link>
+            <span aria-hidden="true">/</span>
+            <Link href="/blogs" className="transition hover:text-[#fcc000]">Journal</Link>
+            <span aria-hidden="true">/</span>
+            <span className="max-w-[14rem] truncate text-white/80 sm:max-w-none">{post.category}</span>
+          </nav>
+          <div className="max-w-4xl">
+            <p className="inline-flex items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-[#fcc000]">
+              <span className="h-px w-8 bg-[#fcc000]" aria-hidden="true" />
               {post.category}
-            </span>
-            {!post.contentMarkdown && (
-              <h2 className="max-w-4xl font-serif text-4xl font-semibold tracking-tight text-stone-950 sm:text-5xl">
-                {post.title}
-              </h2>
-            )}
-            <p className="max-w-3xl text-lg leading-8 text-stone-600">{post.intro}</p>
-          </div>
-
-          <aside className="rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-[0_16px_36px_rgba(55,55,48,0.06)]">
-            <p className="text-sm uppercase tracking-[0.3em] text-[#8a6a12]">Quick facts</p>
-            <div className="mt-4 space-y-4 text-sm text-stone-700">
-              <div>
-                <p className="font-semibold text-stone-950">Destinations covered</p>
-                <p className="mt-1">{post.destinations.join(", ")}</p>
-              </div>
-              <div>
-                <p className="font-semibold text-stone-950">Why people book it</p>
-                <ul className="mt-2 space-y-2">
-                  {post.highlights.map((item) => (
-                    <li key={item} className="flex gap-2">
-                      <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#fcc000]" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            </p>
+            <h1 className="mt-6 max-w-4xl font-[var(--font-display)] text-4xl leading-[1.08] tracking-[-0.035em] text-white sm:text-5xl lg:text-7xl">
+              {post.title}
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
+              {post.excerpt}
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/20 pt-5 text-xs font-medium text-white/70 sm:mt-10">
+              <span className="text-white">Hodophile Editorial</span>
+              <span className="hidden h-1 w-1 rounded-full bg-[#fcc000] sm:block" aria-hidden="true" />
+              <span>{readingTime} min read</span>
+              <span className="hidden h-1 w-1 rounded-full bg-[#fcc000] sm:block" aria-hidden="true" />
+              <span>{post.destinations.join(" · ")}</span>
             </div>
-          </aside>
-        </div>
-
-        {post.contentMarkdown ? (
-          <div className="mx-auto mt-10 max-w-4xl">
-            {renderMarkdown(post.contentMarkdown)}
           </div>
-        ) : (
-          <div className="mt-10 grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
-            <div className="space-y-6">
-              {post.sections.map((section) => (
-                <section key={section.heading} className="rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-[0_12px_30px_rgba(55,55,48,0.04)]">
-                  <h2 className="text-2xl font-semibold tracking-tight text-stone-950">{section.heading}</h2>
-                  <div className="mt-4 space-y-4 text-base leading-8 text-stone-600">
-                    {section.body.map((paragraph) => (
-                      <p key={paragraph}>{paragraph}</p>
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </div>
+        </header>
 
-            <div className="space-y-6">
-            <section className="rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-[0_12px_30px_rgba(55,55,48,0.04)]">
-              <h2 className="text-2xl font-semibold tracking-tight text-stone-950">Planning notes</h2>
-              <div className="mt-4 space-y-4 text-sm leading-7 text-stone-600">
-                <p>
-                  For domestic Pakistan travel, the best results usually come from route-first planning: choose the destination order, match the transport to the group size, and keep hotel stays aligned with the number of nights in each city.
-                </p>
-                <p>
-                  These guides are written to help travelers understand what each destination feels like in practice, not just what it looks like in photos. That makes it easier to compare trips, set expectations, and pick the right itinerary length.
-                </p>
-              </div>
-            </section>
-
-            <section className="rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-[0_12px_30px_rgba(55,55,48,0.04)]">
-              <h2 className="text-2xl font-semibold tracking-tight text-stone-950">Frequently asked questions</h2>
-              <div className="mt-4 space-y-4">
-                {post.faqs.map((faq) => (
-                  <div key={faq.question} className="rounded-xl border border-stone-200 bg-stone-50 p-4">
-                    <p className="font-semibold text-stone-950">{faq.question}</p>
-                    <p className="mt-2 text-sm leading-7 text-stone-600">{faq.answer}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="rounded-[1.5rem] border border-stone-200 bg-white p-6 shadow-[0_12px_30px_rgba(55,55,48,0.04)]">
-              <h2 className="text-2xl font-semibold tracking-tight text-stone-950">How to use this guide</h2>
-              <p className="mt-4 text-sm leading-7 text-stone-600">
-                Use this article as a planning reference before choosing a tour or building a custom itinerary. The article points out the travel style, timing, and pacing that usually work best for the destination, which helps make the booking process easier and more realistic.
+        <article className="theme-preserve-dark mx-auto mt-5 max-w-[96rem] rounded-[1.5rem] border border-white/10 bg-[#080808] px-6 py-10 sm:mt-7 sm:rounded-[2rem] sm:px-10 sm:py-14 lg:px-16 lg:py-16">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_21rem] lg:gap-16">
+            <div className="min-w-0">
+              <p className="mb-9 border-l-2 border-[#fcc000] pl-5 font-[var(--font-display)] text-xl leading-8 text-white/90 sm:mb-12 sm:pl-7 sm:text-2xl sm:leading-9">
+                {post.intro}
               </p>
-            </section>
+
+              {post.contentMarkdown ? (
+                <div>{renderMarkdown(post.contentMarkdown)}</div>
+              ) : (
+                <div className="space-y-12">
+                  {post.sections.map((section) => (
+                    <section key={section.heading} className="border-t border-white/10 pt-8 first:border-0 first:pt-0">
+                      <h2 className="font-[var(--font-display)] text-3xl leading-tight text-white sm:text-4xl">
+                        {section.heading}
+                      </h2>
+                      <div className="mt-5 space-y-5 text-base leading-8 text-white/70 sm:text-[1.0625rem] sm:leading-9">
+                        {section.body.map((paragraph) => (
+                          <p key={paragraph}>{paragraph}</p>
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+                </div>
+              )}
             </div>
+
+            <aside className="space-y-5 lg:sticky lg:top-8 lg:self-start">
+              <section className="theme-preserve-dark rounded-[1.5rem] border border-white/10 bg-[linear-gradient(145deg,rgba(252,192,0,0.09),rgba(255,255,255,0.025)_48%,rgba(255,255,255,0.015))] p-6 sm:p-7">
+                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.26em] text-[#fcc000]">At a glance</p>
+                <h2 className="mt-3 font-[var(--font-display)] text-2xl text-white">The essentials</h2>
+                <div className="mt-6 border-t border-white/10 pt-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45">Destinations</p>
+                  <p className="mt-2 text-sm leading-6 text-white/80">{post.destinations.join(", ")}</p>
+                </div>
+                <div className="mt-5 border-t border-white/10 pt-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45">Good to know</p>
+                  <ul className="mt-3 space-y-3">
+                    {post.highlights.map((item) => (
+                      <li key={item} className="flex gap-3 text-sm leading-6 text-white/75">
+                        <span className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 rounded-full bg-[#fcc000]" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+
+              {!post.contentMarkdown && (
+                <>
+                  <section className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
+                    <p className="text-[0.65rem] font-semibold uppercase tracking-[0.26em] text-[#fcc000]">A thoughtful trip starts here</p>
+                    <h2 className="mt-3 font-[var(--font-display)] text-2xl leading-tight text-white">Make the journey your own.</h2>
+                    <p className="mt-3 text-sm leading-7 text-white/60">
+                      Use this guide to set your pace, then explore a route that fits your travel style.
+                    </p>
+                    <Link href="/tours" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#fcc000] transition hover:gap-3">
+                      Explore Pakistan tours <span aria-hidden="true">→</span>
+                    </Link>
+                  </section>
+
+                  <section className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-6 sm:p-7">
+                    <h2 className="font-[var(--font-display)] text-2xl text-white">Frequently asked questions</h2>
+                    <div className="mt-5 space-y-5">
+                      {post.faqs.map((faq) => (
+                        <div key={faq.question} className="border-t border-white/10 pt-4 first:border-0 first:pt-0">
+                          <p className="text-sm font-semibold leading-6 text-white">{faq.question}</p>
+                          <p className="mt-2 text-sm leading-6 text-white/60">{faq.answer}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </>
+              )}
+            </aside>
           </div>
-        )}
-      </article>
+        </article>
       </PageShell>
     </>
   );
