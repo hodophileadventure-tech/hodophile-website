@@ -5,6 +5,10 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
 import { PageShell } from "@/components/page-shell";
 import {
+  HunzaTourPageContent,
+  hunzaTourPageMetadata,
+} from "@/components/hunza-tour-page-content";
+import {
   SkarduTourPageContent,
   skarduTourPageMetadata,
 } from "@/components/skardu-tour-page-content";
@@ -77,6 +81,10 @@ export async function generateMetadata({ params }: TourPackagePageProps): Promis
     return skarduTourPageMetadata;
   }
 
+  if (slug === "hunza-valley-tour-packages") {
+    return hunzaTourPageMetadata;
+  }
+
   const description = item.description ?? `${item.label} by Hodophile Adventures with curated route support.`;
 
   return {
@@ -104,6 +112,10 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
   const matchingPackages = getTourPackagesForDestination(item.destinationSlug);
   if (slug === "skardu-valley-tour-packages") {
     return <SkarduTourPageContent packages={matchingPackages} />;
+  }
+
+  if (slug === "hunza-valley-tour-packages") {
+    return <HunzaTourPageContent packages={matchingPackages} />;
   }
 
   const packageIncludes = [...new Set(matchingPackages.flatMap((tourPackage) => tourPackage.includes ?? []))];
