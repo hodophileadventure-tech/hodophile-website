@@ -29,7 +29,7 @@ export function MiqatHero() {
           playsInline
           preload="metadata"
         >
-          <source src="/videos/qasim-opt.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
+          <source src="/videos/qasim-opt.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)" />
         </video>
       </motion.div>
 

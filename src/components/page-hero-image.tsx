@@ -26,7 +26,7 @@ export function PageHeroImage({ image, imageAlt, videoSrc, eyebrow, title, descr
           aria-hidden="true"
           className="site-hero-video absolute inset-0 -z-20 h-full w-full object-cover"
         >
-          <source src={videoSrc} type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
+          <source src={videoSrc} type="video/mp4" media="(prefers-reduced-motion: no-preference)" />
         </video>
       )}
       <div className={`site-hero-overlay${videoSrc && videoOverlay === "subtle" ? " site-hero-overlay-video" : ""} -z-10`} aria-hidden="true" />

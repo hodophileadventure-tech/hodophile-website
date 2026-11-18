@@ -510,7 +510,7 @@ export default function BeyondPakistanPage() {
             poster="/images/international/dubai-thailand.png"
             aria-hidden="true"
           >
-            <source src="/videos/beyond-pakistan.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
+            <source src="/videos/beyond-pakistan.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)" />
           </video>
           <div className="site-hero-overlay -z-10" aria-hidden="true" />
           <div className="relative mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">

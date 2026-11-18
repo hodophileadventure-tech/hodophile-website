@@ -283,7 +283,7 @@
   }
 }
 
-@media (max-width: 640px), (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
   .site-hero-video {
     display: none;
   }

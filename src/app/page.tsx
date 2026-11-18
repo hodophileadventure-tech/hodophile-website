@@ -147,7 +147,7 @@ export default function Home() {
             aria-hidden="true"
             className="site-hero-video absolute inset-0 h-full w-full object-cover"
           >
-            <source src="/videos/home-hero.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
+            <source src="/videos/home-hero.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)" />
           </video>
           <div className="site-hero-overlay site-hero-overlay-video" aria-hidden="true" />
         </div>

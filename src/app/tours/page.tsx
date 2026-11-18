@@ -53,7 +53,7 @@ export default function ToursPage() {
             aria-hidden="true"
             className="site-hero-video absolute inset-0 -z-20 h-full w-full object-cover"
           >
-            <source src="/videos/tours-hero.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
+            <source src="/videos/tours-hero.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)" />
           </video>
           <div className="site-hero-overlay site-hero-overlay-video -z-10" aria-hidden="true" />
           <div className="relative mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">

@@ -281,7 +281,7 @@ export function ExplorePakistanPageContent() {
             aria-hidden="true"
             className="site-hero-video absolute inset-0 h-full w-full object-cover"
           >
-            <source src="/videos/explore-pakistan-hero.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
+            <source src="/videos/explore-pakistan-hero.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)" />
           </video>
           <div className="site-hero-overlay" aria-hidden="true" />
         </div>

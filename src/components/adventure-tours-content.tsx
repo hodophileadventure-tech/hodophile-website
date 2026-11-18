@@ -415,7 +415,7 @@ export function AdventureToursContent() {
             controls={false}
             className="site-hero-video absolute inset-0 h-full w-full object-cover"
           >
-            <source src="/videos/adventure-hero.mp4" type="video/mp4" media="(min-width: 641px) and (prefers-reduced-motion: no-preference)" />
+            <source src="/videos/adventure-hero.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)" />
           </video>
           <div className="site-hero-overlay" aria-hidden="true" />
           <div className="site-hero-height relative z-10 flex w-full items-end px-6 pb-14 pt-40 lg:px-16 lg:pb-20">
