@@ -705,11 +705,11 @@ html[data-theme="light"] .site-theme :is(
 .site-page-gradient {
   background-color: var(--surface-page);
   background-image:
-    radial-gradient(ellipse at 12% 8%, rgba(252, 192, 0, 0.38), transparent 28%),
-    radial-gradient(ellipse at 88% 18%, rgba(190, 128, 0, 0.3), transparent 30%),
-    radial-gradient(ellipse at 72% 82%, rgba(252, 192, 0, 0.22), transparent 32%),
-    radial-gradient(ellipse at 8% 78%, rgba(112, 76, 0, 0.28), transparent 30%),
-    linear-gradient(135deg, #080808 0%, #211906 38%, #100f0b 68%, #080808 100%);
+    radial-gradient(ellipse at 12% 8%, rgba(252, 192, 0, 0.1), transparent 34%),
+    radial-gradient(ellipse at 88% 18%, rgba(190, 128, 0, 0.07), transparent 36%),
+    radial-gradient(ellipse at 72% 82%, rgba(252, 192, 0, 0.06), transparent 38%),
+    radial-gradient(ellipse at 8% 78%, rgba(112, 76, 0, 0.07), transparent 36%),
+    linear-gradient(135deg, #090909 0%, #15120a 46%, #0d0d0b 72%, #090909 100%);
   background-attachment: fixed;
 }
 
@@ -778,6 +778,72 @@ html[data-theme="light"] .site-footer-gradient :is(h1, h2, h3, p) {
 html[data-theme="light"] .site-footer-gradient a {
   color: inherit;
   border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Soft, consistent dark-mode surfaces */
+html[data-theme="dark"] .site-theme :is(
+  [class*="bg-[linear-gradient"][class*="#080"],
+  [class*="bg-[linear-gradient"][class*="#100"],
+  [class*="bg-[linear-gradient"][class*="#21"],
+  [class*="bg-[radial-gradient"][class*="#080"],
+  [class*="bg-[radial-gradient"][class*="#100"],
+  [class*="bg-[radial-gradient"][class*="#21"]
+) {
+  background-color: #11110f;
+  background-image:
+    radial-gradient(ellipse at 100% 0%, rgba(252, 192, 0, 0.06), transparent 42%),
+    linear-gradient(145deg, #15140f, #10100e);
+}
+
+/* Theme-safe text contrast on dark surfaces */
+html[data-theme="dark"] .site-theme :is(
+  [class~="text-stone-950"]:not(.journey-card *),
+  [class~="text-stone-900"]:not(.journey-card *),
+  [class~="text-stone-800"]:not(.journey-card *)
+) {
+  color: #f5f1e8;
+}
+
+html[data-theme="dark"] .site-theme :is(
+  [class~="text-stone-700"]:not(.journey-card *),
+  [class~="text-stone-600"]:not(.journey-card *),
+  [class~="text-stone-500"]:not(.journey-card *)
+) {
+  color: #b8b2a7;
+}
+
+/* Keep intentionally cream, white, and Umrah cards readable */
+html[data-theme="light"] .site-theme :is(.journey-card, [class*="bg-[#fff"], [class*="bg-[#f4f1eb"], [class*="bg-[#f9"]):not(.theme-preserve-dark) {
+  color: #211f1a;
+}
+
+html[data-theme="light"] .site-theme :is(.journey-card, [class*="bg-[#fff"], [class*="bg-[#f4f1eb"], [class*="bg-[#f9"]) :is(
+  [class~="text-stone-950"],
+  [class~="text-stone-900"],
+  [class~="text-stone-800"],
+  [class~="text-stone-700"],
+  [class~="text-stone-600"],
+  [class~="text-stone-500"]
+) {
+  color: #48443d;
+}
+
+html[data-theme="light"] .site-theme :is(.journey-card, [class*="bg-[#fff"], [class*="bg-[#f4f1eb"], [class*="bg-[#f9"]) h1,
+html[data-theme="light"] .site-theme :is(.journey-card, [class*="bg-[#fff"], [class*="bg-[#f4f1eb"], [class*="bg-[#f9"]) h2,
+html[data-theme="light"] .site-theme :is(.journey-card, [class*="bg-[#fff"], [class*="bg-[#f4f1eb"], [class*="bg-[#f9"]) h3 {
+  color: #211f1a;
+}
+
+/* Card grids: one card per row on narrow mobile screens */
+@media (max-width: 639px) {
+  .site-theme [class*="grid"]:has(> .journey-card),
+  .site-theme [class*="grid"]:has(> article),
+  .site-theme [class*="grid"]:has(> a > article),
+  .site-theme [class*="grid"]:has(> a > .journey-card),
+  .site-theme .trip-mood-grid,
+  .site-theme .umrah-package-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @theme inline {

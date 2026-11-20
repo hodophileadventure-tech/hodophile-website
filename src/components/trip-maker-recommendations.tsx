@@ -125,7 +125,7 @@ export function TripMakerRecommendations() {
         <p className="mt-2 text-sm leading-6 text-stone-600">Choose a mood, add a few practical details, and we’ll match it against the current journey catalogue.</p>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
+      <div className="trip-mood-grid mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
         {tripMoods.map((mood) => {
           const image = tourPackages.find((trip) => trip.destinationSlugs.includes(mood.imageSlug))?.image ?? tourPackages[0].image;
           const isSelected = selectedMood === mood.key;

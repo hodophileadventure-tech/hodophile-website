@@ -100,7 +100,7 @@ export function UmrahPackages() {
         </div>
 
         <p className="mt-6 max-w-2xl text-sm leading-7 text-[#66615a]">Prices are shown per person by room occupancy. Availability, flight routing, and final hotel confirmation are reviewed during booking.</p>
-        <div className="mt-8 grid gap-5 lg:grid-cols-2">{packages.map((pkg) => <PackageCard key={pkg.id} pkg={pkg} />)}</div>
+        <div className="umrah-package-grid mt-8 grid gap-5 lg:grid-cols-2">{packages.map((pkg) => <PackageCard key={pkg.id} pkg={pkg} />)}</div>
 
         <div className="mt-10 border border-[#d6d1c5] bg-white p-5 sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8b7000]">Booking clarity</p>
