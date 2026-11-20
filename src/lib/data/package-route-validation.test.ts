@@ -16,7 +16,9 @@ const expectedJourneyIds = [
   "skardu-khaplu-deosai-basho-air-7-days",
   "skardu-hunza-air-7-days",
   "ormara-beach-camping",
+  "kashmir-swat-shogran-7-days",
   "swat-kalam-shogran-10-days",
+  "kashmir-arangkel-4-days",
   "swat-kalam-malam-jabba-khanpur-4-days",
   "kashmir-shogran-9-days",
   "hunza-skardu-naran-12-days",
@@ -26,7 +28,7 @@ const expectedJourneyIds = [
   "seasonal-54",
 ];
 
-test("the canonical list contains exactly the 13 unique journeys with required source fields", () => {
+test("the canonical list contains exactly the 15 unique journeys with required source fields", () => {
   const ids = tourPackages.map((tourPackage) => tourPackage.id);
   const titles = tourPackages.map((tourPackage) => tourPackage.title);
   const images = tourPackages.map((tourPackage) => tourPackage.image);
@@ -75,7 +77,7 @@ test("all package URLs use unique name-based slugs and redirect previous ID URLs
     assert.ok(packageRouteEntries.some((entry) => entry.id === idea.id), `${idea.id} needs a detail route`);
   }
   assert.equal(getPackagePath("skardu-basho-6-days"), "/packages/skardu-and-basho-by-road-6-days");
-  assert.equal(getPackagePath("hunza-skardu-naran-12-days"), "/packages/skardu-and-hunza");
+  assert.equal(getPackagePath("hunza-skardu-naran-12-days"), "/packages/hunza-skardu-and-basho");
   assert.equal(getPackagePath("ready-kashmir"), "/packages/3-days-kashmir-ready-to-book");
   assert.ok(packageRouteRedirects.some(
     (redirect) =>
@@ -121,7 +123,7 @@ test("the tour discovery catalog restores unique historical route ideas without 
     `${[...journey.destinationSlugs].sort().join(",")}|${[...journey.routeStops].sort().join(",")}|${Number.parseInt(journey.duration, 10)}`,
   );
 
-  assert.equal(journeys.length, 22);
+  assert.equal(journeys.length, 24);
   assert.equal(new Set(ids).size, ids.length, "journey ids must be unique across catalog and ideas");
   assert.equal(new Set(images).size, images.length, "each journey must use a unique image");
   assert.equal(new Set(routeDurations).size, routeDurations.length, "the same destination set and duration must not be listed twice");
@@ -200,12 +202,16 @@ test("the seven-day Skardu and Hunza by-air tour is listed at PKR 55,000 per per
   assert.equal(journey.pricePerPerson, 55000);
 });
 
-test("the eight-day Skardu and Hunza road tour uses the confirmed PKR 55,000 rate", () => {
+test("the eight-day Hunza, Skardu and Basho road tour uses the supplied poster route and rates", () => {
   const journey = tourPackages.find((tourPackage) => tourPackage.id === "hunza-skardu-naran-12-days");
 
   assert.ok(journey);
+  assert.equal(journey.title, "Hunza, Skardu & Basho");
   assert.equal(journey.duration, "8 Days / 7 Nights");
   assert.equal(journey.pricePerPerson, 55000);
+  assert.equal(journey.couplePrice, 128000);
+  assert.ok(journey.destinationSlugs.includes("basho"));
+  assert.deepEqual(journey.itinerary?.map((day) => day.day), ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7", "Day 8"]);
 });
 
 test("the Naran, Hunza, and Naltar listing uses its detailed tour page and listed group rate", () => {
@@ -219,6 +225,26 @@ test("the Naran, Hunza, and Naltar listing uses its detailed tour page and liste
   assert.equal(idea.detailHref, "/tours/featured/hunza-naltar");
   assert.equal(detail.pricingGroups?.[1]?.rows[0]?.price, "Rs. 39,000");
   assert.equal(detail.itinerary.length, 10);
+});
+
+test("the seven-day Kashmir, Swat and Shogran package uses the supplied itinerary and poster rate", () => {
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "kashmir-swat-shogran-7-days");
+
+  assert.ok(journey);
+  assert.equal(journey.duration, "7 Days / 6 Nights");
+  assert.equal(journey.pricePerPerson, 50000);
+  assert.equal(journey.couplePrice, 114000);
+  assert.deepEqual(journey.itinerary?.map((day) => day.day), ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"]);
+});
+
+test("the four-day Kashmir and Arang Kel package uses the supplied itinerary and poster rate", () => {
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "kashmir-arangkel-4-days");
+
+  assert.ok(journey);
+  assert.equal(journey.duration, "4 Days / 3 Nights");
+  assert.equal(journey.pricePerPerson, 32000);
+  assert.equal(journey.couplePrice, 74000);
+  assert.deepEqual(journey.itinerary?.map((day) => day.day), ["Day 1", "Day 2", "Day 3", "Day 4"]);
 });
 
 test("the four-day Swat, Kalam, and Malam Jabba package uses the supplied itinerary and rate", () => {
@@ -265,7 +291,7 @@ test("poster-matched packages use the supplied names, durations, itinerary, and 
     { id: "skardu-basho-6-days", title: "Skardu & Basho by Road · 6 Days", days: 6, priceOnRequest: undefined },
     { id: "swat-kalam-shogran-10-days", title: "Swat, Kalam, Malam Jabba, Balakot & Shogran", days: 6, priceOnRequest: undefined },
     { id: "kashmir-shogran-9-days", title: "Kashmir, Shogran & Murree", days: 6, priceOnRequest: true },
-    { id: "hunza-skardu-naran-12-days", title: "Skardu & Hunza", days: 8, priceOnRequest: true },
+    { id: "hunza-skardu-naran-12-days", title: "Hunza, Skardu & Basho", days: 8, priceOnRequest: undefined },
   ];
 
   for (const expected of posterJourneys) {
@@ -341,9 +367,9 @@ test("the eight audited destinations resolve only their canonical journeys", () 
       "hunza-skardu-naran-12-days",
       "skardu-deosai-naran-10-days",
     ],
-    naran: ["skardu-deosai-air-3-days", "hunza-skardu-naran-12-days", "skardu-deosai-naran-10-days"],
-    swat: ["swat-kalam-shogran-10-days", "swat-kalam-malam-jabba-khanpur-4-days"],
-    kashmir: ["kashmir-shogran-9-days", "seasonal-11"],
+    naran: ["skardu-deosai-air-3-days", "skardu-deosai-naran-10-days"],
+    swat: ["kashmir-swat-shogran-7-days", "swat-kalam-shogran-10-days", "swat-kalam-malam-jabba-khanpur-4-days"],
+    kashmir: ["kashmir-swat-shogran-7-days", "kashmir-arangkel-4-days", "kashmir-shogran-9-days", "seasonal-11"],
     ormara: ["ormara-beach-camping"],
     gorakh: ["seasonal-53"],
     moola: ["seasonal-54"],
