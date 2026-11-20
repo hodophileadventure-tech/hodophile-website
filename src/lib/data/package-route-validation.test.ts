@@ -183,7 +183,8 @@ test("the Skardu and Basho package matches its six-day road itinerary and listed
   assert.ok(sourceRoute?.dayByDayItinerary);
   assert.equal(journey.title, "Skardu & Basho by Road · 6 Days");
   assert.equal(journey.duration, "6 Days / 5 Nights");
-  assert.equal(journey.pricePerPerson, 55000);
+  assert.equal(journey.pricePerPerson, 43000);
+  assert.equal(journey.couplePrice, 75000);
   assert.equal(journey.priceOnRequest, undefined);
   assert.deepEqual(journey.itinerary, sourceRoute.dayByDayItinerary);
   assert.ok(journey.transport?.some((item) => /road transport/i.test(item)));
@@ -278,7 +279,8 @@ test("poster-matched packages use the supplied names, durations, itinerary, and 
 
   const swatShogranJourney = tourPackages.find((tourPackage) => tourPackage.id === "swat-kalam-shogran-10-days");
   assert.ok(swatShogranJourney);
-  assert.equal(swatShogranJourney.pricePerPerson, 40000);
+  assert.equal(swatShogranJourney.pricePerPerson, 47500);
+  assert.equal(swatShogranJourney.couplePrice, 109000);
   assert.equal(swatShogranJourney.duration, "6 Days / 5 Nights");
   assert.deepEqual(swatShogranJourney.itinerary?.map((day) => day.day), Array.from({ length: 6 }, (_, index) => `Day ${index + 1}`));
 
