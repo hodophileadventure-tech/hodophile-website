@@ -225,7 +225,8 @@ test("the four-day Swat, Kalam, and Malam Jabba package uses the supplied itiner
 
   assert.ok(journey);
   assert.equal(journey.duration, "4 Days / 3 Nights");
-  assert.equal(journey.pricePerPerson, 28000);
+  assert.equal(journey.pricePerPerson, 33500);
+  assert.equal(journey.couplePrice, 77000);
   assert.equal(journey.priceOnRequest, undefined);
   assert.deepEqual(journey.itinerary?.map((day) => day.day), ["Day 1", "Day 2", "Day 3", "Day 4"]);
   assert.ok(journey.includes?.includes("Breakfast"));
