@@ -89,14 +89,14 @@ const CITY_MINIMUM_DAYS: Record<string, number> = {
 };
 const destinationCardDetails: Record<string, { image?: string; description: string }> = {
   Hunza: { image: "/images/package-cards/images__destinations__hunza-custom.webp", description: "Mountain valleys" },
-  Skardu: { image: "/images/package-cards/images__destinations__skardu.webp", description: "Lakes and highlands" },
+  Skardu: { image: "/images/package-cards/destination-skardu-mountains-planner.png", description: "Lakes and highlands" },
   Naran: { image: "/images/package-cards/images__destinations__naran.webp", description: "Alpine lakes" },
   Astore: { description: "Remote valley routes" },
-  Kashmir: { image: "/images/package-cards/images__destinations__kashmir.webp", description: "Forests and valleys" },
-  Swat: { image: "/images/package-cards/images__destinations__swat.webp", description: "Green mountain valleys" },
-  "Fairy Meadows": { image: "/images/package-cards/images__destinations__fairy-meadows-unsplash.webp", description: "Alpine meadow journeys" },
+  Kashmir: { image: "/images/package-cards/destination-kashmir-valley-planner.png", description: "Forests and valleys" },
+  Swat: { image: "/images/package-cards/destination-swat-valley-planner.png", description: "Green mountain valleys" },
+  "Fairy Meadows": { image: "/images/package-cards/destination-fairy-meadows-planner.png", description: "Alpine meadow journeys" },
   Shogran: { image: "/images/package-cards/images__honeymoon__naran-shogran.webp", description: "Meadows and mountain views" },
-  "Nathia Gali": { image: "/images/package-cards/images__nathia-ready.webp", description: "Forest-covered hills" },
+  "Nathia Gali": { image: "/images/package-cards/destination-nathia-gali-planner.png", description: "Forest-covered hills" },
   Murree: { image: "/images/package-cards/images__honeymoon__murree-tour.webp", description: "Hill-station escapes" },
 };
 const plannerInspirations = [

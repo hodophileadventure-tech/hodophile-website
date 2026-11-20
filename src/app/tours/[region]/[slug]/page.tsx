@@ -54,7 +54,7 @@ function getPackageImage(slug: string) {
     normalized.includes("gorakh") ||
     normalized.includes("quetta")
   ) {
-    return "/images/package-cards/images__destinations__kashmir.webp";
+    return "/images/package-cards/destination-kashmir-valley-tour.png";
   }
   return destinations[0]?.image ?? "/images/package-cards/images__destinations__hunza.avif";
 }

@@ -135,7 +135,7 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     destinationSlugs: ["kashmir", "neelum-valley", "arang-kel"],
     routeStops: ["Islamabad", "Keran", "Neelum Valley", "Kel", "Arang Kel", "Kutton Waterfall"],
     duration: "3 Days / 2 Nights",
-    image: "/images/package-cards/images__destinations__kashmir.webp",
+    image: "/images/package-cards/destination-kashmir-valley-recommendation.png",
     travelStyles: ["family", "couples", "adventure", "tailored"],
     experiences: ["mountains", "lakes-valleys", "nature", "adventure"],
     routeHighlights: ["Keran", "Kel", "Arang Kel", "Kutton Waterfall"],

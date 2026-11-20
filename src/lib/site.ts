@@ -202,7 +202,7 @@ export const destinations: Destination[] = [
   {
     slug: "fairy-meadows",
     name: "Fairy Meadows",
-    image: "/images/package-cards/images__destinations__fairy-meadows-unsplash.webp",
+    image: "/images/package-cards/destination-fairy-meadows-discovery.png",
     description: "Remote alpine meadows with iconic Nanga Parbat views, perfect for camping and mountain-hike journeys.",
     season: "June to September",
     duration: "5 Days",
@@ -220,7 +220,7 @@ export const destinations: Destination[] = [
   {
     slug: "kashmir",
     name: "Kashmir",
-    image: "/images/package-cards/images__destinations__kashmir.webp",
+    image: "/images/package-cards/destination-kashmir-valley-discovery.png",
     description: "Soft green hills and elegant getaways designed for couples and private groups.",
     season: "All Year",
     duration: "5 Days",
@@ -414,7 +414,7 @@ const existingBlogPosts: BlogPost[] = [
           "Yes, especially when the trip is planned with comfortable transport, well-timed breaks, and hotel coordination that keeps the group settled after the long drive.",
       },
     ],
-    hero: "/images/package-cards/images__destinations__skardu.webp",
+    hero: "/images/package-cards/destination-skardu-mountains-blog.png",
     heroAlt: "Skardu lakes and mountains",
   },
   {
@@ -570,7 +570,7 @@ const existingBlogPosts: BlogPost[] = [
           "Yes. They are among the easiest destinations to shape into a quiet couple-friendly getaway.",
       },
     ],
-    hero: "/images/package-cards/images__destinations__kashmir.webp",
+    hero: "/images/package-cards/destination-kashmir-valley-blog.png",
     heroAlt: "Kashmir valley",
   },
   {
@@ -622,7 +622,7 @@ const existingBlogPosts: BlogPost[] = [
           "Yes, but it works best when the route is kept realistic and the number of stops is limited.",
       },
     ],
-    hero: "/images/package-cards/images__nathia-ready.webp",
+    hero: "/images/package-cards/destination-nathia-gali-blog.png",
     heroAlt: "Murree hills",
   },
   {

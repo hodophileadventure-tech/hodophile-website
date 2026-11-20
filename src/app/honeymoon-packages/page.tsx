@@ -28,7 +28,7 @@ const honeymoonPackages = [
     duration: "4 Days / 3 Nights",
     detail: "Ushu forests, Mahodand Lake excursion, and relaxed valley pacing.",
     price: "PKR 120,000",
-    image: "/images/package-cards/images__honeymoon__swat-valley-deluxe.webp",
+    image: "/images/package-cards/honeymoon-swat-4-days.png",
   },
   {
     slug: "naran-babusar-4days",
@@ -44,7 +44,7 @@ const honeymoonPackages = [
     duration: "5 Days / 4 Nights",
     detail: "Neelum Valley route to Kel and the hill-meadow of Arang Kel.",
     price: "PKR 150,000",
-    image: "/images/package-cards/images__honeymoon__ratti-gali-lake.webp",
+    image: "/images/package-cards/honeymoon-kashmir-arangkel.png",
   },
   ...Object.values(additionalHoneymoonPackages),
 ];
