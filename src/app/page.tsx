@@ -239,11 +239,23 @@ export default function Home() {
             <JourneyCard
               key={destination.name}
               href={destinationPackageLinks[destination.name] ?? "/destinations"}
-              image={destination.slug === "hunza" ? "/images/destinations/hunza-home-lake.png" : destination.image}
+              image={
+                destination.slug === "hunza"
+                  ? "/images/destinations/hunza-home-lake.png"
+                  : destination.slug === "skardu"
+                    ? "/images/package-cards/skardu-home-card.webp"
+                    : destination.image
+              }
               media={
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={destination.slug === "hunza" ? "/images/destinations/hunza-home-lake.png" : destination.image}
+                  src={
+                    destination.slug === "hunza"
+                      ? "/images/destinations/hunza-home-lake.png"
+                      : destination.slug === "skardu"
+                        ? "/images/package-cards/skardu-home-card.webp"
+                        : destination.image
+                  }
                   alt={destination.name}
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 />
