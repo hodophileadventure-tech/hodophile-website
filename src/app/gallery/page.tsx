@@ -6,10 +6,10 @@ import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 
 const galleryImages = [
-  { src: "/images/package-cards/destination-skardu-mountains-gallery.png", alt: "Skardu landscape", caption: "Skardu" },
+  { src: "/images/package-cards/destination-skardu-mountains-gallery.webp", alt: "Skardu landscape", caption: "Skardu" },
   { src: "/images/package-cards/images__destinations__naran-saif.webp", alt: "Naran landscape", caption: "Naran" },
-  { src: "/images/package-cards/destination-swat-valley-gallery.png", alt: "Swat landscape", caption: "Swat" },
-  { src: "/images/package-cards/destination-kashmir-valley-gallery.png", alt: "Kashmir landscape", caption: "Kashmir" },
+  { src: "/images/package-cards/destination-swat-valley-gallery.webp", alt: "Swat landscape", caption: "Swat" },
+  { src: "/images/package-cards/destination-kashmir-valley-gallery.webp", alt: "Kashmir landscape", caption: "Kashmir" },
   { src: "/images/package-cards/images__editorial__editorial-3.webp", alt: "Northern valley", caption: "Valley views" },
   { src: "/images/package-cards/images__editorial__editorial-5.webp", alt: "Mountain route", caption: "Scenic roads" },
   { src: "/images/package-cards/images__editorial__editorial-6.webp", alt: "Travel in highlands", caption: "Highland escapes" },

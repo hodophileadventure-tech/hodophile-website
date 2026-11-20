@@ -46,7 +46,7 @@ const destinationGalleries = {
     name: "Skardu",
     description: "Lakes, forts, and wide alpine views. A premium destination for northern adventures.",
     images: [
-      { src: "/images/package-cards/destination-skardu-mountains-detail.png", alt: "Skardu" },
+      { src: "/images/package-cards/destination-skardu-mountains-detail.webp", alt: "Skardu" },
       { src: "/images/package-cards/images__destinations__featured-skardu-basho.webp", alt: "Skardu Basho" },
       { src: "/images/package-cards/images__destinations__featured-skardu-hunza.webp", alt: "Skardu Hunza" },
     ],
@@ -99,7 +99,7 @@ const destinationGalleries = {
     name: "Kashmir",
     description: "Soft valleys, clean air, and scenic routes. A calm getaway in nature.",
     images: [
-      { src: "/images/package-cards/destination-kashmir-valley-detail.png", alt: "Kashmir" },
+      { src: "/images/package-cards/destination-kashmir-valley-detail.webp", alt: "Kashmir" },
     ],
     highlights: ["Soft valleys", "Clean mountain air", "Scenic routes", "Peaceful getaway"],
     journeyStyle: "A calm valley experience built around comfort, pacing, and scenic quietude.",
@@ -124,7 +124,7 @@ const destinationGalleries = {
     name: "Swat",
     description: "Green hills and peaceful routes. A classic domestic Pakistan tour.",
     images: [
-      { src: "/images/package-cards/destination-swat-valley-detail.png", alt: "Swat" },
+      { src: "/images/package-cards/destination-swat-valley-detail.webp", alt: "Swat" },
       { src: "/images/package-cards/images__destinations__featured-kalam-malam-jabba.webp", alt: "Swat Kalam" },
     ],
     highlights: ["Green hills", "Peaceful routes", "Valley scenery", "Cultural experiences"],
@@ -218,7 +218,7 @@ const destinationGalleries = {
   "fairy-meadows": {
     name: "Fairy Meadows",
     description: "Remote alpine meadows beneath Nanga Parbat, made for dramatic views and mountain-hike journeys.",
-    images: [{ src: "/images/package-cards/destination-fairy-meadows-detail.png", alt: "Fairy Meadows" }],
+    images: [{ src: "/images/package-cards/destination-fairy-meadows-detail.webp", alt: "Fairy Meadows" }],
     highlights: ["Nanga Parbat", "Alpine meadows", "Mountain hikes", "Remote escape"],
     journeyStyle: "A remote, photo-driven route that rewards a slower, more deliberate plan.",
     bestSeason: "June to September",

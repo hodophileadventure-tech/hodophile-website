@@ -79,7 +79,7 @@ export const exclusiveOffers = [
     id: 'offer-nathia-gali',
     title: '3 Days Nathia Gali',
     description: 'Hill station escapes with popular trails, forest views, and charming Murree stops.',
-    image: '/images/package-cards/destination-nathia-gali-offer.png',
+    image: '/images/package-cards/destination-nathia-gali-offer.webp',
     href: '/packages/3-days-nathia-gali',
   },
 ];

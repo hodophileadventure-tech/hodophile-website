@@ -124,7 +124,7 @@ const distinctFeaturedTourCards: FeaturedTourCard[] = [
     slug: "skardu-deosai",
     title: "10 Days Skardu, Shigar & Shangrila",
     homeImage: "/images/package-cards/images__featured-tours__skardu-deosai.jpg.webp",
-    heroImage: "/images/package-cards/destination-skardu-mountains-featured.png",
+    heroImage: "/images/package-cards/destination-skardu-mountains-featured.webp",
     duration: "10 Days / 7 Nights",
     priceFrom: "Rs. 39,000",
     summary: "A rugged Skardu route with Shangrila, Shigar Fort, Sarfranga Cold Desert, and Deosai.",
