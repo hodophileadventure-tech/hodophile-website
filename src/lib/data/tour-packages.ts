@@ -409,7 +409,7 @@ export const tourPackages: TourPackage[] = [
     description: "An eight-day private road journey from Islamabad through Chilas and Hunza to Skardu, Deosai, and Naran.",
     region: "northern",
     destinationSlugs: ["hunza", "skardu", "naran"],
-    image: "/images/package-cards/images__tour-packages__05.webp",
+    image: "/images/package-cards/skardu-hunza-home-card.webp",
     routeStops: ["Islamabad", "Chilas", "Hunza", "Khunjerab Pass", "Attabad Lake", "Skardu", "Deosai", "Naran"],
     routeHighlights: ["Babusar Top", "Baltit Fort and Karimabad Bazaar", "Khunjerab Pass", "Attabad Lake", "Passu Cones", "Deosai plateau"],
     bestFor: "A private Hunza and Skardu road circuit",
