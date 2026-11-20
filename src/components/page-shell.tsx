@@ -27,179 +27,105 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
       </main>
 
       <footer className="site-footer-gradient border-t border-white/10 text-white">
-        <div className="site-container-wide mx-auto grid grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-12 xl:gap-10 lg:px-10 xl:px-14">
-          <div className="max-w-2xl sm:col-span-2 lg:col-span-2 xl:col-span-4">
-            <p className="eyebrow">Hodophile Adventures</p>
-            <h3 className="display-serif mt-3 text-3xl font-normal text-white">Travel farther. Feel more.</h3>
-            <div className="mt-5 grid gap-1 text-sm leading-6 text-white/60">
-              <p>Hodophile Adventure, Plot# 111-113C, Dupatta Gali, PECHS, Block2, Tariq Road, Karachi, Pakistan, 75400</p>
-              <p>+92 337 7777460</p>
-              <p>+92 337 8233777</p>
-              <p>info@hodophile.pk</p>
+        <div className="site-container-wide mx-auto px-5 sm:px-8 lg:px-10 xl:px-14">
+          <div className="grid gap-8 border-b border-white/10 py-10 lg:grid-cols-[1.35fr_0.65fr] lg:items-end lg:py-12">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#fcc000]">Plan your next journey</p>
+              <h2 className="mt-3 max-w-2xl font-serif text-4xl font-normal leading-[1.05] text-white sm:text-5xl">
+                Your Pakistan trip, planned properly.
+              </h2>
             </div>
-            <div className="mt-6">
-              <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white">Follow Us</h3>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <a
-                  href="https://www.facebook.com/Hodophileadventure"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/25 text-white transition hover:border-[#ffc000] hover:text-[#ffc000]"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
-                    <path d="M13.4 8.8V7.2c0-.7.5-.8.9-.8h2.2V3h-3c-3.3 0-4 2.5-4 4.2v1.6H7v3.6h2.5V21h3.9v-8.6H16l.4-3.6h-3z" />
-                  </svg>
-                  <span className="sr-only">Facebook</span>
-                </a>
-                <a
-                  href="https://www.instagram.com/hodophile.adventure?igsh=MTk5aHN6aW53b2R5Mw=="
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/25 text-white transition hover:border-[#ffc000] hover:text-[#ffc000]"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current stroke-[1.8]" aria-hidden="true">
-                    <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
-                    <circle cx="12" cy="12" r="4" />
-                    <circle cx="17.3" cy="6.8" r="0.9" className="fill-current stroke-none" />
-                  </svg>
-                  <span className="sr-only">Instagram</span>
-                </a>
-                <a
-                  href="https://www.youtube.com/@hodophileadventure"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="YouTube"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/25 text-white transition hover:border-[#ffc000] hover:text-[#ffc000]"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
-                    <path d="M21.8 8.2a3 3 0 0 0-2.1-2.1C17.8 5.6 12 5.6 12 5.6s-5.8 0-7.7.5a3 3 0 0 0-2.1 2.1A31.7 31.7 0 0 0 1.7 12c0 1.3.1 2.6.5 3.8a3 3 0 0 0 2.1 2.1c1.9.5 7.7.5 7.7.5s5.8 0 7.7-.5a3 3 0 0 0 2.1-2.1c.3-1.2.5-2.5.5-3.8s-.2-2.6-.5-3.8zM10.2 15.2V8.8l5.6 3.2-5.6 3.2z" />
-                  </svg>
-                  <span className="sr-only">YouTube</span>
-                </a>
-                <a
-                  href="https://www.tiktok.com/@hodophile_adventures?_r=1&_t=ZS-95lv9tuUjnJ"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="TikTok"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/25 text-white transition hover:border-[#ffc000] hover:text-[#ffc000]"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
-                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.68v13.67a2.4 2.4 0 1 1-4.77-2.3A2.4 2.4 0 0 1 9.1 9.66V5.92a6.07 6.07 0 0 0-6.85 6.59 6.18 6.18 0 0 0 6.03 6.06 6 6 0 0 0 5.27-2.87v-4.55a8.25 8.25 0 0 0 5.1 1.82v-3.49a4.83 4.83 0 0 1-1.18-.15Z" />
-                  </svg>
-                  <span className="sr-only">TikTok</span>
-                </a>
-                <a
-                  href="https://www.linkedin.com/company/hodophile-adventures-pk/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/25 text-white transition hover:border-[#ffc000] hover:text-[#ffc000]"
-                >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
-                    <path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.3 6.5a1.78 1.78 0 0 1-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19a.66.66 0 0 0 0 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z" />
-                  </svg>
-                  <span className="sr-only">LinkedIn</span>
-                </a>
+            <div className="flex flex-wrap gap-3 lg:justify-end">
+              <Link href="/make-my-trip" className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#fcc000] px-6 text-sm font-bold text-black transition hover:bg-[#ffdc66]">
+                Build a custom trip
+              </Link>
+              <Link href="/contact-us" className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 px-6 text-sm font-semibold text-white transition hover:border-[#fcc000] hover:text-[#fcc000]">
+                Contact our team
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid gap-10 py-10 md:grid-cols-2 lg:grid-cols-[1.35fr_0.75fr_0.75fr_1fr] lg:gap-12">
+            <div>
+              <Link href="/" className="inline-flex" aria-label="Hodophile Adventures home">
+                <Image
+                  src="/images/package-cards/logo-transparent.webp"
+                  alt="Hodophile Adventures"
+                  width={240}
+                  height={68}
+                  className="h-12 w-auto"
+                />
+              </Link>
+              <p className="mt-5 max-w-sm text-sm leading-7 text-white/65">
+                Premium domestic journeys across Pakistan, thoughtfully planned around your pace, group, and travel style.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {[
+                  ["Facebook", "https://www.facebook.com/Hodophileadventure"],
+                  ["Instagram", "https://www.instagram.com/hodophile.adventure?igsh=MTk5aHN6aW53b2R5Mw=="],
+                  ["YouTube", "https://www.youtube.com/@hodophileadventure"],
+                  ["TikTok", "https://www.tiktok.com/@hodophile_adventures?_r=1&_t=ZS-95lv9tuUjnJ"],
+                  ["LinkedIn", "https://www.linkedin.com/company/hodophile-adventures-pk/"],
+                ].map(([label, href]) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xs font-bold text-white/75 transition hover:border-[#fcc000] hover:text-[#fcc000]"
+                  >
+                    {label === "Facebook" ? "f" : label === "Instagram" ? "ig" : label === "YouTube" ? "yt" : label === "TikTok" ? "tt" : "in"}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#fcc000]">Explore</h3>
+              <nav className="mt-5 grid gap-3 text-sm text-white/70" aria-label="Footer destinations">
+                <Link href="/destinations" className="transition hover:text-[#fcc000]">Destinations</Link>
+                <Link href="/tours" className="transition hover:text-[#fcc000]">Tour Packages</Link>
+                <Link href="/tours/adventure" className="transition hover:text-[#fcc000]">Adventure Tours</Link>
+                <Link href="/honeymoon-packages" className="transition hover:text-[#fcc000]">Honeymoon Packages</Link>
+                <Link href="/umrah-packages" className="transition hover:text-[#fcc000]">Umrah Packages</Link>
+              </nav>
+            </div>
+
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#fcc000]">Company</h3>
+              <nav className="mt-5 grid gap-3 text-sm text-white/70" aria-label="Footer company">
+                <Link href="/about-us" className="transition hover:text-[#fcc000]">About Us</Link>
+                <Link href="/blogs" className="transition hover:text-[#fcc000]">Travel Blog</Link>
+                <Link href="/gallery" className="transition hover:text-[#fcc000]">Gallery</Link>
+                <Link href="/contact-us" className="transition hover:text-[#fcc000]">Contact Us</Link>
+                <Link href="/terms-and-conditions" className="transition hover:text-[#fcc000]">Terms &amp; Conditions</Link>
+              </nav>
+            </div>
+
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#fcc000]">Get in touch</h3>
+              <div className="mt-5 grid gap-3 text-sm leading-6 text-white/70">
+                <a href="tel:+923377777460" className="transition hover:text-[#fcc000]">+92 337 7777460</a>
+                <a href="tel:+923378233777" className="transition hover:text-[#fcc000]">+92 337 8233777</a>
+                <a href="mailto:info@hodophile.pk" className="transition hover:text-[#fcc000]">info@hodophile.pk</a>
+                <p>PECHS, Block 2, Tariq Road, Karachi, Pakistan</p>
+              </div>
+              <div className="mt-5 flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.035] p-3">
+                <Image src="/images/footer/footer-govt-pakistan.png" alt="Government of Pakistan" width={52} height={52} className="h-12 w-12 object-contain" />
+                <div>
+                  <p className="text-xs text-white/50">Tourism license</p>
+                  <p className="mt-0.5 text-lg font-bold text-white">5436</p>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col items-center sm:col-span-1 xl:col-span-2 xl:pl-4">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-center">Customer Service</h3>
-            <div className="footer-logo-glow mt-5 w-full max-w-[13rem] rounded-2xl p-3">
-              <Image
-                src="/images/footer/service-24-7-support.png"
-                alt="24/7 customer service"
-                width={578}
-                height={431}
-                className="mx-auto h-auto w-full max-w-[13rem] object-contain"
-              />
-            </div>
-          </div>
-
-          <div className="sm:col-span-1 xl:col-span-2 xl:pl-4">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-left">Quick Links</h3>
-            <div className="mt-5 grid gap-3 text-sm font-medium text-white/65">
-              <Link href="/about-us" className="inline-flex items-center gap-2 transition hover:translate-x-1">
-                <span className="text-[#ffc000]" aria-hidden="true">↗</span>
-                <span>About Us</span>
-              </Link>
-              <Link href="/blogs" className="inline-flex items-center gap-2 transition hover:translate-x-1">
-                <span className="text-[#ffc000]" aria-hidden="true">↗</span>
-                <span>Blogs</span>
-              </Link>
-              <Link href="/contact-us" className="inline-flex items-center gap-2 transition hover:translate-x-1">
-                <span className="text-[#ffc000]" aria-hidden="true">↗</span>
-                <span>Contact Us</span>
-              </Link>
-              <Link href="/gallery" className="inline-flex items-center gap-2 transition hover:translate-x-1">
-                <span className="text-[#ffc000]" aria-hidden="true">↗</span>
-                <span>Gallery</span>
-              </Link>
-              <Link href="/make-my-trip" className="inline-flex items-center gap-2 transition hover:translate-x-1">
-                <span className="text-[#ffc000]" aria-hidden="true">↗</span>
-                <span>Make My Trip</span>
-              </Link>
-              <Link href="/terms-and-conditions" className="inline-flex items-center gap-2 transition hover:translate-x-1">
-                <span className="text-[#ffc000]" aria-hidden="true">↗</span>
-                <span>Terms &amp; Conditions</span>
-              </Link>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center sm:col-span-1 xl:col-span-2 xl:pl-4">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-center">100% Satisfaction</h3>
-            <div className="footer-logo-glow mt-5 w-full max-w-[13rem] rounded-2xl p-3">
-              <Image
-                src="/images/footer/footer-satisfaction.png"
-                alt="100 percent satisfaction guaranteed"
-                width={520}
-                height={460}
-                className="mx-auto h-auto w-full max-w-[13rem] object-contain"
-              />
-            </div>
-          </div>
-
-          <div className="min-w-0 sm:col-span-2 lg:col-span-3 xl:col-span-2 xl:pl-4">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-white text-left">Our Affiliations</h3>
-            <div className="mt-5 grid min-w-0 gap-3">
-              <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-[#fcc000]/20 bg-white/[0.035] p-3">
-                <div className="footer-affiliation-logo h-20 w-20 shrink-0 rounded-xl p-1.5">
-                  <Image
-                    src="/images/footer/footer-govt-pakistan.png"
-                    alt="Government of Pakistan"
-                    width={96}
-                    height={96}
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs font-medium text-white/65">License No.</p>
-                  <p className="mt-1 text-lg font-semibold leading-none tracking-wide text-white">5436</p>
-                </div>
-              </div>
-              <div className="grid min-w-0 grid-cols-2 gap-3">
-                <div className="footer-affiliation-logo flex min-h-24 min-w-0 items-center justify-center rounded-xl p-2">
-                  <Image
-                    src="/images/footer/footer-taap.png"
-                    alt="TAAP"
-                    width={551}
-                    height={453}
-                    className="h-auto max-h-20 w-auto max-w-full object-contain"
-                  />
-                </div>
-                <div className="footer-affiliation-logo flex min-w-0 items-center justify-center rounded-xl p-2">
-                  <Image
-                    src="/images/footer/footer-pato.png"
-                    alt="PATO"
-                    width={500}
-                    height={500}
-                    className="h-20 w-full object-contain"
-                  />
-                </div>
-              </div>
+          <div className="flex flex-col gap-4 border-t border-white/10 py-6 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
+            <p>© 2026 Hodophile Adventures. All rights reserved.</p>
+            <div className="flex items-center gap-5">
+              <Link href="/terms-and-conditions" className="transition hover:text-white">Booking terms</Link>
+              <Link href="/contact-us" className="transition hover:text-white">Support</Link>
             </div>
           </div>
         </div>

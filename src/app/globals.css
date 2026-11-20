@@ -762,6 +762,24 @@ html[data-theme="light"] .site-footer-gradient a:hover {
   color: #806000;
 }
 
+html[data-theme="light"] .site-footer-gradient {
+  background-color: #090909;
+  background-image:
+    radial-gradient(ellipse at 12% 0%, rgba(252, 192, 0, 0.12), transparent 38%),
+    linear-gradient(135deg, #211906 0%, #100f0b 48%, #080808 100%);
+  border-top-color: rgba(252, 192, 0, 0.18);
+  color: #ffffff;
+}
+
+html[data-theme="light"] .site-footer-gradient :is(h1, h2, h3, p) {
+  color: #ffffff;
+}
+
+html[data-theme="light"] .site-footer-gradient a {
+  color: inherit;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
