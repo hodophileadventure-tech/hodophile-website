@@ -203,7 +203,7 @@ export const tourPackages: TourPackage[] = [
     description: "A flight-linked journey connecting Hunza villages with Skardu's mountain landscapes.",
     region: "northern",
     destinationSlugs: ["skardu", "hunza"],
-    image: "/images/package-cards/images__destinations__featured-skardu-hunza.webp",
+    image: "/images/package-cards/skardu-hunza-by-air.webp",
     routeStops: ["Skardu", "Hunza"],
     routeHighlights: ["Air-linked Skardu and Hunza valley stays"],
     bestFor: "Two-valley journey",
