@@ -244,6 +244,8 @@ test("the four-day Kashmir and Arang Kel package uses the supplied itinerary and
   assert.equal(journey.duration, "4 Days / 3 Nights");
   assert.equal(journey.pricePerPerson, 32000);
   assert.equal(journey.couplePrice, 74000);
+  assert.deepEqual(journey.sharingPrices, { quad: 32000, triple: 35000, twin: 37000, solo: 53000 });
+  assert.deepEqual(journey.sharingPricesWithoutIslamabadStay, { quad: 30000, triple: 33000, twin: 35000, solo: 51000 });
   assert.deepEqual(journey.itinerary?.map((day) => day.day), ["Day 1", "Day 2", "Day 3", "Day 4"]);
 });
 
@@ -254,6 +256,8 @@ test("the four-day Swat, Kalam, and Malam Jabba package uses the supplied itiner
   assert.equal(journey.duration, "4 Days / 3 Nights");
   assert.equal(journey.pricePerPerson, 33500);
   assert.equal(journey.couplePrice, 77000);
+  assert.deepEqual(journey.sharingPrices, { quad: 33500, triple: 36500, twin: 38500, solo: 54500 });
+  assert.deepEqual(journey.sharingPricesWithoutIslamabadStay, { quad: 30500, triple: 34500, twin: 35500, solo: 51500 });
   assert.equal(journey.priceOnRequest, undefined);
   assert.deepEqual(journey.itinerary?.map((day) => day.day), ["Day 1", "Day 2", "Day 3", "Day 4"]);
   assert.ok(journey.includes?.includes("Breakfast"));
@@ -307,6 +311,8 @@ test("poster-matched packages use the supplied names, durations, itinerary, and 
   assert.ok(swatShogranJourney);
   assert.equal(swatShogranJourney.pricePerPerson, 47500);
   assert.equal(swatShogranJourney.couplePrice, 109000);
+  assert.deepEqual(swatShogranJourney.sharingPrices, { quad: 47500, triple: 51500, twin: 54500, solo: 72500 });
+  assert.deepEqual(swatShogranJourney.sharingPricesWithoutIslamabadStay, { quad: 45000, triple: 49500, twin: 52500, solo: 68500 });
   assert.equal(swatShogranJourney.duration, "6 Days / 5 Nights");
   assert.deepEqual(swatShogranJourney.itinerary?.map((day) => day.day), Array.from({ length: 6 }, (_, index) => `Day ${index + 1}`));
 
