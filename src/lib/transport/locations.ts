@@ -3,6 +3,7 @@ export type MapCoordinate = [longitude: number, latitude: number];
 export interface TransportLocation {
   name: string;
   coordinate: MapCoordinate;
+  roadAccessName?: string;
 }
 
 const locations: Record<string, TransportLocation> = {
@@ -17,7 +18,11 @@ const locations: Record<string, TransportLocation> = {
   "naran": { name: "Naran", coordinate: [73.6501, 34.9092] },
   "kashmir": { name: "Kashmir", coordinate: [73.4712, 34.3704] },
   "muzaffarabad": { name: "Muzaffarabad", coordinate: [73.4711, 34.3704] },
-  "fairy meadows": { name: "Fairy Meadows", coordinate: [74.5789292, 35.3872034] },
+  "fairy meadows": {
+    name: "Fairy Meadows",
+    coordinate: [74.5789292, 35.3872034],
+    roadAccessName: "Raikot Bridge",
+  },
   "raikot bridge": { name: "Raikot Bridge", coordinate: [74.5919012, 35.49296] },
   "astore": { name: "Astore", coordinate: [74.856, 35.343] },
   "chilas": { name: "Chilas", coordinate: [74.096, 35.420] },
@@ -46,4 +51,9 @@ export function getTransportLocation(name: string): TransportLocation | undefine
 
 export function getCanonicalLocationName(name: string): string | undefined {
   return getTransportLocation(name)?.name;
+}
+
+export function getRoadTransportLocation(name: string): TransportLocation | undefined {
+  const location = getTransportLocation(name);
+  return location?.roadAccessName ? getTransportLocation(location.roadAccessName) : location;
 }

@@ -6,6 +6,7 @@ import { calculateQuotation } from "@/lib/pricingEngine";
 import { isTransportAdminAuthorized } from "./admin-auth";
 import { calculateTransportExpense } from "./calculations";
 import { getCustomRoadStops } from "./itinerary";
+import { getTransportLocation } from "./locations";
 import { allowRouteCalculation } from "./rate-limit";
 import {
   createManualRouteOverride,
@@ -79,6 +80,15 @@ test("rejects unsupported route stops instead of approximating their distance", 
   );
 });
 
+test("routes Fairy Meadows road access through Raikot Bridge", () => {
+  const route = prepareRoadRoute(["Islamabad", "Fairy Meadows"], false);
+  const raikotBridge = getTransportLocation("Raikot Bridge");
+
+  assert.ok(raikotBridge);
+  assert.deepEqual(route.stops, ["Islamabad", "Raikot Bridge"]);
+  assert.deepEqual(route.coordinates[1], raikotBridge.coordinate);
+});
+
 test("parses ordered road distances and durations from the routing provider", async () => {
   const prepared = prepareRoadRoute(["Islamabad", "Naran", "Hunza"], false);
   let instructions: unknown;
@@ -105,6 +115,31 @@ test("parses ordered road distances and durations from the routing provider", as
   assert.equal(route.distanceKm, 150);
   assert.equal(route.durationSeconds, 10_800);
   assert.equal(route.source, "OPENROUTESERVICE");
+});
+
+test("accepts valid route geometry longer than 30,000 coordinates", async () => {
+  const prepared = prepareRoadRoute(["Islamabad", "Swat"], false);
+  const coordinates = Array.from({ length: 32_739 }, (_, index) => [
+    73.0479 + index / 1_000_000,
+    33.6844,
+  ]);
+  const route = await fetchOpenRouteServiceRoute(
+    prepared,
+    async () => new Response(JSON.stringify({
+      features: [{
+        type: "Feature",
+        geometry: { type: "LineString", coordinates },
+        properties: {
+          segments: [{ distance: 300_000, duration: 10_000 }],
+          way_points: [0, coordinates.length - 1],
+        },
+      }],
+    })),
+    "test-server-key",
+  );
+
+  assert.equal(route.geometry.length, coordinates.length);
+  assert.equal(route.legs[0]?.geometry.length, coordinates.length);
 });
 
 test("reports missing credentials, provider rate limits, and malformed route data", async () => {

@@ -3,13 +3,13 @@ import type { Prisma } from "@prisma/client";
 
 import prisma from "@/lib/prisma";
 
-import { getCanonicalLocationName, getTransportLocation, type MapCoordinate } from "./locations";
+import { getRoadTransportLocation, getTransportLocation, type MapCoordinate } from "./locations";
 import type { OperationalTransportSettings } from "./settings";
 
 const ROUTE_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const OPENROUTESERVICE_TIMEOUT_MS = 12_000;
 const MAX_STOPS = 14;
-const MAX_ROUTE_COORDINATES = 30_000;
+const MAX_ROUTE_COORDINATES = 100_000;
 
 export type RouteDistanceSource = "OPENROUTESERVICE" | "MANUAL";
 
@@ -97,14 +97,15 @@ export function prepareRoadRoute(
 
   const canonicalStops: string[] = [];
   for (const requestedStop of requestedStops as string[]) {
-    const canonicalName = getCanonicalLocationName(requestedStop);
-    if (!canonicalName) {
+    const roadLocation = getRoadTransportLocation(requestedStop);
+    if (!roadLocation) {
       throw new RouteCalculationError(
         `Road routing is not available for "${requestedStop.trim()}". Choose a supported city or contact the team.`,
         "invalid-stops",
         400,
       );
     }
+    const canonicalName = roadLocation.name;
     if (canonicalStops[canonicalStops.length - 1]?.toLocaleLowerCase("en") !== canonicalName.toLocaleLowerCase("en")) {
       canonicalStops.push(canonicalName);
     }
@@ -290,7 +291,10 @@ function parseOrsFeature(value: unknown, stops: string[], itineraryKey: string):
         : null,
       actualWayPointCount: Array.isArray(wayPoints) ? wayPoints.length : null,
       wayPoints: Array.isArray(wayPoints) ? wayPoints.slice(0, stops.length + 1) : null,
-      geometryCoordinateCount: coordinates?.length ?? null,
+      rawGeometryCoordinateCount: Array.isArray(feature.geometry?.coordinates)
+        ? feature.geometry.coordinates.length
+        : null,
+      parsedGeometryCoordinateCount: coordinates?.length ?? null,
       featureType: feature.type,
       geometryType: feature.geometry?.type,
     });
