@@ -77,5 +77,5 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Booking retrieval error:', error);
     return NextResponse.json({ error: 'Failed to retrieve bookings' }, { status: 500 });
-  }
+  } 
 }

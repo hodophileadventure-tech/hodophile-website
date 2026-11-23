@@ -8,7 +8,7 @@ const destinationTiles = [
   {
     name: "Hunza",
     description: "Towering peaks, apricot valleys, and storied mountain roads.",
-    image: "/images/package-cards/hero-images__kamran-ch-unsplash.webp",
+    image: "/images/explore-cards/hunza.png",
     href: "/destinations/hunza",
     span: "md:col-span-7",
     height: "min-h-[26rem]",
@@ -26,7 +26,7 @@ const destinationTiles = [
   {
     name: "Fairy Meadows",
     description: "Remote alpine meadows framed by iconic mountain views.",
-    image: "/images/package-cards/hero-images__hussain-ahmed-unsplash.webp",
+    image: "/images/explore-cards/fairy-meadows.png",
     href: "/destinations/fairy-meadows",
     span: "md:col-span-5",
     height: "min-h-[20rem]",
@@ -35,7 +35,7 @@ const destinationTiles = [
   {
     name: "Kashmir",
     description: "Soft valleys, heritage, and slow days designed for couples and families.",
-    image: "/images/package-cards/hero-images__zain-raza-unsplash.webp",
+    image: "/images/explore-cards/kashmir.png",
     href: "/destinations/kashmir",
     span: "md:col-span-7",
     height: "min-h-[22rem]",
@@ -44,7 +44,7 @@ const destinationTiles = [
   {
     name: "Swat & Kalam",
     description: "Green valleys, pine-lined routes, and restorative mountain air.",
-    image: "/images/package-cards/hero-images__hussain-ahmed-unsplash.webp",
+    image: "/images/explore-cards/swat-kalam.png",
     href: "/destinations/swat",
     span: "md:col-span-6",
     height: "min-h-[21rem]",
@@ -53,7 +53,7 @@ const destinationTiles = [
   {
     name: "Deosai & Gilgit",
     description: "Plateaus, glacier roads, and unforgettable high-country journeys.",
-    image: "/images/package-cards/hero-images__kamran-ch-unsplash.webp",
+    image: "/images/explore-cards/deosai-gilgit.png",
     href: "/destinations",
     span: "md:col-span-6",
     height: "min-h-[21rem]",
@@ -65,12 +65,12 @@ const experienceCards = [
   {
     title: "Mountain Escapes",
     description: "Wake up surrounded by some of the world’s most dramatic landscapes.",
-    image: "/images/package-cards/hero-images__kamran-ch-unsplash.webp",
+    image: "/images/explore-cards/mountain-escapes.png",
   },
   {
     title: "Adventure & Trekking",
     description: "Go beyond the usual routes and experience Pakistan on foot.",
-    image: "/images/package-cards/hero-images__obaid-awan-unsplash.jpg.webp",
+    image: "/images/explore-cards/adventure-trekking.png",
   },
   {
     title: "Cultural Journeys",
@@ -90,7 +90,7 @@ const experienceCards = [
   {
     title: "Honeymoon & Romantic Escapes",
     description: "Private moments in some of Pakistan’s most breathtaking destinations.",
-    image: "/images/package-cards/hero-images__obaid-awan-unsplash.jpg.webp",
+    image: "/images/explore-cards/honeymoon-romantic-escapes.png",
   },
 ];
 
@@ -105,7 +105,7 @@ const journeyCards = [
     duration: "6 days",
     route: "Skardu & Basho",
     description: "A six-day escape pairing Skardu with the mountain scenery of Basho.",
-    image: "/images/pakistan-journeys/skardu-basho.png",
+    image: "/images/pakistan-journeys/skardu-basho.webp",
   },
   {
     duration: "6 days",
