@@ -278,6 +278,22 @@ function parseOrsFeature(value: unknown, stops: string[], itineraryKey: string):
       segments.length !== stops.length - 1 || !Array.isArray(wayPoints) ||
       wayPoints.length !== segments.length + 1 ||
       wayPoints.some((index) => !Number.isInteger(index) || index < 0 || index >= coordinates.length)) {
+    console.error("OpenRouteService route response shape did not match the requested stops", {
+      itineraryKey,
+      stops,
+      expectedLegCount: stops.length - 1,
+      actualSegmentCount: Array.isArray(segments) ? segments.length : null,
+      segments: Array.isArray(segments)
+        ? segments.map((segment) => isRecord(segment)
+          ? { distance: segment.distance, duration: segment.duration }
+          : null)
+        : null,
+      actualWayPointCount: Array.isArray(wayPoints) ? wayPoints.length : null,
+      wayPoints: Array.isArray(wayPoints) ? wayPoints.slice(0, stops.length + 1) : null,
+      geometryCoordinateCount: coordinates?.length ?? null,
+      featureType: feature.type,
+      geometryType: feature.geometry?.type,
+    });
     throw new RouteCalculationError("The routing service returned incomplete route legs.", "invalid-response", 502, itineraryKey, stops);
   }
 
@@ -435,7 +451,6 @@ export async function fetchOpenRouteServiceRoute(
           code: error.code,
           message: error.message,
           itineraryKey: prepared.itineraryKey,
-          body: safeProviderBody,
         });
         throw new RouteCalculationError(
           error.message,
