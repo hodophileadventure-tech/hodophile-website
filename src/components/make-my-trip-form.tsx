@@ -51,6 +51,40 @@ const RouteDistanceMap = dynamic(() => import("@/components/make-my-trip/route-d
   loading: () => <div className="h-[320px] animate-pulse rounded-[18px] border border-[#e8d7a3] bg-stone-100 sm:h-[390px]" aria-label="Loading route map" />,
 });
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isMapCoordinate(value: unknown): value is [number, number] {
+  return Array.isArray(value) &&
+    value.length === 2 &&
+    value.every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate));
+}
+
+function isRoadRouteEstimate(value: unknown): value is RoadRouteEstimate {
+  if (!isRecord(value)) return false;
+  return typeof value.itineraryKey === "string" &&
+    Array.isArray(value.stops) &&
+    value.stops.every((stop) => typeof stop === "string") &&
+    Array.isArray(value.legs) &&
+    value.legs.every((leg) =>
+      isRecord(leg) &&
+      typeof leg.from === "string" &&
+      typeof leg.to === "string" &&
+      typeof leg.distanceKm === "number" &&
+      (leg.durationSeconds === null || typeof leg.durationSeconds === "number") &&
+      Array.isArray(leg.geometry) &&
+      leg.geometry.every(isMapCoordinate)
+    ) &&
+    Array.isArray(value.geometry) &&
+    value.geometry.every(isMapCoordinate) &&
+    typeof value.baseDistanceKm === "number" && Number.isFinite(value.baseDistanceKm) &&
+    typeof value.estimatedDistanceKm === "number" && Number.isFinite(value.estimatedDistanceKm) &&
+    typeof value.allowanceKm === "number" && Number.isFinite(value.allowanceKm) &&
+    (value.durationSeconds === null || (typeof value.durationSeconds === "number" && Number.isFinite(value.durationSeconds))) &&
+    (value.source === "OPENROUTESERVICE" || value.source === "MANUAL");
+}
+
 // Map featured tours to their corresponding route slugs
 const PREPLANNED_TRIP_MAP: Record<string, string> = {
   "kashmir-taobat": "kashmir-taobat",
@@ -1313,6 +1347,7 @@ export function MakeMyTripForm() {
               customCities: effectiveSelectedCities,
               startingPoint: getActualStartingPoint(),
               routeDestinations: selectedCities,
+              includeIslamabadTransit: !hideAutoIslamabad,
               customRouteLabel: effectiveSelectedCities.join(" + "),
               singleCityHotelStays,
               numberOfRooms,
@@ -1351,6 +1386,7 @@ export function MakeMyTripForm() {
               customCities: _augCities,
               startingPoint: getActualStartingPoint(),
               routeDestinations: selectedCities,
+              includeIslamabadTransit: !hideAutoIslamabad,
               customRouteLabel: _augCities.join(" + "),
               multiCityHotels: _augHotels,
               multiCityNights: _augNights,
@@ -1464,7 +1500,7 @@ export function MakeMyTripForm() {
       }
       customQuoteAbortRef.current?.abort();
     };
-  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode, startingPoint, otherStartingPoint, roadRouteResult]);
+  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode, startingPoint, otherStartingPoint, hideAutoIslamabad, roadRouteResult]);
 
   useEffect(() => {
     if (promoCode && !getPromotionForTour(routeId)) {
@@ -1757,6 +1793,7 @@ export function MakeMyTripForm() {
           multiCityNights: selectedMultiCityNights,
           customCities: selectedCustomCities,
           routeDestinations: selectedCities,
+          includeIslamabadTransit: !hideAutoIslamabad,
           customRouteLabel: isCustomCitySelection() ? effectiveSelectedCities.join(" + ") : undefined,
         }),
       });
@@ -1909,7 +1946,7 @@ export function MakeMyTripForm() {
     if (!origin) return [];
 
     if (selectedCities.length > 0 && !routeId) {
-      return getCustomRoadStops(origin, selectedCities, "road");
+      return getCustomRoadStops(origin, selectedCities, "road", !hideAutoIslamabad);
     }
 
     if (!selectedRoute) return [];
@@ -1946,17 +1983,46 @@ export function MakeMyTripForm() {
         body: JSON.stringify({ stops }),
         signal: controller.signal,
       })
-        .then(async (response) => ({
-          response,
-          body: await response.json() as RoadRouteEstimate & { error?: string },
-        }))
-        .then(({ response, body }) => {
+        .then(async (response) => {
+          const contentType = response.headers.get("content-type") ?? "";
+          const responseText = await response.text();
+          let body: unknown = null;
+          let jsonParseError: unknown = null;
+          try {
+            body = JSON.parse(responseText);
+          } catch (error) {
+            jsonParseError = error;
+          }
           if (roadRouteRequestRef.current !== requestId) return;
+          const payload = isRecord(body) ? body : null;
           if (!response.ok) {
+            console.error("Route API returned an error", {
+              status: response.status,
+              contentType,
+              code: payload?.code,
+              providerStatus: payload?.providerStatus,
+              jsonParseError: jsonParseError instanceof Error ? jsonParseError.message : undefined,
+              responsePreview: jsonParseError ? responseText.slice(0, 500) : undefined,
+            });
             setRoadRouteResult({
               itineraryKey: roadRouteStopsKey,
               route: null,
-              error: body.error || "Road distance could not be calculated. Please try again or contact Hodophile.",
+              error: typeof payload?.error === "string"
+                ? payload.error
+                : `Road routing request failed (HTTP ${response.status}). Please try again or contact Hodophile.`,
+            });
+            return;
+          }
+          if (!isRoadRouteEstimate(body)) {
+            console.error("Route API returned an invalid response", {
+              status: response.status,
+              contentType,
+              responsePreview: responseText.slice(0, 500),
+            });
+            setRoadRouteResult({
+              itineraryKey: roadRouteStopsKey,
+              route: null,
+              error: `Road routing returned an unexpected response (HTTP ${response.status}). Please try again or contact Hodophile.`,
             });
             return;
           }
@@ -1964,11 +2030,11 @@ export function MakeMyTripForm() {
         })
         .catch((error: unknown) => {
           if (controller.signal.aborted || roadRouteRequestRef.current !== requestId) return;
-          console.error("Route distance request failed:", error);
+          console.error("Route distance request failed before a valid API response was received", error);
           setRoadRouteResult({
             itineraryKey: roadRouteStopsKey,
             route: null,
-            error: "Road distance could not be calculated. Please try again or contact Hodophile.",
+            error: "Could not reach the road-distance service. Check the connection and try again, or contact Hodophile.",
           });
         });
     }, 350);

@@ -7,6 +7,9 @@ import { applyPromotionToQuotation, validatePromoCode } from "@/lib/promotions/p
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as QuotationInput & { promoCode?: unknown };
+    if (body.includeIslamabadTransit !== undefined && typeof body.includeIslamabadTransit !== "boolean") {
+      return NextResponse.json({ error: "Please provide a valid Islamabad transit selection." }, { status: 400 });
+    }
     if (body.routeId === "custom-itinerary" && body.travelMode !== "air") {
       const identifier = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
         request.headers.get("x-real-ip") ||

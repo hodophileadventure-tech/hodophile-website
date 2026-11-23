@@ -32,6 +32,7 @@ export interface QuotationInput {
   travelMode?: "road" | "air";
   startingPoint?: string;
   routeDestinations?: string[];
+  includeIslamabadTransit?: boolean;
   numberOfRooms: number;
   adults: number;
   kids: number;

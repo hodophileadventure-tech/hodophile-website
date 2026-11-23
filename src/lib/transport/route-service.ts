@@ -7,6 +7,7 @@ import { getCanonicalLocationName, getTransportLocation, type MapCoordinate } fr
 import type { OperationalTransportSettings } from "./settings";
 
 const ROUTE_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const OPENROUTESERVICE_TIMEOUT_MS = 12_000;
 const MAX_STOPS = 14;
 const MAX_ROUTE_COORDINATES = 30_000;
 
@@ -35,10 +36,12 @@ export interface RoadRouteEstimate {
 export class RouteCalculationError extends Error {
   constructor(
     message: string,
-    readonly code: "invalid-stops" | "not-configured" | "rate-limited" | "provider-error" | "invalid-response" | "timeout",
+    readonly code: "invalid-stops" | "not-configured" | "rate-limited" | "provider-error" | "provider-authentication" | "invalid-response" | "timeout",
     readonly status: number,
     readonly itineraryKey?: string,
     readonly stops?: string[],
+    readonly providerStatus?: number,
+    readonly providerBody?: string,
   ) {
     super(message);
     this.name = "RouteCalculationError";
@@ -110,6 +113,14 @@ export function prepareRoadRoute(
   if (includeReturnJourney && canonicalStops.length > 1 &&
       canonicalStops[canonicalStops.length - 1].toLocaleLowerCase("en") !== canonicalStops[0].toLocaleLowerCase("en")) {
     canonicalStops.push(canonicalStops[0]);
+  }
+
+  if (canonicalStops.length < 2) {
+    throw new RouteCalculationError(
+      "Select at least two distinct supported route stops.",
+      "invalid-stops",
+      400,
+    );
   }
 
   if (canonicalStops.length > MAX_STOPS) {
@@ -312,6 +323,7 @@ export async function fetchOpenRouteServiceRoute(
   prepared: PreparedRoadRoute,
   fetcher: typeof fetch = fetch,
   apiKey = process.env.OPENROUTESERVICE_API_KEY,
+  timeoutMs = OPENROUTESERVICE_TIMEOUT_MS,
 ): Promise<StoredRoute> {
   if (!apiKey) {
     throw new RouteCalculationError(
@@ -338,10 +350,9 @@ export async function fetchOpenRouteServiceRoute(
   }
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 12_000);
-  let response: Response;
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    response = await fetcher("https://api.openrouteservice.org/v2/directions/driving-car/geojson", {
+    const response = await fetcher("https://api.openrouteservice.org/v2/directions/driving-car/geojson", {
       method: "POST",
       headers: {
         Authorization: apiKey,
@@ -355,41 +366,106 @@ export async function fetchOpenRouteServiceRoute(
       signal: controller.signal,
       cache: "no-store",
     });
-  } catch {
+    const responseBody = await response.text();
+    const safeProviderBody = responseBody.slice(0, 2_000).split(apiKey).join("[REDACTED]");
+    if (response.status === 429) {
+      console.error("OpenRouteService rate limit response", {
+        providerStatus: response.status,
+        itineraryKey: prepared.itineraryKey,
+        body: safeProviderBody,
+      });
+      throw new RouteCalculationError(
+        "The routing service is temporarily rate limited. Please try again shortly.",
+        "rate-limited",
+        429,
+        prepared.itineraryKey,
+        prepared.stops,
+        response.status,
+        safeProviderBody,
+      );
+    }
+    if (!response.ok) {
+      const authenticationFailure = response.status === 401 || response.status === 403;
+      console.error("OpenRouteService returned an HTTP error", {
+        providerStatus: response.status,
+        itineraryKey: prepared.itineraryKey,
+        body: safeProviderBody,
+      });
+      throw new RouteCalculationError(
+        authenticationFailure
+          ? "The road routing service rejected its server credentials. Please contact Hodophile."
+          : `The road routing service could not calculate this journey (HTTP ${response.status}). Please try again or contact Hodophile.`,
+        authenticationFailure ? "provider-authentication" : "provider-error",
+        502,
+        prepared.itineraryKey,
+        prepared.stops,
+        response.status,
+        safeProviderBody,
+      );
+    }
+
+    let data: unknown;
+    try {
+      data = JSON.parse(responseBody);
+    } catch {
+      console.error("OpenRouteService returned unreadable route data", {
+        providerStatus: response.status,
+        itineraryKey: prepared.itineraryKey,
+        body: safeProviderBody,
+      });
+      if (controller.signal.aborted) {
+        throw new RouteCalculationError("Road route calculation timed out. Please try again.", "timeout", 504, prepared.itineraryKey, prepared.stops);
+      }
+      throw new RouteCalculationError(
+        "The routing service returned unreadable route data.",
+        "invalid-response",
+        502,
+        prepared.itineraryKey,
+        prepared.stops,
+        response.status,
+        safeProviderBody,
+      );
+    }
+    try {
+      return parseOrsFeature(data, prepared.stops, prepared.itineraryKey);
+    } catch (error) {
+      if (error instanceof RouteCalculationError) {
+        console.error("OpenRouteService returned an invalid route payload", {
+          providerStatus: response.status,
+          code: error.code,
+          message: error.message,
+          itineraryKey: prepared.itineraryKey,
+          body: safeProviderBody,
+        });
+        throw new RouteCalculationError(
+          error.message,
+          error.code,
+          error.status,
+          prepared.itineraryKey,
+          prepared.stops,
+          response.status,
+          safeProviderBody,
+        );
+      }
+      throw error;
+    }
+  } catch (error) {
+    if (error instanceof RouteCalculationError) throw error;
     if (controller.signal.aborted) {
+      console.error("OpenRouteService request timed out", {
+        timeoutMs,
+        itineraryKey: prepared.itineraryKey,
+      });
       throw new RouteCalculationError("Road route calculation timed out. Please try again.", "timeout", 504, prepared.itineraryKey, prepared.stops);
     }
+    console.error("OpenRouteService request failed", {
+      error: error instanceof Error ? { name: error.name, message: error.message } : "Unknown fetch error",
+      itineraryKey: prepared.itineraryKey,
+    });
     throw new RouteCalculationError("Road route calculation is temporarily unavailable.", "provider-error", 502, prepared.itineraryKey, prepared.stops);
   } finally {
     clearTimeout(timeout);
   }
-
-  if (response.status === 429) {
-    throw new RouteCalculationError(
-      "The routing service is temporarily rate limited. Please try again shortly.",
-      "rate-limited",
-      429,
-      prepared.itineraryKey,
-      prepared.stops,
-    );
-  }
-  if (!response.ok) {
-    throw new RouteCalculationError(
-      "The routing service could not calculate this road journey.",
-      "provider-error",
-      502,
-      prepared.itineraryKey,
-      prepared.stops,
-    );
-  }
-
-  let data: unknown;
-  try {
-    data = await response.json();
-  } catch {
-    throw new RouteCalculationError("The routing service returned unreadable route data.", "invalid-response", 502, prepared.itineraryKey, prepared.stops);
-  }
-  return parseOrsFeature(data, prepared.stops, prepared.itineraryKey);
 }
 
 function applyDistanceAllowance(

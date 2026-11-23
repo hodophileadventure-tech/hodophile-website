@@ -3,8 +3,10 @@ import { test } from "node:test";
 
 import { calculateQuotation } from "@/lib/pricingEngine";
 
+import { isTransportAdminAuthorized } from "./admin-auth";
 import { calculateTransportExpense } from "./calculations";
 import { getCustomRoadStops } from "./itinerary";
+import { allowRouteCalculation } from "./rate-limit";
 import {
   createManualRouteOverride,
   fetchOpenRouteServiceRoute,
@@ -37,12 +39,32 @@ test("prepares multi-destination routes in order and includes the return stop", 
 
   assert.deepEqual(route.stops, ["Karachi", "Islamabad", "Naran", "Hunza", "Skardu", "Karachi"]);
   assert.equal(route.coordinates.length, route.stops.length);
+  assert.notEqual(
+    prepareRoadRoute(["Karachi", "Islamabad", "Naran", "Hunza", "Skardu"], false).itineraryKey,
+    prepareRoadRoute(["Karachi", "Islamabad", "Hunza", "Naran", "Skardu"], false).itineraryKey,
+  );
+  assert.throws(
+    () => prepareRoadRoute(["Islamabad", "Islamabad"], false),
+    (error: unknown) => error instanceof RouteCalculationError && error.code === "invalid-stops",
+  );
 });
 
 test("builds custom road stops in selected order and avoids adding an air transfer", () => {
   assert.deepEqual(
     getCustomRoadStops("Karachi", ["Naran", "Hunza"], "road"),
     ["Karachi", "Islamabad", "Naran", "Hunza"],
+  );
+  assert.deepEqual(
+    getCustomRoadStops("Karachi", ["Islamabad", "Naran"], "road"),
+    ["Karachi", "Islamabad", "Naran"],
+  );
+  assert.deepEqual(
+    getCustomRoadStops("Islamabad", ["Islamabad", "Naran"], "road"),
+    ["Islamabad", "Naran"],
+  );
+  assert.deepEqual(
+    getCustomRoadStops("Karachi", ["Naran"], "road", false),
+    ["Karachi", "Naran"],
   );
   assert.deepEqual(
     getCustomRoadStops("Karachi", ["Naran", "Hunza"], "air"),
@@ -88,6 +110,45 @@ test("reports missing credentials, provider rate limits, and malformed route dat
   await assert.rejects(
     fetchOpenRouteServiceRoute(prepared, async () => new Response("{}", { status: 200 }), "test-server-key"),
     (error: unknown) => error instanceof RouteCalculationError && error.code === "invalid-response",
+  );
+});
+
+test("preserves provider authentication status and redacts any echoed credential", async () => {
+  const prepared = prepareRoadRoute(["Islamabad", "Swat"], false);
+  const apiKey = "test-server-key";
+
+  await assert.rejects(
+    fetchOpenRouteServiceRoute(
+      prepared,
+      async () => new Response(JSON.stringify({
+        error: { code: 4010, message: `Invalid key ${apiKey}` },
+      }), { status: 401 }),
+      apiKey,
+    ),
+    (error: unknown) => {
+      assert.ok(error instanceof RouteCalculationError);
+      assert.equal(error.code, "provider-authentication");
+      assert.equal(error.providerStatus, 401);
+      assert.equal(error.providerBody?.includes(apiKey), false);
+      assert.equal(error.providerBody?.includes("[REDACTED]"), true);
+      return true;
+    },
+  );
+});
+
+test("keeps the timeout active while reading the provider response body", async () => {
+  const prepared = prepareRoadRoute(["Karachi", "Islamabad"], false);
+  const fetcher: typeof fetch = async (_input, init) => new Response(new ReadableStream({
+    start(controller) {
+      init?.signal?.addEventListener("abort", () => {
+        controller.error(new DOMException("Aborted", "AbortError"));
+      }, { once: true });
+    },
+  }));
+
+  await assert.rejects(
+    fetchOpenRouteServiceRoute(prepared, fetcher, "test-server-key", 5),
+    (error: unknown) => error instanceof RouteCalculationError && error.code === "timeout",
   );
 });
 
@@ -198,4 +259,69 @@ test("keeps configured package-route transport pricing independent of custom-rou
   assert.ok(withCustomRouteInputs);
   assert.equal(withCustomRouteInputs.transportCost, existingPackageQuote.transportCost);
   assert.deepEqual(withCustomRouteInputs.transportBreakdown, existingPackageQuote.transportBreakdown);
+});
+
+test("uses a supplied road distance once in a custom quotation", () => {
+  const quote = calculateQuotation({
+    routeId: "custom-itinerary",
+    customCities: ["Naran"],
+    routeDestinations: ["Naran"],
+    startingPoint: "Islamabad",
+    vehicleName: "Toyota Corolla",
+    hotelId: "hotel-mount-feast-naran",
+    roomId: "Deluxe w/o balcony",
+    numberOfRooms: 1,
+    adults: 2,
+    kids: 0,
+    tripDate: "2026-06-15",
+  }, {
+    distanceKm: 500,
+    vehicleConfiguration: {
+      name: "Toyota Corolla",
+      fuelType: "petrol",
+      averageKmPerLiter: 10,
+      maintenanceCostPerKm: 2,
+    },
+    settings: {
+      petrolPricePerLiter: 300,
+      dieselPricePerLiter: 400,
+      additionalDistanceKm: 0,
+      additionalDistancePercent: 10,
+    },
+  });
+
+  assert.ok(quote);
+  assert.equal(quote.transportBreakdown?.distance, 550);
+  assert.equal(quote.transportBreakdown?.fuelCost, 16_500);
+  assert.equal(quote.transportBreakdown?.maintenanceCost, 1_100);
+  assert.equal(quote.transportBreakdown?.rentalCost, 6_000);
+  assert.equal(quote.transportBreakdown?.tollTax, 8_000);
+  assert.equal(quote.transportCost, 31_600);
+});
+
+test("requires the exact configured bearer secret for transport administration", () => {
+  const previousKey = process.env.TRANSPORT_ADMIN_API_KEY;
+  const expectedKey = "test-admin-key-".repeat(3);
+  try {
+    process.env.TRANSPORT_ADMIN_API_KEY = expectedKey;
+    assert.equal(isTransportAdminAuthorized(`Bearer ${expectedKey}`), true);
+    assert.equal(isTransportAdminAuthorized("Bearer wrong-key"), false);
+    assert.equal(isTransportAdminAuthorized(null), false);
+    assert.equal(isTransportAdminAuthorized(`Basic ${expectedKey}`), false);
+    assert.equal(isTransportAdminAuthorized(`Bearer ${expectedKey} `), false);
+  } finally {
+    if (previousKey === undefined) delete process.env.TRANSPORT_ADMIN_API_KEY;
+    else process.env.TRANSPORT_ADMIN_API_KEY = previousKey;
+  }
+});
+
+test("limits route calculations per identifier and resets the window", () => {
+  const identifier = `transport-test-${Math.random()}`;
+  const start = 1_000_000;
+
+  for (let request = 0; request < 20; request += 1) {
+    assert.equal(allowRouteCalculation(identifier, start), true);
+  }
+  assert.equal(allowRouteCalculation(identifier, start), false);
+  assert.equal(allowRouteCalculation(identifier, start + 60_000), true);
 });

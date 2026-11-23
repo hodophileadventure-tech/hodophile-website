@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
           code: error.code,
           itineraryKey: error.itineraryKey,
           stops: error.stops,
+          providerStatus: error.providerStatus,
         },
         {
           status: error.status,

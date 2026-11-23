@@ -18,7 +18,12 @@ export async function getCustomItineraryTransportOptions(
 
   const destinations = input.routeDestinations ?? (input.customCities ?? [])
     .filter((city) => !city.startsWith("Chilas"));
-  const stops = getCustomRoadStops(input.startingPoint, destinations, "road");
+  const stops = getCustomRoadStops(
+    input.startingPoint,
+    destinations,
+    "road",
+    input.includeIslamabadTransit !== false,
+  );
   if (stops.length < 2) return undefined;
 
   try {

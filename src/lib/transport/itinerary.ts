@@ -6,6 +6,7 @@ export function getCustomRoadStops(
   startingPoint: string,
   selectedDestinations: string[],
   travelMode: "road" | "air" = "road",
+  includeIslamabadTransit = true,
 ): string[] {
   const origin = normalizeStop(startingPoint);
   if (!origin) return [];
@@ -16,7 +17,8 @@ export function getCustomRoadStops(
 
   const originLower = origin.toLocaleLowerCase("en");
   const hasIslamabad = destinations.some((destination) => destination.toLocaleLowerCase("en") === "islamabad");
-  const needsIslamabadStop = travelMode === "road" &&
+  const needsIslamabadStop = includeIslamabadTransit &&
+    travelMode === "road" &&
     originLower !== "islamabad" &&
     originLower !== "lahore" &&
     originLower !== "rawalpindi" &&

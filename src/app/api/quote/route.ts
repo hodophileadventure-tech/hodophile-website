@@ -58,6 +58,9 @@ function buildValidationError(body: QuoteRequestBody) {
   if (body.travelMode && body.travelMode !== "road" && body.travelMode !== "air") {
     return "Please select a valid travel mode.";
   }
+  if (body.includeIslamabadTransit !== undefined && typeof body.includeIslamabadTransit !== "boolean") {
+    return "Please provide a valid Islamabad transit selection.";
+  }
   if (body.startingPoint !== undefined &&
       (typeof body.startingPoint !== "string" || body.startingPoint.length > 80)) {
     return "Please provide a valid starting city.";
