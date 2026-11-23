@@ -186,7 +186,9 @@ test("the Skardu and Basho package matches its six-day road itinerary and listed
   assert.equal(journey.title, "Skardu & Basho by Road · 6 Days");
   assert.equal(journey.duration, "6 Days / 5 Nights");
   assert.equal(journey.pricePerPerson, 43000);
-  assert.equal(journey.couplePrice, 75000);
+  assert.equal(journey.couplePrice, 100000);
+  assert.deepEqual(journey.sharingPrices, { quad: 43000, triple: 47000, twin: 50000, solo: 74000 });
+  assert.deepEqual(journey.sharingPricesWithoutIslamabadStay, { quad: 40000, triple: 44000, twin: 46000, solo: 65000 });
   assert.equal(journey.priceOnRequest, undefined);
   assert.deepEqual(journey.itinerary, sourceRoute.dayByDayItinerary);
   assert.ok(journey.transport?.some((item) => /road transport/i.test(item)));
@@ -210,6 +212,8 @@ test("the eight-day Hunza, Skardu and Basho road tour uses the supplied poster r
   assert.equal(journey.duration, "8 Days / 7 Nights");
   assert.equal(journey.pricePerPerson, 55000);
   assert.equal(journey.couplePrice, 128000);
+  assert.deepEqual(journey.sharingPrices, { quad: 55000, triple: 59000, twin: 64000, solo: 100000 });
+  assert.deepEqual(journey.sharingPricesWithoutIslamabadStay, { quad: 52000, triple: 56000, twin: 60000, solo: 87000 });
   assert.ok(journey.destinationSlugs.includes("basho"));
   assert.deepEqual(journey.itinerary?.map((day) => day.day), ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7", "Day 8"]);
 });
