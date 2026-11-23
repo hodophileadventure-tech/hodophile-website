@@ -49,6 +49,18 @@ type PackageDetail = {
   detailSections: Array<{ title: string; content: string[] }>;
   priceWithIslamabadStay: string;
   priceWithoutIslamabadStay: string;
+  sharingPrices?: {
+    quad: number;
+    triple: number;
+    twin: number;
+    solo: number;
+  };
+  sharingPricesWithoutIslamabadStay?: {
+    quad: number;
+    triple: number;
+    twin: number;
+    solo: number;
+  };
   tourNotes: string[];
   refundPolicy: string[];
   terms: string[];
@@ -276,6 +288,8 @@ allPackages.push(
         ],
         priceWithIslamabadStay: `PKR ${sharingPrice.toLocaleString()}`,
         priceWithoutIslamabadStay: sharingPriceWithoutIslamabad ? `PKR ${sharingPriceWithoutIslamabad.toLocaleString()}` : "Confirm configuration",
+        sharingPrices: tourPackage.sharingPrices,
+        sharingPricesWithoutIslamabadStay: tourPackage.sharingPricesWithoutIslamabadStay,
         tourNotes: tourPackage.notes ?? [],
         refundPolicy: ["The applicable refund terms are shared with your confirmed itinerary and booking before payment."],
         terms: ["Routes and stop access may change with weather, road conditions, local guidance, or permissions."],
@@ -423,6 +437,32 @@ export default async function PackagePage({ params }: PackagePageProps) {
     },
   ];
 
+  function SharingPriceTable({ compact = false }: { compact?: boolean }) {
+    if (!pkg?.sharingPrices && !pkg?.sharingPricesWithoutIslamabadStay) return null;
+
+    const PriceRows = ({ title, prices }: {
+      title: string;
+      prices: NonNullable<PackageDetail["sharingPrices"]>;
+    }) => (
+      <div className={`rounded-[1rem] bg-white ${compact ? "p-3" : "p-4"} shadow-sm`}>
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-700">{title}</p>
+        <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+          <div><dt className="text-stone-500">Quad sharing</dt><dd className="mt-0.5 font-bold text-stone-900">PKR {prices.quad.toLocaleString()}</dd></div>
+          <div><dt className="text-stone-500">Triple sharing</dt><dd className="mt-0.5 font-bold text-stone-900">PKR {prices.triple.toLocaleString()}</dd></div>
+          <div><dt className="text-stone-500">Couple sharing</dt><dd className="mt-0.5 font-bold text-stone-900">PKR {prices.twin.toLocaleString()}</dd></div>
+          <div><dt className="text-stone-500">Solo sharing</dt><dd className="mt-0.5 font-bold text-stone-900">PKR {prices.solo.toLocaleString()}</dd></div>
+        </dl>
+      </div>
+    );
+
+    return (
+      <div className="mt-4 grid gap-3">
+        {pkg?.sharingPrices ? <PriceRows title="With Islamabad stay" prices={pkg.sharingPrices} /> : null}
+        {pkg?.sharingPricesWithoutIslamabadStay ? <PriceRows title="Without Islamabad stay" prices={pkg.sharingPricesWithoutIslamabadStay} /> : null}
+      </div>
+    );
+  }
+
   return (
     <>
       <JsonLd
@@ -501,6 +541,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
                   <span className="font-bold text-stone-900">{pkg.priceWithoutIslamabadStay}</span>
                 </div>
               </div>}
+              <SharingPriceTable compact />
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2">
@@ -571,6 +612,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
                   <p className="mt-2 text-2xl font-black text-stone-900">{pkg.priceWithoutIslamabadStay}</p>
                 </div>
               </div>}
+              <SharingPriceTable />
               {pkg.pricingGroups?.length ? (
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
                   {pkg.pricingGroups.map((group) => (

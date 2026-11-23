@@ -250,6 +250,28 @@ export function SwatTourPageContent({ packages }: { packages: TourPackage[] }) {
                   <p className="mt-4 border-t border-stone-200 pt-4 text-sm font-semibold text-stone-900">
                     PKR {tourPackage.pricePerPerson.toLocaleString()} <span className="font-normal text-stone-500">per person</span>
                   </p>
+                  {tourPackage.sharingPrices ? (
+                    <div className="mt-3 rounded-2xl border border-stone-200 bg-[#fffdf7] p-3 text-xs text-stone-700">
+                      <p className="font-bold uppercase tracking-[0.14em] text-stone-500">With Islamabad stay</p>
+                      <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5">
+                        <div><dt className="text-stone-500">Quad</dt><dd className="font-semibold text-stone-900">PKR {tourPackage.sharingPrices.quad.toLocaleString()}</dd></div>
+                        <div><dt className="text-stone-500">Triple</dt><dd className="font-semibold text-stone-900">PKR {tourPackage.sharingPrices.triple.toLocaleString()}</dd></div>
+                        <div><dt className="text-stone-500">Couple</dt><dd className="font-semibold text-stone-900">PKR {tourPackage.sharingPrices.twin.toLocaleString()}</dd></div>
+                        <div><dt className="text-stone-500">Solo</dt><dd className="font-semibold text-stone-900">PKR {tourPackage.sharingPrices.solo.toLocaleString()}</dd></div>
+                      </dl>
+                      {tourPackage.sharingPricesWithoutIslamabadStay ? (
+                        <>
+                          <p className="mt-3 border-t border-stone-200 pt-3 font-bold uppercase tracking-[0.14em] text-stone-500">Without Islamabad stay</p>
+                          <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5">
+                            <div><dt className="text-stone-500">Quad</dt><dd className="font-semibold text-stone-900">PKR {tourPackage.sharingPricesWithoutIslamabadStay.quad.toLocaleString()}</dd></div>
+                            <div><dt className="text-stone-500">Triple</dt><dd className="font-semibold text-stone-900">PKR {tourPackage.sharingPricesWithoutIslamabadStay.triple.toLocaleString()}</dd></div>
+                            <div><dt className="text-stone-500">Couple</dt><dd className="font-semibold text-stone-900">PKR {tourPackage.sharingPricesWithoutIslamabadStay.twin.toLocaleString()}</dd></div>
+                            <div><dt className="text-stone-500">Solo</dt><dd className="font-semibold text-stone-900">PKR {tourPackage.sharingPricesWithoutIslamabadStay.solo.toLocaleString()}</dd></div>
+                          </dl>
+                        </>
+                      ) : null}
+                    </div>
+                  ) : null}
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                     <Link href={packagePath} className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-700 underline decoration-[#fcc000] underline-offset-4">
                       View journey
