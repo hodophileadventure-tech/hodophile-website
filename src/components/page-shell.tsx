@@ -76,9 +76,9 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
         {children}
       </main>
 
-      <footer className="premium-footer text-white">
+      <footer className="premium-footer">
         <div className="site-container-wide mx-auto px-5 sm:px-8 lg:px-10 xl:px-14">
-          <div className="grid items-end gap-7 border-b border-white/[0.09] py-9 lg:grid-cols-[1fr_auto] lg:py-11">
+          <div className="grid items-end gap-7 border-b border-stone-200 py-9 lg:grid-cols-[1fr_auto] lg:py-11">
             <div>
               <p className="premium-footer-kicker">Private journeys across Pakistan</p>
               <h2 className="mt-3 max-w-3xl font-serif text-4xl leading-[1.02] text-white sm:text-[3.25rem]">
@@ -170,7 +170,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 </div>
               </div>
               <div className="mt-5">
-                <p className="text-xs text-white/50">Affiliations</p>
+                <p className="text-xs text-stone-600">Affiliations</p>
                 <div className="mt-2 flex items-center gap-3">
                   <Image
                     src="/images/footer/affiliation-pato.webp"
@@ -191,7 +191,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 border-t border-white/[0.09] py-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 border-t border-stone-200 py-6 text-xs text-stone-600 sm:flex-row sm:items-center sm:justify-between">
             <p>© 2026 Hodophile Adventures. All rights reserved.</p>
             <div className="flex flex-wrap items-center gap-5">
               <Link href="/terms-and-conditions" className="premium-footer-bottom-link">Booking terms</Link>

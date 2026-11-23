@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 
 import { siteConfig } from "@/lib/site";
@@ -53,20 +52,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-theme="light"
       className="h-full antialiased"
-      suppressHydrationWarning
     >
-      <body suppressHydrationWarning className="site-theme site-page-gradient min-h-full flex flex-col font-[var(--font-body)] text-[var(--text-primary)]">
-        <Script id="theme-preference" strategy="beforeInteractive">
-          {`try {
-            const savedTheme = window.localStorage.getItem("hodophile-theme");
-            if (savedTheme === "light" || savedTheme === "dark") {
-              document.documentElement.dataset.theme = savedTheme;
-            }
-          } catch (error) {
-            console.error("Unable to read the saved appearance preference.", error);
-          }`}
-        </Script>
+      <body className="site-theme site-page-gradient min-h-full flex flex-col font-[var(--font-body)] text-[var(--text-primary)]">
         <AnalyticsScripts gaTrackingId={GA_TRACKING_ID} facebookPixelId={FACEBOOK_PIXEL_ID} />
         {FACEBOOK_PIXEL_ID ? (
           <noscript>

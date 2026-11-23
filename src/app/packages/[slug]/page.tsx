@@ -489,7 +489,7 @@ export default async function PackagePage({ params }: PackagePageProps) {
             className="object-cover"
           />
           <div className="site-hero-overlay" aria-hidden="true" />
-          <div className="site-detail-hero-height relative z-10 mx-auto flex max-w-[96rem] flex-col justify-end px-4 pb-10 pt-20 text-white sm:pb-12 sm:pt-24 md:px-6 lg:px-10 xl:px-14">
+          <div className="theme-preserve-dark site-detail-hero-height relative z-10 mx-auto flex max-w-[96rem] flex-col justify-end px-4 pb-10 pt-20 text-white sm:pb-12 sm:pt-24 md:px-6 lg:px-10 xl:px-14">
             <p className="text-xs uppercase tracking-[0.34em] text-white/75">Destination Package</p>
             <h1 className="mt-3 max-w-4xl font-serif text-3xl leading-tight sm:text-4xl">
               {pkg.title}
