@@ -89,6 +89,18 @@ test("routes Fairy Meadows road access through Raikot Bridge", () => {
   assert.deepEqual(route.coordinates[1], raikotBridge.coordinate);
 });
 
+test("routes Shogran to a nearby routable road-access point", () => {
+  const route = prepareRoadRoute(["Islamabad", "Shogran"], false);
+  const shogran = getTransportLocation("Shogran");
+  const roadAccess = getTransportLocation("Shogran Road Access");
+
+  assert.ok(shogran);
+  assert.ok(roadAccess);
+  assert.deepEqual(route.stops, ["Islamabad", "Shogran Road Access"]);
+  assert.deepEqual(route.coordinates[1], roadAccess.coordinate);
+  assert.notDeepEqual(route.coordinates[1], shogran.coordinate);
+});
+
 test("parses ordered road distances and durations from the routing provider", async () => {
   const prepared = prepareRoadRoute(["Islamabad", "Naran", "Hunza"], false);
   let instructions: unknown;
