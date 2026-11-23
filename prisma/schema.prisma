@@ -261,6 +261,48 @@ model TransportPricing {
   @@index([vehicleId])
 }
 
+model TransportSettings {
+  id                       String   @id @default("transport-settings-default")
+  petrolPricePerLiter      Float?
+  dieselPricePerLiter      Float?
+  additionalDistanceKm     Float    @default(0)
+  additionalDistancePercent Float   @default(0)
+  includeReturnJourney     Boolean  @default(true)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+}
+
+model TransportVehicleConfig {
+  id                    String   @id @default(cuid())
+  name                  String   @unique
+  fuelType              String
+  averageKmPerLiter     Float
+  fuelPricePerLiter     Float?
+  maintenanceCostPerKm  Float    @default(0)
+  enabled               Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([enabled])
+}
+
+model RouteDistanceCache {
+  id              String   @id
+  stops           Json
+  legs            Json
+  geometry        Json
+  distanceKm      Float
+  durationSeconds Float?
+  source           String   @default("OPENROUTESERVICE")
+  manualOverride  Boolean  @default(false)
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([expiresAt])
+  @@index([manualOverride])
+}
+
 // ============== ROUTES ==============
 
 model Route {

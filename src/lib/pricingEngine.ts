@@ -6,6 +6,11 @@ import { estimateCustomItineraryDistance, estimateCustomVehicleDays } from "./da
 import { getVehicleRate } from "./data/vehicleRates";
 import { currentFuelPrices } from "./data/fuel";
 import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "./data/routeActivities";
+import {
+  calculateTransportExpense,
+  type TransportCostSettings,
+  type TransportVehicleConfiguration,
+} from "./transport/calculations";
 import type { Room } from "./data/hotels";
 import type { PromotionSummary } from "./promotions/promotion-types";
 
@@ -25,6 +30,8 @@ export interface QuotationInput {
   customCities?: string[]; // cities for custom itinerary
   customRouteLabel?: string; // label for custom route
   travelMode?: "road" | "air";
+  startingPoint?: string;
+  routeDestinations?: string[];
   numberOfRooms: number;
   adults: number;
   kids: number;
@@ -55,13 +62,22 @@ export interface QuotationBreakdown {
   };
   transportBreakdown?: {
     fuelCost: number;
+    maintenanceCost?: number;
     rentalCost: number;
     tollTax: number;
     distance: number;
     fuelNeeded: number;
     dailyRate: number;
     vehicleDays: number;
+    fuelPricePerLiter?: number;
+    averageKmPerLiter?: number;
   };
+}
+
+export interface ServerTransportOptions {
+  distanceKm?: number;
+  vehicleConfiguration?: TransportVehicleConfiguration | null;
+  settings?: TransportCostSettings;
 }
 
 function getSeasonFromDate(date: string): "peak" | "blossom" | "off" | "fixed" {
@@ -85,7 +101,9 @@ export function calculateTransportCost(
   routeId: string,
   vehicleDays: number = 8, // Default 8 days for multi-city tours; adjust as needed
   distanceOverride?: number,
-  travelMode?: "road" | "air"
+  travelMode?: "road" | "air",
+  vehicleConfiguration?: TransportVehicleConfiguration | null,
+  transportSettings?: TransportCostSettings,
 ):
   | {
       totalCost: number;
@@ -94,6 +112,9 @@ export function calculateTransportCost(
       tollTax: number;
       distance: number;
       fuelNeeded: number;
+      maintenanceCost: number;
+      fuelPricePerLiter: number;
+      averageKmPerLiter: number;
       dailyRate: number;
       vehicleDays: number;
     }
@@ -119,15 +140,35 @@ export function calculateTransportCost(
     return null;
   }
 
-  // Get fuel price based on vehicle fuel type, allowing per-vehicle overrides.
-  const fuelPrice =
-    vehicleRate.fuelType === "diesel"
+  const configuredFuelPrice =
+    vehicleConfiguration?.fuelPricePerLiter ??
+    (vehicleConfiguration?.fuelType === "diesel"
+      ? transportSettings?.dieselPricePerLiter
+      : transportSettings?.petrolPricePerLiter);
+  const effectiveVehicleConfiguration = vehicleConfiguration
+    ? {
+        ...vehicleConfiguration,
+        fuelPricePerLiter: configuredFuelPrice ??
+          (vehicleRate.fuelType === "diesel"
+            ? vehicleRate.fuelPrice ?? currentFuelPrices.diesel
+            : currentFuelPrices.petrol),
+      }
+    : null;
+  const configuredExpense = effectiveVehicleConfiguration && transportSettings
+    ? calculateTransportExpense(distance, effectiveVehicleConfiguration, transportSettings)
+    : null;
+  const distanceAllowance = transportSettings && !configuredExpense
+    ? distance * transportSettings.additionalDistancePercent / 100 + transportSettings.additionalDistanceKm
+    : 0;
+  const effectiveDistance = configuredExpense?.totalDistanceKm ?? distance + distanceAllowance;
+  const fuelNeeded = configuredExpense?.fuelLiters ?? effectiveDistance / vehicleRate.consumption;
+  const fuelPrice = configuredExpense?.fuelPricePerLiter ??
+    (vehicleRate.fuelType === "diesel"
       ? vehicleRate.fuelPrice ?? currentFuelPrices.diesel
-      : currentFuelPrices.petrol;
-
-  // Calculate fuel cost
-  const fuelNeeded = distance / vehicleRate.consumption;
-  const fuelCost = Math.round(fuelNeeded * fuelPrice);
+      : currentFuelPrices.petrol);
+  const fuelCost = configuredExpense?.fuelExpense ?? Math.round(fuelNeeded * fuelPrice);
+  const maintenanceCost = configuredExpense?.maintenanceExpense ?? 0;
+  distance = effectiveDistance;
 
   // Calculate rental cost
   // Allow special rental/toll overrides for air travel (Prado rule)
@@ -141,18 +182,21 @@ export function calculateTransportCost(
   const rentalCost = effectiveDailyRate * vehicleDays;
 
   // Total transport cost (fuel + rental + toll/tax)
-  const totalCost = fuelCost + rentalCost + effectiveTollTax;
+  const totalCost = fuelCost + maintenanceCost + rentalCost + effectiveTollTax;
 
   console.debug(
-    `Transport: ${effectiveVehicleName} | Distance: ${distance}km | Consumption: ${vehicleRate.consumption}km/L | Fuel: ${fuelNeeded.toFixed(1)}L × ${fuelPrice}PKR = ${fuelCost}PKR | Rental: ${effectiveDailyRate}PKR × ${vehicleDays}days = ${rentalCost}PKR | Toll/Tax: ${effectiveTollTax}PKR | Total: ${totalCost}PKR`
+    `Transport: ${effectiveVehicleName} | Distance: ${distance}km | Consumption: ${effectiveVehicleConfiguration?.averageKmPerLiter ?? vehicleRate.consumption}km/L | Fuel: ${fuelNeeded.toFixed(1)}L × ${fuelPrice}PKR = ${fuelCost}PKR | Maintenance: ${maintenanceCost}PKR | Rental: ${effectiveDailyRate}PKR × ${vehicleDays}days = ${rentalCost}PKR | Toll/Tax: ${effectiveTollTax}PKR | Total: ${totalCost}PKR`
   );
   return {
     totalCost,
     fuelCost,
+    maintenanceCost,
     rentalCost,
     tollTax: effectiveTollTax,
     distance,
     fuelNeeded,
+    fuelPricePerLiter: fuelPrice,
+    averageKmPerLiter: effectiveVehicleConfiguration?.averageKmPerLiter ?? vehicleRate.consumption,
     dailyRate: effectiveDailyRate,
     vehicleDays,
   };
@@ -262,7 +306,8 @@ function calculateSingleCityHotelCost(
 }
 
 export function calculateQuotation(
-  input: QuotationInput
+  input: QuotationInput,
+  serverTransportOptions?: ServerTransportOptions,
 ): QuotationBreakdown | null {
   try {
     const route = getRouteById(input.routeId);
@@ -274,7 +319,7 @@ export function calculateQuotation(
     }
 
     const customDistance = isCustomItinerary
-      ? estimateCustomItineraryDistance(input.customCities || [])
+      ? serverTransportOptions?.distanceKm ?? estimateCustomItineraryDistance(input.customCities || [])
       : undefined;
     const effectiveCustomNights = input.multiCityNights ??
       (input.singleCityHotelStays && input.singleCityHotelStays.length > 0
@@ -292,7 +337,9 @@ export function calculateQuotation(
       input.routeId,
       isCustomItinerary ? customVehicleDays : route?.vehicleDays,
       customDistance,
-      input.travelMode
+      input.travelMode,
+      isCustomItinerary ? serverTransportOptions?.vehicleConfiguration : null,
+      isCustomItinerary ? serverTransportOptions?.settings : undefined,
     );
     if (transportResult === null) {
       console.warn(`Transport cost calculation failed for vehicle: ${input.vehicleName}, route: ${input.routeId}`);
@@ -457,12 +504,15 @@ export function calculateQuotation(
       },
         transportBreakdown: transportResult && {
           fuelCost: transportResult.fuelCost,
+          maintenanceCost: transportResult.maintenanceCost,
           rentalCost: transportResult.rentalCost,
           tollTax: transportResult.tollTax,
           distance: transportResult.distance,
           fuelNeeded: transportResult.fuelNeeded,
           dailyRate: transportResult.dailyRate,
           vehicleDays: transportResult.vehicleDays,
+          fuelPricePerLiter: transportResult.fuelPricePerLiter,
+          averageKmPerLiter: transportResult.averageKmPerLiter,
         },
     };
   } catch (error) {

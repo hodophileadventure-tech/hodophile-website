@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { calculateQuotation, type QuotationInput } from "@/lib/pricingEngine";
+import { getCustomItineraryTransportOptions } from "@/lib/transport/quotation";
+import { allowRouteCalculation } from "@/lib/transport/rate-limit";
 import { applyPromotionToQuotation, validatePromoCode } from "@/lib/promotions/promotion-service";
 
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as QuotationInput & { promoCode?: unknown };
+    if (body.routeId === "custom-itinerary" && body.travelMode !== "air") {
+      const identifier = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+        request.headers.get("x-real-ip") ||
+        "unknown";
+      if (!allowRouteCalculation(identifier)) {
+        return NextResponse.json(
+          { error: "Too many route requests. Please wait a minute and try again." },
+          { status: 429, headers: { "Retry-After": "60" } },
+        );
+      }
+    }
 
     const missingFields = [
       !body.routeId && "routeId",
@@ -25,7 +38,8 @@ export async function POST(request: NextRequest) {
     }
 
     const { promoCode, ...quotationInput } = body;
-    let quotation = await calculateQuotation(quotationInput);
+    const transportOptions = await getCustomItineraryTransportOptions(quotationInput);
+    let quotation = await calculateQuotation(quotationInput, transportOptions);
     if (!quotation) {
       return NextResponse.json(
         {
@@ -44,7 +58,9 @@ export async function POST(request: NextRequest) {
       quotation = applyPromotionToQuotation(quotation, promotion, quotationInput.adults + quotationInput.kids);
     }
 
-    return NextResponse.json({ success: true, quotation });
+    const customerQuotation = { ...quotation };
+    delete customerQuotation.transportBreakdown;
+    return NextResponse.json({ success: true, quotation: customerQuotation });
   } catch (error) {
     console.error("Quotation calc error:", error);
     return NextResponse.json(

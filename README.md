@@ -28,6 +28,26 @@ npm run build
 
 This project is ready for Hostinger VPS deployment. Set `NEXT_PUBLIC_SITE_URL` to your real domain before deploying so canonical URLs, sitemap entries, and structured data point at the correct site address.
 
+## Make My Trip road routing
+
+The Make My Trip custom itinerary map uses OpenStreetMap tiles and server-side OpenRouteService road routing. Configure these server environment variables before enabling route calculation:
+
+- `OPENROUTESERVICE_API_KEY` — OpenRouteService key. Keep it server-side; do not use a `NEXT_PUBLIC_` prefix.
+- `TRANSPORT_ADMIN_API_KEY` — a separate randomly generated secret with at least 32 characters for the transport administration API.
+- `DATABASE_URL` — PostgreSQL connection string used for transport settings, vehicle configurations, and route caching.
+
+Apply the transport tables with the existing Prisma migration:
+
+```bash
+npm run db:migrate:deploy
+```
+
+Run the transport routing and cost regression tests with `npm run test:transport`.
+
+`POST /api/transport/route` accepts an ordered list of supported place names, such as `{"stops":["Islamabad","Naran","Hunza"]}`. The server applies the configured return journey and distance allowance, and responds with road legs, distance, duration, and route geometry. Unsupported locations or provider errors are returned explicitly; the endpoint does not substitute straight-line distances.
+
+Transport administration is available only through `GET`, `PUT`, and `POST /api/admin/transport`, using `Authorization: Bearer <TRANSPORT_ADMIN_API_KEY>`. `GET` lists settings, vehicles, and recent cached routes. `PUT` accepts `settings`, `vehicles`, and/or a `routeOverride` containing ordered stops and one `legDistancesKm` value per leg. `POST` accepts `stops`, `vehicleName`, and `vehicleDays` to calculate the internal transportation-cost breakdown. Keep the admin key private and call this API only from trusted administrative tooling.
+
 ## SEO notes
 
 - All main pages export metadata.

@@ -11,6 +11,8 @@ import {
   isPromotionRedemptionConflict,
 } from "@/lib/promotions/promotion-redemption";
 import { normalizePromotionPhone } from "@/lib/promotions/promotion-phone";
+import { getCustomItineraryTransportOptions } from "@/lib/transport/quotation";
+import { allowRouteCalculation } from "@/lib/transport/rate-limit";
 
 interface QuoteRequestBody extends QuotationInput {
   customerName: string;
@@ -55,6 +57,15 @@ function buildValidationError(body: QuoteRequestBody) {
   }
   if (body.travelMode && body.travelMode !== "road" && body.travelMode !== "air") {
     return "Please select a valid travel mode.";
+  }
+  if (body.startingPoint !== undefined &&
+      (typeof body.startingPoint !== "string" || body.startingPoint.length > 80)) {
+    return "Please provide a valid starting city.";
+  }
+  if (body.routeDestinations !== undefined &&
+      (!Array.isArray(body.routeDestinations) || body.routeDestinations.length > 10 ||
+        body.routeDestinations.some((city) => typeof city !== "string" || city.length > 80))) {
+    return "Please provide a valid ordered list of destinations.";
   }
   const nights = [
     ...Object.values(body.multiCityNights || {}),
@@ -156,12 +167,23 @@ export async function POST(request: NextRequest) {
 
     const route = getRouteById(body.routeId);
     const isCustomItinerary = !route && Boolean(body.customCities && body.customCities.length > 0);
+    if (isCustomItinerary && body.travelMode !== "air") {
+      const identifier = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+        request.headers.get("x-real-ip") ||
+        "unknown";
+      if (!allowRouteCalculation(identifier)) {
+        return NextResponse.json(
+          { error: "Too many route requests. Please wait a minute and try again." },
+          { status: 429, headers: { "Retry-After": "60" } },
+        );
+      }
+    }
 
     // Normalize vehicle name (accept aliases from frontend)
     const canonicalVehicle = getVehicleRate(body.vehicleName)?.name || body.vehicleName;
 
     // Calculate quotation (now async)
-    let quotation = await calculateQuotation({
+    const quotationInput: QuotationInput = {
       routeId: body.routeId,
       vehicleName: canonicalVehicle,
       hotelId: body.hotelId,
@@ -172,13 +194,17 @@ export async function POST(request: NextRequest) {
       customCities: body.customCities,
       customRouteLabel: body.customRouteLabel,
       travelMode: body.travelMode,
+      startingPoint: body.startingPoint,
+      routeDestinations: body.routeDestinations,
       numberOfRooms: body.numberOfRooms,
       adults: body.adults,
       kids: body.kids || 0,
       tripDate: body.tripDate,
       jeepAddons: body.jeepAddons,
       jeepCount: Math.ceil((body.adults + (body.kids || 0)) / 6) || 1,
-    });
+    };
+    const transportOptions = await getCustomItineraryTransportOptions(quotationInput);
+    let quotation = await calculateQuotation(quotationInput, transportOptions);
 
     if (!quotation) {
       return NextResponse.json(
@@ -332,9 +358,11 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    const customerQuotation = { ...quotation };
+    delete customerQuotation.transportBreakdown;
     return NextResponse.json({
       success: true,
-      quotation,
+      quotation: customerQuotation,
       message: "Quotation calculated successfully. Our team will contact you soon.",
     });
   } catch (error) {

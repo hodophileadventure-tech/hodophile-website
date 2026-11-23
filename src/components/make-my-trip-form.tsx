@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -13,6 +14,8 @@ import {
   Sparkles,
   Hotel as HotelIcon,
   Baby,
+  ArrowDown,
+  ArrowUp,
   Map,
   MapPin,
   Phone,
@@ -32,6 +35,9 @@ import COMBO_ITINERARIES from "@/lib/data/combo-itineraries";
 import { normalizeComboKey as toCombinationKey } from "@/lib/data/combo-keys";
 import { orderedFeaturedTourCards } from "@/lib/data/featured-tour-cards";
 import { ROUTE_GRAPH, validateRoute } from "@/lib/data/custom-itinerary";
+import { getCustomRoadStops } from "@/lib/transport/itinerary";
+import { getTransportLocation } from "@/lib/transport/locations";
+import type { RoadRouteEstimate } from "@/lib/transport/route-service";
 import { whatsappUrl } from "@/lib/site";
 import { PROMOTIONS } from "@/lib/promotions/promotion-config";
 import type { PromotionSummary, PromoValidationResult } from "@/lib/promotions/promotion-types";
@@ -39,6 +45,11 @@ import { JourneySummary } from "@/components/make-my-trip/journey-summary";
 import { HotelCardPicker } from "@/components/make-my-trip/hotel-card-picker";
 import { RouteVisualizer } from "@/components/make-my-trip/route-visualizer";
 import { TripPlannerProgress } from "@/components/make-my-trip/trip-planner-progress";
+
+const RouteDistanceMap = dynamic(() => import("@/components/make-my-trip/route-distance-map"), {
+  ssr: false,
+  loading: () => <div className="h-[320px] animate-pulse rounded-[18px] border border-[#e8d7a3] bg-stone-100 sm:h-[390px]" aria-label="Loading route map" />,
+});
 
 // Map featured tours to their corresponding route slugs
 const PREPLANNED_TRIP_MAP: Record<string, string> = {
@@ -218,12 +229,21 @@ export function MakeMyTripForm() {
 
   // UI state
   const [quotation, setQuotation] = useState<QuotationBreakdown | null>(null);
+  const [roadRouteResult, setRoadRouteResult] = useState<{
+    itineraryKey: string;
+    route: RoadRouteEstimate | null;
+    error: string;
+  } | null>(null);
   const [promoInput, setPromoInput] = useState("");
   const [promoCode, setPromoCode] = useState("");
   const [promoValidation, setPromoValidation] = useState<PromotionSummary | null>(null);
   const [promoError, setPromoError] = useState("");
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
   const promoQuoteRequestRef = useRef(0);
+  const customQuoteRequestRef = useRef(0);
+  const customQuoteTimeoutRef = useRef<number | null>(null);
+  const customQuoteAbortRef = useRef<AbortController | null>(null);
+  const roadRouteRequestRef = useRef(0);
   const [availableHotels, setAvailableHotels] = useState<Hotel[]>([]);
   const [availableRooms, setAvailableRooms] = useState<any[]>([]);
   const [availableVehicles, setAvailableVehicles] = useState<Array<{ name: string; price: number }>>([]);
@@ -780,6 +800,43 @@ export function MakeMyTripForm() {
       });
   };
 
+  const refreshCustomQuotation = (quotationInput: QuotationInput, requestId: number) => {
+    setQuotation(null);
+    if (customQuoteTimeoutRef.current !== null) {
+      window.clearTimeout(customQuoteTimeoutRef.current);
+    }
+    customQuoteAbortRef.current?.abort();
+
+    customQuoteTimeoutRef.current = window.setTimeout(() => {
+      const controller = new AbortController();
+      customQuoteAbortRef.current = controller;
+      void fetch("/api/quote/calc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(quotationInput),
+        signal: controller.signal,
+      })
+        .then(async (response) => ({
+          response,
+          body: await response.json() as { success?: boolean; quotation?: QuotationBreakdown; error?: string },
+        }))
+        .then(({ response, body }) => {
+          if (customQuoteRequestRef.current !== requestId) return;
+          if (!response.ok || !body.success || !body.quotation) {
+            console.error("Custom itinerary quotation failed:", body.error || response.status);
+            setQuotation(calculateQuotation(quotationInput));
+            return;
+          }
+          setQuotation(body.quotation);
+        })
+        .catch((error: unknown) => {
+          if (controller.signal.aborted || customQuoteRequestRef.current !== requestId) return;
+          console.error("Custom itinerary quotation request failed:", error);
+          setQuotation(calculateQuotation(quotationInput));
+        });
+    }, 300);
+  };
+
   const shouldAutoIncludeIslamabad = (): boolean => {
     if (!isCustomCitySelection()) return false;
     if (travelMode === "air") return false;
@@ -1102,6 +1159,18 @@ export function MakeMyTripForm() {
     });
   };
 
+  const moveSelectedCity = (city: string, direction: -1 | 1) => {
+    setSelectedCities((currentCities) => {
+      const currentIndex = currentCities.indexOf(city);
+      const nextIndex = currentIndex + direction;
+      if (currentIndex < 0 || nextIndex < 0 || nextIndex >= currentCities.length) return currentCities;
+
+      const reordered = [...currentCities];
+      [reordered[currentIndex], reordered[nextIndex]] = [reordered[nextIndex], reordered[currentIndex]];
+      return isValidCustomRoute(getActualStartingPoint(), reordered) ? reordered : currentCities;
+    });
+  };
+
   // Update available vehicles when route changes or when custom cities are selected
   useEffect(() => {
     if (selectedRoute) {
@@ -1226,6 +1295,7 @@ export function MakeMyTripForm() {
   // Calculate quotation when key fields change
   useEffect(() => {
     const promoQuoteRequestId = ++promoQuoteRequestRef.current;
+    const customQuoteRequestId = ++customQuoteRequestRef.current;
     if (tripDate && vehicleName && numberOfRooms > 0 && adults > 0) {
       if (isCustomCitySelection()) {
         if (supportsMultipleHotelsInCustomSingleCity) {
@@ -1236,11 +1306,13 @@ export function MakeMyTripForm() {
             const customJeepCost = getMandatoryJeepCostForCities(
               effectiveSelectedCities.filter((city) => city !== "Islamabad")
             );
-            const calc = calculateQuotation({
+            const quotationInput: QuotationInput = {
               routeId: "custom-itinerary",
               vehicleName,
               hotelCategory,
               customCities: effectiveSelectedCities,
+              startingPoint: getActualStartingPoint(),
+              routeDestinations: selectedCities,
               customRouteLabel: effectiveSelectedCities.join(" + "),
               singleCityHotelStays,
               numberOfRooms,
@@ -1249,8 +1321,8 @@ export function MakeMyTripForm() {
               tripDate,
               mandatoryJeepCost: customJeepCost,
               travelMode: travelMode as "road" | "air",
-            });
-            setQuotation(calc);
+            };
+            refreshCustomQuotation(quotationInput, customQuoteRequestId);
           } else {
             setQuotation(null);
           }
@@ -1272,11 +1344,13 @@ export function MakeMyTripForm() {
               customCities: _augCities,
             } = ensureChilasInMultiCityData(effectiveMultiCityHotels, effectiveCustomCityNights, effectiveSelectedCities);
 
-            const calc = calculateQuotation({
+            const quotationInput: QuotationInput = {
               routeId: "custom-itinerary",
               vehicleName,
               hotelCategory,
               customCities: _augCities,
+              startingPoint: getActualStartingPoint(),
+              routeDestinations: selectedCities,
               customRouteLabel: _augCities.join(" + "),
               multiCityHotels: _augHotels,
               multiCityNights: _augNights,
@@ -1286,8 +1360,8 @@ export function MakeMyTripForm() {
               tripDate,
               mandatoryJeepCost: customJeepCost,
               travelMode: travelMode as "road" | "air",
-            });
-            setQuotation(calc);
+            };
+            refreshCustomQuotation(quotationInput, customQuoteRequestId);
           } else {
             setQuotation(null);
           }
@@ -1383,7 +1457,14 @@ export function MakeMyTripForm() {
     } else {
       setQuotation(null);
     }
-  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode]);
+    return () => {
+      if (customQuoteTimeoutRef.current !== null) {
+        window.clearTimeout(customQuoteTimeoutRef.current);
+        customQuoteTimeoutRef.current = null;
+      }
+      customQuoteAbortRef.current?.abort();
+    };
+  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode, startingPoint, otherStartingPoint, roadRouteResult]);
 
   useEffect(() => {
     if (promoCode && !getPromotionForTour(routeId)) {
@@ -1654,7 +1735,7 @@ export function MakeMyTripForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tripDate,
-          startingPoint,
+          startingPoint: getActualStartingPoint(),
           routeId: isCustomCitySelection() ? "custom-itinerary" : routeId,
           hotelId: primaryHotelId,
           roomId: primaryRoomId,
@@ -1675,6 +1756,7 @@ export function MakeMyTripForm() {
           multiCityHotels: ((isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity) || isMultiCityTour()) ? effectiveMultiCityHotels : undefined,
           multiCityNights: selectedMultiCityNights,
           customCities: selectedCustomCities,
+          routeDestinations: selectedCities,
           customRouteLabel: isCustomCitySelection() ? effectiveSelectedCities.join(" + ") : undefined,
         }),
       });
@@ -1821,6 +1903,82 @@ export function MakeMyTripForm() {
 
     return stops;
   })();
+  const roadRouteStops = (() => {
+    if (travelMode === "air") return [];
+    const origin = getActualStartingPoint().trim();
+    if (!origin) return [];
+
+    if (selectedCities.length > 0 && !routeId) {
+      return getCustomRoadStops(origin, selectedCities, "road");
+    }
+
+    if (!selectedRoute) return [];
+    const destinations = multiCityConfig[routeId]?.cities ?? [selectedRoute.city];
+    return [
+      origin,
+      ...destinations.filter((destination) => destination.toLocaleLowerCase("en") !== origin.toLocaleLowerCase("en")),
+    ];
+  })();
+  const roadRouteStopsKey = roadRouteStops.join("\u001f");
+  const unsupportedRoadRouteStop = roadRouteStops.find((stop) => !getTransportLocation(stop));
+  const currentRoadRouteResult = roadRouteResult?.itineraryKey === roadRouteStopsKey
+    ? roadRouteResult
+    : null;
+  const roadRoute = currentRoadRouteResult?.route ?? null;
+  const roadRouteError = unsupportedRoadRouteStop
+    ? `Road routing is not available for "${unsupportedRoadRouteStop}". Choose a supported city or contact Hodophile.`
+    : currentRoadRouteResult?.error ?? "";
+  const isLoadingRoadRoute = roadRouteStops.length > 1 &&
+    !unsupportedRoadRouteStop &&
+    currentRoadRouteResult === null;
+
+  useEffect(() => {
+    const requestId = ++roadRouteRequestRef.current;
+    const stops = roadRouteStopsKey.split("\u001f");
+    const unsupportedStop = stops.find((stop) => !getTransportLocation(stop));
+    if (stops.length < 2 || unsupportedStop) return;
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => {
+      void fetch("/api/transport/route", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ stops }),
+        signal: controller.signal,
+      })
+        .then(async (response) => ({
+          response,
+          body: await response.json() as RoadRouteEstimate & { error?: string },
+        }))
+        .then(({ response, body }) => {
+          if (roadRouteRequestRef.current !== requestId) return;
+          if (!response.ok) {
+            setRoadRouteResult({
+              itineraryKey: roadRouteStopsKey,
+              route: null,
+              error: body.error || "Road distance could not be calculated. Please try again or contact Hodophile.",
+            });
+            return;
+          }
+          setRoadRouteResult({ itineraryKey: roadRouteStopsKey, route: body, error: "" });
+        })
+        .catch((error: unknown) => {
+          if (controller.signal.aborted || roadRouteRequestRef.current !== requestId) return;
+          console.error("Route distance request failed:", error);
+          setRoadRouteResult({
+            itineraryKey: roadRouteStopsKey,
+            route: null,
+            error: "Road distance could not be calculated. Please try again or contact Hodophile.",
+          });
+        });
+    }, 350);
+
+    return () => {
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [roadRouteStopsKey]);
+
   const summaryNights = configuredSummaryStops.reduce((total, stop) => total + (stop.nights ?? 0), 0);
   const summaryDuration = selectedRoute
     ? `${selectedRoute.duration} days · ${summaryNights || Math.max(0, selectedRoute.duration - 1)} nights`
@@ -2467,6 +2625,28 @@ export function MakeMyTripForm() {
                           <span className="mt-0.5 block text-[10px] text-stone-500">{effectiveCustomCityNights[city] ?? 1} night{(effectiveCustomCityNights[city] ?? 1) === 1 ? "" : "s"}</span>
                         </span>
                         <div className="flex shrink-0 items-center gap-1">
+                          {selectedCities.length > 1 && selectedCities.includes(city) ? (
+                            <span className="mr-1 flex flex-col gap-0.5">
+                              <button
+                                type="button"
+                                aria-label={`Move ${city} earlier in the route`}
+                                disabled={selectedCities.indexOf(city) === 0}
+                                onClick={() => moveSelectedCity(city, -1)}
+                                className="flex h-5 w-6 items-center justify-center rounded border border-stone-300 text-stone-700 hover:border-[#b98d00] disabled:cursor-not-allowed disabled:opacity-40"
+                              >
+                                <ArrowUp className="h-3 w-3" aria-hidden="true" />
+                              </button>
+                              <button
+                                type="button"
+                                aria-label={`Move ${city} later in the route`}
+                                disabled={selectedCities.indexOf(city) === selectedCities.length - 1}
+                                onClick={() => moveSelectedCity(city, 1)}
+                                className="flex h-5 w-6 items-center justify-center rounded border border-stone-300 text-stone-700 hover:border-[#b98d00] disabled:cursor-not-allowed disabled:opacity-40"
+                              >
+                                <ArrowDown className="h-3 w-3" aria-hidden="true" />
+                              </button>
+                            </span>
+                          ) : null}
                           <button
                             type="button"
                             aria-label={`Remove one night in ${city}`}
@@ -2499,6 +2679,15 @@ export function MakeMyTripForm() {
                 </div>
               )}
             </div>
+
+            {plannerStep === 2 && roadRouteStops.length > 1 ? (
+              <RouteDistanceMap
+                stops={roadRouteStops}
+                route={roadRoute}
+                loading={isLoadingRoadRoute}
+                error={roadRouteError}
+              />
+            ) : null}
 
             {/* Invalid Combination Alert */}
             {isInvalidCombination && selectedCities.length > 0 && (
