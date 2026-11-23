@@ -234,6 +234,8 @@ test("the seven-day Kashmir, Swat and Shogran package uses the supplied itinerar
   assert.equal(journey.duration, "7 Days / 6 Nights");
   assert.equal(journey.pricePerPerson, 50000);
   assert.equal(journey.couplePrice, 114000);
+  assert.deepEqual(journey.sharingPrices, { quad: 50000, triple: 54000, twin: 57000, solo: 75000 });
+  assert.deepEqual(journey.sharingPricesWithoutIslamabadStay, { quad: 47000, triple: 51000, twin: 55000, solo: 72000 });
   assert.deepEqual(journey.itinerary?.map((day) => day.day), ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"]);
 });
 

@@ -268,6 +268,8 @@ export const tourPackages: TourPackage[] = [
     duration: "7 Days / 6 Nights",
     pricePerPerson: 50000,
     couplePrice: 114000,
+    sharingPrices: { quad: 50000, triple: 54000, twin: 57000, solo: 75000 },
+    sharingPricesWithoutIslamabadStay: { quad: 47000, triple: 51000, twin: 55000, solo: 72000 },
     scheduleNote: "Seven-day combined tour from Islamabad; Arang Kel, chairlift, jeep, weather, and road access remain subject to local conditions.",
     departureAvailability: "on-request",
     departures: [],
