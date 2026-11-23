@@ -115,7 +115,7 @@ export const tourPackages: TourPackage[] = [
     description: "A six-day road journey from Islamabad to Skardu and Basho Valley, returning via Naran.",
     region: "northern",
     destinationSlugs: ["skardu"],
-    image: "/images/package-cards/images__tour-packages__14.webp",
+    image: "/images/pakistan-journeys/skardu-basho.webp",
     routeStops: ["Islamabad", "Chilas", "Kiwai Waterfall", "Lulusar Lake", "Babusar Top", "3 Mountains Junction", "Astak Nala", "Skardu", "Shangrila Resort", "Manthoka Waterfall", "Shigar Fort", "Sarfaranga Cold Desert", "Basho or Deosai Valley", "Sadpara Lake", "Bara Pani", "Kala Pani", "Sheosar Lake", "Naran Valley", "Jheel Saif-ul-Malook"],
     routeHighlights: ["Basho Valley by 4x4", "Shangrila Resort", "Manthoka Waterfall", "Shigar Fort", "Sarfaranga Cold Desert"],
     bestFor: "A six-day Skardu and Basho road journey",
