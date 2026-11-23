@@ -81,12 +81,22 @@ test("rejects unsupported route stops instead of approximating their distance", 
 
 test("parses ordered road distances and durations from the routing provider", async () => {
   const prepared = prepareRoadRoute(["Islamabad", "Naran", "Hunza"], false);
+  let instructions: unknown;
+  const fetcher: typeof fetch = async (_input, init) => {
+    const body = typeof init?.body === "string" ? JSON.parse(init.body) : null;
+    if (typeof body !== "object" || body === null || Array.isArray(body)) {
+      throw new Error("Expected a JSON routing request body.");
+    }
+    instructions = (body as Record<string, unknown>).instructions;
+    return makeRouteResponse(prepared.stops);
+  };
   const route = await fetchOpenRouteServiceRoute(
     prepared,
-    async () => makeRouteResponse(prepared.stops),
+    fetcher,
     "test-server-key",
   );
 
+  assert.equal(instructions, true);
   assert.deepEqual(route.legs.map(({ from, to }) => [from, to]), [
     ["Islamabad", "Naran"],
     ["Naran", "Hunza"],

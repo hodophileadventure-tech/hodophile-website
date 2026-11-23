@@ -376,7 +376,7 @@ export async function fetchOpenRouteServiceRoute(
       },
       body: JSON.stringify({
         coordinates: prepared.coordinates,
-        instructions: false,
+        instructions: true,
         preference: "recommended",
       }),
       signal: controller.signal,
