@@ -27,6 +27,7 @@ export interface Hotel {
     | "Shogran"
     | "Islamabad"
     | "Nathia Gali"
+    | "Murree"
     | "Naran"
     | "Chilas";
   image?: string; // Hotel main photo URL
@@ -660,6 +661,42 @@ export const hotels: Hotel[] = [
     ],
   },
   {
+    id: "mount-vista-resort-nathia-gali",
+    name: "Mount Vista Resort",
+    city: "Nathia Gali",
+    rooms: [{ name: "Standard Room", price: 5000 }],
+  },
+  {
+    id: "red-apple-hotel-nathia-gali",
+    name: "Red Apple Hotel",
+    city: "Nathia Gali",
+    rooms: [{ name: "Standard Room", price: 5000 }],
+  },
+  {
+    id: "relax-inn-nathia-gali",
+    name: "Relax Inn Nathia Gali",
+    city: "Nathia Gali",
+    rooms: [{ name: "Deluxe Room", price: 15000 }],
+  },
+  {
+    id: "the-cloud-express-nathia-gali",
+    name: "The Cloud Express",
+    city: "Nathia Gali",
+    rooms: [{ name: "Executive Room", price: 25000 }],
+  },
+  {
+    id: "zesora-nathia-gali",
+    name: "Zesora Nathia Gali",
+    city: "Nathia Gali",
+    rooms: [{ name: "Executive Room", price: 35000 }],
+  },
+  {
+    id: "double-tree-nathia-gali",
+    name: "Double Tree Nathia Gali",
+    city: "Nathia Gali",
+    rooms: [{ name: "Executive Room", price: 50000 }],
+  },
+  {
     id: "corner-cottage-arangkel",
     name: "Hotel Corner Cottage Arangkel",
     city: "Kashmir",
@@ -810,6 +847,57 @@ export const hotels: Hotel[] = [
     rooms: [
       { name: "Standard", price: 5000 },
     ],
+  },
+  {
+    id: "wazir-inn-astore",
+    name: "Wazir Inn",
+    city: "Astore",
+    rooms: [{ name: "Deluxe Room", price: 18000 }],
+  },
+  {
+    id: "brown-bear-hotel-astore",
+    name: "Brown Bear Hotel",
+    city: "Astore",
+    rooms: [
+      { name: "Standard Room", price: 5000 },
+      { name: "Deluxe Room", price: 15000 },
+    ],
+  },
+  {
+    id: "astore-inn",
+    name: "Astore Inn",
+    city: "Astore",
+    rooms: [{ name: "Standard Room", price: 5000 }],
+  },
+  {
+    id: "kamran-hotel-astore",
+    name: "Kamran Hotel",
+    city: "Astore",
+    rooms: [{ name: "Deluxe Room", price: 15000 }],
+  },
+  {
+    id: "2nd-home-hotel-murree",
+    name: "2nd Home Hotel",
+    city: "Murree",
+    rooms: [{ name: "Deluxe Room", price: 10000 }],
+  },
+  {
+    id: "sky-square-murree",
+    name: "Sky Square Murree",
+    city: "Murree",
+    rooms: [{ name: "Deluxe Room", price: 15000 }],
+  },
+  {
+    id: "romi-lodge-murree",
+    name: "Romi Lodge",
+    city: "Murree",
+    rooms: [{ name: "Executive Room", price: 30000 }],
+  },
+  {
+    id: "mount-heaven-murree",
+    name: "Mount Heaven",
+    city: "Murree",
+    rooms: [{ name: "Standard Room", price: 5000 }],
   },
 ];
 

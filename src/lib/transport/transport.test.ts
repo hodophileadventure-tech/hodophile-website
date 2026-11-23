@@ -9,10 +9,12 @@ import { getCustomRoadStops } from "./itinerary";
 import { getTransportLocation } from "./locations";
 import { allowRouteCalculation } from "./rate-limit";
 import {
+  applyRouteDistanceAdjustments,
   createManualRouteOverride,
   fetchOpenRouteServiceRoute,
   prepareRoadRoute,
   RouteCalculationError,
+  type StoredRoute,
 } from "./route-service";
 
 function makeRouteResponse(stops: string[], status = 200): Response {
@@ -48,6 +50,86 @@ test("prepares multi-destination routes in order and includes the return stop", 
     () => prepareRoadRoute(["Islamabad", "Islamabad"], false),
     (error: unknown) => error instanceof RouteCalculationError && error.code === "invalid-stops",
   );
+});
+
+test("adds each selected destination distance once to its leg and the custom route total", () => {
+  const destinations = [
+    "Hunza",
+    "Skardu",
+    "Naran",
+    "Astore",
+    "Kashmir",
+    "Swat",
+    "Fairy Meadows",
+    "Shogran",
+    "Nathia Gali",
+    "Murree",
+  ];
+  const prepared = prepareRoadRoute(["Islamabad", ...destinations], true);
+
+  assert.deepEqual(prepared.destinationAdjustmentsKmByLeg, [
+    400,
+    500,
+    300,
+    270,
+    340,
+    550,
+    188,
+    200,
+    120,
+    185,
+    0,
+  ]);
+  assert.deepEqual(
+    prepareRoadRoute(["Islamabad", "Murree", "Naran"], true).destinationAdjustmentsKmByLeg,
+    [185, 300, 0],
+  );
+  assert.deepEqual(
+    prepareRoadRoute(["Islamabad", "Hunza", "Skardu", "Hunza"], true).destinationAdjustmentsKmByLeg,
+    [400, 500, 0, 0],
+  );
+
+  const route: StoredRoute = {
+    itineraryKey: prepared.itineraryKey,
+    stops: prepared.stops,
+    legs: prepared.stops.slice(1).map((to, index) => ({
+      from: prepared.stops[index]!,
+      to,
+      distanceKm: 10,
+      durationSeconds: 100,
+      geometry: [prepared.coordinates[index]!, prepared.coordinates[index + 1]!],
+    })),
+    geometry: prepared.coordinates,
+    distanceKm: (prepared.stops.length - 1) * 10,
+    durationSeconds: (prepared.stops.length - 1) * 100,
+    source: "OPENROUTESERVICE",
+    manualOverride: false,
+    expiresAt: new Date(),
+  };
+  const estimate = applyRouteDistanceAdjustments(route, {
+    petrolPricePerLiter: null,
+    dieselPricePerLiter: null,
+    additionalDistanceKm: 20,
+    additionalDistancePercent: 10,
+    includeReturnJourney: true,
+  }, prepared);
+
+  assert.deepEqual(estimate.legs.map(({ distanceKm }) => distanceKm), [
+    410,
+    510,
+    310,
+    280,
+    350,
+    560,
+    198,
+    210,
+    130,
+    195,
+    10,
+  ]);
+  assert.equal(estimate.baseDistanceKm, 3_163);
+  assert.equal(estimate.allowanceKm, 336.3);
+  assert.equal(estimate.estimatedDistanceKm, 3_499.3);
 });
 
 test("builds custom road stops in selected order and avoids adding an air transfer", () => {

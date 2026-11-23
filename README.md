@@ -46,6 +46,8 @@ Run the transport routing and cost regression tests with `npm run test:transport
 
 `POST /api/transport/route` accepts an ordered list of supported place names, such as `{"stops":["Islamabad","Naran","Hunza"]}`. The server applies the configured return journey and distance allowance, and responds with road legs, distance, duration, and route geometry. Unsupported locations or provider errors are returned explicitly; the endpoint does not substitute straight-line distances.
 
+For custom Make My Trip road itineraries, the server adds a destination correction once per selected destination (not again for the automatic return leg): Hunza +400 km, Skardu +500 km, Naran +300 km, Astore +270 km, Kashmir +340 km, Swat +550 km, Fairy Meadows +188 km, Shogran +200 km, Nathia Gali +120 km, and Murree +185 km. These corrections are included in the displayed route legs and custom-route quotation; fixed-package pricing is unchanged.
+
 Transport administration is available only through `GET`, `PUT`, and `POST /api/admin/transport`, using `Authorization: Bearer <TRANSPORT_ADMIN_API_KEY>`. `GET` lists settings, vehicles, and recent cached routes. `PUT` accepts `settings`, `vehicles`, and/or a `routeOverride` containing ordered stops and one `legDistancesKm` value per leg. `POST` accepts `stops`, `vehicleName`, and `vehicleDays` to calculate the internal transportation-cost breakdown. Keep the admin key private and call this API only from trusted administrative tooling.
 
 ## SEO notes

@@ -46,7 +46,7 @@ const locations: Record<string, TransportLocation> = {
   "gilgit": { name: "Gilgit", coordinate: [74.308, 35.92] },
 };
 
-function normalizeLocationName(name: string): string {
+export function normalizeLocationName(name: string): string {
   return name.trim().replace(/\s+\([^)]*\)$/, "").toLocaleLowerCase("en");
 }
 

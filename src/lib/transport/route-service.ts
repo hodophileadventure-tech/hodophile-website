@@ -3,13 +3,30 @@ import type { Prisma } from "@prisma/client";
 
 import prisma from "@/lib/prisma";
 
-import { getRoadTransportLocation, getTransportLocation, type MapCoordinate } from "./locations";
+import {
+  getRoadTransportLocation,
+  getTransportLocation,
+  normalizeLocationName,
+  type MapCoordinate,
+} from "./locations";
 import type { OperationalTransportSettings } from "./settings";
 
 const ROUTE_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const OPENROUTESERVICE_TIMEOUT_MS = 12_000;
 const MAX_STOPS = 14;
 const MAX_ROUTE_COORDINATES = 100_000;
+const DESTINATION_DISTANCE_ADJUSTMENTS_KM: Readonly<Record<string, number>> = {
+  hunza: 400,
+  skardu: 500,
+  naran: 300,
+  astore: 270,
+  kashmir: 340,
+  swat: 550,
+  "fairy meadows": 188,
+  shogran: 200,
+  "nathia gali": 120,
+  murree: 185,
+};
 
 export type RouteDistanceSource = "OPENROUTESERVICE" | "MANUAL";
 
@@ -52,6 +69,7 @@ export interface PreparedRoadRoute {
   itineraryKey: string;
   stops: string[];
   coordinates: MapCoordinate[];
+  destinationAdjustmentsKmByLeg: number[];
 }
 
 export interface StoredRoute {
@@ -95,8 +113,13 @@ export function prepareRoadRoute(
     );
   }
 
+  const inputStops = requestedStops as string[];
+  const hasExplicitReturn = includeReturnJourney && inputStops.length > 2 &&
+    normalizeLocationName(inputStops[0]) === normalizeLocationName(inputStops[inputStops.length - 1]);
   const canonicalStops: string[] = [];
-  for (const requestedStop of requestedStops as string[]) {
+  const destinationAdjustmentsKmByLeg: number[] = [];
+  const adjustedDestinations = new Set<string>();
+  for (const [stopIndex, requestedStop] of inputStops.entries()) {
     const roadLocation = getRoadTransportLocation(requestedStop);
     if (!roadLocation) {
       throw new RouteCalculationError(
@@ -106,14 +129,28 @@ export function prepareRoadRoute(
       );
     }
     const canonicalName = roadLocation.name;
-    if (canonicalStops[canonicalStops.length - 1]?.toLocaleLowerCase("en") !== canonicalName.toLocaleLowerCase("en")) {
+    const isNewStop = canonicalStops[canonicalStops.length - 1]?.toLocaleLowerCase("en") !==
+      canonicalName.toLocaleLowerCase("en");
+    if (isNewStop) {
       canonicalStops.push(canonicalName);
+      if (canonicalStops.length > 1) destinationAdjustmentsKmByLeg.push(0);
+    }
+
+    const destinationKey = normalizeLocationName(requestedStop);
+    const isSelectedDestination = stopIndex > 0 && !(hasExplicitReturn && stopIndex === inputStops.length - 1);
+    const destinationAdjustmentKm = DESTINATION_DISTANCE_ADJUSTMENTS_KM[destinationKey];
+    if (isSelectedDestination && destinationAdjustmentKm !== undefined &&
+        !adjustedDestinations.has(destinationKey) && canonicalStops.length > 1) {
+      const destinationLegIndex = canonicalStops.length - 2;
+      destinationAdjustmentsKmByLeg[destinationLegIndex] += destinationAdjustmentKm;
+      adjustedDestinations.add(destinationKey);
     }
   }
 
   if (includeReturnJourney && canonicalStops.length > 1 &&
       canonicalStops[canonicalStops.length - 1].toLocaleLowerCase("en") !== canonicalStops[0].toLocaleLowerCase("en")) {
     canonicalStops.push(canonicalStops[0]);
+    destinationAdjustmentsKmByLeg.push(0);
   }
 
   if (canonicalStops.length < 2) {
@@ -137,6 +174,7 @@ export function prepareRoadRoute(
     itineraryKey: makeRouteKey(canonicalStops),
     stops: canonicalStops,
     coordinates,
+    destinationAdjustmentsKmByLeg,
   };
 }
 
@@ -487,18 +525,25 @@ export async function fetchOpenRouteServiceRoute(
   }
 }
 
-function applyDistanceAllowance(
+export function applyRouteDistanceAdjustments(
   route: StoredRoute,
   settings: OperationalTransportSettings,
+  prepared: PreparedRoadRoute,
 ): RoadRouteEstimate {
-  const allowanceKm = route.distanceKm * settings.additionalDistancePercent / 100 +
+  const legs = route.legs.map((leg, index) => ({
+    ...leg,
+    distanceKm: leg.distanceKm + (prepared.destinationAdjustmentsKmByLeg[index] ?? 0),
+  }));
+  const destinationAdjustmentKm = prepared.destinationAdjustmentsKmByLeg.reduce((total, adjustment) => total + adjustment, 0);
+  const baseDistanceKm = route.distanceKm + destinationAdjustmentKm;
+  const allowanceKm = baseDistanceKm * settings.additionalDistancePercent / 100 +
     settings.additionalDistanceKm;
   return {
     itineraryKey: route.itineraryKey,
     stops: route.stops,
-    legs: route.legs,
-    baseDistanceKm: route.distanceKm,
-    estimatedDistanceKm: route.distanceKm + allowanceKm,
+    legs,
+    baseDistanceKm,
+    estimatedDistanceKm: baseDistanceKm + allowanceKm,
     allowanceKm,
     durationSeconds: route.durationSeconds,
     source: route.source,
@@ -516,12 +561,12 @@ export async function calculateRoadRoute(
   const cached = await readCachedRoute(prepared.itineraryKey);
   if (cached) {
     memoryCache.set(prepared.itineraryKey, cached);
-    return applyDistanceAllowance(cached, settings);
+    return applyRouteDistanceAdjustments(cached, settings, prepared);
   }
 
   const unexpiredMemoryRoute = memoryCache.get(prepared.itineraryKey);
   if (unexpiredMemoryRoute && unexpiredMemoryRoute.expiresAt.getTime() > Date.now()) {
-    return applyDistanceAllowance(unexpiredMemoryRoute, settings);
+    return applyRouteDistanceAdjustments(unexpiredMemoryRoute, settings, prepared);
   }
 
   let pending = inFlightRoutes.get(prepared.itineraryKey);
@@ -537,7 +582,7 @@ export async function calculateRoadRoute(
   }
 
   const route = await pending;
-  return applyDistanceAllowance(route, settings);
+  return applyRouteDistanceAdjustments(route, settings, prepared);
 }
 
 export function invalidateMemoryRoute(itineraryKey: string): void {
