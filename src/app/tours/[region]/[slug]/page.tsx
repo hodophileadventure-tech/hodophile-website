@@ -12,6 +12,10 @@ import {
   SkarduTourPageContent,
   skarduTourPageMetadata,
 } from "@/components/skardu-tour-page-content";
+import {
+  SwatTourPageContent,
+  swatTourPageMetadata,
+} from "@/components/swat-tour-page-content";
 import { TourLanding } from "@/components/tour-landing";
 import { getTourPackagesForDestination } from "@/lib/data/tour-packages";
 import { getPackagePath } from "@/lib/data/package-routes";
@@ -85,6 +89,10 @@ export async function generateMetadata({ params }: TourPackagePageProps): Promis
     return hunzaTourPageMetadata;
   }
 
+  if (slug === "swat-valley-tour-packages") {
+    return swatTourPageMetadata;
+  }
+
   const description = item.description ?? `${item.label} by Hodophile Adventures with curated route support.`;
 
   return {
@@ -116,6 +124,10 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
 
   if (slug === "hunza-valley-tour-packages") {
     return <HunzaTourPageContent packages={matchingPackages} />;
+  }
+
+  if (slug === "swat-valley-tour-packages") {
+    return <SwatTourPageContent packages={matchingPackages} />;
   }
 
   const packageIncludes = [...new Set(matchingPackages.flatMap((tourPackage) => tourPackage.includes ?? []))];
