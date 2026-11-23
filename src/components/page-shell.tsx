@@ -169,6 +169,25 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                   <strong>5436</strong>
                 </div>
               </div>
+              <div className="mt-5">
+                <p className="text-xs text-white/50">Affiliations</p>
+                <div className="mt-2 flex items-center gap-3">
+                  <Image
+                    src="/images/footer/affiliation-pato.webp"
+                    alt="PATO — Pakistan Association of Tour Operators"
+                    width={64}
+                    height={64}
+                    className="h-16 w-16 rounded-md bg-white object-contain"
+                  />
+                  <Image
+                    src="/images/footer/taap-logo.webp"
+                    alt="TAAP — Travel Agents Association of Pakistan"
+                    width={64}
+                    height={64}
+                    className="h-16 w-16 rounded-md bg-white object-contain"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
