@@ -594,7 +594,7 @@ export const tourPackages: TourPackage[] = [
     description: "A 10-day coach journey from Karachi via Islamabad through Chilas, Skardu, Deosai, and Naran, returning to Karachi.",
     region: "northern",
     destinationSlugs: ["skardu", "naran"],
-    image: "/images/package-cards/images__featured-tours__10days-skardu-deosai.jpg.webp",
+    image: "/images/package-cards/skardu-deosai-naran-karachi.webp",
     routeStops: ["Karachi", "Islamabad", "Chilas", "Skardu", "Deosai", "Naran"],
     routeHighlights: ["Babusar Top", "Shangrila Resort", "Manthoka Waterfall", "Shigar Fort", "Deosai plateau", "Kunhar River"],
     bestFor: "A full coach and highland circuit",
