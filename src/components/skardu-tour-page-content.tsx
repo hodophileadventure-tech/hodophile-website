@@ -105,7 +105,7 @@ const attractions = [
 ];
 
 const trustPoints = [
-  "Licensed tour operator, License No. 5436, with TAAP and PATO affiliations",
+  "Licensed tour operator, License No. 5436",
   "Top rated service with a driver cum tour guide and a tour manager on listed journeys",
   "Clear per person prices and honest inclusions",
   "Private options and tailored itineraries",

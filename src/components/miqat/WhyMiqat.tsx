@@ -7,7 +7,6 @@ import { CheckCircle2 } from "lucide-react";
 const features = [
   "Founded in Karachi in 2021",
   "Government license no. 5436",
-  "TAAP and PATO affiliations",
   "Umrah services and travel planning",
   "Experienced team support",
   "24/7 customer service",

@@ -367,7 +367,7 @@ export function SwatTourPageContent({ packages }: { packages: TourPackage[] }) {
         <section className="mt-12 rounded-[1.75rem] border border-[#d7c58d]/60 bg-[linear-gradient(145deg,#fffdf7,#f7f1e2)] p-6 shadow-[0_14px_38px_rgba(54,44,18,0.06)] md:p-8">
           <SectionHeading label="Why travelers trust us">Why Choose Hodophile for Swat Tours</SectionHeading>
           <ListItems items={[
-            "Licensed tour operator, License No. 5436, with TAAP and PATO affiliations",
+            "Licensed tour operator, License No. 5436",
             "Top-rated service with a tour guide and comfortable vehicles",
             "Clear per-person prices and honest inclusions",
             "Private options and tailored itineraries",
