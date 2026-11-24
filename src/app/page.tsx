@@ -358,13 +358,13 @@ export default function Home() {
                 className="max-h-[min(70vh,42rem)] max-w-full w-auto object-contain"
               />
             </div>
-            <div className="p-8 text-center text-white lg:p-12">
-              <h2 className="display-serif text-5xl font-normal">Begin your next chapter</h2>
-              <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/65">
+            <div className="theme-preserve-dark p-8 text-center text-white lg:p-12">
+              <h2 className="display-serif text-5xl font-normal text-white">Begin your next chapter</h2>
+              <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/70">
                 Tell us where you want to go, when you plan to travel, and who is coming. We&apos;ll help shape a thoughtful itinerary around your plans.
               </p>
               <div className="mt-7 flex flex-wrap justify-center gap-3">
-                <Link href="/make-my-trip" className="inline-flex rounded-full bg-stone-900 px-6 py-3 text-sm font-semibold !text-white transition hover:bg-stone-800">
+                <Link href="/make-my-trip" className="inline-flex rounded-full bg-[#fcc000] px-6 py-3 text-sm font-semibold !text-black transition hover:bg-[#ffd454]">
                   Make My Trip
                 </Link>
                 <Link href="/contact-us" className="inline-flex rounded-full border border-[#ffc000] bg-[#0b0b0b] px-6 py-3 text-sm font-semibold !text-[#ffc000] shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:bg-black">

@@ -74,12 +74,12 @@ export function HomeQuickLeadForm() {
   };
 
   return (
-    <section className="site-section-gap relative w-full overflow-hidden border-y border-stone-300/70 bg-[#111111] text-white">
+    <section className="theme-preserve-dark site-section-gap relative w-full overflow-hidden border-y border-stone-300/70 bg-[#111111] text-white">
       <div className="mx-auto max-w-6xl overflow-hidden rounded-[1.75rem] border border-[#fcc000]/25 shadow-[0_28px_90px_rgba(0,0,0,0.28)]">
         <div className="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(252,192,0,0.2),transparent_38%),linear-gradient(145deg,#171717,#222018)] p-6 sm:p-8 lg:p-12">
             <p className="inline-flex items-center gap-2 rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#fcc000]"><span aria-hidden="true">✦</span> Quick quote</p>
-            <h2 className="mt-4 font-serif text-4xl leading-tight sm:text-5xl">Get your free trip plan.</h2>
+            <h2 className="mt-4 font-serif text-4xl leading-tight text-white sm:text-5xl">Get your free trip plan.</h2>
             <p className="mt-4 text-sm leading-7 text-white/70">
               Share your destination, travel month, and group size. Our team will help you find a suitable route and request a clear quote.
             </p>
@@ -92,9 +92,14 @@ export function HomeQuickLeadForm() {
               href={whatsappUrl("Hi Hodophile, I want a custom Pakistan tour plan and fast availability details.")}
               target="_blank"
               rel="noreferrer"
-              className="mt-7 inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:border-[#fcc000]/50 hover:bg-white/10"
+              className="mt-7 inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:border-[#25D366]/60 hover:bg-white/10"
             >
-              <span aria-hidden="true">💬</span> WhatsApp travel expert
+              <span aria-hidden="true" className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#25D366] text-white">
+                <svg viewBox="0 0 24 24" className="h-3 w-3 fill-current">
+                  <path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z" />
+                </svg>
+              </span>
+              <span className="text-white">WhatsApp travel expert</span>
             </a>
           </div>
 

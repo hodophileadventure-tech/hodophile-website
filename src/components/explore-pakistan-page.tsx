@@ -366,7 +366,7 @@ export function ExplorePakistanPageContent() {
             {destinationTiles.map((tile) => (
               <article
                 key={tile.name}
-                className={`group relative overflow-hidden rounded-[2rem] border border-stone-200 bg-stone-900 ${tile.span} ${tile.height}`}
+                className={`theme-preserve-dark group relative overflow-hidden rounded-[2rem] border border-stone-200 bg-stone-900 ${tile.span} ${tile.height}`}
               >
                 <div className="absolute inset-0">
                   <Image
@@ -407,7 +407,7 @@ export function ExplorePakistanPageContent() {
 
           <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {experienceCards.map((card) => (
-              <article key={card.title} className="group relative overflow-hidden rounded-[2rem] border border-stone-200 bg-stone-900 min-h-[22rem]">
+              <article key={card.title} className="theme-preserve-dark group relative overflow-hidden rounded-[2rem] border border-stone-200 bg-stone-900 min-h-[22rem]">
                 <div className="absolute inset-0">
                   <Image
                     src={card.image}
