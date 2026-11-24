@@ -9,6 +9,10 @@ import {
   hunzaTourPageMetadata,
 } from "@/components/hunza-tour-page-content";
 import {
+  KashmirTourPageContent,
+  kashmirTourPageMetadata,
+} from "@/components/kashmir-tour-page-content";
+import {
   SkarduTourPageContent,
   skarduTourPageMetadata,
 } from "@/components/skardu-tour-page-content";
@@ -93,6 +97,10 @@ export async function generateMetadata({ params }: TourPackagePageProps): Promis
     return swatTourPageMetadata;
   }
 
+  if (slug === "kashmir-valley-tour-packages") {
+    return kashmirTourPageMetadata;
+  }
+
   const description = item.description ?? `${item.label} by Hodophile Adventures with curated route support.`;
 
   return {
@@ -128,6 +136,10 @@ export default async function TourPackagePage({ params }: TourPackagePageProps) 
 
   if (slug === "swat-valley-tour-packages") {
     return <SwatTourPageContent packages={matchingPackages} />;
+  }
+
+  if (slug === "kashmir-valley-tour-packages") {
+    return <KashmirTourPageContent packages={matchingPackages} />;
   }
 
   const packageIncludes = [...new Set(matchingPackages.flatMap((tourPackage) => tourPackage.includes ?? []))];
