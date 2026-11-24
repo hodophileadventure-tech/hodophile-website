@@ -77,7 +77,7 @@ export function JourneyCard({
             {eyebrow ? (
               <p className={`text-[0.68rem] font-medium uppercase tracking-[0.15em] ${editorial ? "text-stone-600" : "text-white/65"}`}>{eyebrow}</p>
             ) : null}
-              <h3 className={`${eyebrow ? "mt-1" : ""} line-clamp-2 ${editorial ? "font-serif text-[1.8rem] font-normal leading-tight tracking-[-0.02em] sm:text-[2rem]" : "font-[var(--font-display)] text-xl leading-tight tracking-[-0.01em] sm:text-2xl"}`}>
+              <h3 className={`${eyebrow ? "mt-1" : ""} line-clamp-2 ${editorial ? "font-serif text-[1.95rem] font-bold leading-tight tracking-[-0.02em] sm:text-[2.15rem]" : "font-[var(--font-display)] text-xl leading-tight tracking-[-0.01em] sm:text-2xl"}`}>
               {title}
             </h3>
             {imageCaption ? (

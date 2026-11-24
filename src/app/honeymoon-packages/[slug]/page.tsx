@@ -9,377 +9,7 @@ import { additionalHoneymoonPackages } from "@/lib/data/additional-honeymoon-pac
 
 type Props = { params: Promise<{ slug: string }> };
 
-const packages: Record<
-  string,
-  {
-    title: string;
-    duration: string;
-    image: string;
-    description: string;
-    price?: string;
-    overview?: string;
-    attractions?: string[];
-    includes?: string[];
-    excluded?: string[];
-    bookingPolicy?: string[];
-    childPolicy?: string[];
-    mealsMenu?: { breakfast: string; dinner: string };
-    detailSections?: { title: string; content: string[] }[];
-  }
-> = {
-  "swat-kalam-4days": {
-    title: "Swat & Kalam — 4 Days",
-    duration: "4 Days / 3 Nights",
-    image: "/images/package-cards/images__honeymoon__swat-kalam.webp",
-    description: "Experience Swat Valley and Kalam with Mahodand Lake and Ushu Forest excursions.",
-    price: "PKR 120,000",
-    overview: "Experience the breathtaking beauty of Swat Valley and Kalam: alpine forests, clear rivers, and relaxed valley rhythms. This 4-day route is paced for couples wanting scenic drives, short hikes, and intimate mountain moments. Stay in comfortable hotels, explore meadows and lakes by 4x4, and witness sunsets from elevated vantage points.",
-    attractions: [
-      "Mahodand Lake",
-      "Ushu Forest",
-      "Kalam Valley",
-      "Fizagat Park",
-      "Madyan",
-      "River walks",
-    ],
-    includes: [
-      "Hotel accommodations on sharing basis",
-      "Luxury transport",
-      "4x4 Jeep ride to Mahodand Lake",
-      "Breakfasts and dinners as noted",
-      "Tolls and taxes",
-      "Tour guide services",
-      "Bonfire and scenic phone photography",
-    ],
-    excluded: [
-      "Alcoholic beverages",
-      "Personal shopping and souvenirs",
-      "Camera permits in restricted areas",
-      "Tips and gratuities",
-      "Activities beyond itinerary",
-    ],
-    bookingPolicy: [
-      "Advance payment of 50% to confirm booking",
-      "Final payment due 15 days before travel",
-      "Flexible date changes up to 30 days prior",
-      "Group discounts available for 4+ couples",
-    ],
-    childPolicy: [
-      "Below 3 years: Free of cost, no seat provided (lap seating with parent).",
-      "3 to 7 years: 50% charged, folding/jumper seat provided.",
-      "Above 7 years: 100% charged with full seat.",
-    ],
-    mealsMenu: {
-      breakfast: "Anda, Paratha, Tea, Channa, Omelet (rotating menu)",
-      dinner: "Chicken Karahi, Handi, BBQ, Chicken Fried Rice, Vegetables, Daal, Raita, Salad, Naan (rotation)",
-    },
-    detailSections: [
-      {
-        title: "Menu During Trip",
-        content: [
-          "Breakfast: Anda, Paratha, Tea, Channa, Omelet (rotating menu)",
-          "Dinner: Chicken Karahi, Handi, BBQ, Chicken Fried Rice, Vegetables, Daal, Raita, Salad, Naan (rotation)",
-        ],
-      },
-      {
-        title: "Refund Policy",
-        content: [
-          "50% refund if cancellation is made 30 days before travel",
-          "30% refund if cancellation is made 15 days before travel",
-          "No refund if cancellation is made within 15 days of travel",
-          "Force majeure events are subject to negotiation",
-        ],
-      },
-      {
-        title: "Traveler's Instruction",
-        content: [
-          "Carry valid CNIC or passport for all travelers",
-          "Wear comfortable clothing and closed-toe shoes for hiking",
-          "Bring sunscreen, insect repellent, and medications",
-          "Maintain fitness level for short mountain hikes",
-          "Avoid heavy luggage; one small backpack per person recommended",
-        ],
-      },
-    ],
-  },
-
-  "naran-babusar-4days": {
-    title: "Naran & Babusar — 4 Days",
-    duration: "4 Days / 3 Nights",
-    image: "/images/package-cards/images__honeymoon__naran-babusar.webp",
-    description: "A romantic route through Kaghan Valley with Saif-ul-Malook and Babusar Top highlights.",
-    price: "PKR 120,000",
-    overview: "Escape to Kaghan Valley's dramatic alpine landscape: sweeping mountain passes, high-altitude lakes, and breathtaking viewpoints. This journey balances scenic drives with gentle hiking, perfect for couples seeking adventure without excessive exertion. Experience changing elevations, diverse vegetation, and mountain culture in four transformative days.",
-    attractions: [
-      "Saif-ul-Malook Lake",
-      "Babusar Top",
-      "Lulusar Lake",
-      "Kunhar River",
-      "Batakundi",
-      "Alpine meadows",
-    ],
-    includes: [
-      "Hotel accommodations on sharing basis",
-      "Luxury transport",
-      "Jeep access to Saif-ul-Malook",
-      "Breakfasts and dinners as noted",
-      "Tolls and taxes",
-      "Tour guide services",
-      "Mountain photography support",
-    ],
-    excluded: [
-      "Alcoholic beverages",
-      "Personal shopping",
-      "Horse riding at Saif-ul-Malook",
-      "Tips and gratuities",
-      "Activities beyond itinerary",
-    ],
-    bookingPolicy: [
-      "Advance payment of 50% to confirm booking",
-      "Final payment due 15 days before travel",
-      "Flexible date changes up to 30 days prior",
-      "Group discounts available for 4+ couples",
-    ],
-    childPolicy: [
-      "Below 3 years: Free of cost, no seat provided (lap seating with parent).",
-      "3 to 7 years: 50% charged, folding/jumper seat provided.",
-      "Above 7 years: 100% charged with full seat.",
-    ],
-    mealsMenu: {
-      breakfast: "Anda, Paratha, Tea, Channa, Omelet (rotating menu)",
-      dinner: "Chicken Karahi, Handi, BBQ, Chicken Fried Rice, Vegetables, Daal, Raita, Salad, Naan (rotation)",
-    },
-    detailSections: [
-      {
-        title: "Menu During Trip",
-        content: [
-          "Breakfast: Anda, Paratha, Tea, Channa, Omelet (rotating menu)",
-          "Dinner: Chicken Karahi, Handi, BBQ, Chicken Fried Rice, Vegetables, Daal, Raita, Salad, Naan (rotation)",
-        ],
-      },
-      {
-        title: "Refund Policy",
-        content: [
-          "50% refund if cancellation is made 30 days before travel",
-          "30% refund if cancellation is made 15 days before travel",
-          "No refund if cancellation is made within 15 days of travel",
-          "Force majeure events are subject to negotiation",
-        ],
-      },
-      {
-        title: "Traveler's Instruction",
-        content: [
-          "Carry valid CNIC or passport for all travelers",
-          "Wear comfortable clothing and sturdy hiking shoes",
-          "Bring sunscreen, insect repellent, and medications",
-          "Check road conditions before travel; Babusar Top may be closed in winter",
-          "Avoid heavy luggage; one small backpack per person recommended",
-        ],
-      },
-    ],
-  },
-
-  "kashmir-arangkel-5days": {
-    title: "Kashmir Arang Kel — 5 Days",
-    duration: "5 Days / 4 Nights",
-    image: "/images/package-cards/images__honeymoon__kashmir-arangkel.webp",
-    description: "Neelum Valley journey to Kel and Arang Kel with hill-meadow stays and riverside views.",
-    price: "PKR 150,000",
-    overview: "Discover Azad Kashmir's hidden gem: Neelum Valley's terraced meadows, pine forests, and the enchanting cliff-hugging village of Arang Kel. This five-day journey combines scenic drives with a rewarding hike to pristine highland meadows. Experience local hospitality, riverside camps, and the raw beauty of the Himalayas at the border's edge.",
-    attractions: [
-      "Arang Kel meadows",
-      "Neelum Valley",
-      "Kel village",
-      "Sharda ruins",
-      "Kohala Bridge",
-      "Cable car crossing",
-    ],
-    includes: [
-      "Hotel accommodations on sharing basis",
-      "Luxury transport",
-      "4x4 vehicle for upper valley access",
-      "Cable car/suspension bridge crossing",
-      "Breakfasts and dinners as noted",
-      "Tolls and taxes",
-      "Local guide services",
-      "Valley photography support",
-    ],
-    excluded: [
-      "Alcoholic beverages",
-      "Personal shopping and souvenirs",
-      "Horse riding in Arang Kel",
-      "Tips and gratuities",
-      "Activities beyond itinerary",
-    ],
-    bookingPolicy: [
-      "Advance payment of 50% to confirm booking",
-      "Final payment due 15 days before travel",
-      "Flexible date changes up to 30 days prior",
-      "Group discounts available for 4+ couples",
-    ],
-    childPolicy: [
-      "Below 3 years: Free of cost, no seat provided (lap seating with parent).",
-      "3 to 7 years: 50% charged, folding/jumper seat provided.",
-      "Above 7 years: 100% charged with full seat.",
-    ],
-    mealsMenu: {
-      breakfast: "Anda, Paratha, Tea, Channa, Omelet (rotating menu)",
-      dinner: "Chicken Karahi, Handi, BBQ, Chicken Fried Rice, Vegetables, Daal, Raita, Salad, Naan (rotation)",
-    },
-    detailSections: [
-      {
-        title: "Menu During Trip",
-        content: [
-          "Breakfast: Anda, Paratha, Tea, Channa, Omelet (rotating menu)",
-          "Dinner: Chicken Karahi, Handi, BBQ, Chicken Fried Rice, Vegetables, Daal, Raita, Salad, Naan (rotation)",
-        ],
-      },
-      {
-        title: "Refund Policy",
-        content: [
-          "50% refund if cancellation is made 30 days before travel",
-          "30% refund if cancellation is made 15 days before travel",
-          "No refund if cancellation is made within 15 days of travel",
-          "Force majeure events are subject to negotiation",
-        ],
-      },
-      {
-        title: "Traveler's Instruction",
-        content: [
-          "Carry valid CNIC or passport; check any travel advisories",
-          "Wear comfortable clothing and sturdy hiking shoes",
-          "Bring sunscreen, insect repellent, and medications",
-          "Maintain fitness for 45–90 minute climb to Arang Kel",
-          "Avoid heavy luggage; one small backpack per person recommended",
-        ],
-      },
-    ],
-  },
-
-  ...additionalHoneymoonPackages,
-};
-
-function SwatKalamContent() {
-  return (
-    <>
-      <h2 className="mt-6 text-xl font-semibold">Tour Overview</h2>
-      <p className="mt-2 text-sm text-stone-600">
-        Experience the breathtaking beauty of Swat Valley and Kalam: alpine forests, clear rivers, and relaxed
-        valley rhythms. This 4-day route is paced for couples wanting scenic drives and short hikes.
-      </p>
-
-      <h3 className="mt-6 text-lg font-semibold">Day 1 — Islamabad → Swat → Kalam</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Departure early morning from Islamabad via M-1 and Malakand Pass.</li>
-        <li>Stops: Chakdara, Mingora, Fizagat Park, Madyan, Bahrain — lunch in Bahrain.</li>
-        <li>Arrive Kalam, hotel check-in, evening stroll and riverside walk.</li>
-      </ul>
-
-      <h3 className="mt-4 text-lg font-semibold">Day 2 — Mahodand Lake Excursion</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Breakfast and 4×4 jeep ride toward Mahodand Lake via Ushu Forest.</li>
-        <li>Activities: short walks in Ushu, boat ride (seasonal), tea by the lake, optional horse riding.</li>
-        <li>Return to Kalam for dinner and overnight.</li>
-      </ul>
-
-      <h3 className="mt-4 text-lg font-semibold">Day 3 — Kalam → Bahrain → Mingora</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>After breakfast, drive back via Bahrain, visit Fizagat Park and optional Swat Museum.</li>
-        <li>Evening arrival Mingora; local shopping and overnight in Mingora/Swat.</li>
-      </ul>
-
-      <h3 className="mt-4 text-lg font-semibold">Day 4 — Swat → Islamabad</h3>
-      <p className="mt-2 text-sm text-stone-600">Breakfast and departure for Islamabad with photo stops; arrival by evening.</p>
-
-      <h3 className="mt-6 text-lg font-semibold">Practical Notes</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Transport: Private car/minivan; hire local 4×4 for Mahodand.</li>
-        <li>Packing: layered clothing, waterproof jacket, sturdy shoes, sunscreen, cash.</li>
-        <li>Safety: roads narrow and prone to landslides during monsoon — avoid heavy rain travel.</li>
-      </ul>
-    </>
-  );
-}
-
-function NaranBabusarContent() {
-  return (
-    <>
-      <h2 className="mt-6 text-xl font-semibold">Tour Overview</h2>
-      <p className="mt-2 text-sm text-stone-600">
-        Escape to Kaghan Valley: alpine lakes, sweeping mountain passes, and high-altitude viewpoints. Ideal for
-        couples seeking dramatic scenery with gentle activities.
-      </p>
-
-      <h3 className="mt-6 text-lg font-semibold">Day 1 — Islamabad → Naran</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Early departure via Abbottabad, Balakot, and Kiwai with scenic stops along the Kunhar River.</li>
-        <li>Arrive Naran, check-in, riverside cafes and local market exploration.</li>
-      </ul>
-
-      <h3 className="mt-4 text-lg font-semibold">Day 2 — Babusar Top & Lulusar Lake</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Drive toward Babusar Top via Batakundi, Jalkhad and Besal with photo stops at Lulusar Lake.</li>
-        <li>Return to Naran for dinner and relaxation.</li>
-      </ul>
-
-      <h3 className="mt-4 text-lg font-semibold">Day 3 — Lake Saif-ul-Malook</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Jeep/horse access to Saif-ul-Malook; optional boat rides and short meadow walks.</li>
-        <li>Return to Naran for shopping and evening leisure.</li>
-      </ul>
-
-      <h3 className="mt-4 text-lg font-semibold">Day 4 — Naran → Islamabad</h3>
-      <p className="mt-2 text-sm text-stone-600">Breakfast and return drive toward Islamabad with stops; arrival by evening.</p>
-
-      <h3 className="mt-6 text-lg font-semibold">Practical Notes</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Transport: sturdy car; jeeps for Saif-ul-Malook approach.</li>
-        <li>Season: Babusar Top usually open May–October; check road conditions.</li>
-      </ul>
-    </>
-  );
-}
-
-function KashmirArangkelContent() {
-  return (
-    <>
-      <h2 className="mt-6 text-xl font-semibold">Tour Overview</h2>
-      <p className="mt-2 text-sm text-stone-600">
-        Discover Azad Kashmir's Neelum Valley: terraced meadows, pine forests and the cliff-hugging village of Arang
-        Kel. This route balances scenic drives with a short steep hike to the hill-meadow.
-      </p>
-
-      <h3 className="mt-6 text-lg font-semibold">Day 1 — Islamabad → Muzaffarabad → Keran</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Early departure via Murree Expressway and Kohala Bridge; stop at Kohala viewpoint.</li>
-        <li>Continue to Keran for hotel check-in and briefing with a local guide.</li>
-      </ul>
-
-      <h3 className="mt-4 text-lg font-semibold">Day 2 — Keran → Sharda</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Drive through Upper Neelum to Sharda; visit ruins and riverfront market.</li>
-      </ul>
-
-      <h3 className="mt-4 text-lg font-semibold">Day 3 — Sharda → Kel → Arang Kel</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Drive to Kel, cross via cable car/suspension, and hike to Arang Kel (45–90 minutes).</li>
-        <li>Enjoy meadow views, photography, and an overnight in Arang Kel or Kel.</li>
-      </ul>
-
-      <h3 className="mt-4 text-lg font-semibold">Day 4 — Arang Kel → Kel → Sharda</h3>
-      <p className="mt-2 text-sm text-stone-600">Morning at Arang Kel, descend to Kel and return to Sharda for evening leisure.</p>
-
-      <h3 className="mt-4 text-lg font-semibold">Day 5 — Sharda → Muzaffarabad → Islamabad</h3>
-      <p className="mt-2 text-sm text-stone-600">Breakfast and return trip to Islamabad with scenic photo stops along Neelum Valley.</p>
-
-      <h3 className="mt-6 text-lg font-semibold">Practical Notes</h3>
-      <ul className="mt-2 list-inside list-disc text-sm text-stone-600">
-        <li>Permits: check local security advisories and register with authorities where required.</li>
-        <li>Transport: 4×4 recommended for last-mile access; local guides advised for border-adjacent areas.</li>
-      </ul>
-    </>
-  );
-}
+const packages = { ...additionalHoneymoonPackages };
 
 export async function generateStaticParams() {
   return Object.keys(packages).map((slug) => ({ slug }));
@@ -393,23 +23,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: pkg.title,
     description: pkg.description,
     alternates: { canonical: `/honeymoon-packages/${slug}` },
-    openGraph: { title: pkg.title, description: pkg.description, url: absoluteUrl(`/honeymoon-packages/${slug}`) },
+    openGraph: {
+      title: pkg.title,
+      description: pkg.description,
+      url: absoluteUrl(`/honeymoon-packages/${slug}`),
+    },
   };
 }
-
-// Render content inline to avoid component complexity during build
-const renderContent = (slug: string) => {
-  switch (slug) {
-    case "swat-kalam-4days":
-      return <SwatKalamContent />;
-    case "naran-babusar-4days":
-      return <NaranBabusarContent />;
-    case "kashmir-arangkel-5days":
-      return <KashmirArangkelContent />;
-    default:
-      return null;
-  }
-};
 
 export default async function PackagePage({ params }: Props) {
   const { slug } = await params;
@@ -537,12 +157,24 @@ export default async function PackagePage({ params }: Props) {
               <h2 className="mt-3 font-serif text-3xl text-stone-900">Day Wise Plan For This Route</h2>
 
               <div className="mt-8">
-                <details className="rounded-[1.75rem] border border-stone-200 bg-stone-50 p-5 shadow-sm" open>
-                  <summary className="cursor-pointer text-lg font-semibold text-stone-900">Tour Details</summary>
-                  <div className="prose max-w-none mt-5 text-stone-700">
-                    {renderContent(slug)}
+                {pkg.itinerary?.length ? (
+                  <ol className="space-y-4">
+                    {pkg.itinerary.map((item) => (
+                      <li
+                        key={`${item.day}-${item.title}`}
+                        className="rounded-[1.5rem] border border-stone-200 bg-stone-50 p-5"
+                      >
+                        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#9c7600]">{item.day}</p>
+                        <p className="mt-2 text-lg font-semibold text-stone-900">{item.title}</p>
+                        <p className="mt-2 whitespace-pre-line text-sm leading-7 text-stone-600">{item.description}</p>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <div className="rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 p-5 text-sm leading-7 text-stone-600">
+                    A detailed day-wise itinerary for this package is not yet added and will be shared with your quotation based on your travel dates, route, and selected tier.
                   </div>
-                </details>
+                )}
               </div>
             </div>
 
@@ -550,7 +182,7 @@ export default async function PackagePage({ params }: Props) {
             {(pkg.includes?.length || pkg.childPolicy?.length || pkg.mealsMenu) && (
               <div className="rounded-[2rem] border border-[#fcc000] bg-[#fff8df] p-6 shadow-sm md:p-8">
                 <p className="text-xs uppercase tracking-[0.32em] text-stone-500">Package Details</p>
-                <h2 className="mt-3 font-serif text-3xl text-stone-900">What's Included & Important Info</h2>
+                <h2 className="mt-3 font-serif text-3xl text-stone-900">What&apos;s Included &amp; Important Info</h2>
 
                 {pkg.childPolicy?.length ? (
                   <div className="mt-6 rounded-[1.5rem] border border-dashed border-stone-300 bg-white p-5">

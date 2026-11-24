@@ -79,7 +79,7 @@ export function HomeQuickLeadForm() {
         <div className="grid items-start gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
           <div className="relative p-1 sm:p-2 lg:py-4">
             <p className="inline-flex items-center gap-2 rounded-full border border-[#fcc000]/35 bg-[#fcc000]/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#8b6b00]"><span aria-hidden="true">✦</span> Quick quote</p>
-            <h2 className="mt-4 font-serif text-4xl leading-tight text-stone-950 sm:text-5xl">Get your free trip plan.</h2>
+            <h2 className="mt-4 font-serif text-4xl leading-tight uppercase text-stone-950 sm:text-5xl">GET YOUR FREE TRIP PLAN.</h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-stone-600">
               Share your destination, travel month, and group size. Our team will help you find a suitable route and request a clear quote.
             </p>

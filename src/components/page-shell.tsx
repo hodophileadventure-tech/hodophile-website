@@ -78,24 +78,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
       <footer className="premium-footer">
         <div className="site-container-wide mx-auto px-5 sm:px-8 lg:px-10 xl:px-14">
-          <div className="grid items-end gap-7 border-b border-stone-200 py-9 lg:grid-cols-[1fr_auto] lg:py-11">
-            <div>
-              <p className="premium-footer-kicker">Private journeys across Pakistan</p>
-              <h2 className="mt-3 max-w-3xl font-serif text-4xl leading-[1.02] text-white sm:text-[3.25rem]">
-                Travel farther. Feel more.
-              </h2>
-            </div>
-            <div className="flex flex-wrap gap-3 lg:justify-end">
-              <Link href="/make-my-trip" className="premium-footer-primary">
-                Plan a custom trip
-              </Link>
-              <Link href="/contact-us" className="premium-footer-secondary">
-                Talk to an expert
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid gap-10 py-10 md:grid-cols-2 lg:grid-cols-[1.45fr_0.7fr_0.7fr_1.05fr] lg:gap-12 lg:py-12">
+          <div className="grid gap-10 py-10 lg:grid-cols-[1.2fr_0.75fr_1fr_1fr] lg:gap-12 lg:py-14">
             <div>
               <Link href="/" className="inline-flex" aria-label="Hodophile Adventures home">
                 <Image
@@ -104,99 +87,145 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                   width={240}
                   height={68}
                   priority
-                  className="h-12 w-auto"
+                  className="h-14 w-auto"
                 />
               </Link>
               <p className="premium-footer-copy mt-5 max-w-sm">
-                Curated private, family and adventure journeys with thoughtful route planning, trusted transport and local support.
+                Hodophile Adventures plans private, family, honeymoon, and guided journeys across Pakistan with clear itineraries, trusted transport, and local support.
               </p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="premium-footer-social"
-                  >
-                    {social.icon}
-                  </a>
-                ))}
+
+              <div className="mt-6">
+                <h3 className="premium-footer-heading">Follow us</h3>
+                <ul className="mt-4 grid gap-3 text-sm text-black sm:grid-cols-2">
+                  {socialLinks.map((social) => (
+                    <li key={social.label}>
+                      <a
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={social.label}
+                        className="inline-flex items-center gap-3 text-black transition hover:text-[#FCC000]"
+                      >
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/15 bg-[#fff9e6] text-black">
+                          {social.icon}
+                        </span>
+                        <span className="font-medium">{social.label}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-8">
+                <h3 className="premium-footer-heading">Accreditations & license</h3>
+                <div className="mt-4 flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
+                    <Image
+                      src="/images/footer/govt-pakistan.webp"
+                      alt="Government of Pakistan"
+                      width={56}
+                      height={56}
+                      className="h-14 w-14 object-contain"
+                    />
+                    <div>
+                      <p className="text-xs font-medium text-black">Govt. of Pakistan</p>
+                      <p className="text-sm font-semibold text-black">Tourism License No. 5436</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src="/images/footer/taap-logo.webp"
+                      alt="TAAP — Travel Agents Association of Pakistan"
+                      width={72}
+                      height={72}
+                      className="h-16 w-16 rounded-lg border border-black/10 bg-white object-contain p-1"
+                    />
+                    <Image
+                      src="/images/footer/affiliation-pato.webp"
+                      alt="PATO — Pakistan Association of Tour Operators"
+                      width={72}
+                      height={72}
+                      className="h-16 w-16 rounded-lg border border-black/10 bg-white object-contain p-1"
+                    />
+                  </div>
+                </div>
+                <p className="mt-3 text-sm text-black">TAAP &amp; PATO affiliated, licensed tour operator in Pakistan.</p>
               </div>
             </div>
 
-            <nav aria-label="Footer destinations">
-              <h3 className="premium-footer-heading">Explore</h3>
-              <div className="premium-footer-links">
-                <Link href="/destinations">Destinations</Link>
-                <Link href="/tours">Tour packages</Link>
-                <Link href="/tours/adventure">Adventure tours</Link>
-                <Link href="/honeymoon-packages">Honeymoon</Link>
-                <Link href="/umrah-packages">Umrah</Link>
-              </div>
-            </nav>
-
-            <nav aria-label="Footer company">
-              <h3 className="premium-footer-heading">Company</h3>
-              <div className="premium-footer-links">
-                <Link href="/about-us">About us</Link>
-                <Link href="/blogs">Travel journal</Link>
-                <Link href="/gallery">Gallery</Link>
-                <Link href="/contact-us">Contact</Link>
-                <Link href="/terms-and-conditions">Terms</Link>
-              </div>
+            <nav aria-label="Footer quick links">
+              <h3 className="premium-footer-heading">Quick links</h3>
+              <ul className="premium-footer-links mt-5">
+                <li><Link href="/">Home</Link></li>
+                <li><Link href="/destinations">Destinations</Link></li>
+                <li><Link href="/tours">Tour packages</Link></li>
+                <li><Link href="/make-my-trip">Make my trip</Link></li>
+                <li><Link href="/about-us">About us</Link></li>
+                <li><Link href="/blogs">Travel journal</Link></li>
+                <li><Link href="/contact-us">Contact us</Link></li>
+                <li><Link href="/terms-and-conditions">Terms &amp; conditions</Link></li>
+              </ul>
             </nav>
 
             <div>
-              <h3 className="premium-footer-heading">Contact</h3>
+              <h3 className="premium-footer-heading">Gallery</h3>
+              <div className="mt-5 grid grid-cols-3 gap-2">
+                {[
+                  { src: "/images/destinations/hunza-unsplash.webp", alt: "Hunza Valley", href: "/destinations/hunza" },
+                  { src: "/images/destinations/skardu-unsplash.webp", alt: "Skardu", href: "/destinations/skardu" },
+                  { src: "/images/destinations/naran-unsplash.webp", alt: "Naran Valley", href: "/destinations/naran" },
+                  { src: "/images/destinations/swat-hd.webp", alt: "Swat Valley", href: "/destinations/swat" },
+                  { src: "/images/destinations/kashmir.webp", alt: "Kashmir", href: "/destinations/kashmir" },
+                  { src: "/images/destinations/shogran-siri-paye.png", alt: "Shogran and Siri Paye", href: "/destinations/shogran" },
+                ].map((item) => (
+                  <Link key={item.src} href={item.href} className="group relative aspect-square overflow-hidden rounded-lg border border-black/10 bg-stone-100" aria-label={`View ${item.alt}`}>
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      fill
+                      sizes="(min-width: 1024px) 8vw, 28vw"
+                      className="object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  </Link>
+                ))}
+              </div>
+              <Link href="/gallery" className="mt-4 inline-flex text-sm font-semibold text-black underline decoration-[#FCC000] decoration-2 underline-offset-4 hover:text-[#FCC000]">
+                View full gallery
+              </Link>
+            </div>
+
+            <div>
+              <h3 className="premium-footer-heading">Contact & updates</h3>
               <div className="premium-footer-contact mt-5">
                 <a href="tel:+923377777460">+92 337 7777460</a>
                 <a href="tel:+923378233777">+92 337 8233777</a>
                 <a href="mailto:info@hodophile.pk">info@hodophile.pk</a>
                 <p>PECHS, Block 2, Tariq Road<br />Karachi, Pakistan</p>
               </div>
-              <div className="premium-footer-license">
-                <Image
-                  src="/images/footer/govt-pakistan.webp"
-                  alt="Government of Pakistan tourism affiliation"
-                  width={52}
-                  height={52}
-                  className="h-12 w-12 object-contain"
-                />
-                <div>
-                  <p>Tourism license</p>
-                  <strong>5436</strong>
-                </div>
-              </div>
-              <div className="mt-5">
-                <p className="text-xs text-stone-600">Affiliations</p>
-                <div className="mt-2 flex items-center gap-3">
-                  <Image
-                    src="/images/footer/affiliation-pato.webp"
-                    alt="PATO — Pakistan Association of Tour Operators"
-                    width={64}
-                    height={64}
-                    className="h-16 w-16 rounded-md bg-white object-contain"
+
+              <div className="mt-8">
+                <h3 className="premium-footer-heading">Subscribe</h3>
+                <p className="mt-3 text-sm leading-6 text-black">Get trip ideas, seasonal updates, and new packages from Hodophile.</p>
+                <form action="mailto:info@hodophile.pk" method="get" className="mt-4 grid gap-3">
+                  <label htmlFor="footer-email" className="sr-only">Email address</label>
+                  <input
+                    id="footer-email"
+                    name="subject"
+                    type="email"
+                    placeholder="Your email address"
+                    className="w-full rounded-md border border-black/20 bg-white px-4 py-3 text-sm text-black placeholder:text-black/50 outline-none transition focus:border-[#FCC000] focus:ring-2 focus:ring-[#FCC000]/30"
                   />
-                  <Image
-                    src="/images/footer/taap-logo.webp"
-                    alt="TAAP — Travel Agents Association of Pakistan"
-                    width={64}
-                    height={64}
-                    className="h-16 w-16 rounded-md bg-white object-contain"
-                  />
-                </div>
+                  <button type="submit" className="inline-flex items-center justify-center rounded-md bg-[#FCC000] px-4 py-3 text-sm font-semibold text-black transition hover:bg-[#e6b100]">
+                    Subscribe
+                  </button>
+                </form>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 border-t border-stone-200 py-6 text-xs text-stone-600 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-3 border-t border-black/10 py-6 text-sm text-black sm:flex-row sm:items-center sm:justify-between">
             <p>© 2026 Hodophile Adventures. All rights reserved.</p>
-            <div className="flex flex-wrap items-center gap-5">
-              <Link href="/terms-and-conditions" className="premium-footer-bottom-link">Booking terms</Link>
-              <Link href="/contact-us" className="premium-footer-bottom-link">Support</Link>
-            </div>
+            <p>DTS License No. 5436 · TAAP &amp; PATO affiliated</p>
           </div>
         </div>
       </footer>

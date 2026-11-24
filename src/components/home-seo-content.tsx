@@ -24,9 +24,9 @@ const travelServices = [
     description: "Weekend escapes and longer journeys across Pakistan's regions.",
   },
   {
-    icon: "🏔️",
-    title: "Adventure Tours in Pakistan",
-    description: "Outdoor routes, jeep safaris, and mountain experiences planned with local context.",
+    icon: "👨‍👩‍👧‍👦",
+    title: "Family Services",
+    description: "Comfortable schedules and route planning for families traveling together.",
   },
   {
     icon: "🗺️",
@@ -44,9 +44,9 @@ const travelServices = [
     description: "Travel coordination for friends, clubs, and organized groups.",
   },
   {
-    icon: "🏢",
-    title: "Corporate Travel Services",
-    description: "Itinerary planning for team outings, retreats, and business travel.",
+    icon: "🚐",
+    title: "Transportation Service Assistance",
+    description: "Help arranging comfortable transport options and transfers for your trip.",
   },
   {
     icon: "🌍",
