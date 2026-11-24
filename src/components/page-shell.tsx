@@ -129,7 +129,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                         aria-label={social.label}
                         className="inline-flex items-center gap-3 whitespace-nowrap text-black transition hover:text-[#FCC000]"
                       >
-                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/15 bg-[#fff9e6] text-black">
+                        <span className="inline-flex h-6 w-6 items-center justify-center">
                           {social.icon}
                         </span>
                         <span className="font-medium">{social.label}</span>
@@ -230,19 +230,19 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 <p>PECHS, Block 2, Tariq Road<br />Karachi, Pakistan</p>
               </div>
 
-              <div className="mt-8">
+              <div className="mt-5">
                 <h3 className="premium-footer-heading">Subscribe</h3>
                 <p className="mt-3 text-sm leading-6 text-black">Get trip ideas, seasonal updates, and new packages from Hodophile.</p>
-                <form action="mailto:info@hodophile.pk" method="get" className="mt-4 grid gap-3">
+                <form action="mailto:info@hodophile.pk" method="get" className="mt-3 grid gap-2">
                   <label htmlFor="footer-email" className="sr-only">Email address</label>
                   <input
                     id="footer-email"
                     name="subject"
                     type="email"
                     placeholder="Your email address"
-                    className="w-full rounded-md border border-black/20 bg-white px-4 py-3 text-sm text-black placeholder:text-black/50 outline-none transition focus:border-[#FCC000] focus:ring-2 focus:ring-[#FCC000]/30"
+                    className="w-full rounded-md border border-black/20 bg-white px-3 py-2 text-sm text-black placeholder:text-black/50 outline-none transition focus:border-[#FCC000] focus:ring-2 focus:ring-[#FCC000]/30"
                   />
-                  <button type="submit" className="inline-flex items-center justify-center rounded-md bg-[#FCC000] px-4 py-3 text-sm font-semibold text-black transition hover:bg-[#e6b100]">
+                  <button type="submit" className="inline-flex items-center justify-center rounded-md bg-[#FCC000] px-3 py-2 text-sm font-semibold text-black transition hover:bg-[#e6b100]">
                     Subscribe
                   </button>
                 </form>
