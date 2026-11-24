@@ -820,7 +820,7 @@ export function MakeMyTripForm() {
     !selectedCities.includes("Islamabad");
   const customCityEffectiveCount = selectedCities.length + (autoAddsIslamabad ? 1 : 0);
   const customSingleCityNightCount = selectedCities.length === 1 && !usesSeasonalRoadStopovers
-    ? Math.max(1, (customCityNights[selectedCities[0]] ?? 0) - 1)
+    ? Math.max(1, (customCityNights[selectedCities[0]] ?? 0) - (travelMode === "air" ? 0 : 1))
     : 0;
   const supportsMultipleHotelsInCustomSingleCity = Boolean(
     isCustomCitySelection() &&
@@ -1202,18 +1202,39 @@ export function MakeMyTripForm() {
   useEffect(() => {
     if (!supportsMultipleHotelsInCustomSingleCity) return;
 
-    const totalSelectedNights = singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0);
-    const remainingNights = customSingleCityNightCount - totalSelectedNights;
-    const lastStay = singleCityHotelStays[singleCityHotelStays.length - 1];
-    const hasSelectableLastStay = Boolean(lastStay?.hotelId && lastStay?.roomId);
+    if (travelMode !== "air") {
+      const totalSelectedNights = singleCityHotelStays.reduce((sum, stay) => sum + Math.max(0, stay.nights), 0);
+      const remainingNights = customSingleCityNightCount - totalSelectedNights;
+      const lastStay = singleCityHotelStays[singleCityHotelStays.length - 1];
+      const hasSelectableLastStay = Boolean(lastStay?.hotelId && lastStay?.roomId);
 
-    if (remainingNights > 0 && hasSelectableLastStay) {
-      const trailingBlankStay = singleCityHotelStays[singleCityHotelStays.length - 1];
-      if (!trailingBlankStay || trailingBlankStay.hotelId || trailingBlankStay.roomId) {
-        setSingleCityHotelStays((current) => [...current, { hotelId: "", roomId: "", nights: remainingNights }]);
+      if (remainingNights > 0 && hasSelectableLastStay) {
+        const trailingBlankStay = singleCityHotelStays[singleCityHotelStays.length - 1];
+        if (!trailingBlankStay || trailingBlankStay.hotelId || trailingBlankStay.roomId) {
+          setSingleCityHotelStays((current) => [...current, { hotelId: "", roomId: "", nights: remainingNights }]);
+        }
       }
+      return;
     }
-  }, [supportsMultipleHotelsInCustomSingleCity, singleCityHotelStays, customSingleCityNightCount]);
+
+    setSingleCityHotelStays((current) => {
+      if (current.length === 0) return current;
+
+      const lastIndex = current.length - 1;
+      const lastStay = current[lastIndex];
+      if (!lastStay.hotelId || !lastStay.roomId) return current;
+
+      const previousNights = current
+        .slice(0, lastIndex)
+        .reduce((sum, stay) => sum + Math.max(0, stay.nights), 0);
+      const adjustedLastStayNights = customSingleCityNightCount - previousNights;
+      if (adjustedLastStayNights < 1 || adjustedLastStayNights === lastStay.nights) return current;
+
+      return current.map((stay, index) =>
+        index === lastIndex ? { ...stay, nights: adjustedLastStayNights } : stay,
+      );
+    });
+  }, [supportsMultipleHotelsInCustomSingleCity, singleCityHotelStays, customSingleCityNightCount, travelMode]);
 
   const toggleCitySelection = (city: string) => {
     setSelectedCities((currentCities) => {
@@ -3464,7 +3485,7 @@ export function MakeMyTripForm() {
                   >
                     + Add Another Hotel
                   </button>
-                  <p className="text-xs text-green-800">Total nights must equal {singleCityNightCount} to generate the quotation.</p>
+                  <p className="text-xs text-green-800">Total nights must equal {customSingleCityNightCount} to generate the quotation.</p>
                 </div>
               </div>
             ) : supportsMultipleHotelsInCustomSingleCity ? (
