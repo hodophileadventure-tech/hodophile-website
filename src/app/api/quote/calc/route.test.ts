@@ -64,3 +64,17 @@ test("live quote rejects HODOSB10 after switching to an ineligible tour", async 
   assert.equal(result.status, 400);
   assert.equal(result.body.valid, false);
 });
+
+test("live air quote rejects unsupported destinations server-side", async () => {
+  const result = await quote({
+    ...input,
+    travelMode: "air",
+    routeDestinations: ["Swat"],
+  });
+
+  assert.equal(result.status, 400);
+  assert.equal(
+    result.body.error,
+    "By Air trips are currently available only for Skardu, Hunza, Astore, and Fairy Meadows. Please select an eligible destination or switch to By Road.",
+  );
+});

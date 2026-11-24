@@ -29,7 +29,8 @@ export interface Hotel {
     | "Nathia Gali"
     | "Murree"
     | "Naran"
-    | "Chilas";
+    | "Chilas"
+    | "Besham";
   image?: string; // Hotel main photo URL
   rooms: Room[];
   seasons?: {
@@ -461,6 +462,24 @@ export const hotels: Hotel[] = [
     rooms: [
       { name: "Standard Room", price: 5000, image: "https://images.booking.com/data2/Hotel/94/940/94010/94010_431_z.jpg" },
     ],
+  },
+  {
+    id: "ramada-hotel-besham",
+    name: "Ramada Hotel Besham",
+    city: "Besham",
+    rooms: [{ name: "Standard Room", price: 5000 }],
+  },
+  {
+    id: "besham-inn",
+    name: "Besham Inn",
+    city: "Besham",
+    rooms: [{ name: "Deluxe Room", price: 12000 }],
+  },
+  {
+    id: "hilton-besham",
+    name: "Hilton Besham",
+    city: "Besham",
+    rooms: [{ name: "Executive Room", price: 20000 }],
   },
   {
     id: "eagle-nest-swat",

@@ -7,6 +7,10 @@ import { findPromotionRedemption } from "@/lib/promotions/promotion-redemption";
 import { normalizePromotionPhone } from "@/lib/promotions/promotion-phone";
 import { validatePromoCode } from "@/lib/promotions/promotion-service";
 import type { PromoValidationResult } from "@/lib/promotions/promotion-types";
+import { getCustomItineraryTransportOptions } from "@/lib/transport/quotation";
+import { allowRouteCalculation } from "@/lib/transport/rate-limit";
+import { AirDestinationValidationError, getAirQuotationDestinations } from "@/lib/transport/air-routing";
+import { RouteCalculationError } from "@/lib/transport/route-service";
 
 type PromoValidationBody = {
   tourId: string;
@@ -90,7 +94,45 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ valid: false, error: "Complete the tour details before applying this promo code." }, { status: 400 });
     }
 
-    const baseQuotation = await calculateQuotation(body.quotationInput);
+    if (body.quotationInput.travelMode !== undefined &&
+        body.quotationInput.travelMode !== "road" && body.quotationInput.travelMode !== "air") {
+      return NextResponse.json({ valid: false, error: "Please select a valid travel mode." }, { status: 400 });
+    }
+
+    if (body.quotationInput.travelMode === "air") {
+      try {
+        getAirQuotationDestinations(body.quotationInput, route);
+      } catch (error) {
+        if (error instanceof AirDestinationValidationError) {
+          return NextResponse.json({ valid: false, error: error.message }, { status: 400 });
+        }
+        throw error;
+      }
+
+      const identifier = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+        request.headers.get("x-real-ip") ||
+        "unknown";
+      if (!allowRouteCalculation(identifier)) {
+        return NextResponse.json(
+          { valid: false, error: "Too many route requests. Please wait a minute and try again." },
+          { status: 429, headers: { "Retry-After": "60" } },
+        );
+      }
+    }
+
+    let baseQuotation;
+    try {
+      const transportOptions = await getCustomItineraryTransportOptions(body.quotationInput);
+      baseQuotation = await calculateQuotation(body.quotationInput, transportOptions);
+    } catch (error) {
+      if (error instanceof AirDestinationValidationError) {
+        return NextResponse.json({ valid: false, error: error.message }, { status: 400 });
+      }
+      if (error instanceof RouteCalculationError) {
+        return NextResponse.json({ valid: false, error: error.message }, { status: error.status });
+      }
+      throw error;
+    }
     if (!baseQuotation) {
       return NextResponse.json({ valid: false, error: "Unable to validate the current tour price." }, { status: 400 });
     }

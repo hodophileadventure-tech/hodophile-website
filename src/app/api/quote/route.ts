@@ -13,6 +13,12 @@ import {
 import { normalizePromotionPhone } from "@/lib/promotions/promotion-phone";
 import { getCustomItineraryTransportOptions } from "@/lib/transport/quotation";
 import { allowRouteCalculation } from "@/lib/transport/rate-limit";
+import {
+  AirDestinationValidationError,
+  buildAirRoadStops,
+  getAirQuotationDestinations,
+} from "@/lib/transport/air-routing";
+import { RouteCalculationError } from "@/lib/transport/route-service";
 
 interface QuoteRequestBody extends QuotationInput {
   customerName: string;
@@ -55,7 +61,7 @@ function buildValidationError(body: QuoteRequestBody) {
   if (!body.tripDate || Number.isNaN(Date.parse(body.tripDate))) {
     return "Please provide a valid trip date.";
   }
-  if (body.travelMode && body.travelMode !== "road" && body.travelMode !== "air") {
+  if (body.travelMode !== undefined && body.travelMode !== "road" && body.travelMode !== "air") {
     return "Please select a valid travel mode.";
   }
   if (body.includeIslamabadTransit !== undefined && typeof body.includeIslamabadTransit !== "boolean") {
@@ -69,6 +75,19 @@ function buildValidationError(body: QuoteRequestBody) {
       (!Array.isArray(body.routeDestinations) || body.routeDestinations.length > 10 ||
         body.routeDestinations.some((city) => typeof city !== "string" || city.length > 80))) {
     return "Please provide a valid ordered list of destinations.";
+  }
+  if (body.customCities !== undefined &&
+      (!Array.isArray(body.customCities) || body.customCities.length > 10 ||
+        body.customCities.some((city) => typeof city !== "string" || city.length > 80))) {
+    return "Please provide a valid list of custom destinations.";
+  }
+  if (body.travelMode === "air") {
+    try {
+      getAirQuotationDestinations(body, getRouteById(body.routeId));
+    } catch (error) {
+      if (error instanceof AirDestinationValidationError) return error.message;
+      throw error;
+    }
   }
   const nights = [
     ...Object.values(body.multiCityNights || {}),
@@ -170,7 +189,7 @@ export async function POST(request: NextRequest) {
 
     const route = getRouteById(body.routeId);
     const isCustomItinerary = !route && Boolean(body.customCities && body.customCities.length > 0);
-    if (isCustomItinerary && body.travelMode !== "air") {
+    if (isCustomItinerary || body.travelMode === "air") {
       const identifier = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
         request.headers.get("x-real-ip") ||
         "unknown";
@@ -249,6 +268,24 @@ export async function POST(request: NextRequest) {
     // Get route and hotel names for the sheet
     const isMultiCity = Boolean(body.multiCityHotels && body.multiCityNights);
     const isSingleCityMultiStay = Boolean(body.singleCityHotelStays && body.singleCityHotelStays.length > 0);
+    const itineraryCities = body.travelMode === "air"
+      ? body.routeDestinations?.length
+        ? body.routeDestinations
+        : body.customCities?.length
+          ? body.customCities
+          : route
+            ? [route.city]
+            : []
+      : body.customCities ?? (route ? [route.city] : []);
+    const routeItinerary = body.travelMode === "air"
+      ? buildAirRoadStops(itineraryCities)
+        .map((stop, index, stops) =>
+          (index === 0 || index === stops.length - 1) && stop === "Skardu" ? "Skardu Airport" : stop,
+        )
+        .join(" -> ")
+      : isCustomItinerary || isMultiCity
+        ? itineraryCities.join(" -> ")
+        : route?.itinerary || "";
     let hotelName = "";
     let roomType = "";
 
@@ -295,7 +332,7 @@ export async function POST(request: NextRequest) {
       destinationCity: isCustomItinerary ? "Custom" : route?.city || "",
       routeDurationDays: isCustomItinerary ? Object.values(body.multiCityNights || {}).reduce((sum, nights) => sum + nights, 0) : route?.duration || 0,
       routeDirection: isCustomItinerary ? "Custom itinerary" : route?.direction || "",
-      routeItinerary: isCustomItinerary ? (body.customCities || []).join(" -> ") : route?.itinerary || "",
+      routeItinerary,
       vehicle: body.vehicleName,
       hotel: hotelName,
       hotelCategory: body.hotelCategory || "",
@@ -349,6 +386,7 @@ export async function POST(request: NextRequest) {
       customerPhone: body.customerPhone,
       quotation,
       promotion: quotation.promotion,
+      travelMode: body.travelMode,
     });
 
     // Fallback: log if WhatsApp not configured
@@ -358,6 +396,7 @@ export async function POST(request: NextRequest) {
         customerPhone: body.customerPhone,
         quotation,
         promotion: quotation.promotion,
+        travelMode: body.travelMode,
       });
     }
 
@@ -370,6 +409,15 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Quote calculation error:", error);
+    if (error instanceof AirDestinationValidationError) {
+      return NextResponse.json({ error: error.message, details: error.message }, { status: 400 });
+    }
+    if (error instanceof RouteCalculationError) {
+      return NextResponse.json(
+        { error: error.message, details: error.message, code: error.code },
+        { status: error.status },
+      );
+    }
     return NextResponse.json(
       {
         error: "Internal server error",

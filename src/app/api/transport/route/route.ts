@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { RouteCalculationError, calculateRoadRoute } from "@/lib/transport/route-service";
 import { getOperationalTransportSettings } from "@/lib/transport/settings";
 import { allowRouteCalculation } from "@/lib/transport/rate-limit";
+import { AirDestinationValidationError, validateAirRoadStops } from "@/lib/transport/air-routing";
 
 function getClientIdentifier(request: NextRequest): string {
   return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -31,13 +32,27 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const requestBody = body as { stops?: unknown; travelMode?: unknown };
+    if (requestBody.travelMode !== undefined &&
+        requestBody.travelMode !== "road" && requestBody.travelMode !== "air") {
+      return NextResponse.json({ error: "Please select a valid travel mode." }, { status: 400 });
+    }
+    const stops = requestBody.travelMode === "air"
+      ? validateAirRoadStops(requestBody.stops)
+      : requestBody.stops;
     const settings = await getOperationalTransportSettings();
     const route = await calculateRoadRoute(
-      (body as { stops?: unknown }).stops,
+      stops,
       settings,
+      undefined,
+      undefined,
+      requestBody.travelMode !== "air",
     );
     return NextResponse.json(route);
   } catch (error) {
+    if (error instanceof AirDestinationValidationError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     if (error instanceof RouteCalculationError) {
       return NextResponse.json(
         {

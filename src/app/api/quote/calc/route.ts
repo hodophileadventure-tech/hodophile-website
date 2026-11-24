@@ -3,6 +3,9 @@ import { calculateQuotation, type QuotationInput } from "@/lib/pricingEngine";
 import { getCustomItineraryTransportOptions } from "@/lib/transport/quotation";
 import { allowRouteCalculation } from "@/lib/transport/rate-limit";
 import { applyPromotionToQuotation, validatePromoCode } from "@/lib/promotions/promotion-service";
+import { getRouteById } from "@/lib/data/routes";
+import { AirDestinationValidationError, getAirQuotationDestinations } from "@/lib/transport/air-routing";
+import { RouteCalculationError } from "@/lib/transport/route-service";
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,7 +13,33 @@ export async function POST(request: NextRequest) {
     if (body.includeIslamabadTransit !== undefined && typeof body.includeIslamabadTransit !== "boolean") {
       return NextResponse.json({ error: "Please provide a valid Islamabad transit selection." }, { status: 400 });
     }
-    if (body.routeId === "custom-itinerary" && body.travelMode !== "air") {
+    if (body.travelMode !== undefined && body.travelMode !== "road" && body.travelMode !== "air") {
+      return NextResponse.json({ error: "Please select a valid travel mode." }, { status: 400 });
+    }
+    if (body.routeDestinations !== undefined &&
+        (!Array.isArray(body.routeDestinations) || body.routeDestinations.length > 10 ||
+          body.routeDestinations.some((city) => typeof city !== "string" || city.length > 80))) {
+      return NextResponse.json({ error: "Please provide a valid ordered list of destinations." }, { status: 400 });
+    }
+    if (body.customCities !== undefined &&
+        (!Array.isArray(body.customCities) || body.customCities.length > 10 ||
+          body.customCities.some((city) => typeof city !== "string" || city.length > 80))) {
+      return NextResponse.json({ error: "Please provide a valid list of custom destinations." }, { status: 400 });
+    }
+    if (body.travelMode === "air") {
+      try {
+        getAirQuotationDestinations(
+          body,
+          typeof body.routeId === "string" ? getRouteById(body.routeId) : undefined,
+        );
+      } catch (error) {
+        if (error instanceof AirDestinationValidationError) {
+          return NextResponse.json({ error: error.message }, { status: 400 });
+        }
+        throw error;
+      }
+    }
+    if (body.routeId === "custom-itinerary" || body.travelMode === "air") {
       const identifier = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
         request.headers.get("x-real-ip") ||
         "unknown";
@@ -66,6 +95,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, quotation: customerQuotation });
   } catch (error) {
     console.error("Quotation calc error:", error);
+    if (error instanceof AirDestinationValidationError) {
+      return NextResponse.json({ error: error.message, details: error.message }, { status: 400 });
+    }
+    if (error instanceof RouteCalculationError) {
+      return NextResponse.json(
+        { error: error.message, details: error.message, code: error.code },
+        { status: error.status },
+      );
+    }
     return NextResponse.json(
       {
         error: "Internal server error",

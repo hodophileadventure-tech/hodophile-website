@@ -12,7 +12,11 @@ import {
   useMap,
 } from "react-leaflet";
 
-import { getTransportLocation, type MapCoordinate } from "@/lib/transport/locations";
+import {
+  getRoadTransportLocation,
+  getTransportLocation,
+  type MapCoordinate,
+} from "@/lib/transport/locations";
 import type { RoadRouteEstimate } from "@/lib/transport/route-service";
 
 import "leaflet/dist/leaflet.css";
@@ -32,6 +36,15 @@ function createMarkerIcon(index: number, isFinal: boolean) {
     html: `<span style="display:grid;place-items:center;width:30px;height:30px;border:2px solid #fff;border-radius:9999px;background:${color};color:${isOrigin || isFinal ? "#111" : "#fff"};font:700 12px/1 system-ui;box-shadow:0 2px 8px #0006">${index + 1}</span>`,
     iconSize: [30, 30],
     iconAnchor: [15, 15],
+  });
+}
+
+function createDestinationIcon() {
+  return L.divIcon({
+    className: "",
+    html: '<span style="display:grid;place-items:center;width:26px;height:26px;border:3px solid #fff;border-radius:9999px;background:#FCC000;color:#111;font:700 11px/1 system-ui;box-shadow:0 2px 8px #0006">D</span>',
+    iconSize: [26, 26],
+    iconAnchor: [13, 13],
   });
 }
 
@@ -78,9 +91,29 @@ export default function RouteDistanceMap({
     }),
     [mapStops],
   );
+  const selectedDestinationMarkers = useMemo(
+    () => stops.flatMap((name, index) => {
+      const location = getTransportLocation(name);
+      const roadAccess = getRoadTransportLocation(name);
+      if (!location || !roadAccess || location.name === roadAccess.name ||
+          !route?.stops.includes(roadAccess.name)) {
+        return [];
+      }
+      return [{
+        name,
+        index,
+        roadAccessName: roadAccess.name,
+        coordinate: location.coordinate,
+      }];
+    }),
+    [route?.stops, stops],
+  );
   const markerCoordinates = useMemo(
-    () => markers.map((marker) => marker.coordinate),
-    [markers],
+    () => [
+      ...markers.map((marker) => marker.coordinate),
+      ...selectedDestinationMarkers.map((marker) => marker.coordinate),
+    ],
+    [markers, selectedDestinationMarkers],
   );
   const fallbackCenter: [number, number] = markerCoordinates.length > 0
     ? [markerCoordinates[0][1], markerCoordinates[0][0]]
@@ -169,6 +202,20 @@ export default function RouteDistanceMap({
                   {formatDuration(route.legs[marker.index].durationSeconds)}
                 </p>
               ) : null}
+            </Popup>
+          </Marker>
+        ))}
+        {selectedDestinationMarkers.map((marker) => (
+          <Marker
+            key={`destination-${marker.name}-${marker.index}`}
+            position={[marker.coordinate[1], marker.coordinate[0]]}
+            icon={createDestinationIcon()}
+            zIndexOffset={700}
+          >
+            <Tooltip permanent direction="top" offset={[0, -12]}>{marker.name} · selected destination</Tooltip>
+            <Popup>
+              <strong>{marker.name}</strong>
+              <p className="mt-1 text-xs">Road route reaches {marker.roadAccessName}.</p>
             </Popup>
           </Marker>
         ))}

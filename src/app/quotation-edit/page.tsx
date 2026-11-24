@@ -19,6 +19,7 @@ function QuotationEditContent() {
   const [vehicleName, setVehicleName] = useState("");
   const [quotation, setQuotation] = useState<QuotationBreakdown | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [quoteError, setQuoteError] = useState("");
 
   // Available vehicles for custom tours
   const availableVehicles = [
@@ -79,7 +80,10 @@ function QuotationEditContent() {
 
     const useSingleCitySplitStay = Array.isArray(quotationData.singleCityHotelStays) && quotationData.singleCityHotelStays.length > 0;
 
-    if (typeof quotationData.promoCode === "string" && quotationData.promoCode) {
+    if (
+      quotationData.travelMode === "air" ||
+      (typeof quotationData.promoCode === "string" && quotationData.promoCode)
+    ) {
       let isCurrent = true;
       const quoteInput = {
         routeId: quotationData.routeId,
@@ -93,6 +97,9 @@ function QuotationEditContent() {
         customCities: quotationData.customCities,
         customRouteLabel: quotationData.customRouteLabel,
         travelMode: quotationData.travelMode,
+        startingPoint: quotationData.startingPoint,
+        routeDestinations: quotationData.routeDestinations,
+        includeIslamabadTransit: quotationData.includeIslamabadTransit,
         numberOfRooms: quotationData.numberOfRooms,
         adults: quotationData.adults,
         kids: quotationData.kids,
@@ -109,12 +116,17 @@ function QuotationEditContent() {
           if (!isCurrent) return;
           if (!response.ok || !data.success) {
             setQuotation(null);
+            setQuoteError(data.error || "Unable to calculate the Skardu road route.");
             return;
           }
           setQuotation(data.quotation as QuotationBreakdown);
+          setQuoteError("");
         })
         .catch(() => {
-          if (isCurrent) setQuotation(null);
+          if (isCurrent) {
+            setQuotation(null);
+            setQuoteError("Unable to calculate the Skardu road route. Please try again.");
+          }
         });
 
       return () => {
@@ -140,6 +152,7 @@ function QuotationEditContent() {
 
     if (updatedQuotation) {
       setQuotation(updatedQuotation);
+      setQuoteError("");
     }
   }, [customCityNights, multiCityHotels, singleCityHotelStays, vehicleName, quotationData]);
 
@@ -147,7 +160,7 @@ function QuotationEditContent() {
     setIsSubmitting(true);
     try {
       let authoritativeQuotation = quotation;
-      if (quotationData?.promoCode) {
+      if (quotationData?.travelMode === "air" || quotationData?.promoCode) {
         const response = await fetch("/api/quote/calc", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -162,6 +175,9 @@ function QuotationEditContent() {
             multiCityNights: isSingleCitySplitStay ? undefined : customCityNights,
             customCities: quotationData.customCities,
             customRouteLabel: quotationData.customRouteLabel,
+            startingPoint: quotationData.startingPoint,
+            routeDestinations: quotationData.routeDestinations,
+            includeIslamabadTransit: quotationData.includeIslamabadTransit,
             numberOfRooms: quotationData.numberOfRooms,
             adults: quotationData.adults,
             kids: quotationData.kids,
@@ -198,6 +214,7 @@ function QuotationEditContent() {
       router.push(`/quotation-result?data=${encoded}`);
     } catch (error) {
       console.error("Error proceeding:", error);
+      setQuoteError(error instanceof Error ? error.message : "Unable to validate this quotation.");
     } finally {
       setIsSubmitting(false);
     }
@@ -436,6 +453,18 @@ function QuotationEditContent() {
                 </p>
               </div>
             )}
+            {quotationData.travelMode === "air" ? (
+              <div className="rounded-[15px] border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+                <p className="font-semibold">Travel Mode: By Air · Arrival &amp; Departure Hub: Skardu</p>
+                <p className="mt-1 font-bold">Air Tickets: NOT INCLUDED</p>
+                <p className="mt-1">Air tickets to and from Skardu are not included in this quotation. Customers are responsible for arranging their own flight tickets.</p>
+              </div>
+            ) : null}
+            {quoteError ? (
+              <p role="alert" className="rounded-[15px] border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                {quoteError}
+              </p>
+            ) : null}
 
             {/* Action Buttons */}
             <div className="flex gap-4 justify-center">
@@ -447,7 +476,7 @@ function QuotationEditContent() {
               </button>
               <button
                 onClick={handleProceed}
-                disabled={isSubmitting || !quotation}
+                disabled={isSubmitting || !quotation || Boolean(quoteError)}
                 className="px-8 py-3 rounded-[10px] bg-[#fcc000] text-black font-semibold hover:bg-[#fcc000]/90 transition disabled:cursor-not-allowed disabled:bg-stone-200 disabled:text-stone-700 disabled:opacity-100"
               >
                 {isSubmitting ? "Processing..." : "✨ Proceed to Result"}

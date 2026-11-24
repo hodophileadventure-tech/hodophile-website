@@ -52,6 +52,13 @@ test("prepares multi-destination routes in order and includes the return stop", 
   );
 });
 
+test("air routes keep map-provider leg distances without fixed destination adjustments", () => {
+  const airRoute = prepareRoadRoute(["Skardu", "Hunza", "Astore", "Skardu"], true, false);
+
+  assert.deepEqual(airRoute.stops, ["Skardu", "Hunza", "Astore", "Skardu"]);
+  assert.deepEqual(airRoute.destinationAdjustmentsKmByLeg, [0, 0, 0]);
+});
+
 test("adds each selected destination distance once to its leg and the custom route total", () => {
   const destinations = [
     "Hunza",
@@ -436,6 +443,52 @@ test("uses a supplied road distance once in a custom quotation", () => {
   assert.equal(quote.transportBreakdown?.rentalCost, 6_000);
   assert.equal(quote.transportBreakdown?.tollTax, 8_000);
   assert.equal(quote.transportCost, 31_600);
+});
+
+test("uses only the server-calculated Skardu road distance for air transport pricing", () => {
+  const airInput = {
+    routeId: "skardu-basho-6days",
+    vehicleName: "Toyota Corolla",
+    hotelId: "skardu-dera-lamsa",
+    roomId: "Lamsa Executive Room",
+    numberOfRooms: 1,
+    adults: 2,
+    kids: 0,
+    tripDate: "2026-06-15",
+    travelMode: "air" as const,
+  };
+  const serverOptions = {
+    distanceKm: 1_234,
+    vehicleConfiguration: {
+      name: "Toyota Corolla",
+      fuelType: "petrol" as const,
+      averageKmPerLiter: 10,
+      fuelPricePerLiter: 300,
+      maintenanceCostPerKm: 0,
+    },
+    settings: {
+      petrolPricePerLiter: 300,
+      dieselPricePerLiter: 400,
+      additionalDistanceKm: 0,
+      additionalDistancePercent: 0,
+    },
+  };
+
+  assert.equal(calculateQuotation(airInput), null);
+
+  const roundTripQuote = calculateQuotation({
+    ...airInput,
+    routeDestinations: ["Skardu", "Hunza"],
+  }, serverOptions);
+  const skarduOnlyQuote = calculateQuotation({
+    ...airInput,
+    routeDestinations: ["Skardu"],
+  }, { ...serverOptions, distanceKm: 0 });
+
+  assert.ok(roundTripQuote);
+  assert.ok(skarduOnlyQuote);
+  assert.equal(roundTripQuote.transportBreakdown?.distance, 1_234);
+  assert.equal(skarduOnlyQuote.transportBreakdown?.distance, 0);
 });
 
 test("requires the exact configured bearer secret for transport administration", () => {

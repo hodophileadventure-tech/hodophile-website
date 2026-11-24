@@ -7,6 +7,7 @@ export interface WhatsAppMessage {
   customerPhone: string;
   quotation: QuotationBreakdown;
   promotion?: PromotionSummary;
+  travelMode?: "road" | "air";
 }
 
 export function formatQuotationForWhatsApp(msg: WhatsAppMessage): string {
@@ -14,6 +15,9 @@ export function formatQuotationForWhatsApp(msg: WhatsAppMessage): string {
   const promotion = msg.promotion ?? quotation.promotion;
   const { details } = quotation;
 
+  const airDetails = msg.travelMode === "air"
+    ? `\n*Travel Mode:* By Air\n*Arrival & Departure Hub:* Skardu\n*Air Tickets:* NOT INCLUDED\nAir tickets to and from Skardu are not included in this quotation. Customers are responsible for arranging their own flight tickets.\n`
+    : "";
   const message = `
 🧳 *New Travel Quotation Request* 🧳
 
@@ -28,6 +32,7 @@ export function formatQuotationForWhatsApp(msg: WhatsAppMessage): string {
 🛏️ Room Type: ${details.roomType}
 🔢 Number of Rooms: ${details.numberOfRooms}
 👥 Number of Guests: ${details.numberOfGuests}
+${airDetails}
 
 *Cost Breakdown:*
 🚗 Transport: ${formatPKR(quotation.transportCost)}

@@ -129,13 +129,14 @@ export function calculateTransportCost(
   // Normalize vehicle name to the canonical name
   const effectiveVehicleName = vehicleRate.name;
 
-  // Base distance (may be overridden for custom itineraries or air travel)
-  let distance = distanceOverride ?? getRouteDistance(routeId);
-  // Special rule: if travelling by air, the only allowed destination is Skardu.
-  // Force distance to 600km for air trips to Skardu.
-  if (travelMode === "air") {
-    distance = 600;
+  // Air-mode ground distance is supplied by the server's Skardu-based road route.
+  if (travelMode === "air" && distanceOverride === undefined) {
+    console.warn("Air transport pricing requires a server-calculated Skardu road route.");
+    return null;
   }
+  let distance = travelMode === "air"
+    ? distanceOverride
+    : distanceOverride ?? getRouteDistance(routeId);
   if (distance === undefined || distance === null) {
     console.warn(`Distance not found for route: ${routeId}`);
     return null;
@@ -320,8 +321,13 @@ export function calculateQuotation(
     }
 
     const customDistance = isCustomItinerary
-      ? serverTransportOptions?.distanceKm ?? estimateCustomItineraryDistance(input.customCities || [])
+      ? input.travelMode === "air"
+        ? serverTransportOptions?.distanceKm
+        : serverTransportOptions?.distanceKm ?? estimateCustomItineraryDistance(input.customCities || [])
       : undefined;
+    const transportDistance = input.travelMode === "air"
+      ? serverTransportOptions?.distanceKm
+      : customDistance;
     const effectiveCustomNights = input.multiCityNights ??
       (input.singleCityHotelStays && input.singleCityHotelStays.length > 0
         ? input.singleCityHotelStays.reduce<Record<string, number>>((acc, stay) => {
@@ -333,14 +339,19 @@ export function calculateQuotation(
     const customVehicleDays = isCustomItinerary ? estimateCustomVehicleDays(effectiveCustomNights) : undefined;
 
     // Use dynamic transport cost calculation with vehicle rental rates
+    if (input.travelMode === "air" && transportDistance === undefined) {
+      console.warn("Air quotation requires a server-calculated Skardu road route.");
+      return null;
+    }
+
     const transportResult = calculateTransportCost(
       input.vehicleName,
       input.routeId,
       isCustomItinerary ? customVehicleDays : route?.vehicleDays,
-      customDistance,
+      transportDistance,
       input.travelMode,
-      isCustomItinerary ? serverTransportOptions?.vehicleConfiguration : null,
-      isCustomItinerary ? serverTransportOptions?.settings : undefined,
+      isCustomItinerary || input.travelMode === "air" ? serverTransportOptions?.vehicleConfiguration : null,
+      isCustomItinerary || input.travelMode === "air" ? serverTransportOptions?.settings : undefined,
     );
     if (transportResult === null) {
       console.warn(`Transport cost calculation failed for vehicle: ${input.vehicleName}, route: ${input.routeId}`);

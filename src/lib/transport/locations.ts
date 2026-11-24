@@ -31,6 +31,7 @@ const locations: Record<string, TransportLocation> = {
   "raikot bridge": { name: "Raikot Bridge", coordinate: [74.5919012, 35.49296] },
   "astore": { name: "Astore", coordinate: [74.856, 35.343] },
   "chilas": { name: "Chilas", coordinate: [74.096, 35.420] },
+  "besham": { name: "Besham", coordinate: [72.872, 34.929] },
   "hunza": { name: "Hunza", coordinate: [74.65, 36.3167] },
   "karimabad": { name: "Karimabad", coordinate: [74.65, 36.3167] },
   "skardu": { name: "Skardu", coordinate: [75.6333, 35.2971] },

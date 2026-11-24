@@ -103,6 +103,7 @@ function makeRouteKey(stops: string[]): string {
 export function prepareRoadRoute(
   requestedStops: unknown,
   includeReturnJourney: boolean,
+  includeDestinationAdjustments = true,
 ): PreparedRoadRoute {
   if (!Array.isArray(requestedStops) || requestedStops.length < 2 || requestedStops.length > MAX_STOPS ||
       requestedStops.some((stop) => typeof stop !== "string" || stop.trim().length === 0 || stop.length > 80)) {
@@ -138,7 +139,9 @@ export function prepareRoadRoute(
 
     const destinationKey = normalizeLocationName(requestedStop);
     const isSelectedDestination = stopIndex > 0 && !(hasExplicitReturn && stopIndex === inputStops.length - 1);
-    const destinationAdjustmentKm = DESTINATION_DISTANCE_ADJUSTMENTS_KM[destinationKey];
+    const destinationAdjustmentKm = includeDestinationAdjustments
+      ? DESTINATION_DISTANCE_ADJUSTMENTS_KM[destinationKey]
+      : undefined;
     if (isSelectedDestination && destinationAdjustmentKm !== undefined &&
         !adjustedDestinations.has(destinationKey) && canonicalStops.length > 1) {
       const destinationLegIndex = canonicalStops.length - 2;
@@ -556,8 +559,13 @@ export async function calculateRoadRoute(
   settings: OperationalTransportSettings,
   fetcher: typeof fetch = fetch,
   apiKey = process.env.OPENROUTESERVICE_API_KEY,
+  includeDestinationAdjustments = true,
 ): Promise<RoadRouteEstimate> {
-  const prepared = prepareRoadRoute(requestedStops, settings.includeReturnJourney);
+  const prepared = prepareRoadRoute(
+    requestedStops,
+    settings.includeReturnJourney,
+    includeDestinationAdjustments,
+  );
   const cached = await readCachedRoute(prepared.itineraryKey);
   if (cached) {
     memoryCache.set(prepared.itineraryKey, cached);

@@ -13,10 +13,12 @@ export function QuotationResultContent() {
   const router = useRouter();
   const [quotation, setQuotation] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
   useEffect(() => {
     let isCurrent = true;
     const loadQuotation = async () => {
+      let isAirQuote = false;
       try {
         const quotationData = searchParams.get("data");
         if (!quotationData) {
@@ -24,7 +26,11 @@ export function QuotationResultContent() {
           return;
         }
         const decoded = JSON.parse(atob(quotationData));
-        if (typeof decoded.promoCode === "string" && decoded.promoCode) {
+        isAirQuote = decoded.travelMode === "air";
+        const requiresServerCalculation =
+          decoded.travelMode === "air" ||
+          (typeof decoded.promoCode === "string" && decoded.promoCode.length > 0);
+        if (requiresServerCalculation) {
           const response = await fetch("/api/quote/calc", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -40,6 +46,9 @@ export function QuotationResultContent() {
               customCities: decoded.customCities,
               customRouteLabel: decoded.customRouteLabel,
               travelMode: decoded.travelMode,
+              startingPoint: decoded.startingPoint,
+              routeDestinations: decoded.routeDestinations,
+              includeIslamabadTransit: decoded.includeIslamabadTransit,
               numberOfRooms: decoded.numberOfRooms,
               adults: decoded.adults,
               kids: decoded.kids,
@@ -49,6 +58,10 @@ export function QuotationResultContent() {
           });
           const result = await response.json();
           if (!response.ok || !result.success) {
+            if (decoded.travelMode === "air") {
+              if (isCurrent) setLoadError(result.error || "Unable to validate the Skardu road route.");
+              return;
+            }
             router.push("/make-my-trip");
             return;
           }
@@ -58,7 +71,11 @@ export function QuotationResultContent() {
         }
       } catch (error) {
         console.error("Failed to parse quotation data:", error);
-        router.push("/make-my-trip");
+        if (isAirQuote) {
+          if (isCurrent) setLoadError("Unable to load this quotation. Please return to Make My Trip and try again.");
+        } else {
+          router.push("/make-my-trip");
+        }
       } finally {
         if (isCurrent) setLoading(false);
       }
@@ -79,10 +96,23 @@ export function QuotationResultContent() {
   }
 
   if (!quotation) {
-    return null;
+    return loadError ? (
+      <div className="min-h-screen bg-[var(--surface-page)] px-4 py-10">
+        <div role="alert" className="mx-auto max-w-xl rounded-2xl border border-red-200 bg-white p-6 text-red-800 shadow">
+          <p className="font-semibold">Quotation unavailable</p>
+          <p className="mt-2 text-sm">{loadError}</p>
+          <button type="button" onClick={() => router.push("/make-my-trip")} className="mt-4 rounded-full bg-[#fcc000] px-5 py-2 text-sm font-semibold text-black">
+            Return to Make My Trip
+          </button>
+        </div>
+      </div>
+    ) : null;
   }
 
-  const isCustomItinerary = Array.isArray(quotation.customCities) && quotation.customCities.length > 0;
+  const isCustomItinerary =
+    quotation.routeId === "custom-itinerary" &&
+    Array.isArray(quotation.customCities) &&
+    quotation.customCities.length > 0;
   const route = isCustomItinerary ? undefined : routes.find((r) => r.id === quotation.routeId);
   const routeName = isCustomItinerary
     ? quotation.customRouteLabel || quotation.customCities.join(" + ") || "Custom Package"
@@ -119,7 +149,7 @@ export function QuotationResultContent() {
   const summaryCards = [
     { label: "Route", value: routeName },
     { label: "Travelers", value: `${numberOfGuests} guest${numberOfGuests === 1 ? "" : "s"}` },
-    { label: "Mode", value: travelMode === "air" ? "By Air" : "By Road" },
+    { label: "Travel Mode", value: travelMode === "air" ? "By Air" : "By Road" },
     { label: "Vehicle", value: quotation.details?.vehicle || quotation.vehicleName || "To be confirmed" },
   ];
 
@@ -193,7 +223,10 @@ export function QuotationResultContent() {
     const promoDetails = promotion
       ? ` Promo code ${promotion.code} applied: ${promotion.discountPercent}% off. Original total ${formatPKR(promotion.originalPrice)}, discount ${formatPKR(promotion.discountAmount)}, final total ${formatPKR(totalAmount)}.`
       : "";
-    const message = `Hi Hodophile, I would like to confirm the quotation for ${routeName}. Quote number: ${quoteNumber}.${promoDetails} Please share the final trip details and next steps.`;
+    const airDetails = travelMode === "air"
+      ? " Travel Mode: By Air. Arrival & Departure Hub: Skardu. Air Tickets: NOT INCLUDED. Air tickets to and from Skardu are not included in this quotation. Customers are responsible for arranging their own flight tickets."
+      : "";
+    const message = `Hi Hodophile, I would like to confirm the quotation for ${routeName}. Quote number: ${quoteNumber}.${airDetails}${promoDetails} Please share the final trip details and next steps.`;
     window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
   };
 
@@ -256,6 +289,19 @@ export function QuotationResultContent() {
                 <p className="text-sm print:text-xs"><span className="font-semibold">Route:</span> {routeName}</p>
                 <p className="text-sm print:text-xs"><span className="font-semibold">Passengers:</span> {numberOfGuests}</p>
                 <p className="text-sm print:text-xs"><span className="font-semibold">Departure:</span> {quotation.startingPoint || "-"}</p>
+                {quotation.tourStartingPoint ? (
+                  <p className="text-sm print:text-xs"><span className="font-semibold">Tour starts:</span> {quotation.tourStartingPoint}</p>
+                ) : null}
+                {travelMode === "air" ? (
+                  <>
+                    <p className="text-sm print:text-xs"><span className="font-semibold">Travel Mode:</span> By Air</p>
+                    <p className="text-sm print:text-xs"><span className="font-semibold">Arrival &amp; Departure Hub:</span> Skardu</p>
+                    <p className="text-sm font-bold print:text-xs"><span className="font-semibold">Air Tickets:</span> NOT INCLUDED</p>
+                    <p className="mt-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 print:mt-1 print:p-2 print:text-xs">
+                      Air tickets to and from Skardu are not included in this quotation. Customers are responsible for arranging their own flight tickets.
+                    </p>
+                  </>
+                ) : null}
                 <p className="text-sm print:text-xs"><span className="font-semibold">Trip Mode:</span> {travelMode === "air" ? "By Air" : "By Road"}</p>
                 <p className="text-sm print:text-xs"><span className="font-semibold">Trip Style:</span> {packageDescription}</p>
               </div>
@@ -341,7 +387,7 @@ export function QuotationResultContent() {
                 <li>Sightseeing and route coordination</li>
               </ul>
               <p className="mt-6 font-semibold print:mt-2 print:text-xs">Quotation valid for confirmation and booking coordination.</p>
-              <p className="mt-3 text-xs text-stone-700 print:mt-1 print:text-[9px]">Air tickets, personal purchases, and optional activities remain excluded unless expressly mentioned in the final booking confirmation.</p>
+              <p className="mt-3 text-xs text-stone-700 print:mt-1 print:text-[9px]">Personal purchases and optional activities remain excluded unless expressly mentioned in the final booking confirmation.</p>
             </div>
 
             <div className="rounded-3xl border border-stone-300 bg-white p-6 print:rounded-lg print:p-3">
