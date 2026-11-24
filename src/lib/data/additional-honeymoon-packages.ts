@@ -19,19 +19,26 @@ export type AdditionalHoneymoonPackage = {
 };
 
 const sharedIncludes = [
-  "Private couple transport with driver",
-  "Hotel accommodation on sharing basis",
-  "Breakfast as per hotel plan",
-  "Route planning and trip coordination",
-  "Basic sightseeing as per itinerary",
+  "Private couple transport with experienced driver as per the selected package and tier",
+  "Hotel accommodation on a sharing basis for the couple, as per the selected tier/category",
+  "Daily breakfast at the hotel as per the confirmed meal plan",
+  "Driver fuel, toll taxes, and parking charges for the planned route",
+  "Basic sightseeing and route coverage as mentioned in the itinerary",
+  "Trip planning, coordination, and on-ground support from the Hodophile team",
+  "Pick-up and drop-off arrangements as per the confirmed travel plan",
+  "All applicable taxes related to the included services, where mentioned in the final quotation",
 ];
 
 const sharedExcluded = [
-  "Personal expenses and shopping",
-  "Entry tickets, jeep rides, and optional activities unless mentioned",
-  "Lunch and extra meals not listed",
-  "Travel insurance",
-  "Extra charges caused by weather, road closures, or itinerary changes",
+  "Air tickets, train tickets, or bus fares unless explicitly mentioned in the final quotation",
+  "Lunch, dinner, hi-tea, snacks, and beverages unless specifically included in the selected package/tier",
+  "Entry tickets, activity fees, chairlift/cable car/zipline charges, boating, rafting, paragliding, horse riding, ATV/jeep safaris, and other optional activities unless stated",
+  "Jeep/4x4 charges for off-road tracks or restricted areas unless clearly included in the confirmed itinerary",
+  "Personal expenses such as shopping, laundry, phone calls, room service, minibar, and tips/gratuities",
+  "Travel insurance, medical expenses, and emergency evacuation/rescue costs",
+  "Extra meals, room upgrades, additional nights, or changes requested beyond the confirmed plan",
+  "Porter charges, personal gear, and any services not explicitly listed as included",
+  "Extra costs arising from weather conditions, road closures, landslides, flight delays/cancellations, political situations, natural disasters, or other factors beyond management control",
 ];
 
 const sharedBookingPolicy = [

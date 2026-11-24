@@ -6,6 +6,7 @@ import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 import { additionalHoneymoonPackages } from "@/lib/data/additional-honeymoon-packages";
+import { featuredTourTermsAndConditions } from "@/lib/data/featured-tour-cards";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -279,6 +280,22 @@ export default async function PackagePage({ params }: Props) {
                   ))}
                 </>
               ) : null}
+
+              {featuredTourTermsAndConditions.map((section) => (
+                <details
+                  key={section.title}
+                  className="rounded-[1.75rem] border border-stone-200 bg-white p-5 shadow-sm"
+                >
+                  <summary className="cursor-pointer text-lg font-semibold text-stone-900">
+                    {section.title}
+                  </summary>
+                  <div className="mt-4 space-y-3 text-sm leading-7 text-stone-600">
+                    {section.content.map((item) => (
+                      <p key={item}>{item}</p>
+                    ))}
+                  </div>
+                </details>
+              ))}
             </div>
 
             <div className="mt-8 rounded-[2rem] border border-[#fcc000] bg-[#fff8df] p-6 shadow-sm md:p-8">
