@@ -393,7 +393,7 @@ html[data-theme="light"] .journey-card-body {
   background-color: #fff6df;
 }
 
-html[data-theme="light"] .journey-card :is([class~="text-white"], [class*="text-white/"]) {
+html[data-theme="light"] .journey-card :is([class~="text-white"], [class*="text-white/"]):not(.theme-preserve-dark):not(.theme-preserve-dark *) {
   color: #48443d;
 }
 
@@ -583,7 +583,7 @@ html[data-theme="light"] .site-theme :is(
   [class*="text-[#d0cbc2"],
   [class*="text-[#b8b2a7"],
   [class*="text-[#B5B5B5"]
-):not([class~="absolute"]):not([class~="bg-black"]):not([class~="bg-stone-950"]):not([class~="bg-[#0b0b0b]"]) {
+):not([class~="absolute"]):not([class~="bg-black"]):not([class~="bg-stone-950"]):not([class~="bg-[#0b0b0b]"]):not(.theme-preserve-dark):not(.theme-preserve-dark *) {
   color: #48443d;
 }
 

@@ -416,7 +416,7 @@ function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number 
             href={whatsappUrl(`Hi Hodophile, I would like to request this tour: ${pkg.name}. Please share the current dates, availability, and booking details.`)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-3 rounded-full bg-[#11110f] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#FCC000] hover:text-black"
+            className="theme-preserve-dark inline-flex items-center justify-center gap-3 rounded-full bg-[#11110f] px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-[#FCC000] hover:text-black"
           >
             Request this tour
             <span aria-hidden="true" className="text-base text-[#FCC000] transition group-hover:text-black">↗</span>
@@ -538,7 +538,7 @@ export default function BeyondPakistanPage() {
                   href={whatsappUrl("Hi Hodophile, I would like help choosing an international holiday package.")}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="site-button-secondary border-white/35 text-white"
+                  className="site-button-secondary site-hero-secondary"
                 >
                   Speak with our team
                 </a>

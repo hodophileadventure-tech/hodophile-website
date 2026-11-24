@@ -53,7 +53,7 @@ export default function ContactUsPage() {
       </section>
 
       <section aria-label="Contact information and inquiry form" className="mx-auto mt-8 grid max-w-7xl items-start gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-8">
-        <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(35,29,13,0.94),rgba(17,17,15,0.98)_62%)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.2)] sm:p-8 lg:p-9">
+        <div className="theme-preserve-dark rounded-[2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(35,29,13,0.94),rgba(17,17,15,0.98)_62%)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.2)] sm:p-8 lg:p-9">
           <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[#FCC000]">Get in touch</p>
           <h2 className="mt-4 font-[var(--font-display)] text-3xl leading-tight text-white sm:text-4xl">
             Good journeys start with a conversation.

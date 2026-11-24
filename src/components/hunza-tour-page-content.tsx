@@ -425,7 +425,7 @@ export function HunzaTourPageContent({ packages }: { packages: TourPackage[] }) 
           </div>
         </section>
 
-        <section className="mt-12 rounded-[2rem] border border-stone-200 bg-[linear-gradient(135deg,#1a1a1a,#0f172a)] p-6 text-white shadow-[0_18px_52px_rgba(15,23,42,0.18)] md:p-8">
+        <section className="theme-preserve-dark mt-12 rounded-[2rem] border border-stone-200 bg-[linear-gradient(135deg,#1a1a1a,#0f172a)] p-6 text-white shadow-[0_18px_52px_rgba(15,23,42,0.18)] md:p-8">
           <h2 className="font-[var(--font-display)] text-3xl leading-tight text-white sm:text-4xl">
             Tell us your dates, and we will tailor the route around you.
           </h2>

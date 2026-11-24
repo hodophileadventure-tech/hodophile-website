@@ -201,7 +201,14 @@ test("the seven-day Skardu and Hunza by-air tour is listed at PKR 55,000 per per
   assert.ok(journey);
   assert.equal(journey.title, "Skardu & Hunza by Air");
   assert.equal(journey.duration, "7 Days");
+  assert.equal(journey.pace, "Moderate");
   assert.equal(journey.pricePerPerson, 55000);
+  assert.deepEqual(
+    journey.itinerary?.map((day) => day.day),
+    Array.from({ length: 7 }, (_, index) => `Day ${index + 1}`),
+  );
+  assert.match(journey.scheduleNote ?? "", /Skardu Airport.*Gilgit Airport.*Islamabad/);
+  assert.match(journey.itinerary?.[6]?.description ?? "", /Gilgit Airport.*Islamabad.*subject to flight availability/i);
 });
 
 test("the eight-day Hunza, Skardu and Basho road tour uses the supplied poster route and rates", () => {
@@ -229,6 +236,72 @@ test("the Naran, Hunza, and Naltar listing uses its detailed tour page and liste
   assert.equal(idea.detailHref, "/tours/featured/hunza-naltar");
   assert.equal(detail.pricingGroups?.[1]?.rows[0]?.price, "Rs. 39,000");
   assert.equal(detail.itinerary.length, 10);
+});
+
+test("the relaxed 10-day Swat, Kalam, Malam Jabba and Shogran package has all itinerary days", () => {
+  const journey = tourDiscoveryIdeas.find((item) => item.id === "swat-kalam-malam-jabba-shogran-10-days");
+
+  assert.ok(journey);
+  assert.equal(journey.title, "Swat, Kalam, Malam Jabba & Shogran");
+  assert.equal(journey.duration, "10 Days / 9 Nights");
+  assert.equal(journey.pace, "Relaxed");
+  assert.deepEqual(
+    journey.itinerary?.map((day) => day.day),
+    Array.from({ length: 10 }, (_, index) => `Day ${index + 1}`),
+  );
+  assert.match(journey.itinerary?.[0]?.description ?? "", /Islamabad.*Mingora.*5–6 hours/);
+  assert.match(journey.itinerary?.[5]?.description ?? "", /4x4.*Mahodand Lake.*weather.*road conditions/i);
+  assert.match(journey.itinerary?.[6]?.description ?? "", /Kalam.*Shogran.*9–11 hours/i);
+  assert.match(journey.itinerary?.[9]?.description ?? "", /Shogran.*Islamabad.*Hazara Motorway/i);
+});
+
+test("the relaxed 10-day Skardu, Manthoka and Basho package has all itinerary days", () => {
+  const journey = tourDiscoveryIdeas.find((item) => item.id === "skardu-manthoka-basho-10-days");
+
+  assert.ok(journey);
+  assert.equal(journey.title, "Skardu, Manthoka & Basho");
+  assert.equal(journey.duration, "10 Days / 9 Nights");
+  assert.equal(journey.pace, "Relaxed");
+  assert.deepEqual(
+    journey.itinerary?.map((day) => day.day),
+    Array.from({ length: 10 }, (_, index) => `Day ${index + 1}`),
+  );
+  assert.match(journey.itinerary?.[4]?.description ?? "", /Manthoka Waterfall.*2–2.5 hours each way/);
+  assert.match(journey.itinerary?.[6]?.description ?? "", /Basho Suspension Bridge.*4x4 jeep.*basic/i);
+  assert.match(journey.itinerary?.[9]?.description ?? "", /Skardu Airport.*flight.*Islamabad/i);
+});
+
+test("the relaxed 12-day Hunza and Skardu package has seasonal routing and all itinerary days", () => {
+  const journey = tourDiscoveryIdeas.find((item) => item.id === "hunza-skardu-12-days");
+
+  assert.ok(journey);
+  assert.equal(journey.title, "Hunza & Skardu");
+  assert.equal(journey.duration, "12 Days / 11 Nights");
+  assert.equal(journey.pace, "Relaxed");
+  assert.deepEqual(
+    journey.itinerary?.map((day) => day.day),
+    Array.from({ length: 12 }, (_, index) => `Day ${index + 1}`),
+  );
+  assert.match(journey.itinerary?.[1]?.description ?? "", /Babusar Top.*seasonal.*Besham/i);
+  assert.match(journey.itinerary?.[10]?.description ?? "", /4x4.*Deosai.*summer.*Sadpara Lake/i);
+  assert.match(journey.itinerary?.[11]?.description ?? "", /Skardu Airport.*flight.*Islamabad/i);
+});
+
+test("the relaxed Naran and Shogran package is five days with the supplied itinerary", () => {
+  const journey = tourDiscoveryIdeas.find((item) => item.id === "naran-shogran-9-days");
+
+  assert.ok(journey);
+  assert.equal(journey.title, "Naran & Shogran");
+  assert.equal(journey.duration, "5 Days / 4 Nights");
+  assert.equal(journey.pace, "Relaxed");
+  assert.deepEqual(
+    journey.itinerary?.map((day) => day.day),
+    ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"],
+  );
+  assert.match(journey.itinerary?.[0]?.description ?? "", /Islamabad.*Naran.*6–8 hours/);
+  assert.match(journey.itinerary?.[1]?.description ?? "", /Saif-ul-Malook.*weather.*snow.*track conditions/i);
+  assert.match(journey.itinerary?.[2]?.description ?? "", /Kewai.*4x4.*Shogran/i);
+  assert.match(journey.itinerary?.[4]?.description ?? "", /Shogran.*Kewai.*Balakot.*Islamabad/i);
 });
 
 test("the seven-day Kashmir, Swat and Shogran package uses the supplied itinerary and poster rate", () => {

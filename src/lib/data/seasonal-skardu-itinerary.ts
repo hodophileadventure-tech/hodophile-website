@@ -25,14 +25,14 @@ export function getCustomRoadStopoverCities(
   const selectedCities = new Set(destinations.map(getBaseCity));
   if (month >= 5 && month <= 11) {
     return [
-      ...(selectedCities.has("Chilas") ? [] : ["Chilas (Arrival)"]),
-      ...(selectedCities.has("Besham") ? [] : ["Besham (Return)"]),
+      ...(destinations.filter((city) => getBaseCity(city) === "Naran").length >= 1 ? [] : ["Naran (Outbound)"]),
+      ...(destinations.filter((city) => getBaseCity(city) === "Naran").length >= 2 ? [] : ["Naran (Return)"]),
     ];
   }
 
   return [
-    ...(destinations.filter((city) => getBaseCity(city) === "Naran").length >= 1 ? [] : ["Naran (Outbound)"]),
-    ...(destinations.filter((city) => getBaseCity(city) === "Naran").length >= 2 ? [] : ["Naran (Return)"]),
+    ...(selectedCities.has("Chilas") ? [] : ["Chilas (Arrival)"]),
+    ...(selectedCities.has("Besham") ? [] : ["Besham (Return)"]),
   ];
 }
 
@@ -73,21 +73,21 @@ export function getSeasonalSkarduStays(
   const adjustedDestinations = addNightsToSkardu(destinationStays, existingStopoverNights - 2);
 
   if (month >= 5 && month <= 11) {
-    const chilasStay = stopovers.find((stay) => getBaseCity(stay.city) === "Chilas") ?? { city: "Chilas", nights: 1 };
-    const beshamStay = stopovers.find((stay) => getBaseCity(stay.city) === "Besham") ?? { city: "Besham", nights: 1 };
-
     return [
       ...islamabadStays,
-      { ...chilasStay },
+      { city: "Naran (Outbound)", nights: 1 },
       ...adjustedDestinations,
-      { ...beshamStay },
+      { city: "Naran (Return)", nights: 1 },
     ];
   }
 
+  const chilasStay = stopovers.find((stay) => getBaseCity(stay.city) === "Chilas") ?? { city: "Chilas", nights: 1 };
+  const beshamStay = stopovers.find((stay) => getBaseCity(stay.city) === "Besham") ?? { city: "Besham", nights: 1 };
+
   return [
     ...islamabadStays,
-    { city: "Naran (Outbound)", nights: 1 },
+    { ...chilasStay },
     ...adjustedDestinations,
-    { city: "Naran (Return)", nights: 1 },
+    { ...beshamStay },
   ];
 }

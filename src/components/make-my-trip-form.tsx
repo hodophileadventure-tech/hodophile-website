@@ -143,7 +143,7 @@ const destinationCardDetails: Record<string, { image?: string; description: stri
   Hunza: { image: "/images/package-cards/images__destinations__hunza-custom.webp", description: "Mountain valleys" },
   Skardu: { image: "/images/package-cards/destination-skardu-mountains-planner.webp", description: "Lakes and highlands" },
   Naran: { image: "/images/package-cards/images__destinations__naran.webp", description: "Alpine lakes" },
-  Astore: { description: "Remote valley routes" },
+  Astore: { image: "/images/package-cards/images__astore-ready.webp", description: "Remote valley routes" },
   Kashmir: { image: "/images/package-cards/destination-kashmir-valley-planner.webp", description: "Forests and valleys" },
   Swat: { image: "/images/package-cards/destination-swat-valley-planner.webp", description: "Green mountain valleys" },
   "Fairy Meadows": { image: "/images/package-cards/destination-fairy-meadows-planner.webp", description: "Alpine meadow journeys" },

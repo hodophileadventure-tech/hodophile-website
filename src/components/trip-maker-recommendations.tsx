@@ -18,13 +18,13 @@ const durationOptions: Array<[DurationPreference, string]> = [
 ];
 
 const monthOptions = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
-const tripMoods: Array<{ key: string; title: string; description: string; style: TravelStyle; imageSlug: string }> = [
-  { key: "adventure", title: "Adventure", description: "Mountain roads and active days outdoors.", style: "adventure", imageSlug: "hunza" },
-  { key: "luxury", title: "Luxury escape", description: "A tailored route with premium stays.", style: "tailored", imageSlug: "skardu" },
-  { key: "romantic", title: "Romantic", description: "A considered getaway for two.", style: "couples", imageSlug: "kashmir" },
-  { key: "family", title: "Family", description: "A route shaped for travelling together.", style: "family", imageSlug: "naran" },
-  { key: "photography", title: "Photography", description: "Journeys through varied landscapes.", style: "adventure", imageSlug: "fairy-meadows" },
-  { key: "slow-scenic", title: "Slow & scenic", description: "A more considered pace through the valleys.", style: "tailored", imageSlug: "swat" },
+const tripMoods: Array<{ key: string; title: string; description: string; style: TravelStyle; image: string }> = [
+  { key: "adventure", title: "Adventure", description: "Mountain roads and active days outdoors.", style: "adventure", image: "/images/destinations/hunza-unsplash.webp" },
+  { key: "luxury", title: "Luxury escape", description: "A tailored route with premium stays.", style: "tailored", image: "/images/destinations/skardu-unsplash.webp" },
+  { key: "romantic", title: "Romantic", description: "A considered getaway for two.", style: "couples", image: "/images/destinations/kashmir.webp" },
+  { key: "family", title: "Family", description: "A route shaped for travelling together.", style: "family", image: "/images/destinations/naran-unsplash.webp" },
+  { key: "photography", title: "Photography", description: "Journeys through varied landscapes.", style: "adventure", image: "/images/destinations/fairy-meadows-unsplash.webp" },
+  { key: "slow-scenic", title: "Slow & scenic", description: "A more considered pace through the valleys.", style: "tailored", image: "/images/destinations/swat-unsplash.webp" },
 ];
 
 function formatDestination(slug: string) {
@@ -77,7 +77,7 @@ function RecommendationCard({ recommendation, hasPreferences }: { recommendation
           </ul>
         </div>
         <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-stone-100 pt-5">
-          <Link href={buildPlannerHref(trip.id, trip.destinationSlugs[0])} className="inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#0b0b0b] px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[#282828] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">Build this trip</Link>
+          <Link href={buildPlannerHref(trip.id, trip.destinationSlugs[0])} title="Continue this journey in the trip planner" className="theme-preserve-dark inline-flex min-h-10 flex-1 items-center justify-center rounded-full bg-[#0b0b0b] px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-white transition hover:bg-[#282828] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">Open in planner</Link>
           <Link href={getPackagePath(trip.id)} className="inline-flex min-h-10 items-center justify-center rounded-full border border-stone-300 bg-white px-3 text-[10px] font-bold uppercase tracking-[0.1em] text-stone-900 transition hover:border-[#8b6b00] hover:text-[#5f4900] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00]">View journey</Link>
           <JourneyActions packageId={trip.id} packageTitle={trip.title} />
         </div>
@@ -125,9 +125,8 @@ export function TripMakerRecommendations() {
         <p className="mt-2 text-sm leading-6 text-stone-600">Choose a mood, add a few practical details, and we’ll match it against the current journey catalogue.</p>
       </div>
 
-      <div className="trip-mood-grid mt-6 grid grid-cols-2 gap-3 md:grid-cols-3">
+      <div className="trip-mood-grid mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
         {tripMoods.map((mood) => {
-          const image = tourPackages.find((trip) => trip.destinationSlugs.includes(mood.imageSlug))?.image ?? tourPackages[0].image;
           const isSelected = selectedMood === mood.key;
 
           return (
@@ -136,17 +135,15 @@ export function TripMakerRecommendations() {
               type="button"
               onClick={() => setSelectedMood(isSelected ? "" : mood.key)}
               aria-pressed={isSelected}
-              className={`group overflow-hidden border text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isSelected ? "border-[#c49300] ring-2 ring-[#fcc000]/50" : "border-stone-200 hover:border-[#c49300]"}`}
+              className={`group flex h-full flex-col overflow-hidden rounded-2xl border bg-white text-left shadow-[0_8px_24px_rgba(33,31,26,0.06)] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${isSelected ? "border-[#c49300] ring-2 ring-[#fcc000]/60" : "border-stone-200 hover:-translate-y-0.5 hover:border-[#c49300] hover:shadow-[0_14px_30px_rgba(33,31,26,0.1)]"}`}
             >
-              <div className="relative h-24 sm:h-28">
-                <Image src={image} alt="" fill sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-stone-200">
+                <Image src={mood.image} alt="" fill loading="eager" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 320px" className="object-cover transition duration-500 group-hover:scale-[1.03]" />
+                {isSelected ? <span aria-hidden="true" className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-[#fcc000] text-xs font-bold text-stone-950 shadow-sm">✓</span> : null}
               </div>
-              <span className="flex items-start justify-between gap-2 p-3">
-                <span>
-                  <span className="block text-[10px] font-bold uppercase tracking-[0.14em] text-stone-900 sm:text-xs">{mood.title}</span>
-                  <span className="mt-1 block text-[11px] leading-4 text-stone-600">{mood.description}</span>
-                </span>
-                {isSelected ? <span aria-hidden="true" className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#fcc000] text-xs font-bold text-stone-950">✓</span> : null}
+              <span className="flex flex-1 flex-col p-3 sm:p-4">
+                <span className="block text-[11px] font-bold uppercase tracking-[0.14em] text-stone-900 sm:text-xs">{mood.title}</span>
+                <span className="mt-1 block text-xs leading-5 text-stone-600 sm:text-sm">{mood.description}</span>
               </span>
             </button>
           );
@@ -267,7 +264,7 @@ export function TripMakerRecommendations() {
                 <p className="mt-3 text-xs text-stone-500">{surpriseRecommendation.trip.duration} · {surpriseRecommendation.trip.routeStops.join(" · ")}</p>
                 <p className="mt-2 text-base font-semibold text-stone-950">{surpriseRecommendation.trip.pricePerPerson === undefined ? "Price on request" : <>PKR {surpriseRecommendation.trip.pricePerPerson.toLocaleString()} <span className="text-xs font-normal text-stone-500">per person, as listed</span></>}</p>
                 <div className="mt-auto flex flex-wrap gap-3 pt-5">
-                  <Link href={buildPlannerHref(surpriseRecommendation.trip.id, surpriseRecommendation.trip.destinationSlugs[0])} className="inline-flex min-h-11 items-center justify-center bg-stone-950 px-4 text-xs font-semibold uppercase tracking-[0.1em] text-white">Build this journey</Link>
+                  <Link href={buildPlannerHref(surpriseRecommendation.trip.id, surpriseRecommendation.trip.destinationSlugs[0])} className="theme-preserve-dark inline-flex min-h-11 items-center justify-center rounded-full bg-stone-950 px-4 text-xs font-semibold uppercase tracking-[0.1em] text-white">Open in planner</Link>
                   {surprisePool.length > 1 ? <button type="button" onClick={() => setSurpriseIndex((index) => index + 1)} className="min-h-11 border border-stone-300 px-4 text-xs font-semibold uppercase tracking-[0.1em] text-stone-800 hover:border-[#8b6b00]">Show me another</button> : null}
                 </div>
               </div>
