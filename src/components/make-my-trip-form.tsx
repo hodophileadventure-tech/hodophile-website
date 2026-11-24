@@ -171,7 +171,8 @@ function getCustomChilasMinimumDays(city: string, startingPointValue: string) {
   }
 
   if (
-    city === "Naran (Stopover)" ||
+    city === "Naran (Outbound)" ||
+    city === "Naran (Return)" ||
     city === "Chilas (Arrival)" ||
     city === "Chilas (Return)" ||
     city === "Besham (Return)"
@@ -643,8 +644,9 @@ export function MakeMyTripForm() {
   };
 
   const getHotelsForRouteCity = (selectedRouteId: string, city: string): Hotel[] => {
-    const baseHotels = getHotelsByCity(city);
-    const preferredIds = routeCityHotelPreferences[selectedRouteId]?.[city];
+    const baseCity = city.includes("(") ? city.split("(")[0].trim() : city;
+    const baseHotels = getHotelsByCity(baseCity);
+    const preferredIds = routeCityHotelPreferences[selectedRouteId]?.[baseCity];
 
     if (!preferredIds || preferredIds.length === 0) {
       return baseHotels;
@@ -779,8 +781,8 @@ export function MakeMyTripForm() {
   }, [selectedCities, routeId, isFixedPackageSelection, travelMode, selectedTripMonth]);
   const usesSeasonalRoadStopovers = seasonalRoadStopoverCities.length > 0;
   const seasonalRoadStopoverDescription = selectedTripMonth >= 5 && selectedTripMonth <= 11
-    ? "By road, the seasonal stopover is Naran from May through November."
-    : "By road, stay in Chilas on the way out and Besham on the return.";
+    ? "By road, stay in Chilas on the way out and Besham on the return from May through November."
+    : "By road, stay in Naran once on the way out and once on the return.";
 
   // Check if user is using a package route
   const isPackageRoute = (): boolean => {
@@ -798,8 +800,8 @@ export function MakeMyTripForm() {
     : !isSkarduPackage
       ? ""
       : selectedTripMonth >= 5 && selectedTripMonth <= 11
-        ? "By road, the seasonal stopover is Naran from May through November."
-        : "By road, stay in Chilas on the way out and Besham on the return.";
+      ? "By road, stay in Chilas on the way out and Besham on the return from May through November."
+      : "By road, stay in Naran once on the way out and once on the return.";
   const singleCityNightCount = Math.max(1, (selectedRoute?.duration || 1) - 1);
   const supportsMultipleHotelsInSingleCity = Boolean(
     selectedRoute && !isMultiCityTour() && !isCustomCitySelection() && singleCityNightCount > 2
@@ -951,8 +953,12 @@ export function MakeMyTripForm() {
 
     const islamabadStays = base.filter((city) => city === "Islamabad");
     const selectedDestinations = base.filter((city) => city !== "Islamabad");
-    const outboundStops = seasonalRoadStopoverCities.filter((city) => city === "Chilas (Arrival)");
-    const returnStops = seasonalRoadStopoverCities.filter((city) => city !== "Chilas (Arrival)");
+    const outboundStops = seasonalRoadStopoverCities.filter(
+      (city) => city === "Chilas (Arrival)" || city === "Naran (Outbound)",
+    );
+    const returnStops = seasonalRoadStopoverCities.filter(
+      (city) => city !== "Chilas (Arrival)" && city !== "Naran (Outbound)",
+    );
     return [...islamabadStays, ...outboundStops, ...selectedDestinations, ...returnStops];
   }, [selectedCities, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad, travelMode, seasonalRoadStopoverCities]);
 
