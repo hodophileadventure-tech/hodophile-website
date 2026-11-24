@@ -4,6 +4,34 @@ export interface CityStay {
 }
 
 const ROAD_STOPOVER_CITIES = new Set(["Naran", "Chilas", "Besham"]);
+const CUSTOM_SKARDU_ROUTE_CITIES = new Set(["Hunza", "Skardu", "Fairy Meadows", "Astore"]);
+
+function getBaseCity(city: string): string {
+  return city.trim().replace(/\s+\([^)]*\)$/, "");
+}
+
+export function getCustomRoadStopoverCities(
+  destinations: readonly string[],
+  travelMode: "road" | "air",
+  month: number,
+): string[] {
+  if (
+    travelMode === "air" ||
+    !destinations.some((city) => CUSTOM_SKARDU_ROUTE_CITIES.has(getBaseCity(city)))
+  ) {
+    return [];
+  }
+
+  const selectedCities = new Set(destinations.map(getBaseCity));
+  if (month >= 5 && month <= 11) {
+    return selectedCities.has("Naran") ? [] : ["Naran (Stopover)"];
+  }
+
+  return [
+    ...(selectedCities.has("Chilas") ? [] : ["Chilas (Arrival)"]),
+    ...(selectedCities.has("Besham") ? [] : ["Besham (Return)"]),
+  ];
+}
 
 function addNightsToSkardu(stays: CityStay[], nights: number): CityStay[] {
   if (nights === 0) return stays;

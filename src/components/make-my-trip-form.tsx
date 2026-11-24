@@ -29,7 +29,7 @@ import { calculateQuotation, type QuotationBreakdown, type QuotationInput } from
 import { formatPKR } from "@/lib/currency";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes, type PackagePricing, type Route, type RouteItineraryDay } from "@/lib/data/routes";
-import { getSeasonalSkarduStays } from "@/lib/data/seasonal-skardu-itinerary";
+import { getCustomRoadStopoverCities, getSeasonalSkarduStays } from "@/lib/data/seasonal-skardu-itinerary";
 import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "@/lib/data/routeActivities";
 import { sortedCitiesWithHotels } from "@/lib/data/cities";
 import COMBO_ITINERARIES from "@/lib/data/combo-itineraries";
@@ -170,7 +170,12 @@ function getCustomChilasMinimumDays(city: string, startingPointValue: string) {
     return 2;
   }
 
-  if (city === "Chilas (Arrival)" || city === "Chilas (Return)") {
+  if (
+    city === "Naran (Stopover)" ||
+    city === "Chilas (Arrival)" ||
+    city === "Chilas (Return)" ||
+    city === "Besham (Return)"
+  ) {
     return 1;
   }
 
@@ -649,59 +654,37 @@ export function MakeMyTripForm() {
     return preferred.length > 0 ? preferred : baseHotels;
   };
 
-  // Cities that require a Chilas stopover hotel when present in a custom selection
-  const CHILLAS_GROUP = new Set(["Hunza", "Skardu", "Fairy Meadows", "Astore"]);
-
-  // Ensure Chilas hotel and nights are included when any CHILLAS_GROUP city is selected.
-  // This version injects two separate Chilas stays: "Chilas (Arrival)" and "Chilas (Return)",
-  // each for 1 night, to represent one stay while they go and one while they return.
-  // Returns augmented { multiCityHotels, multiCityNights, customCities } without mutating inputs.
-  const ensureChilasInMultiCityData = (
+  const ensureSeasonalRoadStopsInMultiCityData = (
     hotels: Record<string, { hotelId: string; roomId: string }>,
     nights: Record<string, number> | undefined,
     cities: string[],
   ) => {
-    if (travelMode === "air") {
+    const stopoverCities = getCustomRoadStopoverCities(selectedCities, travelMode as "road" | "air", selectedTripMonth);
+    if (stopoverCities.length === 0) {
       return { multiCityHotels: hotels, multiCityNights: nights, customCities: cities };
     }
 
-    const hasChillasRelated = cities.some((c) => CHILLAS_GROUP.has(c));
-    if (!hasChillasRelated) {
-      return { multiCityHotels: hotels, multiCityNights: nights, customCities: cities };
+    const nextHotels = { ...hotels };
+    const nextNights = { ...(nights || {}) };
+    const nextCities = [...cities];
+
+    for (const stopoverCity of stopoverCities) {
+      const baseCity = stopoverCity.includes("(") ? stopoverCity.split("(")[0].trim() : stopoverCity;
+      if (!nextHotels[stopoverCity]) {
+        let stopoverHotels = getHotelsByCity(baseCity);
+        if (selectedLuxuryPackage) {
+          stopoverHotels = stopoverHotels.filter((hotel) => hotel.rooms?.some((room) => /executive/i.test(room.name)));
+        }
+        const hotelId = selectHotelByCategory(stopoverHotels, hotelCategory) || stopoverHotels[0]?.id || "";
+        const hotel = stopoverHotels.find((item) => item.id === hotelId);
+        nextHotels[stopoverCity] = {
+          hotelId,
+          roomId: hotel ? selectRoomByCategory(hotel.rooms, hotelCategory) : "",
+        };
+      }
+      if ((nextNights[stopoverCity] ?? 0) < 1) nextNights[stopoverCity] = 1;
+      if (!nextCities.includes(stopoverCity)) nextCities.push(stopoverCity);
     }
-
-    // Detect any existing Chilas-like keys to avoid duplicating entries
-    const existingChilasKey = Object.keys(hotels || {}).find((k) => k === "Chilas" || k.startsWith("Chilas"))
-      || (nights && Object.keys(nights).find((k) => k === "Chilas" || k.startsWith("Chilas")));
-    if (existingChilasKey) {
-      return { multiCityHotels: hotels, multiCityNights: nights, customCities: cities };
-    }
-
-    // Find a default Chilas hotel
-    const chilasHotels = getHotelsByCity("Chilas");
-    const defaultHotelId = selectHotelByCategory(chilasHotels, hotelCategory) || (chilasHotels[0] && chilasHotels[0].id) || "";
-    const selectedHotel = chilasHotels.find((h) => h.id === defaultHotelId);
-    const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "";
-
-    // Create two separate Chilas entries to represent arrival and return stays
-    const arrivalKey = "Chilas (Arrival)";
-    const returnKey = "Chilas (Return)";
-
-    const nextHotels = {
-      ...hotels,
-      [arrivalKey]: { hotelId: defaultHotelId, roomId: defaultRoom },
-      [returnKey]: { hotelId: defaultHotelId, roomId: defaultRoom },
-    };
-
-    const nextNights = {
-      ...(nights || {}),
-      [arrivalKey]: ((nights && nights[arrivalKey]) || 0) + 1,
-      [returnKey]: ((nights && nights[returnKey]) || 0) + 1,
-    };
-
-    // Insert the Chilas keys into the cities list if not already present. We keep original city entries
-    // and append arrival/return markers so the label includes them.
-    const nextCities = [...cities.filter((c) => c !== "Chilas"), arrivalKey, returnKey];
 
     return { multiCityHotels: nextHotels, multiCityNights: nextNights, customCities: nextCities };
   };
@@ -788,9 +771,16 @@ export function MakeMyTripForm() {
     return selectedCities.length > 0 && !routeId;
   };
 
+  const selectedTripMonth = tripDate ? Number(tripDate.slice(5, 7)) : 5;
   const isFixedPackageSelection = Boolean(selectedLuxuryPackage || selectedHoneymoonTour || selectedPreplannedTrip);
-
-  const usesChilasItinerary = isCustomCitySelection() && !isFixedPackageSelection && travelMode !== "air" && selectedCities.some((c) => CHILLAS_GROUP.has(c));
+  const seasonalRoadStopoverCities = useMemo(() => {
+    if (!isCustomCitySelection() || isFixedPackageSelection) return [];
+    return getCustomRoadStopoverCities(selectedCities, travelMode as "road" | "air", selectedTripMonth);
+  }, [selectedCities, routeId, isFixedPackageSelection, travelMode, selectedTripMonth]);
+  const usesSeasonalRoadStopovers = seasonalRoadStopoverCities.length > 0;
+  const seasonalRoadStopoverDescription = selectedTripMonth >= 5 && selectedTripMonth <= 11
+    ? "By road, the seasonal stopover is Naran from May through November."
+    : "By road, stay in Chilas on the way out and Besham on the return.";
 
   // Check if user is using a package route
   const isPackageRoute = (): boolean => {
@@ -798,7 +788,6 @@ export function MakeMyTripForm() {
   };
 
   const selectedRoute = useMemo(() => (routeId ? routes.find((route) => route.id === routeId) : undefined), [routeId]);
-  const selectedTripMonth = tripDate ? Number(tripDate.slice(5, 7)) : 5;
   const isSkarduPackage = Boolean(
     selectedRoute &&
     (selectedRoute.city === "Skardu" || multiCityConfig[routeId]?.cities.includes("Skardu")),
@@ -816,7 +805,7 @@ export function MakeMyTripForm() {
     selectedRoute && !isMultiCityTour() && !isCustomCitySelection() && singleCityNightCount > 2
   );
   // Check if this is truly a single non-CHILLAS-group city (Hunza/Skardu/etc auto-inject Chilas, making it multi-city)
-  const isSingleCustomCity = isCustomCitySelection() && selectedCities.length === 1 && !usesChilasItinerary;
+  const isSingleCustomCity = isCustomCitySelection() && selectedCities.length === 1 && !usesSeasonalRoadStopovers;
   const startingPointLower = getActualStartingPoint().toLowerCase().trim();
   const autoAddsIslamabad =
     isCustomCitySelection() &&
@@ -828,13 +817,13 @@ export function MakeMyTripForm() {
     !hideAutoIslamabad &&
     !selectedCities.includes("Islamabad");
   const customCityEffectiveCount = selectedCities.length + (autoAddsIslamabad ? 1 : 0);
-  const customSingleCityNightCount = selectedCities.length === 1 && !usesChilasItinerary
+  const customSingleCityNightCount = selectedCities.length === 1 && !usesSeasonalRoadStopovers
     ? Math.max(1, (customCityNights[selectedCities[0]] ?? 0) - 1)
     : 0;
   const supportsMultipleHotelsInCustomSingleCity = Boolean(
     isCustomCitySelection() &&
     customCityEffectiveCount === 1 &&
-    !usesChilasItinerary &&
+    !usesSeasonalRoadStopovers &&
     customSingleCityNightCount > 2
   );
 
@@ -952,42 +941,54 @@ export function MakeMyTripForm() {
   };
 
   const effectiveSelectedCities = useMemo(() => {
-    const chilasArrival = "Chilas (Arrival)";
-    const chilasReturn = "Chilas (Return)";
-    const hasChillasRelated = usesChilasItinerary;
-
     let base = [...selectedCities];
 
     if (shouldAutoIncludeIslamabad() && !base.includes("Islamabad")) {
       base = [...base, "Islamabad"];
     }
 
-    if (hasChillasRelated) {
-      if (!base.includes(chilasArrival)) base.push(chilasArrival);
-      if (!base.includes(chilasReturn)) base.push(chilasReturn);
-    }
+    if (seasonalRoadStopoverCities.length === 0) return base;
 
-    return base;
-  }, [selectedCities, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad, travelMode]);
+    const islamabadStays = base.filter((city) => city === "Islamabad");
+    const selectedDestinations = base.filter((city) => city !== "Islamabad");
+    const outboundStops = seasonalRoadStopoverCities.filter((city) => city === "Chilas (Arrival)");
+    const returnStops = seasonalRoadStopoverCities.filter((city) => city !== "Chilas (Arrival)");
+    return [...islamabadStays, ...outboundStops, ...selectedDestinations, ...returnStops];
+  }, [selectedCities, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad, travelMode, seasonalRoadStopoverCities]);
 
   const effectiveCustomCityNights = useMemo(() => {
-    let next = { ...customCityNights };
+    const next = { ...customCityNights };
     if (shouldAutoIncludeIslamabad() && !next["Islamabad"]) {
       next["Islamabad"] = 2;
     }
 
-    // Ensure Chilas arrival/return nights are present when CHILLAS-related cities selected
-    const hasChillasRelated = usesChilasItinerary;
-    if (hasChillasRelated) {
-      if (!next["Chilas (Arrival)"]) next["Chilas (Arrival)"] = 1;
-      if (!next["Chilas (Return)"]) next["Chilas (Return)"] = 1;
+    for (const stopoverCity of seasonalRoadStopoverCities) {
+      if (!next[stopoverCity]) next[stopoverCity] = 1;
     }
 
     return next;
-  }, [customCityNights, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad, travelMode]);
+  }, [customCityNights, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad, travelMode, seasonalRoadStopoverCities]);
 
   const effectiveMultiCityHotels = useMemo(() => {
     let next = { ...multiCityHotels };
+
+    if (isMultiCityTour()) {
+      const visibleCities = getVisibleMultiCityConfig(routeId)?.cities ?? [];
+      for (const city of visibleCities) {
+        if (next[city]?.hotelId && next[city]?.roomId) continue;
+
+        let hotelsForCity = filterHotelsByCategory(getHotelsForRouteCity(routeId, city), hotelCategory);
+        if (selectedLuxuryPackage) {
+          hotelsForCity = hotelsForCity.filter((hotel) => hotel.rooms?.some((room) => /executive/i.test(room.name)));
+        }
+        const hotelId = selectHotelByCategory(hotelsForCity, hotelCategory) || hotelsForCity[0]?.id || "";
+        const hotel = hotelsForCity.find((item) => item.id === hotelId);
+        next[city] = {
+          hotelId,
+          roomId: hotel ? selectRoomByCategory(hotel.rooms, hotelCategory) : "",
+        };
+      }
+    }
 
     // Ensure Islamabad default when needed
     if (shouldAutoIncludeIslamabad() && !next["Islamabad"]) {
@@ -1001,26 +1002,24 @@ export function MakeMyTripForm() {
       next["Islamabad"] = { hotelId: defaultHotelId, roomId: defaultRoom };
     }
 
-    // Ensure Chilas arrival/return defaults when CHILLAS-group cities are present
-    const hasChillasRelated = usesChilasItinerary;
-    if (hasChillasRelated) {
-      const chilasArrival = "Chilas (Arrival)";
-      const chilasReturn = "Chilas (Return)";
-      if (!next[chilasArrival] || !next[chilasReturn]) {
-        let chilasHotels = getHotelsByCity("Chilas");
-        if (selectedLuxuryPackage) {
-          chilasHotels = chilasHotels.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
-        }
-        const defaultHotelId = selectHotelByCategory(chilasHotels, hotelCategory) || (chilasHotels[0] && chilasHotels[0].id) || "";
-        const selectedHotel = chilasHotels.find((h) => h.id === defaultHotelId);
-        const defaultRoom = selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "";
-        next[chilasArrival] = { hotelId: defaultHotelId, roomId: defaultRoom };
-        next[chilasReturn] = { hotelId: defaultHotelId, roomId: defaultRoom };
+    for (const stopoverCity of seasonalRoadStopoverCities) {
+      if (next[stopoverCity]?.hotelId && next[stopoverCity]?.roomId) continue;
+
+      const baseCity = stopoverCity.includes("(") ? stopoverCity.split("(")[0].trim() : stopoverCity;
+      let stopoverHotels = getHotelsByCity(baseCity);
+      if (selectedLuxuryPackage) {
+        stopoverHotels = stopoverHotels.filter((hotel) => hotel.rooms?.some((room) => /executive/i.test(room.name)));
       }
+      const defaultHotelId = selectHotelByCategory(stopoverHotels, hotelCategory) || stopoverHotels[0]?.id || "";
+      const selectedHotel = stopoverHotels.find((hotel) => hotel.id === defaultHotelId);
+      next[stopoverCity] = {
+        hotelId: defaultHotelId,
+        roomId: selectedHotel ? selectRoomByCategory(selectedHotel.rooms, hotelCategory) : "",
+      };
     }
 
     return next;
-  }, [multiCityHotels, hotelCategory, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad, travelMode]);
+  }, [multiCityHotels, hotelCategory, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad, travelMode, seasonalRoadStopoverCities, selectedLuxuryPackage]);
 
   const selectedAirDestinations = useMemo(() => {
     if (isCustomCitySelection()) return effectiveSelectedCities;
@@ -1139,10 +1138,9 @@ export function MakeMyTripForm() {
         }
       }
 
-      // Preserve Chilas arrival/return if present and only remove keys that are neither selected cities nor special Chilas keys
+      // Preserve active seasonal stopovers while removing stale generated nights.
       const preserveKeys = new Set(selectedCities);
-      preserveKeys.add("Chilas (Arrival)");
-      preserveKeys.add("Chilas (Return)");
+      seasonalRoadStopoverCities.forEach((city) => preserveKeys.add(city));
 
       for (const city of Object.keys(nextNights)) {
         if (!preserveKeys.has(city)) {
@@ -1153,7 +1151,7 @@ export function MakeMyTripForm() {
 
       return hasChanges ? nextNights : currentNights;
     });
-  }, [selectedCities, startingPoint]);
+  }, [selectedCities, startingPoint, seasonalRoadStopoverCities]);
 
 
   // Check if the selected city combination is valid using the itinerary graph.
@@ -1441,7 +1439,7 @@ export function MakeMyTripForm() {
               multiCityHotels: _augHotels,
               multiCityNights: _augNights,
               customCities: _augCities,
-            } = ensureChilasInMultiCityData(effectiveMultiCityHotels, effectiveCustomCityNights, effectiveSelectedCities);
+            } = ensureSeasonalRoadStopsInMultiCityData(effectiveMultiCityHotels, effectiveCustomCityNights, effectiveSelectedCities);
 
             const quotationInput: QuotationInput = {
               routeId: "custom-itinerary",
@@ -1733,7 +1731,7 @@ export function MakeMyTripForm() {
         const nightsForAug = selectedMultiCityNights;
         const citiesForAug = selectedCustomCities || effectiveSelectedCities;
 
-        const { multiCityHotels: augHotels, multiCityNights: augNights, customCities: augCities } = ensureChilasInMultiCityData(
+        const { multiCityHotels: augHotels, multiCityNights: augNights, customCities: augCities } = ensureSeasonalRoadStopsInMultiCityData(
           hotelsForAug,
           nightsForAug,
           citiesForAug,
@@ -1817,27 +1815,16 @@ export function MakeMyTripForm() {
       const vehicleText = vehicleName || 'No vehicle selected';
 
       let hotelsSummary = '';
-      const isOnlyChillasSelection = selectedCities.length > 0 && selectedCities.every((c) => CHILLAS_GROUP.has(c));
 
       if (selectedSingleCityHotelStays && selectedSingleCityHotelStays.length > 0) {
         hotelsSummary = selectedSingleCityHotelStays.map((s) => `${findHotelName(s.hotelId)}${s.nights ? ` (${s.nights} nights)` : ''}`).join(' / ');
       } else if (selectedMultiCityNights && quotationData.multiCityHotels) {
         const parts: string[] = [];
 
-        // If the user selected only CHILLAS-group cities, show only Chilas stays (arrival/return)
-        if (isOnlyChillasSelection) {
-          const chilasKeys = Object.keys(quotationData.multiCityHotels).filter((k) => k.toLowerCase().startsWith('chilas'));
-          for (const key of chilasKeys) {
-            const entry = quotationData.multiCityHotels[key];
-            const nights = (selectedMultiCityNights as Record<string, number>)?.[key] ?? (effectiveCustomCityNights[key] ?? 0);
-            parts.push(`${key}: ${findHotelName(entry.hotelId, 'Chilas')}${nights ? ` (${nights} nights)` : ''}`);
-          }
-        } else {
-          for (const city of Object.keys(quotationData.multiCityHotels)) {
-            const entry = quotationData.multiCityHotels[city];
-            const nights = (selectedMultiCityNights as Record<string, number>)?.[city] ?? (effectiveCustomCityNights[city] ?? 0);
-            parts.push(`${city}: ${findHotelName(entry.hotelId, city)}${nights ? ` (${nights} nights)` : ''}`);
-          }
+        for (const city of Object.keys(quotationData.multiCityHotels)) {
+          const entry = quotationData.multiCityHotels[city];
+          const nights = (selectedMultiCityNights as Record<string, number>)?.[city] ?? (effectiveCustomCityNights[city] ?? 0);
+          parts.push(`${city}: ${findHotelName(entry.hotelId, city)}${nights ? ` (${nights} nights)` : ''}`);
         }
 
         hotelsSummary = parts.join(' / ');
@@ -1956,7 +1943,7 @@ export function MakeMyTripForm() {
       const config = getVisibleMultiCityConfig(routeId);
       return Boolean(
         config &&
-          config.cities.every((city) => multiCityHotels[city]?.hotelId && multiCityHotels[city]?.roomId)
+          config.cities.every((city) => effectiveMultiCityHotels[city]?.hotelId && effectiveMultiCityHotels[city]?.roomId)
       );
     }
 
@@ -2265,7 +2252,7 @@ export function MakeMyTripForm() {
     `Package: ${chosenPackage?.label || selectedRoute?.name || "Custom itinerary"}`,
     ...(quotation?.promotion ? [`Promo Code: ${quotation.promotion.code}`, `Discount: ${quotation.promotion.discountPercent}%`, `Discount Amount: ${formatPKR(quotation.promotion.discountAmount)}`, `Original Total: ${formatPKR(quotation.promotion.originalPrice)}`] : []),
     `Estimated quotation: ${quotation ? formatPKR(quotation.totalCost + offRouteChargePKR) : "Pending"}`,
-    `Route notes: ${isSkarduPackage ? skarduRoutePlanDescription : preplannedRoute?.itinerary || selectedRoute?.itinerary || (usesChilasItinerary ? "Chilas arrival and return stays are included in the custom route." : "No additional route notes listed.")}`,
+    `Route notes: ${isSkarduPackage ? skarduRoutePlanDescription : preplannedRoute?.itinerary || selectedRoute?.itinerary || (usesSeasonalRoadStopovers ? seasonalRoadStopoverDescription : "No additional route notes listed.")}`,
   ].join("\n");
 
   useEffect(() => {
@@ -2880,7 +2867,7 @@ export function MakeMyTripForm() {
                       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b6b00]">Why this route works</p>
                       <ul className="mt-2 grid gap-2 text-xs text-stone-700 sm:grid-cols-2">
                         <li className="flex items-start gap-2"><Check aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8b6b00]" /><span>Selected sequence passes route validation.</span></li>
-                        {usesChilasItinerary ? <li className="flex items-start gap-2"><Check aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8b6b00]" /><span>Chilas arrival and return stays are included.</span></li> : null}
+                        {usesSeasonalRoadStopovers ? <li className="flex items-start gap-2"><Check aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8b6b00]" /><span>{seasonalRoadStopoverDescription.replace(/^By road, /, "")}</span></li> : null}
                         {summaryNights > 0 ? <li className="flex items-start gap-2"><Check aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8b6b00]" /><span>{summaryNights} hotel nights are currently assigned.</span></li> : null}
                         {vehicleName ? <li className="flex items-start gap-2">{isVehicleSuitable(vehicleName, totalGuests) ? <Check aria-hidden="true" className="h-4 w-4 shrink-0 text-[#8b6b00]" /> : <span aria-hidden="true" className="font-bold text-[#8b6b00]">!</span>}<span>{isVehicleSuitable(vehicleName, totalGuests) ? `${vehicleName} fits the current group size.` : `${vehicleName} is not suitable for ${totalGuests} travellers.`}</span></li> : null}
                       </ul>
