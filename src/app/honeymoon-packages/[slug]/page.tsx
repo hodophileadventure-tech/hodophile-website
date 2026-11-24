@@ -53,12 +53,13 @@ export default async function PackagePage({ params }: Props) {
             className="object-cover"
           />
           <div className="site-hero-overlay" aria-hidden="true" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10" aria-hidden="true" />
           <div className="site-detail-hero-height relative z-10 mx-auto flex max-w-[96rem] flex-col justify-end px-4 pb-10 pt-20 text-white sm:pb-12 sm:pt-24 md:px-6 lg:px-10 xl:px-14">
-            <p className="text-xs uppercase tracking-[0.34em] text-white/75">Honeymoon Package</p>
-            <h1 className="mt-3 max-w-4xl font-serif text-3xl leading-tight sm:text-4xl">
+            <p className="site-hero-copy-shadow text-xs font-semibold uppercase tracking-[0.34em] !text-white/90">Honeymoon Package</p>
+            <h1 className="site-hero-copy-shadow mt-3 max-w-4xl font-serif text-3xl leading-tight !text-white sm:text-4xl">
               {pkg.title}
             </h1>
-            <p className="mt-4 max-w-3xl text-xs leading-6 text-white/85 sm:text-sm sm:leading-7">
+            <p className="site-hero-copy-shadow mt-4 max-w-3xl text-xs leading-6 !text-white/90 sm:text-sm sm:leading-7">
               {pkg.description}
             </p>
           </div>
