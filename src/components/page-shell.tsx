@@ -138,6 +138,34 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                   ))}
                 </ul>
               </div>
+
+              <div className="mt-6">
+                <h3 className="premium-footer-heading">Contact & updates</h3>
+                <div className="premium-footer-contact mt-3">
+                  <a href="tel:+923377777460">+92 337 7777460</a>
+                  <a href="tel:+923378233777">+92 337 8233777</a>
+                  <a href="mailto:info@hodophile.pk">info@hodophile.pk</a>
+                  <p>PECHS, Block 2, Tariq Road<br />Karachi, Pakistan</p>
+                </div>
+
+                <div className="mt-4">
+                  <h3 className="premium-footer-heading">Subscribe</h3>
+                  <p className="mt-2 text-xs leading-5 text-black sm:text-sm">Get trip ideas, seasonal updates, and new packages from Hodophile.</p>
+                  <form action="mailto:info@hodophile.pk" method="get" className="mt-2 grid gap-2">
+                    <label htmlFor="footer-email" className="sr-only">Email address</label>
+                    <input
+                      id="footer-email"
+                      name="subject"
+                      type="email"
+                      placeholder="Your email address"
+                      className="w-full rounded-md border border-black/20 bg-white px-3 py-1.5 text-sm text-black placeholder:text-black/50 outline-none transition focus:border-[#FCC000] focus:ring-2 focus:ring-[#FCC000]/30"
+                    />
+                    <button type="submit" className="inline-flex w-fit items-center justify-center rounded-md bg-[#FCC000] px-3 py-1.5 text-xs font-semibold text-black transition hover:bg-[#e6b100] sm:text-sm">
+                      Subscribe
+                    </button>
+                  </form>
+                </div>
+              </div>
             </div>
 
             <div>
@@ -184,70 +212,40 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 </div>
               </div>
 
-              <div className="mt-6 grid items-start gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-10">
-                <div>
-                  <h3 className="premium-footer-heading">Accreditations & license</h3>
-                  <div className="mt-3 flex flex-nowrap items-center gap-3 overflow-x-auto">
-                    <div className="flex shrink-0 items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
-                      <Image
-                        src="/images/footer/govt-pakistan.webp"
-                        alt="Government of Pakistan"
-                        width={56}
-                        height={56}
-                        className="h-12 w-12 object-contain"
-                      />
-                      <div>
-                        <p className="text-xs font-medium text-black">Govt. of Pakistan</p>
-                        <p className="text-sm font-semibold text-black">Tourism License No. 5436</p>
-                      </div>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <Image
-                        src="/images/footer/taap-logo.webp"
-                        alt="TAAP — Travel Agents Association of Pakistan"
-                        width={64}
-                        height={64}
-                        className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
-                      />
-                      <Image
-                        src="/images/footer/affiliation-pato.webp"
-                        alt="PATO — Pakistan Association of Tour Operators"
-                        width={64}
-                        height={64}
-                        className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
-                      />
+              <div className="mt-6">
+                <h3 className="premium-footer-heading">Accreditations & license</h3>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
+                    <Image
+                      src="/images/footer/govt-pakistan.webp"
+                      alt="Government of Pakistan"
+                      width={56}
+                      height={56}
+                      className="h-12 w-12 object-contain"
+                    />
+                    <div>
+                      <p className="text-xs font-medium text-black">Govt. of Pakistan</p>
+                      <p className="text-sm font-semibold text-black">Tourism License No. 5436</p>
                     </div>
                   </div>
-                  <p className="mt-2 text-sm text-black">TAAP &amp; PATO affiliated, licensed tour operator in Pakistan.</p>
-                </div>
-
-                <div>
-                  <h3 className="premium-footer-heading">Contact & updates</h3>
-                  <div className="premium-footer-contact mt-2">
-                    <a href="tel:+923377777460">+92 337 7777460</a>
-                    <a href="tel:+923378233777">+92 337 8233777</a>
-                    <a href="mailto:info@hodophile.pk">info@hodophile.pk</a>
-                    <p>PECHS, Block 2, Tariq Road<br />Karachi, Pakistan</p>
-                  </div>
-
-                  <div className="mt-3">
-                    <h3 className="premium-footer-heading">Subscribe</h3>
-                    <p className="mt-1 text-xs leading-5 text-black sm:text-sm">Get trip ideas, seasonal updates, and new packages from Hodophile.</p>
-                    <form action="mailto:info@hodophile.pk" method="get" className="mt-2 grid gap-2">
-                      <label htmlFor="footer-email" className="sr-only">Email address</label>
-                      <input
-                        id="footer-email"
-                        name="subject"
-                        type="email"
-                        placeholder="Your email address"
-                        className="w-full rounded-md border border-black/20 bg-white px-3 py-1.5 text-sm text-black placeholder:text-black/50 outline-none transition focus:border-[#FCC000] focus:ring-2 focus:ring-[#FCC000]/30"
-                      />
-                      <button type="submit" className="inline-flex w-fit items-center justify-center rounded-md bg-[#FCC000] px-3 py-1.5 text-xs font-semibold text-black transition hover:bg-[#e6b100] sm:text-sm">
-                        Subscribe
-                      </button>
-                    </form>
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src="/images/footer/taap-logo.webp"
+                      alt="TAAP — Travel Agents Association of Pakistan"
+                      width={64}
+                      height={64}
+                      className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
+                    />
+                    <Image
+                      src="/images/footer/affiliation-pato.webp"
+                      alt="PATO — Pakistan Association of Tour Operators"
+                      width={64}
+                      height={64}
+                      className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
+                    />
                   </div>
                 </div>
+                <p className="mt-2 text-sm text-black">TAAP &amp; PATO affiliated, licensed tour operator in Pakistan.</p>
               </div>
             </div>
           </div>
