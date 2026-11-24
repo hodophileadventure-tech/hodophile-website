@@ -58,14 +58,16 @@ const socialLinks = [
     label: "TikTok",
     href: "https://www.tiktok.com/@hodophile_adventures?_r=1&_t=ZS-95lv9tuUjnJ",
     icon: (
-      <Image
-        src="/images/footer/tiktok-logo.png"
-        alt=""
-        width={20}
-        height={20}
-        aria-hidden
-        className="h-5 w-5 object-contain"
-      />
+      <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-[#FCC000] p-0.5">
+        <Image
+          src="/images/footer/tiktok-logo.png"
+          alt=""
+          width={20}
+          height={20}
+          aria-hidden
+          className="h-full w-full object-contain"
+        />
+      </span>
     ),
   },
   {
