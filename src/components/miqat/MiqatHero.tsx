@@ -7,31 +7,32 @@ import { whatsappUrl } from "@/lib/site";
 
 export function MiqatHero() {
   return (
-    <section className="site-hero-height theme-preserve-dark isolate flex overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
-      <motion.div
-        animate={{ scale: 1 }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute inset-0"
+    <section className="site-hero-height theme-preserve-dark relative isolate flex items-center overflow-hidden bg-[#090909] px-5 py-12 text-white sm:px-8 sm:py-16 lg:px-14 lg:py-10">
+      <Image
+        src="/images/package-cards/images__umrah__kabah.webp"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="absolute inset-0 -z-20 object-cover"
+      />
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        poster="/images/package-cards/images__umrah__kabah.webp"
+        aria-hidden="true"
+        className="site-hero-video absolute inset-0 -z-20 h-full w-full object-cover"
       >
-        <Image
-          src="/images/package-cards/images__umrah__kabah.webp"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover"
+        <source
+          src="/videos/qasim-opt.mp4"
+          type="video/mp4"
+          media="(prefers-reduced-motion: no-preference)"
         />
-        <video
-          className="site-hero-video h-full w-full object-cover"
-          poster="/images/package-cards/images__umrah__kabah.webp"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-        >
-          <source src="/videos/qasim-opt.mp4" type="video/mp4" media="(prefers-reduced-motion: no-preference)" />
-        </video>
-      </motion.div>
+      </video>
+      <div className="site-hero-overlay site-hero-overlay-video -z-10" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-start">
         <motion.div
