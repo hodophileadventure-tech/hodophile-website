@@ -2631,7 +2631,7 @@ export function MakeMyTripForm() {
                   return (
                     <label
                       key={city}
-                      className={`group relative isolate flex min-h-28 items-end overflow-hidden border bg-stone-700 transition focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#8b6b00] ${willAllow ? 'cursor-pointer border-stone-300 hover:border-[#fcc000]' : 'cursor-not-allowed border-stone-300 opacity-55'} ${effectiveSelectedCities.includes(city) ? 'ring-2 ring-[#fcc000]' : ''}`}
+                      className={`group theme-preserve-dark relative isolate flex min-h-28 items-end overflow-hidden border bg-stone-700 transition focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#8b6b00] ${willAllow ? 'cursor-pointer border-stone-300 hover:border-[#fcc000]' : 'cursor-not-allowed border-stone-300 opacity-55'} ${effectiveSelectedCities.includes(city) ? 'ring-2 ring-[#fcc000]' : ''}`}
                       title={willAllow ? undefined : 'Off-route combination'}
                     >
                       {cardDetails.image ? (
@@ -2643,16 +2643,17 @@ export function MakeMyTripForm() {
                           className="-z-10 object-cover transition duration-500 group-hover:scale-[1.03]"
                         />
                       ) : null}
+                      <span className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" aria-hidden="true" />
                       <input
                         type="checkbox"
                         checked={effectiveSelectedCities.includes(city)}
                         onChange={() => toggleCitySelection(city)}
                         disabled={!willAllow}
-                        className={`ml-3 mb-3 h-4 w-4 accent-[#fcc000] ${willAllow ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                        className={`relative z-10 ml-3 mb-3 h-4 w-4 accent-[#fcc000] ${willAllow ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                       />
                       <span className="relative z-10 min-w-0 flex-1 pb-2 pr-2 text-white">
-                        <span className="block text-xs font-semibold leading-tight sm:text-sm">{city}</span>
-                        <span className="mt-1 block text-[9px] leading-tight text-white/80 sm:text-[10px]">{cardDetails.description}</span>
+                        <span className="block text-xs font-semibold leading-tight !text-white sm:text-sm">{city}</span>
+                        <span className="mt-1 block text-[9px] leading-tight !text-white/95 sm:text-[10px]">{cardDetails.description}</span>
                       </span>
                     </label>
                   );
