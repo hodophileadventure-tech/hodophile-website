@@ -16,42 +16,48 @@ const socialLinks = [
     label: "Facebook",
     href: "https://www.facebook.com/Hodophileadventure",
     icon: (
-      <Image
-        src="/images/footer/facebook-logo.png"
-        alt=""
-        width={24}
-        height={24}
-        aria-hidden
-        className="h-7 w-7 object-contain"
-      />
+      <span className="inline-flex h-8 w-8 items-center justify-center">
+        <Image
+          src="/images/footer/facebook-logo.png"
+          alt=""
+          width={24}
+          height={24}
+          aria-hidden
+          className="h-7 w-7 object-contain"
+        />
+      </span>
     ),
   },
   {
     label: "Instagram",
     href: "https://www.instagram.com/hodophile.adventure?igsh=MTk5aHN6aW53b2R5Mw==",
     icon: (
-      <Image
-        src="/images/footer/instagram-logo.png"
-        alt=""
-        width={24}
-        height={24}
-        aria-hidden
-        className="h-7 w-7 object-contain"
-      />
+      <span className="inline-flex h-8 w-8 items-center justify-center">
+        <Image
+          src="/images/footer/instagram-logo.png"
+          alt=""
+          width={24}
+          height={24}
+          aria-hidden
+          className="h-7 w-7 object-contain"
+        />
+      </span>
     ),
   },
   {
     label: "YouTube",
     href: "https://www.youtube.com/@hodophileadventure",
     icon: (
-      <Image
-        src="/images/footer/youtube-logo.png"
-        alt=""
-        width={24}
-        height={24}
-        aria-hidden
-        className="h-7 w-7 object-contain"
-      />
+      <span className="inline-flex h-8 w-8 items-center justify-center">
+        <Image
+          src="/images/footer/youtube-logo.png"
+          alt=""
+          width={24}
+          height={24}
+          aria-hidden
+          className="h-7 w-7 object-contain"
+        />
+      </span>
     ),
   },
   {
@@ -74,14 +80,16 @@ const socialLinks = [
     label: "LinkedIn",
     href: "https://www.linkedin.com/company/hodophile-adventures-pk/",
     icon: (
-      <Image
-        src="/images/footer/linkedin-logo.png"
-        alt=""
-        width={24}
-        height={24}
-        aria-hidden
-        className="h-7 w-7 object-contain"
-      />
+      <span className="inline-flex h-8 w-8 items-center justify-center">
+        <Image
+          src="/images/footer/linkedin-logo.png"
+          alt=""
+          width={24}
+          height={24}
+          aria-hidden
+          className="h-7 w-7 object-contain"
+        />
+      </span>
     ),
   },
 ];
