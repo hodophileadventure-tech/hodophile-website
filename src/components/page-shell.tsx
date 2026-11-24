@@ -18,7 +18,7 @@ const socialLinks = [
     icon: (
       <span className="inline-flex h-8 w-8 items-center justify-center">
         <Image
-          src="/images/footer/facebook-logo.png"
+          src="/images/footer/facebook-logo.png?v=20261124"
           alt=""
           width={32}
           height={32}
@@ -34,7 +34,7 @@ const socialLinks = [
     icon: (
       <span className="inline-flex h-8 w-8 items-center justify-center">
         <Image
-          src="/images/footer/instagram-logo.png"
+          src="/images/footer/instagram-logo.png?v=20261124"
           alt=""
           width={32}
           height={32}
@@ -50,7 +50,7 @@ const socialLinks = [
     icon: (
       <span className="inline-flex h-8 w-8 items-center justify-center">
         <Image
-          src="/images/footer/youtube-logo.png"
+          src="/images/footer/youtube-logo.png?v=20261124"
           alt=""
           width={32}
           height={32}
@@ -66,7 +66,7 @@ const socialLinks = [
     icon: (
       <span className="inline-flex h-8 w-8 items-center justify-center">
         <Image
-          src="/images/footer/tiktok-logo.png"
+          src="/images/footer/tiktok-logo.png?v=20261124"
           alt=""
           width={32}
           height={32}
@@ -82,7 +82,7 @@ const socialLinks = [
     icon: (
       <span className="inline-flex h-8 w-8 items-center justify-center">
         <Image
-          src="/images/footer/linkedin-logo.png"
+          src="/images/footer/linkedin-logo.png?v=20261124"
           alt=""
           width={32}
           height={32}
