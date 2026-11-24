@@ -74,36 +74,36 @@ export function HomeQuickLeadForm() {
   };
 
   return (
-    <section className="theme-preserve-dark site-section-gap relative w-full overflow-hidden border-y border-stone-300/70 bg-[#111111] text-white">
-      <div className="mx-auto max-w-6xl overflow-hidden rounded-[1.75rem] border border-[#fcc000]/25 shadow-[0_28px_90px_rgba(0,0,0,0.28)]">
-        <div className="grid gap-0 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(252,192,0,0.2),transparent_38%),linear-gradient(145deg,#171717,#222018)] p-6 sm:p-8 lg:p-12">
-            <p className="inline-flex items-center gap-2 rounded-full border border-[#fcc000]/25 bg-[#fcc000]/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#fcc000]"><span aria-hidden="true">✦</span> Quick quote</p>
-            <h2 className="mt-4 font-serif text-4xl leading-tight text-white sm:text-5xl">Get your free trip plan.</h2>
-            <p className="mt-4 text-sm leading-7 text-white/70">
+    <section className="site-section-gap relative w-full overflow-hidden">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid items-start gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
+          <div className="relative p-1 sm:p-2 lg:py-4">
+            <p className="inline-flex items-center gap-2 rounded-full border border-[#fcc000]/35 bg-[#fcc000]/10 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#8b6b00]"><span aria-hidden="true">✦</span> Quick quote</p>
+            <h2 className="mt-4 font-serif text-4xl leading-tight text-stone-950 sm:text-5xl">Get your free trip plan.</h2>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-stone-600">
               Share your destination, travel month, and group size. Our team will help you find a suitable route and request a clear quote.
             </p>
-            <div className="mt-7 space-y-3 text-sm text-white/75">
-              <div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#fcc000]/10 text-base" aria-hidden="true">⚡</span>Fast expert reply</div>
-              <div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#fcc000]/10 text-base" aria-hidden="true">💛</span>Transparent pricing</div>
-              <div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#fcc000]/10 text-base" aria-hidden="true">🧳</span>Tailored for families, couples, or adventure travelers</div>
+            <div className="mt-7 space-y-3 text-sm text-stone-700">
+              <div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#fcc000]/15 text-base" aria-hidden="true">⚡</span>Fast expert reply</div>
+              <div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#fcc000]/15 text-base" aria-hidden="true">💛</span>Transparent pricing</div>
+              <div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#fcc000]/15 text-base" aria-hidden="true">🧳</span>Tailored for families, couples, or adventure travelers</div>
             </div>
             <a
               href={whatsappUrl("Hi Hodophile, I want a custom Pakistan tour plan and fast availability details.")}
               target="_blank"
               rel="noreferrer"
-              className="mt-7 inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:border-[#25D366]/60 hover:bg-white/10"
+              className="mt-7 inline-flex items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-5 py-3 text-sm font-semibold text-stone-900 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-[#25D366]/60 hover:bg-stone-50"
             >
               <span aria-hidden="true" className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#25D366] text-white">
                 <svg viewBox="0 0 24 24" className="h-3 w-3 fill-current">
                   <path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z" />
                 </svg>
               </span>
-              <span className="text-white">WhatsApp travel expert</span>
+              <span>WhatsApp travel expert</span>
             </a>
           </div>
 
-          <div className="border-t border-white/10 bg-[linear-gradient(145deg,#fbf9f4,#f3eee3)] p-6 text-stone-900 sm:p-8 lg:border-l lg:border-t-0 lg:p-12">
+          <div className="rounded-[1.5rem] border border-stone-200 bg-[linear-gradient(145deg,#fbf9f4,#f3eee3)] p-6 text-stone-900 shadow-[0_16px_40px_rgba(54,44,18,0.08)] sm:p-8 lg:p-10">
             {isSuccess ? (
               <div className="flex h-full flex-col justify-center rounded-2xl border border-[#d8d2c7] bg-white p-6 text-center shadow-[0_16px_40px_rgba(54,44,18,0.08)]">
                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#dff7e7] text-2xl text-[#1a7f4f]">✓</div>
