@@ -19,10 +19,10 @@ const socialLinks = [
       <Image
         src="/images/footer/facebook-logo.png"
         alt=""
-        width={20}
-        height={20}
+        width={24}
+        height={24}
         aria-hidden
-        className="h-5 w-5 object-contain"
+        className="h-7 w-7 object-contain"
       />
     ),
   },
@@ -33,10 +33,10 @@ const socialLinks = [
       <Image
         src="/images/footer/instagram-logo.png"
         alt=""
-        width={20}
-        height={20}
+        width={24}
+        height={24}
         aria-hidden
-        className="h-5 w-5 object-contain"
+        className="h-7 w-7 object-contain"
       />
     ),
   },
@@ -47,10 +47,10 @@ const socialLinks = [
       <Image
         src="/images/footer/youtube-logo.png"
         alt=""
-        width={20}
-        height={20}
+        width={24}
+        height={24}
         aria-hidden
-        className="h-5 w-5 object-contain"
+        className="h-7 w-7 object-contain"
       />
     ),
   },
@@ -58,12 +58,12 @@ const socialLinks = [
     label: "TikTok",
     href: "https://www.tiktok.com/@hodophile_adventures?_r=1&_t=ZS-95lv9tuUjnJ",
     icon: (
-      <span className="inline-flex h-6 w-6 items-center justify-center rounded bg-[#FCC000] p-0.5">
+      <span className="inline-flex h-8 w-8 items-center justify-center rounded bg-[#FCC000] p-1">
         <Image
           src="/images/footer/tiktok-logo.png"
           alt=""
-          width={20}
-          height={20}
+          width={24}
+          height={24}
           aria-hidden
           className="h-full w-full object-contain"
         />
@@ -77,10 +77,10 @@ const socialLinks = [
       <Image
         src="/images/footer/linkedin-logo.png"
         alt=""
-        width={20}
-        height={20}
+        width={24}
+        height={24}
         aria-hidden
-        className="h-5 w-5 object-contain"
+        className="h-7 w-7 object-contain"
       />
     ),
   },
@@ -112,7 +112,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                   width={480}
                   height={136}
                   priority
-                  className="h-24 w-auto sm:h-28 lg:h-32"
+                  className="h-28 w-auto sm:h-32 lg:h-36"
                 />
               </Link>
               <p className="premium-footer-copy mt-5 max-w-sm">
@@ -121,20 +121,18 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
               <div className="mt-6">
                 <h3 className="premium-footer-heading">Follow us</h3>
-                <ul className="mt-4 flex flex-nowrap items-center gap-4 overflow-x-auto text-sm text-black">
+                <ul className="mt-4 flex flex-wrap items-center gap-4">
                   {socialLinks.map((social) => (
-                    <li key={social.label} className="shrink-0">
+                    <li key={social.label}>
                       <a
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={social.label}
-                        className="inline-flex items-center gap-3 whitespace-nowrap text-black transition hover:text-[#FCC000]"
+                        title={social.label}
+                        className="inline-flex items-center justify-center transition hover:opacity-80"
                       >
-                        <span className="inline-flex h-6 w-6 items-center justify-center">
-                          {social.icon}
-                        </span>
-                        <span className="font-medium">{social.label}</span>
+                        {social.icon}
                       </a>
                     </li>
                   ))}
