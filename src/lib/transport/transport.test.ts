@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { calculateQuotation } from "@/lib/pricingEngine";
+import { calculateQuotation, calculateTransportCost } from "@/lib/pricingEngine";
 
 import { isTransportAdminAuthorized } from "./admin-auth";
 import { calculateTransportExpense } from "./calculations";
@@ -344,6 +344,16 @@ test("calculates petrol and diesel fuel, distance allowance, and maintenance cos
   assert.equal(diesel.totalTransportationExpense, 45_000);
 });
 
+test("uses PKR 320 per litre for default petrol and diesel vehicle rates", () => {
+  const petrol = calculateTransportCost("Toyota Corolla", "skardu-basho-6days", 1);
+  const diesel = calculateTransportCost("Prado", "skardu-basho-6days", 1);
+  const coaster = calculateTransportCost("Coaster 4C", "skardu-basho-6days", 1);
+
+  assert.equal(petrol?.fuelPricePerLiter, 320);
+  assert.equal(diesel?.fuelPricePerLiter, 320);
+  assert.equal(coaster?.fuelPricePerLiter, 320);
+});
+
 test("uses a vehicle-specific fuel price and rejects missing prices", () => {
   const vehicle = {
     name: "Configured petrol vehicle",
@@ -489,6 +499,50 @@ test("uses only the server-calculated Skardu road distance for air transport pri
   assert.ok(skarduOnlyQuote);
   assert.equal(roundTripQuote.transportBreakdown?.distance, 1_234);
   assert.equal(skarduOnlyQuote.transportBreakdown?.distance, 0);
+});
+
+test("adds server-calculated By Air jeep rides without duplicating the custom Fairy Meadows jeep fee", () => {
+  const quote = calculateQuotation({
+    routeId: "skardu-basho-6days",
+    vehicleName: "Toyota Corolla",
+    hotelId: "skardu-dera-lamsa",
+    roomId: "Lamsa Executive Room",
+    customCities: ["Astore", "Fairy Meadows"],
+    routeDestinations: ["Astore", "Fairy Meadows"],
+    numberOfRooms: 1,
+    adults: 2,
+    kids: 0,
+    tripDate: "2026-06-15",
+    travelMode: "air",
+  }, {
+    distanceKm: 1_200,
+    vehicleConfiguration: {
+      name: "Toyota Corolla",
+      fuelType: "petrol",
+      averageKmPerLiter: 10,
+      fuelPricePerLiter: 300,
+      maintenanceCostPerKm: 0,
+    },
+    settings: {
+      petrolPricePerLiter: 300,
+      dieselPricePerLiter: 400,
+      additionalDistanceKm: 0,
+      additionalDistancePercent: 0,
+    },
+    airDestinationJeepCost: 90_000,
+    airDestinationJeepDetails: [
+      "Astore jeep ride: PKR 70,000",
+      "Fairy Meadows jeep ride: PKR 20,000",
+    ],
+  });
+
+  assert.ok(quote);
+  assert.equal(quote.transportBreakdown?.distance, 1_200);
+  assert.equal(quote.jeepAddonsCost, 90_000);
+  assert.deepEqual(quote.details.jeepAddonsDetails, [
+    "Astore jeep ride: PKR 70,000",
+    "Fairy Meadows jeep ride: PKR 20,000",
+  ]);
 });
 
 test("requires the exact configured bearer secret for transport administration", () => {

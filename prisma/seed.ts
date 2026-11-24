@@ -488,14 +488,14 @@ async function main() {
           },
         },
         update: {
-          fuelPricePerLiter: 310,
+          fuelPricePerLiter: 320,
           dailyRentalRate: vehicleRate.dailyRate,
           vehicleAverageConsumption: vehicleRate.consumption,
         },
         create: {
           routeId: route.id,
           vehicleId: vehicleId,
-          fuelPricePerLiter: 310,
+          fuelPricePerLiter: 320,
           dailyRentalRate: vehicleRate.dailyRate,
           vehicleAverageConsumption: vehicleRate.consumption,
         },

@@ -5,6 +5,7 @@ import {
   AIR_DESTINATION_ERROR,
   AirDestinationValidationError,
   buildAirRoadStops,
+  getAirDestinationAdjustments,
   getAirQuotationDestinations,
   validateAirRoadStops,
 } from "./air-routing";
@@ -21,6 +22,31 @@ test("builds Skardu round trips for one or multiple eligible destinations", () =
   assert.deepEqual(
     buildAirRoadStops(["Hunza", "Skardu", "Hunza"]),
     ["Skardu", "Hunza", "Skardu"],
+  );
+});
+
+test("adds By Air destination kilometers and jeep rides once per selected destination", () => {
+  assert.deepEqual(
+    getAirDestinationAdjustments(["Skardu", "Hunza", "Astore", "Fairy Meadows", "Fairy Meadows"]),
+    {
+      distanceAdditionKm: 1_350,
+      jeepRideCost: 90_000,
+      jeepRideDetails: [
+        "Astore jeep ride: PKR 70,000",
+        "Fairy Meadows jeep ride: PKR 20,000",
+      ],
+    },
+  );
+  assert.deepEqual(
+    getAirDestinationAdjustments(["Astore", "Fairy Meadows"]),
+    {
+      distanceAdditionKm: 0,
+      jeepRideCost: 90_000,
+      jeepRideDetails: [
+        "Astore jeep ride: PKR 70,000",
+        "Fairy Meadows jeep ride: PKR 20,000",
+      ],
+    },
   );
 });
 

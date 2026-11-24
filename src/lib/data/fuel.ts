@@ -4,8 +4,8 @@ export interface FuelPricing {
 }
 
 export const currentFuelPrices: FuelPricing = {
-  petrol: 310,
-  diesel: 382,
+  petrol: 320,
+  diesel: 320,
 };
 
 // Fuel consumption reference (km/liter)

@@ -50,7 +50,6 @@ export const vehicleRates: VehicleRate[] = [
     consumption: 5,
     tollTax: 13000,
     fuelType: "diesel",
-    fuelPrice: 322,
   },
   {
     name: "Coaster 5C",
@@ -58,7 +57,6 @@ export const vehicleRates: VehicleRate[] = [
     consumption: 5,
     tollTax: 13000,
     fuelType: "diesel",
-    fuelPrice: 322,
   },
 ];
 

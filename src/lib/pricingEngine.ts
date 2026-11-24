@@ -6,6 +6,7 @@ import { estimateCustomItineraryDistance, estimateCustomVehicleDays } from "./da
 import { getVehicleRate } from "./data/vehicleRates";
 import { currentFuelPrices } from "./data/fuel";
 import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "./data/routeActivities";
+import { isAirJeepRideDestination } from "./transport/air-routing";
 import {
   calculateTransportExpense,
   type TransportCostSettings,
@@ -79,6 +80,8 @@ export interface ServerTransportOptions {
   distanceKm?: number;
   vehicleConfiguration?: TransportVehicleConfiguration | null;
   settings?: TransportCostSettings;
+  airDestinationJeepCost?: number;
+  airDestinationJeepDetails?: string[];
 }
 
 function getSeasonFromDate(date: string): "peak" | "blossom" | "off" | "fixed" {
@@ -452,7 +455,13 @@ export function calculateQuotation(
     }
 
     const routeJeepCostPerJeep = getMandatoryJeepCost(route?.id || input.routeId);
-    const customCityJeepCostPerJeep = input.customCities ? getMandatoryJeepCostForCities(input.customCities) : 0;
+    // Air-mode Astore/Fairy Meadows rides use the server-priced destination fees below.
+    const citiesForExistingJeepCosts = input.customCities?.filter(
+      (city) => input.travelMode !== "air" || !isAirJeepRideDestination(city),
+    );
+    const customCityJeepCostPerJeep = citiesForExistingJeepCosts
+      ? getMandatoryJeepCostForCities(citiesForExistingJeepCosts)
+      : 0;
 
     // Derive mandatory activity costs from the selected route/cities so callers
     // cannot override server-side pricing with a client-supplied total.
@@ -465,11 +474,22 @@ export function calculateQuotation(
 
     let jeepAddonsCost = 0;
     const jeepDetails: string[] = [];
+    const airDestinationJeepCost = input.travelMode === "air"
+      ? serverTransportOptions?.airDestinationJeepCost ?? 0
+      : 0;
 
     // Add mandatory jeep costs
     if (actualMandatoryJeepCost > 0) {
       jeepAddonsCost += actualMandatoryJeepCost;
       jeepDetails.push(`Mandatory jeep activity: ${actualMandatoryJeepCost}`);
+    }
+
+    if (airDestinationJeepCost > 0) {
+      jeepAddonsCost += airDestinationJeepCost;
+      jeepDetails.push(
+        ...(serverTransportOptions?.airDestinationJeepDetails ??
+          [`By Air destination jeep rides: PKR ${airDestinationJeepCost.toLocaleString("en-PK")}`]),
+      );
     }
 
     // Add optional jeep addons

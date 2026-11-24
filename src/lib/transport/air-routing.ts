@@ -1,4 +1,17 @@
 export const AIR_DESTINATIONS = ["Skardu", "Hunza", "Astore", "Fairy Meadows"] as const;
+type AirDestination = (typeof AIR_DESTINATIONS)[number];
+
+const AIR_DESTINATION_DISTANCE_ADDITIONS_KM: Record<AirDestination, number> = {
+  Skardu: 1000,
+  Hunza: 350,
+  Astore: 0,
+  "Fairy Meadows": 0,
+};
+
+const AIR_DESTINATION_JEEP_RIDE_COSTS: Partial<Record<AirDestination, number>> = {
+  Astore: 70_000,
+  "Fairy Meadows": 20_000,
+};
 
 export const AIR_DESTINATION_ERROR =
   "By Air trips are currently available only for Skardu, Hunza, Astore, and Fairy Meadows. Please select an eligible destination or switch to By Road.";
@@ -14,7 +27,7 @@ function normalizeDestination(destination: string): string {
   return destination.trim().replace(/\s+\([^)]*\)$/, "").toLocaleLowerCase("en");
 }
 
-function getCanonicalAirDestination(value: unknown): (typeof AIR_DESTINATIONS)[number] | undefined {
+function getCanonicalAirDestination(value: unknown): AirDestination | undefined {
   if (typeof value !== "string") return undefined;
   const normalized = normalizeDestination(value);
   return AIR_DESTINATIONS.find((destination) => normalizeDestination(destination) === normalized);
@@ -24,12 +37,17 @@ export function isAirDestination(value: string): boolean {
   return getCanonicalAirDestination(value) !== undefined;
 }
 
-export function normalizeAirDestinations(destinations: unknown): string[] {
+export function isAirJeepRideDestination(value: unknown): boolean {
+  const canonical = getCanonicalAirDestination(value);
+  return canonical === "Astore" || canonical === "Fairy Meadows";
+}
+
+export function normalizeAirDestinations(destinations: unknown): AirDestination[] {
   if (!Array.isArray(destinations) || destinations.length === 0) {
     throw new AirDestinationValidationError();
   }
 
-  const normalized: string[] = [];
+  const normalized: AirDestination[] = [];
   for (const destination of destinations) {
     const canonical = getCanonicalAirDestination(destination);
     if (!canonical) throw new AirDestinationValidationError();
@@ -39,6 +57,28 @@ export function normalizeAirDestinations(destinations: unknown): string[] {
   }
 
   return normalized;
+}
+
+export function getAirDestinationAdjustments(destinations: unknown): {
+  distanceAdditionKm: number;
+  jeepRideCost: number;
+  jeepRideDetails: string[];
+} {
+  const selectedDestinations = normalizeAirDestinations(destinations);
+  let distanceAdditionKm = 0;
+  let jeepRideCost = 0;
+  const jeepRideDetails: string[] = [];
+
+  for (const destination of selectedDestinations) {
+    distanceAdditionKm += AIR_DESTINATION_DISTANCE_ADDITIONS_KM[destination];
+    const rideCost = AIR_DESTINATION_JEEP_RIDE_COSTS[destination] ?? 0;
+    if (rideCost > 0) {
+      jeepRideCost += rideCost;
+      jeepRideDetails.push(`${destination} jeep ride: PKR ${rideCost.toLocaleString("en-PK")}`);
+    }
+  }
+
+  return { distanceAdditionKm, jeepRideCost, jeepRideDetails };
 }
 
 export function buildAirRoadStops(destinations: unknown): string[] {
