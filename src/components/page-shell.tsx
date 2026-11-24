@@ -141,16 +141,18 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 </ul>
               </div>
 
-              <div className="mt-6">
-                <h3 className="premium-footer-heading">Contact & updates</h3>
-                <div className="premium-footer-contact mt-3">
-                  <a href="tel:+923377777460">+92 337 7777460</a>
-                  <a href="tel:+923378233777">+92 337 8233777</a>
-                  <a href="mailto:info@hodophile.pk">info@hodophile.pk</a>
-                  <p>PECHS, Block 2, Tariq Road<br />Karachi, Pakistan</p>
+              <div className="mt-6 grid gap-6 sm:grid-cols-2 sm:gap-8">
+                <div>
+                  <h3 className="premium-footer-heading">Contact & updates</h3>
+                  <div className="premium-footer-contact mt-3">
+                    <a href="tel:+923377777460">+92 337 7777460</a>
+                    <a href="tel:+923378233777">+92 337 8233777</a>
+                    <a href="mailto:info@hodophile.pk">info@hodophile.pk</a>
+                    <p>PECHS, Block 2, Tariq Road<br />Karachi, Pakistan</p>
+                  </div>
                 </div>
 
-                <div className="mt-4">
+                <div>
                   <h3 className="premium-footer-heading">Subscribe</h3>
                   <p className="mt-2 text-xs leading-5 text-black sm:text-sm">Get trip ideas, seasonal updates, and new packages from Hodophile.</p>
                   <form action="mailto:info@hodophile.pk" method="get" className="mt-2 grid gap-2">
