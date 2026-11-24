@@ -20,10 +20,10 @@ const socialLinks = [
         <Image
           src="/images/footer/facebook-logo.png"
           alt=""
-          width={24}
-          height={24}
+          width={32}
+          height={32}
           aria-hidden
-          className="h-7 w-7 object-contain"
+          className="h-8 w-8 object-contain"
         />
       </span>
     ),
@@ -36,10 +36,10 @@ const socialLinks = [
         <Image
           src="/images/footer/instagram-logo.png"
           alt=""
-          width={24}
-          height={24}
+          width={32}
+          height={32}
           aria-hidden
-          className="h-7 w-7 object-contain"
+          className="h-8 w-8 object-contain"
         />
       </span>
     ),
@@ -52,10 +52,10 @@ const socialLinks = [
         <Image
           src="/images/footer/youtube-logo.png"
           alt=""
-          width={24}
-          height={24}
+          width={32}
+          height={32}
           aria-hidden
-          className="h-7 w-7 object-contain"
+          className="h-8 w-8 object-contain"
         />
       </span>
     ),
@@ -64,14 +64,14 @@ const socialLinks = [
     label: "TikTok",
     href: "https://www.tiktok.com/@hodophile_adventures?_r=1&_t=ZS-95lv9tuUjnJ",
     icon: (
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded bg-[#FCC000] p-1">
+      <span className="inline-flex h-8 w-8 items-center justify-center">
         <Image
           src="/images/footer/tiktok-logo.png"
           alt=""
-          width={24}
-          height={24}
+          width={32}
+          height={32}
           aria-hidden
-          className="h-full w-full object-contain"
+          className="h-8 w-8 object-contain"
         />
       </span>
     ),
@@ -84,10 +84,10 @@ const socialLinks = [
         <Image
           src="/images/footer/linkedin-logo.png"
           alt=""
-          width={24}
-          height={24}
+          width={32}
+          height={32}
           aria-hidden
-          className="h-7 w-7 object-contain"
+          className="h-8 w-8 object-contain"
         />
       </span>
     ),
