@@ -101,8 +101,8 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
               <div className="mt-6">
                 <h3 className="premium-footer-heading">Accreditations & license</h3>
-                <div className="mt-4 flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
+                <div className="mt-4 flex flex-nowrap items-center gap-4 overflow-x-auto">
+                  <div className="flex shrink-0 items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
                     <Image
                       src="/images/footer/govt-pakistan.webp"
                       alt="Government of Pakistan"
@@ -115,7 +115,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                       <p className="text-sm font-semibold text-black">Tourism License No. 5436</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex shrink-0 items-center gap-3">
                     <Image
                       src="/images/footer/taap-logo.webp"
                       alt="TAAP — Travel Agents Association of Pakistan"
@@ -137,15 +137,15 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
               <div className="mt-8">
                 <h3 className="premium-footer-heading">Follow us</h3>
-                <ul className="mt-4 grid gap-3 text-sm text-black sm:grid-cols-2">
+                <ul className="mt-4 flex flex-nowrap items-center gap-4 overflow-x-auto text-sm text-black">
                   {socialLinks.map((social) => (
-                    <li key={social.label}>
+                    <li key={social.label} className="shrink-0">
                       <a
                         href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={social.label}
-                        className="inline-flex items-center gap-3 text-black transition hover:text-[#FCC000]"
+                        className="inline-flex items-center gap-3 whitespace-nowrap text-black transition hover:text-[#FCC000]"
                       >
                         <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/15 bg-[#fff9e6] text-black">
                           {social.icon}
