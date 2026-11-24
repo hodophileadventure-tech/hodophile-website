@@ -84,10 +84,10 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 <Image
                   src="/images/package-cards/logo.webp"
                   alt="Hodophile Adventures"
-                  width={240}
-                  height={68}
+                  width={360}
+                  height={102}
                   priority
-                  className="h-14 w-auto"
+                  className="h-20 w-auto sm:h-24"
                 />
               </Link>
               <p className="premium-footer-copy mt-5 max-w-sm">
