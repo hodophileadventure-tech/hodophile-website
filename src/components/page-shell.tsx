@@ -100,28 +100,6 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
               </p>
 
               <div className="mt-6">
-                <h3 className="premium-footer-heading">Follow us</h3>
-                <ul className="mt-4 grid gap-3 text-sm text-black sm:grid-cols-2">
-                  {socialLinks.map((social) => (
-                    <li key={social.label}>
-                      <a
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={social.label}
-                        className="inline-flex items-center gap-3 text-black transition hover:text-[#FCC000]"
-                      >
-                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/15 bg-[#fff9e6] text-black">
-                          {social.icon}
-                        </span>
-                        <span className="font-medium">{social.label}</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mt-8">
                 <h3 className="premium-footer-heading">Accreditations & license</h3>
                 <div className="mt-4 flex flex-wrap items-center gap-4">
                   <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
@@ -155,6 +133,28 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                   </div>
                 </div>
                 <p className="mt-3 text-sm text-black">TAAP &amp; PATO affiliated, licensed tour operator in Pakistan.</p>
+              </div>
+
+              <div className="mt-8">
+                <h3 className="premium-footer-heading">Follow us</h3>
+                <ul className="mt-4 grid gap-3 text-sm text-black sm:grid-cols-2">
+                  {socialLinks.map((social) => (
+                    <li key={social.label}>
+                      <a
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={social.label}
+                        className="inline-flex items-center gap-3 text-black transition hover:text-[#FCC000]"
+                      >
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/15 bg-[#fff9e6] text-black">
+                          {social.icon}
+                        </span>
+                        <span className="font-medium">{social.label}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
 
