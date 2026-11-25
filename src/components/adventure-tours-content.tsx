@@ -276,7 +276,7 @@ const trekkingTours: AdventureTour[] = [
     summary:
       "A day trip from Karimabad through Nagar and Minapin to Miacher, followed by a local 4x4 ride to alpine meadows with views of Rakaposhi and Diran Peak.",
     duration: "Day trip",
-    image: "/images/adventure/miachar-kho-meadows.png",
+    image: "/images/adventure/miachar-kho-meadows.png?v=20261125",
     grade: "Day outing",
     itinerary: [
       { day: "Morning", plan: "Depart Karimabad and drive through Nagar and Minapin to Miacher." },
