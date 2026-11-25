@@ -176,6 +176,42 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                   </ul>
                 </nav>
 
+                <div className="mt-6">
+                  <h3 className="premium-footer-heading text-center">Accreditations & license</h3>
+                  <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
+                    <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
+                      <Image
+                        src="/images/footer/govt-pakistan.webp"
+                        alt="Government of Pakistan"
+                        width={56}
+                        height={56}
+                        className="h-12 w-12 object-contain"
+                      />
+                      <div>
+                        <p className="text-xs font-medium text-black">Govt. of Pakistan</p>
+                        <p className="text-sm font-semibold text-black">Tourism License No. 5436</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Image
+                        src="/images/footer/taap-logo.webp"
+                        alt="TAAP — Travel Agents Association of Pakistan"
+                        width={64}
+                        height={64}
+                        className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
+                      />
+                      <Image
+                        src="/images/footer/affiliation-pato.webp"
+                        alt="PATO — Pakistan Association of Tour Operators"
+                        width={64}
+                        height={64}
+                        className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
+                      />
+                    </div>
+                  </div>
+                  <p className="mt-2 text-center text-sm text-black">TAAP &amp; PATO affiliated, licensed tour operator in Pakistan.</p>
+                </div>
+
                 <div>
                   <h3 className="premium-footer-heading">Gallery</h3>
                   <div className="mt-4 grid grid-cols-3 gap-2">
@@ -220,42 +256,6 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                     </form>
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-6">
-                <h3 className="premium-footer-heading text-center">Accreditations & license</h3>
-                <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
-                  <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
-                    <Image
-                      src="/images/footer/govt-pakistan.webp"
-                      alt="Government of Pakistan"
-                      width={56}
-                      height={56}
-                      className="h-12 w-12 object-contain"
-                    />
-                    <div>
-                      <p className="text-xs font-medium text-black">Govt. of Pakistan</p>
-                      <p className="text-sm font-semibold text-black">Tourism License No. 5436</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src="/images/footer/taap-logo.webp"
-                      alt="TAAP — Travel Agents Association of Pakistan"
-                      width={64}
-                      height={64}
-                      className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
-                    />
-                    <Image
-                      src="/images/footer/affiliation-pato.webp"
-                      alt="PATO — Pakistan Association of Tour Operators"
-                      width={64}
-                      height={64}
-                      className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
-                    />
-                  </div>
-                </div>
-                <p className="mt-2 text-center text-sm text-black">TAAP &amp; PATO affiliated, licensed tour operator in Pakistan.</p>
               </div>
             </div>
           </div>
