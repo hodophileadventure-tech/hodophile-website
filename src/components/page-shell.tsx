@@ -113,19 +113,17 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
         <div className="site-container-wide mx-auto px-5 sm:px-8 lg:px-10 xl:px-14">
           <div className="grid items-start gap-8 py-10 lg:grid-cols-[1.2fr_1.8fr] lg:gap-12 lg:py-14">
             <div>
-              <div className="flex justify-center">
-                <Link href="/" className="inline-flex" aria-label="Hodophile Adventures home">
-                  <Image
-                    src="/images/package-cards/logo.webp"
-                    alt="Hodophile Adventures"
-                    width={480}
-                    height={136}
-                    priority
-                    className="h-20 w-auto sm:h-24 lg:h-28"
-                  />
-                </Link>
-              </div>
-              <p className="premium-footer-copy mt-4 max-w-sm">
+              <Link href="/" className="inline-flex" aria-label="Hodophile Adventures home">
+                <Image
+                  src="/images/package-cards/logo-footer-trimmed.webp"
+                  alt="Hodophile Adventures"
+                  width={890}
+                  height={509}
+                  priority
+                  className="h-auto w-[180px] sm:w-[200px] lg:w-[240px]"
+                />
+              </Link>
+              <p className="premium-footer-copy mt-6 max-w-sm">
                 Hodophile Adventures plans private, family, honeymoon, and guided journeys across Pakistan with clear itineraries, trusted transport, and local support.
               </p>
 
