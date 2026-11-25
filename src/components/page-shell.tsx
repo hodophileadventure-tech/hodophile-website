@@ -34,7 +34,7 @@ const socialLinks = [
     icon: (
       <span className="inline-flex h-8 w-8 items-center justify-center">
         <Image
-          src="/images/footer/instagram-logo.png?v=20261124"
+          src="/images/footer/instagram-logo.png?v=20261125"
           alt=""
           width={32}
           height={32}
