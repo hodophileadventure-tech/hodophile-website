@@ -111,7 +111,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
       <footer className="premium-footer">
         <div className="site-container-wide mx-auto px-5 sm:px-8 lg:px-10 xl:px-14">
-          <div className="grid items-start gap-8 pt-10 pb-6 lg:grid-cols-[1.2fr_1.8fr] lg:gap-12 lg:pt-14 lg:pb-8">
+          <div className="grid items-start gap-8 pt-8 pb-6 lg:grid-cols-[1.2fr_1.8fr] lg:gap-12 lg:pt-10 lg:pb-8">
             <div>
               <div className="flex max-w-sm justify-center">
                 <Link href="/" className="inline-flex" aria-label="Hodophile Adventures home">
