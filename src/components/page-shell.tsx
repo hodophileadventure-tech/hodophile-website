@@ -149,33 +149,13 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 </ul>
               </div>
 
-              <div className="mt-5 grid gap-6 sm:grid-cols-2 sm:gap-8">
-                <div>
-                  <h3 className="premium-footer-heading">Contact & updates</h3>
-                  <div className="premium-footer-contact mt-3">
-                    <a href="tel:+923377777460">+92 337 7777460</a>
-                    <a href="tel:+923378233777">+92 337 8233777</a>
-                    <a href="mailto:info@hodophile.pk">info@hodophile.pk</a>
-                    <p>PECHS, Block 2, Tariq Road<br />Karachi, Pakistan</p>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="premium-footer-heading">Subscribe</h3>
-                  <p className="mt-2 text-xs leading-5 text-black sm:text-sm">Get trip ideas, seasonal updates, and new packages from Hodophile.</p>
-                  <form action="mailto:info@hodophile.pk" method="get" className="mt-2 grid gap-2">
-                    <label htmlFor="footer-email" className="sr-only">Email address</label>
-                    <input
-                      id="footer-email"
-                      name="subject"
-                      type="email"
-                      placeholder="Your email address"
-                      className="w-full rounded-md border border-black/20 bg-white px-3 py-1.5 text-sm text-black placeholder:text-black/50 outline-none transition focus:border-[#FCC000] focus:ring-2 focus:ring-[#FCC000]/30"
-                    />
-                    <button type="submit" className="inline-flex w-fit items-center justify-center rounded-md bg-[#FCC000] px-3 py-1.5 text-xs font-semibold text-black transition hover:bg-[#e6b100] sm:text-sm">
-                      Subscribe
-                    </button>
-                  </form>
+              <div className="mt-5">
+                <h3 className="premium-footer-heading">Contact & updates</h3>
+                <div className="premium-footer-contact">
+                  <a href="tel:+923377777460">+92 337 7777460</a>
+                  <a href="tel:+923378233777">+92 337 8233777</a>
+                  <a href="mailto:info@hodophile.pk">info@hodophile.pk</a>
+                  <p>PECHS, Block 2, Tariq Road<br />Karachi, Pakistan</p>
                 </div>
               </div>
             </div>
@@ -221,12 +201,30 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                   <Link href="/gallery" className="mt-3 inline-flex text-sm font-semibold text-black underline decoration-[#FCC000] decoration-2 underline-offset-4 hover:text-[#FCC000]">
                     View full gallery
                   </Link>
+
+                  <div className="mt-6">
+                    <h3 className="premium-footer-heading">Subscribe</h3>
+                    <p className="mt-2 text-xs leading-5 text-black sm:text-sm">Get trip ideas, seasonal updates, and new packages from Hodophile.</p>
+                    <form action="mailto:info@hodophile.pk" method="get" className="mt-2 grid gap-2">
+                      <label htmlFor="footer-email" className="sr-only">Email address</label>
+                      <input
+                        id="footer-email"
+                        name="subject"
+                        type="email"
+                        placeholder="Your email address"
+                        className="w-full rounded-md border border-black/20 bg-white px-3 py-1.5 text-sm text-black placeholder:text-black/50 outline-none transition focus:border-[#FCC000] focus:ring-2 focus:ring-[#FCC000]/30"
+                      />
+                      <button type="submit" className="inline-flex w-fit items-center justify-center rounded-md bg-[#FCC000] px-3 py-1.5 text-xs font-semibold text-black transition hover:bg-[#e6b100] sm:text-sm">
+                        Subscribe
+                      </button>
+                    </form>
+                  </div>
                 </div>
               </div>
 
               <div className="mt-6">
-                <h3 className="premium-footer-heading">Accreditations & license</h3>
-                <div className="mt-3 flex flex-wrap items-center gap-3">
+                <h3 className="premium-footer-heading text-center">Accreditations & license</h3>
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
                   <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
                     <Image
                       src="/images/footer/govt-pakistan.webp"
@@ -257,7 +255,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                     />
                   </div>
                 </div>
-                <p className="mt-2 text-sm text-black">TAAP &amp; PATO affiliated, licensed tour operator in Pakistan.</p>
+                <p className="mt-2 text-center text-sm text-black">TAAP &amp; PATO affiliated, licensed tour operator in Pakistan.</p>
               </div>
             </div>
           </div>
