@@ -113,7 +113,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
         <div className="site-container-wide mx-auto px-5 sm:px-8 lg:px-10 xl:px-14">
           <div className="grid items-start gap-8 py-10 lg:grid-cols-[1.2fr_1.8fr] lg:gap-12 lg:py-14">
             <div>
-              <Link href="/" className="inline-flex" aria-label="Hodophile Adventures home">
+              <Link href="/" className="inline-flex rounded-xl border-2 border-[#FCC000] p-3" aria-label="Hodophile Adventures home">
                 <Image
                   src="/images/package-cards/logo.webp"
                   alt="Hodophile Adventures"
