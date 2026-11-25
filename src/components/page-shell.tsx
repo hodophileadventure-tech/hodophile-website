@@ -32,14 +32,14 @@ const socialLinks = [
     label: "Instagram",
     href: "https://www.instagram.com/hodophile.adventure?igsh=MTk5aHN6aW53b2R5Mw==",
     icon: (
-      <span className="inline-flex h-8 w-8 items-center justify-center">
+      <span className="inline-flex h-8 w-8 items-center justify-center overflow-visible">
         <Image
           src="/images/footer/instagram-logo.png?v=20261125"
           alt=""
           width={32}
           height={32}
           aria-hidden
-          className="h-8 w-8 object-contain"
+          className="h-8 w-8 scale-[1.18] object-contain"
         />
       </span>
     ),
