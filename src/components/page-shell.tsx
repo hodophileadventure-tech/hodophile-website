@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -162,19 +162,57 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
 
             <div>
               <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-10">
-                <nav aria-label="Footer quick links">
-                  <h3 className="premium-footer-heading">Quick links</h3>
-                  <ul className="premium-footer-links mt-4">
-                    <li><Link href="/">Home</Link></li>
-                    <li><Link href="/destinations">Destinations</Link></li>
-                    <li><Link href="/tours">Tour packages</Link></li>
-                    <li><Link href="/make-my-trip">Make my trip</Link></li>
-                    <li><Link href="/about-us">About us</Link></li>
-                    <li><Link href="/blogs">Travel journal</Link></li>
-                    <li><Link href="/contact-us">Contact us</Link></li>
-                    <li><Link href="/terms-and-conditions">Terms &amp; conditions</Link></li>
-                  </ul>
-                </nav>
+                <div>
+                  <nav aria-label="Footer quick links">
+                    <h3 className="premium-footer-heading">Quick links</h3>
+                    <ul className="premium-footer-links mt-4">
+                      <li><Link href="/">Home</Link></li>
+                      <li><Link href="/destinations">Destinations</Link></li>
+                      <li><Link href="/tours">Tour packages</Link></li>
+                      <li><Link href="/make-my-trip">Make my trip</Link></li>
+                      <li><Link href="/about-us">About us</Link></li>
+                      <li><Link href="/blogs">Travel journal</Link></li>
+                      <li><Link href="/contact-us">Contact us</Link></li>
+                      <li><Link href="/terms-and-conditions">Terms &amp; conditions</Link></li>
+                    </ul>
+                  </nav>
+
+                  <div className="mt-8">
+                    <h3 className="premium-footer-heading">Accreditations &amp; license</h3>
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
+                        <Image
+                          src="/images/footer/govt-pakistan.webp"
+                          alt="Government of Pakistan"
+                          width={56}
+                          height={56}
+                          className="h-12 w-12 object-contain"
+                        />
+                        <div>
+                          <p className="text-xs font-medium text-black">Govt. of Pakistan</p>
+                          <p className="text-sm font-semibold text-black">Tourism License No. 5436</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Image
+                          src="/images/footer/taap-logo.webp"
+                          alt="TAAP â€” Travel Agents Association of Pakistan"
+                          width={64}
+                          height={64}
+                          className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
+                        />
+                        <Image
+                          src="/images/footer/affiliation-pato.webp"
+                          alt="PATO â€” Pakistan Association of Tour Operators"
+                          width={64}
+                          height={64}
+                          className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
+                        />
+                      </div>
+                    </div>
+                    <p className="mt-2 text-sm text-black">TAAP &amp; PATO affiliated, licensed tour operator in Pakistan.</p>
+                  </div>
+                </div>
 
                 <div>
                   <h3 className="premium-footer-heading">Gallery</h3>
@@ -222,47 +260,12 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 </div>
               </div>
 
-              <div className="mt-6">
-                <h3 className="premium-footer-heading text-center">Accreditations & license</h3>
-                <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
-                  <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-[#fffdf7] px-3 py-2">
-                    <Image
-                      src="/images/footer/govt-pakistan.webp"
-                      alt="Government of Pakistan"
-                      width={56}
-                      height={56}
-                      className="h-12 w-12 object-contain"
-                    />
-                    <div>
-                      <p className="text-xs font-medium text-black">Govt. of Pakistan</p>
-                      <p className="text-sm font-semibold text-black">Tourism License No. 5436</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src="/images/footer/taap-logo.webp"
-                      alt="TAAP — Travel Agents Association of Pakistan"
-                      width={64}
-                      height={64}
-                      className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
-                    />
-                    <Image
-                      src="/images/footer/affiliation-pato.webp"
-                      alt="PATO — Pakistan Association of Tour Operators"
-                      width={64}
-                      height={64}
-                      className="h-14 w-14 rounded-lg border border-black/10 bg-white object-contain p-1"
-                    />
-                  </div>
-                </div>
-                <p className="mt-2 text-center text-sm text-black">TAAP &amp; PATO affiliated, licensed tour operator in Pakistan.</p>
-              </div>
             </div>
           </div>
 
           <div className="flex flex-col gap-3 border-t border-black/10 py-6 text-sm text-black sm:flex-row sm:items-center sm:justify-between">
-            <p>© 2026 Hodophile Adventures. All rights reserved.</p>
-            <p>DTS License No. 5436 · TAAP &amp; PATO affiliated</p>
+            <p>Â© 2026 Hodophile Adventures. All rights reserved.</p>
+            <p>DTS License No. 5436 Â· TAAP &amp; PATO affiliated</p>
           </div>
         </div>
       </footer>
