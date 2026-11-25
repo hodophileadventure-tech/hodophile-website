@@ -297,16 +297,17 @@ const trekkingTours: AdventureTour[] = [
     ],
   },
   {
-    title: "Bayes Water Channel Trek (Death Trek), Budalas",
+    title: "Death Trek Thagus",
     summary:
-      "A day trek from Karimabad via Nagar and Chalt to Budalas, following sections of the Bayas Daas irrigation channel across exposed mountain terrain.",
+      "A dramatic exposed mountain route to the Sarfalang/Death Trek in Thagas Valley, combining Skardu acclimatization, Khaplu heritage, and a guided trek along the Sarfa Lam.",
     duration: "Day trip",
     image: "/images/adventure/bayes-water-channel.png",
     grade: "Exposed mountain route",
     itinerary: [
-      { day: "Morning", plan: "Travel from Karimabad through Aliabad and Nagar to Chalt, then take the local mountain route to Budalas and meet a local guide." },
-      { day: "Daytime", plan: "Hike beside sections of the Bayas Daas irrigation channel. The supplied route description warns of rough terrain, exposed cliff tunnels, and narrow sections; follow local guidance and exercise caution." },
-      { day: "Afternoon", plan: "Rest at a suitable viewpoint, return to Budalas by the same route, then drive through Chalt, Nagar, and Aliabad to Karimabad." },
+      { day: "Day 1", plan: "Arrive in Skardu, acclimatize, and explore local markets." },
+      { day: "Day 2", plan: "Drive to Khaplu (2–3 hours), visit the historic Khaplu Fort, and rest." },
+      { day: "Day 3", plan: "Drive to Thagas Valley, begin trek along the Sarfa Lam (1 to 3 hours approx)." },
+      { day: "Day 4", plan: "Return to Khaplu or Skardu." },
     ],
   },
 ];

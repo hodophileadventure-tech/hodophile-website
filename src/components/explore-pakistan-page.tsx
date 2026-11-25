@@ -8,7 +8,7 @@ const destinationTiles = [
   {
     name: "Hunza",
     description: "Towering peaks, apricot valleys, and storied mountain roads.",
-    image: "/images/explore-cards/hunza.png",
+    image: "/images/explore-cards/hunza-unsplash.jpg",
     href: "/destinations/hunza",
     span: "md:col-span-7",
     height: "min-h-[26rem]",
@@ -17,7 +17,7 @@ const destinationTiles = [
   {
     name: "Skardu",
     description: "Lakes, forts, and dramatic glacial scenery in Baltistan.",
-    image: "/images/package-cards/hero-images__obaid-awan-unsplash.jpg.webp",
+    image: "/images/explore-cards/skardu-unsplash.jpg",
     href: "/destinations/skardu",
     span: "md:col-span-5",
     height: "min-h-[22rem]",
@@ -26,7 +26,7 @@ const destinationTiles = [
   {
     name: "Fairy Meadows",
     description: "Remote alpine meadows framed by iconic mountain views.",
-    image: "/images/explore-cards/fairy-meadows.png",
+    image: "/images/explore-cards/fairy-meadows-unsplash.jpg",
     href: "/destinations/fairy-meadows",
     span: "md:col-span-5",
     height: "min-h-[20rem]",
@@ -370,7 +370,7 @@ export function ExplorePakistanPageContent() {
               >
                 <div className="absolute inset-0">
                   <Image
-                    src={tile.name === "Hunza" ? "/images/package-cards/hero-images__kamran-ch-unsplash.webp" : tile.image}
+                    src={tile.image}
                     alt={`${tile.name} in Pakistan`}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
