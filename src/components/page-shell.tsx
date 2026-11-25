@@ -120,7 +120,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                   width={480}
                   height={136}
                   priority
-                  className="h-32 w-auto sm:h-40 lg:h-48"
+                  className="h-40 w-auto sm:h-48 lg:h-56"
                 />
               </Link>
               <p className="premium-footer-copy mt-5 max-w-sm">
