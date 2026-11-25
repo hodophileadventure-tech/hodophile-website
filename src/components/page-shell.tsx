@@ -113,23 +113,25 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
         <div className="site-container-wide mx-auto px-5 sm:px-8 lg:px-10 xl:px-14">
           <div className="grid items-start gap-8 py-10 lg:grid-cols-[1.2fr_1.8fr] lg:gap-12 lg:py-14">
             <div>
-              <Link href="/" className="inline-flex rounded-xl border-2 border-[#FCC000] p-3" aria-label="Hodophile Adventures home">
-                <Image
-                  src="/images/package-cards/logo.webp"
-                  alt="Hodophile Adventures"
-                  width={480}
-                  height={136}
-                  priority
-                  className="h-48 w-auto sm:h-56 lg:h-72"
-                />
-              </Link>
-              <p className="premium-footer-copy mt-5 max-w-sm">
+              <div className="flex justify-center">
+                <Link href="/" className="inline-flex" aria-label="Hodophile Adventures home">
+                  <Image
+                    src="/images/package-cards/logo.webp"
+                    alt="Hodophile Adventures"
+                    width={480}
+                    height={136}
+                    priority
+                    className="h-20 w-auto sm:h-24 lg:h-28"
+                  />
+                </Link>
+              </div>
+              <p className="premium-footer-copy mt-4 max-w-sm">
                 Hodophile Adventures plans private, family, honeymoon, and guided journeys across Pakistan with clear itineraries, trusted transport, and local support.
               </p>
 
-              <div className="mt-6">
+              <div className="mt-5">
                 <h3 className="premium-footer-heading">Follow us</h3>
-                <ul className="mt-4 flex flex-wrap items-center gap-4">
+                <ul className="mt-3 flex flex-wrap items-center gap-4">
                   {socialLinks.map((social) => (
                     <li key={social.label}>
                       <a
@@ -147,7 +149,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
                 </ul>
               </div>
 
-              <div className="mt-6 grid gap-6 sm:grid-cols-2 sm:gap-8">
+              <div className="mt-5 grid gap-6 sm:grid-cols-2 sm:gap-8">
                 <div>
                   <h3 className="premium-footer-heading">Contact & updates</h3>
                   <div className="premium-footer-contact mt-3">
