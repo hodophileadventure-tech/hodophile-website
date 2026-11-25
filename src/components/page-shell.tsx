@@ -161,7 +161,7 @@ export function PageShell({ children, wide = false, noTopPadding = false, mainCl
             </div>
 
             <div>
-              <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-10">
+              <div className="grid gap-8">
                 <nav aria-label="Footer quick links">
                   <h3 className="premium-footer-heading">Quick links</h3>
                   <ul className="premium-footer-links mt-4">
