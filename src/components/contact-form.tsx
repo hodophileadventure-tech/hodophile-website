@@ -3,12 +3,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-export function ContactForm() {
+type ContactFormProps = {
+  initialMessage?: string;
+};
+
+export function ContactForm({ initialMessage = "" }: ContactFormProps) {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
-    message: "",
+    message: initialMessage,
   });
 
   const [loading, setLoading] = useState(false);
@@ -178,7 +182,7 @@ export function ContactForm() {
             </svg>
             <div>
               <p className="font-semibold">Success!</p>
-              <p className="text-xs mt-1">Thank you! Your inquiry has been received. We'll contact you within 24 hours.</p>
+              <p className="text-xs mt-1">Thank you! Your inquiry has been received. We&apos;ll contact you within 24 hours.</p>
             </div>
           </div>
         )}

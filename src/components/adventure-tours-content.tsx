@@ -1,5 +1,6 @@
 import { JourneyCard } from "@/components/journey-card";
 import Image from "next/image";
+import Link from "next/link";
 
 type AdventureItineraryDay = {
   day: string;
@@ -10,6 +11,7 @@ type AdventureTour = {
   title: string;
   summary: string;
   duration: string;
+  price: string;
   image?: string;
   altitude?: string;
   grade?: string;
@@ -22,6 +24,7 @@ const summitExpeditions: AdventureTour[] = [
     summary:
       "A high-altitude expedition in Nagar Valley, approaching Rakaposhi via Minapin and Tagafari, with a prolonged acclimatisation and climbing period.",
     duration: "40 days",
+    price: "$3,800",
     image: "/images/adventure/rakaposhi-expedition.jpg",
     altitude: "7,788m",
     grade: "Strenuous",
@@ -44,6 +47,7 @@ const summitExpeditions: AdventureTour[] = [
     summary:
       "A Karakoram climbing expedition to Broad Peak (8,051m), reached via Skardu, Askoli, the Baltoro Glacier, and Concordia.",
     duration: "40–45 days (itinerary: 45 days)",
+    price: "$5,500",
     image: "/images/adventure/broad-peak-expedition.jpg",
     altitude: "8,051m",
     grade: "High-altitude mountaineering",
@@ -78,6 +82,7 @@ const summitExpeditions: AdventureTour[] = [
     summary:
       "A Karakoram climbing journey through Skardu and Hushe Valley, followed by a trek to Laila Peak Base Camp and a climbing period.",
     duration: "25–35 days (itinerary: 23 days)",
+    price: "$2,290",
     image: "/images/adventure/laila-peak-expedition.png",
     altitude: "6,096m",
     grade: "Climbing and mountaineering",
@@ -102,6 +107,7 @@ const summitExpeditions: AdventureTour[] = [
     summary:
       "An expedition to Gasherbrum I (8,080m), crossing the Baltoro Glacier to Concordia and onward to base camp in the central Karakoram.",
     duration: "62 days stated (itinerary: 45 days)",
+    price: "$5,500",
     image: "/images/adventure/gasherbrum-i-expedition.png",
     altitude: "8,080m",
     grade: "Challenging technical climb",
@@ -135,6 +141,7 @@ const summitExpeditions: AdventureTour[] = [
     summary:
       "A Karakoram expedition to Gasherbrum II (8,035m), following the Baltoro Glacier route from Askoli through Concordia to base camp.",
     duration: "45–50 days (itinerary: 45 days)",
+    price: "$5,500",
     image: "/images/adventure/gasherbrum-ii-expedition.png",
     altitude: "8,035m",
     grade: "High-altitude mountaineering",
@@ -170,6 +177,7 @@ const trekkingTours: AdventureTour[] = [
     summary:
       "A 12-day Karakoram trek from Skardu through Khaplu and Kanday to Nangma Valley, Mingulu Broq, and Amin Brakk Base Camp.",
     duration: "12 days",
+    price: "$2,000",
     image: "/images/adventure/nangma-valley.png",
     altitude: "3,170m at Kanday",
     grade: "Easy",
@@ -193,6 +201,7 @@ const trekkingTours: AdventureTour[] = [
     summary:
       "A 20-day Karakoram trek from Islamabad and Skardu across the Baltoro Glacier to Concordia, Broad Peak Base Camp, and K2 Base Camp.",
     duration: "20 days",
+    price: "$1,190",
     image: "/images/adventure/k2-base-camp-trek.jpg",
     altitude: "5,150m",
     grade: "Challenging",
@@ -224,6 +233,7 @@ const trekkingTours: AdventureTour[] = [
     summary:
       "A nine-day trek from Islamabad via the Karakoram Highway to Fairy Meadows and the Nanga Parbat Base Camp, returning through Chilas.",
     duration: "9 days",
+    price: "$1,690",
     image: "/images/adventure/nanga-parbat-base-camp.jpg",
     altitude: "3,500m at base camp",
     grade: "Trekking",
@@ -240,27 +250,11 @@ const trekkingTours: AdventureTour[] = [
     ],
   },
   {
-    title: "Marsur Rock Trek, Skardu",
-    summary:
-      "A day trek from Skardu to the Marsur Rock viewpoint above Hussainabad, with views over the Indus River, Skardu Valley, and the Cold Desert.",
-    duration: "Day trip",
-    image: "/images/adventure/marsur-rock.png",
-    grade: "Day hike",
-    itinerary: [
-      { day: "Early morning", plan: "Depart from Skardu for Hussainabad." },
-      { day: "Morning", plan: "Take a jeep or 4x4 from Hussainabad toward the trailhead; the supplied estimate is about 20–30 minutes each way." },
-      { day: "Late morning", plan: "Cross the bridge by the spring and follow the stream. After about an hour, take the steeper second trail at the fork." },
-      { day: "Midday", plan: "Continue uphill over rocky terrain, keeping a steady pace and taking care with footing." },
-      { day: "Early afternoon", plan: "Reach Marsur Rock. The supplied estimate is about 2–3 hours uphill; allow time for the viewpoint and lunch." },
-      { day: "Afternoon", plan: "Retrace the trail to the jeep pickup point; the supplied return estimate is about 1–1.5 hours." },
-      { day: "Evening", plan: "Return by jeep to Hussainabad and continue to Skardu." },
-    ],
-  },
-  {
     title: "Fairy Meadows Trek",
     summary:
       "A five-day journey from Islamabad to Fairy Meadows, with a 4x4 jeep ride to Tattu Village and a hike to Beyal Camp beneath Nanga Parbat.",
     duration: "5 days",
+    price: "$1,000",
     image: "/images/adventure/fairy-meadows.png",
     grade: "Trekking",
     itinerary: [
@@ -276,6 +270,7 @@ const trekkingTours: AdventureTour[] = [
     summary:
       "A day trip from Karimabad through Nagar and Minapin to Miacher, followed by a local 4x4 ride to alpine meadows with views of Rakaposhi and Diran Peak.",
     duration: "Day trip",
+    price: "$400",
     image: "/images/adventure/miachar-kho-meadows.png?v=20261125",
     grade: "Day outing",
     itinerary: [
@@ -289,6 +284,7 @@ const trekkingTours: AdventureTour[] = [
     summary:
       "A two-day trek from Skardu to Kharfaq Valley, climbing to the alpine lake for an overnight camp before returning through Ghanche District.",
     duration: "2 days",
+    price: "$400",
     image: "/images/adventure/kharfaq-lake.png",
     grade: "Trekking",
     itinerary: [
@@ -301,6 +297,7 @@ const trekkingTours: AdventureTour[] = [
     summary:
       "A dramatic exposed mountain route to the Sarfalang/Death Trek in Thagas Valley, combining Skardu acclimatization, Khaplu heritage, and a guided trek along the Sarfa Lam.",
     duration: "Day trip",
+    price: "$400",
     image: "/images/adventure/bayes-water-channel.png",
     grade: "Exposed mountain route",
     itinerary: [
@@ -321,7 +318,29 @@ const dedicatedTrekkingTours = trekkingTours.filter(
   (tour) => !beyondSummitBaseCampTours.includes(tour),
 );
 
+function buildBookingMessage(tour: AdventureTour) {
+  const details = [
+    `- Duration: ${tour.duration}`,
+    `- Price: ${tour.price}`,
+    tour.altitude ? `- Altitude: ${tour.altitude}` : null,
+    tour.grade ? `- Grade: ${tour.grade}` : null,
+    `- Summary: ${tour.summary}`,
+  ].filter(Boolean);
+
+  return [
+    `Hi, I would like to book the "${tour.title}" adventure tour.`,
+    "",
+    "Package details:",
+    ...details,
+    "",
+    "Please share availability, pricing, and next steps.",
+  ].join("\n");
+}
+
 function TourCard({ tour }: { tour: AdventureTour }) {
+  const bookingMessage = buildBookingMessage(tour);
+  const bookingHref = `/contact-us?message=${encodeURIComponent(bookingMessage)}`;
+
   return (
     <JourneyCard
       image={tour.image}
@@ -334,7 +353,8 @@ function TourCard({ tour }: { tour: AdventureTour }) {
       counter={tour.altitude}
       bodyClassName="p-5 sm:p-6"
     >
-      <p className="line-clamp-2 flex-1 text-sm leading-6 text-stone-600">{tour.summary}</p>
+      <p className="text-lg font-semibold text-stone-950">{tour.price} <span className="text-sm font-medium text-stone-500">per person</span></p>
+      <p className="mt-2 line-clamp-2 flex-1 text-sm leading-6 text-stone-600">{tour.summary}</p>
       <details className="group mt-5 border-t border-stone-300 pt-4">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-stone-900 [&::-webkit-details-marker]:hidden">
           View itinerary
@@ -351,6 +371,12 @@ function TourCard({ tour }: { tour: AdventureTour }) {
           ))}
         </ol>
       </details>
+      <Link
+        href={bookingHref}
+        className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-[#FCC000] px-5 py-3 text-sm font-semibold text-black transition hover:bg-[#e6b100] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#FCC000]"
+      >
+        Book this tour
+      </Link>
     </JourneyCard>
   );
 }
