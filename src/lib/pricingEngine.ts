@@ -371,6 +371,7 @@ export function calculateQuotation(
       const hotelNames: string[] = [];
 
       for (const [city, nights] of Object.entries(input.multiCityNights)) {
+        if (nights <= 0) continue;
         const cityHotelInfo = input.multiCityHotels[city];
         if (!cityHotelInfo) continue;
 
@@ -394,7 +395,10 @@ export function calculateQuotation(
 
         const cityCost = roomPrice * input.numberOfRooms * nights;
         totalHotelCost += cityCost;
-        hotelNames.push(`${hotel.name} (${city})`);
+        const hotelStayLabel = hotel.city === city || city.startsWith(`${hotel.city} (`)
+          ? city
+          : `${hotel.city} stay for ${city}`;
+        hotelNames.push(`${hotel.name} (${hotelStayLabel})`);
 
         console.debug(`City ${city}: ${selectedRoom.name} @ ${roomPrice} × ${input.numberOfRooms} rooms × ${nights} nights = ${cityCost}`);
       }

@@ -30,7 +30,8 @@ export interface Hotel {
     | "Murree"
     | "Naran"
     | "Chilas"
-    | "Besham";
+    | "Besham"
+    | "Balakot";
   image?: string; // Hotel main photo URL
   rooms: Room[];
   seasons?: {
@@ -1010,6 +1011,46 @@ export const hotels: Hotel[] = [
     name: "Mount Heaven",
     city: "Murree",
     rooms: [{ name: "Standard Room", price: 5000 }],
+  },
+  {
+    id: "royal-shangrila-balakot",
+    name: "Royal Shangrila",
+    city: "Balakot",
+    rooms: [{ name: "Standard", price: 5000 }],
+  },
+  {
+    id: "pine-track-balakot",
+    name: "Pine Track",
+    city: "Balakot",
+    rooms: [
+      { name: "Standard", price: 5000 },
+      { name: "Deluxe", price: 12000 },
+      { name: "Executive", price: 25000 },
+    ],
+  },
+  {
+    id: "pine-park-by-agha-balakot",
+    name: "Pine Park by Agha",
+    city: "Balakot",
+    rooms: [{ name: "Standard", price: 5000 }],
+  },
+  {
+    id: "royal-park-balakot",
+    name: "Royal Park",
+    city: "Balakot",
+    rooms: [{ name: "Standard", price: 5000 }],
+  },
+  {
+    id: "dcozy-resort-balakot",
+    name: "Dcozy Resort",
+    city: "Balakot",
+    rooms: [{ name: "Deluxe", price: 12000 }],
+  },
+  {
+    id: "white-palace-balakot",
+    name: "White Palace",
+    city: "Balakot",
+    rooms: [{ name: "Deluxe", price: 12000 }],
   },
 ];
 

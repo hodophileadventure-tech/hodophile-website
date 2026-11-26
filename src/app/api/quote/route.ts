@@ -294,10 +294,14 @@ export async function POST(request: NextRequest) {
       const cityOrder = isCustomItinerary ? body.customCities || [] : Object.keys(body.multiCityHotels);
       const hotelNames = cityOrder
         .map((city) => {
+          if ((body.multiCityNights?.[city] ?? 0) <= 0) return null;
           const info = body.multiCityHotels?.[city];
           if (!info) return null;
           const hotel = getHotelById(info.hotelId);
-          return `${city}: ${hotel?.name || info.hotelId}`;
+          const stayLabel = hotel && hotel.city !== city && !city.startsWith(`${hotel.city} (`)
+            ? `${hotel.city} stay for ${city}`
+            : city;
+          return `${stayLabel}: ${hotel?.name || info.hotelId}`;
         })
         .filter(Boolean)
         .join(" | ");
@@ -330,7 +334,9 @@ export async function POST(request: NextRequest) {
       route: isCustomItinerary ? body.customRouteLabel || body.customCities?.join(" + ") || "Custom Package" : route?.name || body.routeId,
       destination: isCustomItinerary ? body.customRouteLabel || body.customCities?.join(" + ") || "Custom Package" : route?.name?.split("&")[0]?.trim() || "",
       destinationCity: isCustomItinerary ? "Custom" : route?.city || "",
-      routeDurationDays: isCustomItinerary ? Object.values(body.multiCityNights || {}).reduce((sum, nights) => sum + nights, 0) : route?.duration || 0,
+      routeDurationDays: isCustomItinerary
+        ? Math.max(1, Object.values(body.multiCityNights || {}).reduce((sum, nights) => sum + nights, 0))
+        : route?.duration || 0,
       routeDirection: isCustomItinerary ? "Custom itinerary" : route?.direction || "",
       routeItinerary,
       vehicle: body.vehicleName,

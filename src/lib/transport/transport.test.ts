@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import { calculateQuotation, calculateTransportCost } from "@/lib/pricingEngine";
 import { calculateJeepCost, getPackageJeepRideOptions } from "@/lib/data/jeeps";
+import { getHotelsByCity } from "@/lib/data/hotels";
 
 import { isTransportAdminAuthorized } from "./admin-auth";
 import { calculateTransportExpense } from "./calculations";
@@ -462,6 +463,34 @@ test("uses a supplied road distance once in a custom quotation", () => {
   assert.equal(quote.transportBreakdown?.rentalCost, 6_000);
   assert.equal(quote.transportBreakdown?.tollTax, 8_000);
   assert.equal(quote.transportCost, 31_600);
+});
+
+test("charges transport but no accommodation for a zero-night destination", () => {
+  const shogranHotel = getHotelsByCity("Shogran")[0];
+  assert.ok(shogranHotel);
+  const room = shogranHotel.rooms[0];
+  assert.ok(room);
+
+  const quote = calculateQuotation({
+    routeId: "custom-itinerary",
+    customCities: ["Shogran"],
+    routeDestinations: ["Shogran"],
+    startingPoint: "Islamabad",
+    vehicleName: "Toyota Corolla",
+    numberOfRooms: 1,
+    adults: 2,
+    kids: 0,
+    tripDate: "2026-06-15",
+    multiCityHotels: {
+      Shogran: { hotelId: shogranHotel.id, roomId: room.name },
+    },
+    multiCityNights: { Shogran: 0 },
+  }, { distanceKm: 100 });
+
+  assert.ok(quote);
+  assert.equal(quote.hotelCost, 0);
+  assert.equal(quote.details.hotel, "");
+  assert.ok(quote.transportCost > 0);
 });
 
 test("offers the requested per-jeep rates and selects the By Air Astore rate", () => {

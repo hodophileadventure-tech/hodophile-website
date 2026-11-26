@@ -26,7 +26,14 @@ import {
 } from "lucide-react";
 import { calculateQuotation, type QuotationBreakdown, type QuotationInput } from "@/lib/pricingEngine";
 import { formatPKR } from "@/lib/currency";
-import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
+import { getHotelById, getHotelsByCity, type Hotel } from "@/lib/data/hotels";
+import {
+  getCitiesWithOvernightStays,
+  getCustomCityHotelLocation,
+  getHotelStayLabel,
+  getMinimumCustomCityNights,
+  type ShogranStayLocation,
+} from "@/lib/data/custom-city-stays";
 import { routes, type PackagePricing, type Route, type RouteItineraryDay } from "@/lib/data/routes";
 import {
   excludeConflictingRoadStopovers,
@@ -129,18 +136,6 @@ const phoneRegex13Digit = /^\+92\d{10}$/;
 const phoneRegex11Digit = /^03\d{9}$/;
 const LABEL_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
 const VALIDATION_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
-const CITY_MINIMUM_DAYS: Record<string, number> = {
-  Skardu: 6,
-  Hunza: 7,
-  Naran: 3,
-  Kashmir: 3,
-  Swat: 3,
-  "Malam Jabba": 3,
-  "Fairy Meadows": 5,
-  Astore: 5,
-  Murree: 2,
-  "Nathia Gali": 2,
-};
 const destinationCardDetails: Record<string, { image?: string; description: string }> = {
   Hunza: { image: "/images/package-cards/images__destinations__hunza-custom.webp", description: "Mountain valleys" },
   Skardu: { image: "/images/package-cards/destination-skardu-mountains-planner.webp", description: "Lakes and highlands" },
@@ -155,10 +150,6 @@ const destinationCardDetails: Record<string, { image?: string; description: stri
   Murree: { image: "/images/package-cards/images__honeymoon__murree-tour.webp", description: "Hill-station escapes" },
 };
 
-function getHotelStayLabel(city: string) {
-  return city === "Malam Jabba" ? "Swat stay for Malam Jabba" : city;
-}
-
 const plannerInspirations = [
   { city: "Hunza", image: "/images/package-cards/hero-images__hunza.avif", description: "Terraced valleys beneath towering peaks." },
   { city: "Skardu", image: "/images/package-cards/hero-images__skurdu.webp", description: "Glacial lakes, wide skies, and mountain roads." },
@@ -166,34 +157,6 @@ const plannerInspirations = [
   { city: "Kashmir", image: "/images/package-cards/hero-images__kashmir.webp", description: "Forest trails and green valley hideaways." },
   { city: "Swat", image: "/images/package-cards/hero-images__Sawat.webp", description: "A slower escape among cedar-covered hills." },
 ] as const;
-
-function getCityMinimumDays(city: string, startingPointValue: string) {
-  const baseDays = CITY_MINIMUM_DAYS[city] ?? 2;
-  const extraDays = startingPointValue && startingPointValue !== "Islamabad" ? 2 : 0;
-  return baseDays + extraDays;
-}
-
-function getCustomChilasMinimumDays(city: string, startingPointValue: string) {
-  if (city === "Islamabad") {
-    return 2;
-  }
-
-  if (
-    city === "Naran (Outbound)" ||
-    city === "Naran (Return)" ||
-    city === "Chilas (Arrival)" ||
-    city === "Chilas (Return)" ||
-    city === "Besham (Return)"
-  ) {
-    return 1;
-  }
-
-  if (city === "Hunza") {
-    return 5;
-  }
-
-  return getCityMinimumDays(city, startingPointValue);
-}
 
 function getCustomRouteValidationRoute(startingPointValue: string, cities: string[]) {
   const start = startingPointValue.trim() || "Islamabad";
@@ -255,6 +218,7 @@ export function MakeMyTripForm() {
   const [selectedCities, setSelectedCities] = useState<string[]>([]); // For individual city selection
   const [selectedPackageJeepRideIds, setSelectedPackageJeepRideIds] = useState<string[]>([]);
   const [customCityNights, setCustomCityNights] = useState<Record<string, number>>({});
+  const [shogranStayLocation, setShogranStayLocation] = useState<ShogranStayLocation | null>(null);
   const [hotelCategory, setHotelCategory] = useState("standard"); // standard, deluxe, executive
   const [hotelId, setHotelId] = useState("");
   const [roomId, setRoomId] = useState("");
@@ -369,6 +333,7 @@ export function MakeMyTripForm() {
 
       // Use package cities (e.g., ["Skardu"] or ["Hunza","Skardu"]).
       setSelectedCities(packageData.cities);
+      setShogranStayLocation(null);
 
       // Set total days based on package and distribute nights across cities.
       const packageDays = packageKey === "skardu-deosai" ? 5 : packageKey === "hunza-skardu" ? 8 : matchedRoute.duration;
@@ -416,6 +381,7 @@ export function MakeMyTripForm() {
       setRouteId(matchedRoute.id);
       // For package routes we want the package flow (routeId present, no individual cities selected)
       setSelectedCities([]);
+      setShogranStayLocation(null);
       setHotelCategory("standard");
       setVehicleName("");
       setMultiCityHotels({});
@@ -442,6 +408,7 @@ export function MakeMyTripForm() {
         // For single-city routes, use the route's city
         // Use package flow: clear selectedCities so hotel selection uses route-based options
         setSelectedCities([]);
+        setShogranStayLocation(null);
         setCustomCityNights({}); // Clear custom nights - they'll be set by hotel selection
         
         // Clear hotel selections - they'll be auto-populated when route loads
@@ -454,6 +421,7 @@ export function MakeMyTripForm() {
       setPreplannedRoute(null);
       setRouteId("");
       setSelectedCities([]);
+      setShogranStayLocation(null);
       setCustomCityNights({});
     }
   }, [selectedPreplannedTrip]);
@@ -470,6 +438,7 @@ export function MakeMyTripForm() {
 
     if (selectedCity) {
       setSelectedCities([selectedCity]);
+      setShogranStayLocation(null);
       setPlannerSourceMessage(`${inspiration} selected as your route inspiration. Confirm your dates and trip details below.`);
       return;
     }
@@ -671,12 +640,14 @@ export function MakeMyTripForm() {
     cities: string[],
   ) => {
     const stopoverCities = getCustomRoadStopoverCities(selectedCities, travelMode as "road" | "air", selectedTripMonth);
+    const nextNights = { ...(nights || {}) };
+    const nextHotels = Object.fromEntries(
+      Object.entries(hotels).filter(([city]) => (nextNights[city] ?? 0) > 0),
+    );
     if (stopoverCities.length === 0) {
-      return { multiCityHotels: hotels, multiCityNights: nights, customCities: cities };
+      return { multiCityHotels: nextHotels, multiCityNights: nextNights, customCities: cities };
     }
 
-    const nextHotels = { ...hotels };
-    const nextNights = { ...(nights || {}) };
     const nextCities = [...cities];
 
     for (const stopoverCity of stopoverCities) {
@@ -829,7 +800,7 @@ export function MakeMyTripForm() {
     !selectedCities.includes("Islamabad");
   const customCityEffectiveCount = selectedCities.length + (autoAddsIslamabad ? 1 : 0);
   const customSingleCityNightCount = selectedCities.length === 1 && !usesSeasonalRoadStopovers
-    ? Math.max(1, (customCityNights[selectedCities[0]] ?? 0) - (travelMode === "air" ? 0 : 1))
+    ? Math.max(0, customCityNights[selectedCities[0]] ?? getMinimumCustomCityNights(selectedCities[0]))
     : 0;
   const supportsMultipleHotelsInCustomSingleCity = Boolean(
     isCustomCitySelection() &&
@@ -973,6 +944,10 @@ export function MakeMyTripForm() {
 
   const effectiveCustomCityNights = useMemo(() => {
     const next = { ...customCityNights };
+    for (const city of selectedCities) {
+      if (next[city] === undefined) next[city] = getMinimumCustomCityNights(city);
+    }
+
     if (shouldAutoIncludeIslamabad() && !next["Islamabad"]) {
       next["Islamabad"] = 2;
     }
@@ -982,7 +957,14 @@ export function MakeMyTripForm() {
     }
 
     return next;
-  }, [customCityNights, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad, travelMode, seasonalRoadStopoverCities]);
+  }, [customCityNights, selectedCities, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad, travelMode, seasonalRoadStopoverCities]);
+
+  const customHotelStayCities = useMemo(
+    () => getCitiesWithOvernightStays(effectiveSelectedCities, effectiveCustomCityNights),
+    [effectiveSelectedCities, effectiveCustomCityNights],
+  );
+  const getCustomHotelCity = (city: string) =>
+    getCustomCityHotelLocation(city, effectiveSelectedCities, shogranStayLocation ?? undefined);
 
   const effectiveMultiCityHotels = useMemo(() => {
     let next = { ...multiCityHotels };
@@ -1170,10 +1152,11 @@ export function MakeMyTripForm() {
       let hasChanges = false;
       const nextNights = { ...currentNights };
 
-      // Ensure each selected city has at least one night entry by default.
+      // Apply each destination's minimum night requirement.
       for (const city of selectedCities) {
-        if ((nextNights[city] ?? 0) < 1) {
-          nextNights[city] = 1;
+        const minimumNights = getMinimumCustomCityNights(city);
+        if ((nextNights[city] ?? minimumNights) < minimumNights) {
+          nextNights[city] = minimumNights;
           hasChanges = true;
         }
       }
@@ -1221,7 +1204,7 @@ export function MakeMyTripForm() {
     let rem = totalNights % cities.length;
     const nights: Record<string, number> = {};
     for (const city of cities) {
-      nights[city] = base + (rem > 0 ? 1 : 0);
+      nights[city] = Math.max(getMinimumCustomCityNights(city), base + (rem > 0 ? 1 : 0));
       rem = Math.max(0, rem - 1);
     }
 
@@ -1274,6 +1257,7 @@ export function MakeMyTripForm() {
     setSelectedCities((currentCities) => {
       if (currentCities.includes(city)) {
         const updatedCities = currentCities.filter((selectedCity) => selectedCity !== city);
+        if (city === "Shogran") setShogranStayLocation(null);
         setMultiCityHotels((currentHotels) => {
           const nextHotels = { ...currentHotels };
           delete nextHotels[city];
@@ -1301,6 +1285,7 @@ export function MakeMyTripForm() {
 
       const removedStops = currentCities.filter((selectedCity) => !proposed.includes(selectedCity));
       if (removedStops.length > 0) {
+        if (removedStops.includes("Shogran")) setShogranStayLocation(null);
         setMultiCityHotels((currentHotels) => {
           const nextHotels = { ...currentHotels };
           removedStops.forEach((removedCity) => delete nextHotels[removedCity]);
@@ -1323,7 +1308,10 @@ export function MakeMyTripForm() {
 
       setCustomCityNights((currentNights) => ({
         ...currentNights,
-        [city]: Math.max(currentNights[city] ?? 1, 1),
+        [city]: Math.max(
+          currentNights[city] ?? getMinimumCustomCityNights(city),
+          getMinimumCustomCityNights(city),
+        ),
       }));
 
       return proposed;
@@ -1499,12 +1487,11 @@ export function MakeMyTripForm() {
           }
         } else {
           // Custom city selection - treat as multi-city
-          const allHotelsSelected = effectiveSelectedCities.every(
+          const allHotelsSelected = customHotelStayCities.every(
             (city) => effectiveMultiCityHotels[city]?.hotelId && effectiveMultiCityHotels[city]?.roomId
           );
-          const allNightsSelected = effectiveSelectedCities.every((city) => (effectiveCustomCityNights[city] ?? 0) > 0);
 
-          if (allHotelsSelected && allNightsSelected) {
+          if (allHotelsSelected) {
             // Ensure Chilas hotel is added for CHILLAS-related selections
             const {
               multiCityHotels: _augHotels,
@@ -1640,7 +1627,7 @@ export function MakeMyTripForm() {
       }
       customQuoteAbortRef.current?.abort();
     };
-  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, selectedAirDestinations, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode, startingPoint, otherStartingPoint, hideAutoIslamabad, roadRouteResult, selectedPackageJeepAddons]);
+  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, selectedAirDestinations, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, customHotelStayCities, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode, startingPoint, otherStartingPoint, hideAutoIslamabad, roadRouteResult, selectedPackageJeepAddons]);
 
   useEffect(() => {
     if (promoCode && !getPromotionForTour(routeId)) {
@@ -1765,7 +1752,7 @@ export function MakeMyTripForm() {
       let primaryHotelId = hotelId;
       let primaryRoomId = roomId;
       
-      let selectedMultiCityNights;
+      let selectedMultiCityNights: Record<string, number> | undefined;
       let selectedCustomCities: string[] | undefined;
       let selectedSingleCityHotelStays: typeof singleCityHotelStays | undefined;
       if (supportsMultipleHotelsInCustomSingleCity) {
@@ -1821,7 +1808,9 @@ export function MakeMyTripForm() {
       const hotelsForSubmission = augmentedMultiCityHotels ?? effectiveMultiCityHotels;
       const selectedMultiCityHotels = Object.fromEntries(
         Object.entries(hotelsForSubmission).filter(
-          ([city]) => !selectedCustomCities || selectedCustomCities.includes(city),
+          ([city]) =>
+            (!selectedCustomCities || selectedCustomCities.includes(city)) &&
+            (!isCustomCitySelection() || supportsMultipleHotelsInCustomSingleCity || (selectedMultiCityNights?.[city] ?? 0) > 0),
         ),
       );
 
@@ -1871,6 +1860,8 @@ export function MakeMyTripForm() {
       const findHotelName = (id: string, city?: string) => {
         if (!id) return "";
         try {
+          const hotelById = getHotelById(id);
+          if (hotelById) return hotelById.name || id;
           if (city) {
             const hotels = getHotelsByCity(city);
             const found = hotels.find((h) => h.id === id);
@@ -1901,7 +1892,9 @@ export function MakeMyTripForm() {
         for (const city of Object.keys(quotationData.multiCityHotels)) {
           const entry = quotationData.multiCityHotels[city];
           const nights = (selectedMultiCityNights as Record<string, number>)?.[city] ?? (effectiveCustomCityNights[city] ?? 0);
-          parts.push(`${city}: ${findHotelName(entry.hotelId, city)}${nights ? ` (${nights} nights)` : ''}`);
+          const hotel = getHotelById(entry.hotelId);
+          const stayLabel = hotel ? getHotelStayLabel(city, hotel.city) : city;
+          parts.push(`${stayLabel}: ${findHotelName(entry.hotelId, city)}${nights ? ` (${nights} nights)` : ''}`);
         }
 
         hotelsSummary = parts.join(' / ');
@@ -2013,7 +2006,7 @@ export function MakeMyTripForm() {
     if (isCustomCitySelection()) {
       return (
         effectiveSelectedCities.length > 0 &&
-        effectiveSelectedCities.every((city) => effectiveMultiCityHotels[city]?.hotelId && effectiveMultiCityHotels[city]?.roomId)
+        customHotelStayCities.every((city) => effectiveMultiCityHotels[city]?.hotelId && effectiveMultiCityHotels[city]?.roomId)
       );
     }
 
@@ -2040,6 +2033,7 @@ export function MakeMyTripForm() {
     singleCityHotelStays,
     customSingleCityNightCount,
     effectiveSelectedCities,
+    customHotelStayCities,
     effectiveMultiCityHotels,
     isMultiCityTour,
     routeId,
@@ -2219,11 +2213,12 @@ export function MakeMyTripForm() {
   const summaryHotelDetails = (() => {
     const describeStay = (city: string, hotelId: string, roomId: string) => {
       const baseCity = city.includes("(") ? city.split("(")[0].trim() : city;
-      const hotel = getHotelsByCity(baseCity).find((item) => item.id === hotelId)
+      const hotel = getHotelById(hotelId)
+        ?? getHotelsByCity(baseCity).find((item) => item.id === hotelId)
         ?? availableHotels.find((item) => item.id === hotelId);
       if (!hotel) return "";
-      const stayLabel = getHotelStayLabel(city);
-      return `${stayLabel ? `${stayLabel}: ` : ""}${hotel.name}${roomId ? ` · ${roomId}` : ""}`;
+      const stayLabel = getHotelStayLabel(city, hotel.city);
+      return `${stayLabel}: ${hotel.name}${roomId ? ` · ${roomId}` : ""}`;
     };
 
     if (supportsMultipleHotelsInCustomSingleCity || supportsMultipleHotelsInSingleCity) {
@@ -2808,6 +2803,7 @@ export function MakeMyTripForm() {
                       setSelectedHoneymoonTour(null);
                       setSelectedPreplannedTrip("");
                       setSelectedCities([]);
+                      setShogranStayLocation(null);
                     }}
                     className="rounded-full px-3 py-1 text-sm font-semibold text-[#8a4b00] border border-[#8a4b00] bg-white hover:bg-[#fff3db]"
                   >
@@ -2824,7 +2820,7 @@ export function MakeMyTripForm() {
               <p className="mb-3 text-xs text-[#8a6a12]">
                 {travelMode === "air"
                   ? "By Air destinations are limited to Skardu, Hunza, Astore, and Fairy Meadows. Ground travel starts and ends in Skardu."
-                  : "Minimum days are applied automatically. If the starting point is not Islamabad, 2 extra days are added to each selected city."}
+                  : "Minimum night requirements are applied automatically. Destinations with 0 nights are day trips with no hotel cost."}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {sortedCitiesWithHotels.map((city) => {
@@ -2899,52 +2895,65 @@ export function MakeMyTripForm() {
                     </div>
                   )}
                   <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                    {effectiveSelectedCities.map((city) => (
-                      <div key={city} className="flex min-h-16 items-center justify-between gap-3 border border-stone-200 bg-[#fffdf8] px-3 py-2 text-stone-950">
-                        <span className="min-w-0">
-                          <span className="block truncate text-[11px] font-semibold uppercase tracking-wide text-stone-800">{city}</span>
-                          <span className="mt-0.5 block text-[10px] text-stone-500">{effectiveCustomCityNights[city] ?? 1} night{(effectiveCustomCityNights[city] ?? 1) === 1 ? "" : "s"}</span>
-                        </span>
-                        <div className="flex shrink-0 items-center gap-1">
-                          {selectedCities.length > 1 && selectedCities.includes(city) ? (
-                            <span className="mr-1 flex flex-col gap-0.5">
-                              <button
-                                type="button"
-                                aria-label={`Move ${city} earlier in the route`}
-                                disabled={selectedCities.indexOf(city) === 0}
-                                onClick={() => moveSelectedCity(city, -1)}
-                                className="flex h-5 w-6 items-center justify-center rounded border border-stone-300 text-stone-700 hover:border-[#b98d00] disabled:cursor-not-allowed disabled:opacity-40"
-                              >
-                                <ArrowUp className="h-3 w-3" aria-hidden="true" />
-                              </button>
-                              <button
-                                type="button"
-                                aria-label={`Move ${city} later in the route`}
-                                disabled={selectedCities.indexOf(city) === selectedCities.length - 1}
-                                onClick={() => moveSelectedCity(city, 1)}
-                                className="flex h-5 w-6 items-center justify-center rounded border border-stone-300 text-stone-700 hover:border-[#b98d00] disabled:cursor-not-allowed disabled:opacity-40"
-                              >
-                                <ArrowDown className="h-3 w-3" aria-hidden="true" />
-                              </button>
+                    {effectiveSelectedCities.map((city) => {
+                      const minimumNights = getMinimumCustomCityNights(city);
+                      const nights = effectiveCustomCityNights[city] ?? minimumNights;
+
+                      return (
+                        <div key={city} className="flex min-h-16 items-center justify-between gap-3 border border-stone-200 bg-[#fffdf8] px-3 py-2 text-stone-950">
+                          <span className="min-w-0">
+                            <span className="block truncate text-[11px] font-semibold uppercase tracking-wide text-stone-800">{city}</span>
+                            <span className="mt-0.5 block text-[10px] text-stone-500">
+                              {nights === 0 ? "Day trip · transport only" : `${nights} night${nights === 1 ? "" : "s"}`}
                             </span>
-                          ) : null}
-                          <button
-                            type="button"
-                            aria-label={`Remove one night in ${city}`}
-                            disabled={(effectiveCustomCityNights[city] ?? 1) <= 1}
-                            onClick={() => setCustomCityNights((current) => ({ ...current, [city]: Math.max(1, (current[city] ?? 1) - 1) }))}
-                            className="h-9 w-9 border border-stone-300 text-lg leading-none text-stone-800 transition hover:border-[#b98d00] disabled:cursor-not-allowed disabled:text-stone-400"
-                          >-</button>
-                          <span aria-live="polite" className="w-6 text-center text-sm font-semibold tabular-nums">{effectiveCustomCityNights[city] ?? 1}</span>
-                          <button
-                            type="button"
-                            aria-label={`Add one night in ${city}`}
-                            onClick={() => setCustomCityNights((current) => ({ ...current, [city]: (current[city] ?? 1) + 1 }))}
-                            className="h-9 w-9 border border-stone-300 text-lg leading-none text-stone-800 transition hover:border-[#b98d00]"
-                          >+</button>
+                          </span>
+                          <div className="flex shrink-0 items-center gap-1">
+                            {selectedCities.length > 1 && selectedCities.includes(city) ? (
+                              <span className="mr-1 flex flex-col gap-0.5">
+                                <button
+                                  type="button"
+                                  aria-label={`Move ${city} earlier in the route`}
+                                  disabled={selectedCities.indexOf(city) === 0}
+                                  onClick={() => moveSelectedCity(city, -1)}
+                                  className="flex h-5 w-6 items-center justify-center rounded border border-stone-300 text-stone-700 hover:border-[#b98d00] disabled:cursor-not-allowed disabled:opacity-40"
+                                >
+                                  <ArrowUp className="h-3 w-3" aria-hidden="true" />
+                                </button>
+                                <button
+                                  type="button"
+                                  aria-label={`Move ${city} later in the route`}
+                                  disabled={selectedCities.indexOf(city) === selectedCities.length - 1}
+                                  onClick={() => moveSelectedCity(city, 1)}
+                                  className="flex h-5 w-6 items-center justify-center rounded border border-stone-300 text-stone-700 hover:border-[#b98d00] disabled:cursor-not-allowed disabled:opacity-40"
+                                >
+                                  <ArrowDown className="h-3 w-3" aria-hidden="true" />
+                                </button>
+                              </span>
+                            ) : null}
+                            <button
+                              type="button"
+                              aria-label={`Remove one night in ${city}`}
+                              disabled={nights <= minimumNights}
+                              onClick={() => setCustomCityNights((current) => ({
+                                ...current,
+                                [city]: Math.max(minimumNights, (current[city] ?? minimumNights) - 1),
+                              }))}
+                              className="h-9 w-9 border border-stone-300 text-lg leading-none text-stone-800 transition hover:border-[#b98d00] disabled:cursor-not-allowed disabled:text-stone-400"
+                            >-</button>
+                            <span aria-live="polite" className="w-6 text-center text-sm font-semibold tabular-nums">{nights}</span>
+                            <button
+                              type="button"
+                              aria-label={`Add one night in ${city}`}
+                              onClick={() => setCustomCityNights((current) => ({
+                                ...current,
+                                [city]: (current[city] ?? minimumNights) + 1,
+                              }))}
+                              className="h-9 w-9 border border-stone-300 text-lg leading-none text-stone-800 transition hover:border-[#b98d00]"
+                            >+</button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                   {!isInvalidCombination ? (
                     <div className="mt-4 border-t border-stone-200 pt-4">
@@ -3305,7 +3314,7 @@ export function MakeMyTripForm() {
                       className="mb-4 pb-4 border-b border-[#f4d77d] last:border-b-0 rounded-[10px] bg-white p-3"
                     >
                       <p className="text-xs uppercase tracking-widest text-[#7f5a00] mb-3 font-bold">
-                        {getHotelStayLabel(city)}
+                        {getHotelStayLabel(city, getCustomHotelCity(city))}
                       </p>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
                         <div className="grid gap-2 text-sm font-medium text-black">
@@ -3313,7 +3322,7 @@ export function MakeMyTripForm() {
                           <HotelCardPicker
                             hotels={hotelsForCity}
                             selectedHotelId={currentSelection?.hotelId || ""}
-                            label={`${getHotelStayLabel(city)} executive hotel options`}
+                            label={`${getHotelStayLabel(city, getCustomHotelCity(city))} executive hotel options`}
                             onSelect={(nextHotelId) =>
                               setMultiCityHotels({
                                 ...multiCityHotels,
@@ -3372,10 +3381,16 @@ export function MakeMyTripForm() {
                   <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
                   <span>Select Hotels for Each City</span>
                 </p>
-                {effectiveSelectedCities.map((city) => {
+                {customHotelStayCities.length === 0 ? (
+                  <p className="rounded-[10px] border border-[#f4d77d] bg-[#fffdf8] p-3 text-sm text-stone-700">
+                    All selected destinations are day trips. Only transportation is included; no hotels or accommodation costs are added.
+                  </p>
+                ) : null}
+                {customHotelStayCities.map((city) => {
                   // Extract base city name (e.g., "Chilas" from "Chilas (Arrival)")
                   const baseCityName = city.includes("(") ? city.split("(")[0].trim() : city;
-                  let hotelsForCity = getHotelsByCity(baseCityName);
+                  const hotelCity = getCustomHotelCity(baseCityName);
+                  let hotelsForCity = getHotelsByCity(hotelCity);
                   if (selectedLuxuryPackage) {
                     hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
                   }
@@ -3392,16 +3407,36 @@ export function MakeMyTripForm() {
                     >
                       <div className="flex items-center justify-between gap-2 mb-3">
                         <p className="text-xs uppercase tracking-widest text-[#6e5200] font-semibold">
-                          {getHotelStayLabel(city)} {nightsForCity > 0 && `(${nightsForCity} night${nightsForCity !== 1 ? 's' : ''})`}
+                          {getHotelStayLabel(city, hotelCity)} ({nightsForCity} night{nightsForCity !== 1 ? "s" : ""})
                         </p>
                       </div>
+                      {city === "Shogran" && effectiveSelectedCities.length > 1 ? (
+                        <label className="mb-3 grid max-w-sm gap-2 text-sm font-medium text-black">
+                          Overnight stay location
+                          <select
+                            value={hotelCity}
+                            onChange={(event) => {
+                              setShogranStayLocation(event.target.value === "Shogran" ? "Shogran" : "Balakot");
+                              setMultiCityHotels((current) => {
+                                const next = { ...current };
+                                delete next.Shogran;
+                                return next;
+                              });
+                            }}
+                            className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                          >
+                            <option value="Balakot">Balakot (default)</option>
+                            <option value="Shogran">Shogran</option>
+                          </select>
+                        </label>
+                      ) : null}
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
                         <div className="grid gap-2 text-sm font-medium text-black">
                           <span>Hotel *</span>
                           <HotelCardPicker
                             hotels={hotelsForCity}
                             selectedHotelId={currentSelection?.hotelId || ""}
-                            label={`${getHotelStayLabel(city)} hotel options`}
+                            label={`${getHotelStayLabel(city, hotelCity)} hotel options`}
                             onSelect={(nextHotelId) =>
                               setMultiCityHotels({
                                 ...multiCityHotels,
@@ -3453,7 +3488,10 @@ export function MakeMyTripForm() {
                   <div>
                     <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-900">
                       <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
-                      <span>Select Hotels for {getHotelStayLabel(selectedCities[0] || "your selected city")}</span>
+                      <span>Select Hotels for {getHotelStayLabel(
+                        selectedCities[0] || "your selected city",
+                        selectedCities[0] ? getCustomHotelCity(selectedCities[0]) : "your selected city",
+                      )}</span>
                     </p>
                     <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
                   </div>
@@ -3686,8 +3724,14 @@ export function MakeMyTripForm() {
                   <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
                   <span>Select Hotels for Each City</span>
                 </p>
-                {effectiveSelectedCities.map((city) => {
-                  let hotelsForCity = getHotelsByCity(city);
+                {customHotelStayCities.length === 0 ? (
+                  <p className="rounded-[10px] border border-green-200 bg-white p-3 text-sm text-stone-700">
+                    This destination is a day trip. No hotel selection or accommodation cost is required.
+                  </p>
+                ) : null}
+                {customHotelStayCities.map((city) => {
+                  const hotelCity = getCustomHotelCity(city);
+                  let hotelsForCity = getHotelsByCity(hotelCity);
                   if (selectedLuxuryPackage) {
                     hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
                   }
@@ -3704,7 +3748,7 @@ export function MakeMyTripForm() {
                       className="mb-4 pb-4 border-b border-[#f4d77d] last:border-b-0 rounded-[10px] bg-white p-3"
                     >
                       <p className="text-xs uppercase tracking-widest text-green-800 mb-3 font-semibold">
-                        {getHotelStayLabel(city)}
+                        {getHotelStayLabel(city, hotelCity)}
                       </p>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
                         <div className="grid gap-2 text-sm font-medium text-black">
@@ -3712,7 +3756,7 @@ export function MakeMyTripForm() {
                           <HotelCardPicker
                             hotels={hotelsForCity}
                             selectedHotelId={currentSelection?.hotelId || ""}
-                            label={`${getHotelStayLabel(city)} hotel options`}
+                            label={`${getHotelStayLabel(city, hotelCity)} hotel options`}
                             onSelect={(nextHotelId) =>
                               setMultiCityHotels({
                                 ...multiCityHotels,

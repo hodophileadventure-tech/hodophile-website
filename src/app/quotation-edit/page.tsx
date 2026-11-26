@@ -1,10 +1,16 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Suspense } from "react";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
-import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
+import { getHotelById, getHotelsByCity } from "@/lib/data/hotels";
+import {
+  getCitiesWithOvernightStays,
+  getCustomCityHotelLocation,
+  getHotelStayLabel,
+  type ShogranStayLocation,
+} from "@/lib/data/custom-city-stays";
 import { formatPKR } from "@/lib/currency";
 import { PageShell } from "@/components/page-shell";
 
@@ -16,6 +22,7 @@ function QuotationEditContent() {
   const [customCityNights, setCustomCityNights] = useState<Record<string, number>>({});
   const [multiCityHotels, setMultiCityHotels] = useState<Record<string, { hotelId: string; roomId: string }>>({});
   const [singleCityHotelStays, setSingleCityHotelStays] = useState<Array<{ hotelId: string; roomId: string; nights: number }>>([]);
+  const [shogranStayLocation, setShogranStayLocation] = useState<ShogranStayLocation | null>(null);
   const [vehicleName, setVehicleName] = useState("");
   const [quotation, setQuotation] = useState<QuotationBreakdown | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,9 +68,20 @@ function QuotationEditContent() {
       try {
         const decoded = JSON.parse(atob(data));
         setQuotationData(decoded);
-        setCustomCityNights(decoded.multiCityNights || {});
+        const decodedNights = decoded.multiCityNights || {};
+        setCustomCityNights(
+          Object.keys(decodedNights).length > 0
+            ? decodedNights
+            : Object.fromEntries((decoded.customCities || []).map((city: string) => [city, 1])),
+        );
         setMultiCityHotels(decoded.multiCityHotels || {});
         setSingleCityHotelStays(decoded.singleCityHotelStays || []);
+        const selectedShogranHotel = getHotelById(decoded.multiCityHotels?.Shogran?.hotelId || "");
+        if (selectedShogranHotel?.city === "Balakot" || selectedShogranHotel?.city === "Shogran") {
+          setShogranStayLocation(selectedShogranHotel.city);
+        } else {
+          setShogranStayLocation(null);
+        }
         setVehicleName(decoded.vehicleName || "");
       } catch (error) {
         console.error("Failed to decode quotation data:", error);
@@ -71,7 +89,21 @@ function QuotationEditContent() {
     }
   }, [searchParams]);
 
+  const overnightMultiCityHotels = useMemo(
+    () => Object.fromEntries(
+      Object.entries(multiCityHotels).filter(([city]) => (customCityNights[city] ?? 1) > 0),
+    ),
+    [multiCityHotels, customCityNights],
+  );
   const isSingleCitySplitStay = Array.isArray(quotationData?.singleCityHotelStays) && quotationData.singleCityHotelStays.length > 0;
+  const cities = Array.isArray(quotationData?.customCities) ? quotationData.customCities : [];
+  const displayNightsByCity = Object.fromEntries(
+    cities.map((city: string) => [city, customCityNights[city] ?? 1]),
+  );
+  const overnightCities = getCitiesWithOvernightStays(cities, displayNightsByCity);
+  const missingOvernightHotel = !isSingleCitySplitStay && overnightCities.some(
+    (city) => !overnightMultiCityHotels[city]?.hotelId || !overnightMultiCityHotels[city]?.roomId,
+  );
   const splitStayCity = quotationData?.customCities?.[0] || quotationData?.destination || "";
 
   // Recalculate quotation when edits are made
@@ -79,6 +111,7 @@ function QuotationEditContent() {
     if (!quotationData) return;
 
     const useSingleCitySplitStay = Array.isArray(quotationData.singleCityHotelStays) && quotationData.singleCityHotelStays.length > 0;
+    if (missingOvernightHotel) return;
 
     if (
       quotationData.travelMode === "air" ||
@@ -92,7 +125,7 @@ function QuotationEditContent() {
         roomId: quotationData.roomType,
         hotelCategory: quotationData.hotelCategory,
         singleCityHotelStays: useSingleCitySplitStay ? singleCityHotelStays : undefined,
-        multiCityHotels: useSingleCitySplitStay ? undefined : multiCityHotels,
+        multiCityHotels: useSingleCitySplitStay ? undefined : overnightMultiCityHotels,
         multiCityNights: useSingleCitySplitStay ? undefined : customCityNights,
         customCities: quotationData.customCities,
         customRouteLabel: quotationData.customRouteLabel,
@@ -141,7 +174,7 @@ function QuotationEditContent() {
       customCities: quotationData.customCities,
       customRouteLabel: quotationData.customRouteLabel,
       singleCityHotelStays: useSingleCitySplitStay ? singleCityHotelStays : undefined,
-      multiCityHotels: useSingleCitySplitStay ? undefined : multiCityHotels,
+      multiCityHotels: useSingleCitySplitStay ? undefined : overnightMultiCityHotels,
       multiCityNights: useSingleCitySplitStay ? undefined : customCityNights,
       numberOfRooms: quotationData.numberOfRooms,
       adults: quotationData.adults,
@@ -156,9 +189,10 @@ function QuotationEditContent() {
       setQuotation(updatedQuotation);
       setQuoteError("");
     }
-  }, [customCityNights, multiCityHotels, singleCityHotelStays, vehicleName, quotationData]);
+  }, [customCityNights, multiCityHotels, missingOvernightHotel, overnightMultiCityHotels, singleCityHotelStays, vehicleName, quotationData]);
 
   const handleProceed = async () => {
+    if (missingOvernightHotel) return;
     setIsSubmitting(true);
     try {
       let authoritativeQuotation = quotation;
@@ -173,7 +207,7 @@ function QuotationEditContent() {
             roomId: quotationData.roomType,
             hotelCategory: quotationData.hotelCategory,
             singleCityHotelStays: isSingleCitySplitStay ? singleCityHotelStays : undefined,
-            multiCityHotels: isSingleCitySplitStay ? undefined : multiCityHotels,
+            multiCityHotels: isSingleCitySplitStay ? undefined : overnightMultiCityHotels,
             multiCityNights: isSingleCitySplitStay ? undefined : customCityNights,
             customCities: quotationData.customCities,
             customRouteLabel: quotationData.customRouteLabel,
@@ -199,7 +233,7 @@ function QuotationEditContent() {
       const updatedData = {
         ...quotationData,
         multiCityNights: customCityNights,
-        multiCityHotels,
+        multiCityHotels: overnightMultiCityHotels,
         vehicleName,
         transportCost: authoritativeQuotation?.transportCost,
         hotelCost: authoritativeQuotation?.hotelCost,
@@ -233,7 +267,6 @@ function QuotationEditContent() {
     );
   }
 
-  const cities = quotationData.customCities || [];
   const totalGuests = quotationData.adults + quotationData.kids;
 
   return (
@@ -339,14 +372,43 @@ function QuotationEditContent() {
             ) : (
               <div className="rounded-[15px] border border-green-200 bg-green-50 p-6">
                 <h2 className="font-semibold text-stone-900 mb-4">🏨 Select Hotels</h2>
-                {cities.map((city: string) => {
-                  const hotelsForCity = getHotelsByCity(city);
+                {overnightCities.length === 0 ? (
+                  <p className="rounded-[12px] border border-green-200 bg-white p-4 text-sm text-stone-700">
+                    These destinations are day trips. Only transportation is included; no accommodation is charged.
+                  </p>
+                ) : null}
+                {overnightCities.map((city: string) => {
+                  const hotelCity = getCustomCityHotelLocation(city, cities, shogranStayLocation ?? undefined);
+                  const hotelsForCity = getHotelsByCity(hotelCity);
                   const currentSelection = multiCityHotels[city];
                   const selectedHotel = hotelsForCity.find(h => h.id === currentSelection?.hotelId);
+                  const nights = displayNightsByCity[city];
 
                   return (
                     <div key={city} className="mb-6 pb-6 border-b border-green-200 last:border-b-0">
-                      <p className="text-sm font-semibold text-green-900 mb-3">{city}</p>
+                      <p className="text-sm font-semibold text-green-900 mb-3">
+                        {getHotelStayLabel(city, hotelCity)} · {nights} night{nights === 1 ? "" : "s"}
+                      </p>
+                      {city === "Shogran" && cities.length > 1 ? (
+                        <label className="mb-3 grid max-w-sm gap-2 text-sm font-medium text-stone-900">
+                          Overnight stay location
+                          <select
+                            value={hotelCity}
+                            onChange={(event) => {
+                              setShogranStayLocation(event.target.value === "Shogran" ? "Shogran" : "Balakot");
+                              setMultiCityHotels((current) => {
+                                const next = { ...current };
+                                delete next.Shogran;
+                                return next;
+                              });
+                            }}
+                            className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 outline-none transition focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                          >
+                            <option value="Balakot">Balakot (default)</option>
+                            <option value="Shogran">Shogran</option>
+                          </select>
+                        </label>
+                      ) : null}
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
                         <label className="grid gap-2 text-sm font-medium text-stone-900">
                           Hotel *
@@ -438,7 +500,7 @@ function QuotationEditContent() {
             </div>
 
             {/* Quotation Summary */}
-            {quotation && (
+            {quotation && !missingOvernightHotel && (
               <div className="rounded-[15px] border-2 border-[#fcc000] bg-[#fcc000]/10 p-6 text-center">
                 <p className="text-stone-600 text-sm mb-3">💰 Updated Total Trip Cost</p>
                 <p className="font-serif text-5xl text-[#fcc000] font-bold">
@@ -468,6 +530,11 @@ function QuotationEditContent() {
                 {quoteError}
               </p>
             ) : null}
+            {missingOvernightHotel ? (
+              <p role="alert" className="rounded-[15px] border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                Select a hotel and room for every overnight stay.
+              </p>
+            ) : null}
 
             {/* Action Buttons */}
             <div className="flex gap-4 justify-center">
@@ -479,7 +546,7 @@ function QuotationEditContent() {
               </button>
               <button
                 onClick={handleProceed}
-                disabled={isSubmitting || !quotation || Boolean(quoteError)}
+                disabled={isSubmitting || !quotation || Boolean(quoteError) || missingOvernightHotel}
                 className="px-8 py-3 rounded-[10px] bg-[#fcc000] text-black font-semibold hover:bg-[#fcc000]/90 transition disabled:cursor-not-allowed disabled:bg-stone-200 disabled:text-stone-700 disabled:opacity-100"
               >
                 {isSubmitting ? "Processing..." : "✨ Proceed to Result"}
