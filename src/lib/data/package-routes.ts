@@ -85,9 +85,36 @@ export const packageRouteRedirects = [
     const source = `/packages/${id}`;
     return source === destination ? [] : [{ source, destination, permanent: true }];
   }),
+  ...[
+    "/packages/skardu-basho-6-days",
+    "/packages/skardu-and-basho-by-road-6-days",
+    "/packages/skardu-deosai-basho-air-5-days",
+  ].map((source) => ({
+    source,
+    destination: "/tours/northern-tours/skardu-valley-tour-packages",
+    permanent: true,
+  })),
+  ...[
+    "/packages/ranikot-fort-2-days",
+    "/packages/ranikot-fort-weekend",
+    "/packages/charo-machi-2-days",
+    "/packages/charo-machi-weekend",
+  ].map((source) => ({
+    source,
+    destination: "/tours",
+    permanent: true,
+  })),
+  ...[
+    "/packages/seasonal-54",
+    "/packages/02-days-moola-chotok",
+  ].map((source) => ({
+    source,
+    destination: "/tours",
+    permanent: true,
+  })),
   {
-    source: "/packages/skardu-deosai-basho-air-5-days",
-    destination: getPackagePath("skardu-basho-6-days"),
+    source: "/packages/swat-kalam-malam-jabba-balakot-and-shogran",
+    destination: getPackagePath("swat-kalam-shogran-10-days"),
     permanent: true,
   },
 ];

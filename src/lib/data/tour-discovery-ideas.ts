@@ -21,6 +21,7 @@ export type TourDiscoveryIdea = {
   bestFor: string;
   pace: "Fast" | "Moderate" | "Relaxed";
   pricePerPerson?: number;
+  packagePrice?: { amount: number; label: string };
   detailHref?: string;
   pricingGroups?: TourDiscoveryPriceGroup[];
   itinerary?: Array<{ day: string; title: string; description: string }>;
@@ -246,6 +247,18 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     routeHighlights: ["Upper Kachura Lake", "Shigar Fort and Sarfaranga Cold Desert", "Manthoka Waterfall", "Basho meadows and pine forests"],
     bestFor: "Baltistan's waterfalls and forests",
     pace: "Relaxed",
+    pricePerPerson: 45000,
+    pricingGroups: [
+      {
+        title: "Room-sharing rates",
+        rows: [
+          { label: "Quad sharing", price: "PKR 45,000 per person" },
+          { label: "Triple sharing", price: "PKR 49,000 per person" },
+          { label: "Couple sharing", price: "PKR 75,000 per couple" },
+          { label: "Solo traveler", price: "PKR 65,000 per person" },
+        ],
+      },
+    ],
     itinerary: [
       {
         day: "Day 1",
@@ -330,6 +343,18 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     routeHighlights: ["Babusar Top", "Baltit and Altit Forts", "Attabad Lake and Upper Hunza", "Gilgit", "Shigar Valley", "Deosai and Sheosar Lake"],
     bestFor: "A two-region mountain circuit",
     pace: "Relaxed",
+    pricePerPerson: 55000,
+    pricingGroups: [
+      {
+        title: "Room-sharing rates",
+        rows: [
+          { label: "Quad sharing", price: "PKR 55,000 per person" },
+          { label: "Triple sharing", price: "PKR 59,500 per person" },
+          { label: "Couple sharing", price: "PKR 128,000 per couple" },
+          { label: "Solo traveler", price: "PKR 90,000 per person" },
+        ],
+      },
+    ],
     notes: [
       "Babusar Top is seasonal; when it is closed, the route must change via Besham and the Karakoram Highway.",
       "Khunjerab Pass and Deosai access, local activities, and the return flight depend on current conditions and availability.",
@@ -411,6 +436,13 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
     routeHighlights: ["Lake Saif-ul-Malook", "Naran Valley", "Shogran", "Siri Paye Meadows"],
     bestFor: "A twin-valley getaway",
     pace: "Relaxed",
+    packagePrice: { amount: 140000, label: "Private package" },
+    pricingGroups: [
+      {
+        title: "Private package",
+        rows: [{ label: "Total package price", price: "PKR 140,000" }],
+      },
+    ],
     itinerary: [
       {
         day: "Day 1",
@@ -438,35 +470,5 @@ export const tourDiscoveryIdeas: TourDiscoveryIdea[] = [
         description: "After breakfast, check out from Shogran and descend to Kewai by local 4x4 jeep. Continue toward Balakot and Islamabad, arriving with memories of Naran and Shogran.",
       },
     ],
-  },
-  {
-    id: "ranikot-fort-2-days",
-    title: "Ranikot Fort Weekend",
-    description: "A short southern escape to Ranikot Fort. Ask us to confirm the route, dates, and current quotation.",
-    region: "southern",
-    destinationSlugs: ["ranikot"],
-    routeStops: ["Ranikot Fort"],
-    duration: "2 Days / 1 Night",
-    image: "/images/package-cards/images__tour-packages__30.webp",
-    travelStyles: ["family", "adventure", "tailored"],
-    experiences: ["nature", "culture", "offbeat"],
-    routeHighlights: ["Ranikot Fort"],
-    bestFor: "A short heritage escape",
-    pace: "Moderate",
-  },
-  {
-    id: "charo-machi-2-days",
-    title: "Charo Machi Weekend",
-    description: "A short southern escape to Charo Machi. Ask us to confirm the route, dates, and current quotation.",
-    region: "southern",
-    destinationSlugs: ["charo-machi"],
-    routeStops: ["Charo Machi"],
-    duration: "2 Days / 1 Night",
-    image: "/images/package-cards/images__tour-packages__34.webp",
-    travelStyles: ["family", "adventure", "tailored"],
-    experiences: ["nature", "adventure", "offbeat"],
-    routeHighlights: ["Charo Machi"],
-    bestFor: "A short offbeat adventure",
-    pace: "Fast",
   },
 ];

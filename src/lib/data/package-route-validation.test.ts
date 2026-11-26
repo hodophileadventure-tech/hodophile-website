@@ -6,13 +6,11 @@ import { resolve } from "node:path";
 import { destinationTourPageRedirects, tourMenu } from "../site";
 import { featuredTourCards, getFeaturedTourBySlug, indexableFeaturedTourRoutePaths } from "./featured-tour-cards";
 import { getPackagePath, packageRouteEntries, packageRouteRedirects } from "./package-routes";
-import { routes } from "./routes";
 import { tourDiscoveryIdeas } from "./tour-discovery-ideas";
 import { getHeritageTourPackages, getTourPackagesForDestination, getTourPackagesForRegion, tourPackages } from "./tour-packages";
 
 const expectedJourneyIds = [
   "skardu-deosai-air-3-days",
-  "skardu-basho-6-days",
   "skardu-khaplu-deosai-basho-air-7-days",
   "skardu-hunza-air-7-days",
   "ormara-beach-camping",
@@ -25,10 +23,9 @@ const expectedJourneyIds = [
   "skardu-deosai-naran-10-days",
   "seasonal-11",
   "seasonal-53",
-  "seasonal-54",
 ];
 
-test("the canonical list contains exactly the 15 unique journeys with required source fields", () => {
+test("the canonical list contains exactly the 13 unique journeys with required source fields", () => {
   const ids = tourPackages.map((tourPackage) => tourPackage.id);
   const titles = tourPackages.map((tourPackage) => tourPackage.title);
   const images = tourPackages.map((tourPackage) => tourPackage.image);
@@ -76,19 +73,28 @@ test("all package URLs use unique name-based slugs and redirect previous ID URLs
   for (const idea of packageableIdeas) {
     assert.ok(packageRouteEntries.some((entry) => entry.id === idea.id), `${idea.id} needs a detail route`);
   }
-  assert.equal(getPackagePath("skardu-basho-6-days"), "/packages/skardu-and-basho-by-road-6-days");
   assert.equal(getPackagePath("hunza-skardu-naran-12-days"), "/packages/hunza-skardu-and-basho");
   assert.equal(getPackagePath("ready-kashmir"), "/packages/3-days-kashmir-ready-to-book");
-  assert.ok(packageRouteRedirects.some(
-    (redirect) =>
-      redirect.source === "/packages/skardu-basho-6-days" &&
-      redirect.destination === "/packages/skardu-and-basho-by-road-6-days",
-  ));
-  assert.ok(packageRouteRedirects.some(
-    (redirect) =>
-      redirect.source === "/packages/skardu-deosai-basho-air-5-days" &&
-      redirect.destination === "/packages/skardu-and-basho-by-road-6-days",
-  ));
+  assert.equal(getPackagePath("swat-kalam-shogran-10-days"), "/packages/swat-shogran-and-khanpur-dam");
+  for (const [source, destination] of [
+    ["/packages/skardu-basho-6-days", "/tours/northern-tours/skardu-valley-tour-packages"],
+    ["/packages/skardu-and-basho-by-road-6-days", "/tours/northern-tours/skardu-valley-tour-packages"],
+    ["/packages/skardu-deosai-basho-air-5-days", "/tours/northern-tours/skardu-valley-tour-packages"],
+    ["/packages/ranikot-fort-2-days", "/tours"],
+    ["/packages/ranikot-fort-weekend", "/tours"],
+    ["/packages/charo-machi-2-days", "/tours"],
+    ["/packages/charo-machi-weekend", "/tours"],
+    ["/packages/seasonal-54", "/tours"],
+    ["/packages/02-days-moola-chotok", "/tours"],
+    ["/packages/swat-kalam-malam-jabba-balakot-and-shogran", "/packages/swat-shogran-and-khanpur-dam"],
+  ] as const) {
+    assert.ok(packageRouteRedirects.some(
+      (redirect) =>
+        redirect.source === source &&
+        redirect.destination === destination,
+    ));
+  }
+  assert.ok(!packageRouteEntries.some((entry) => entry.id === "skardu-basho-6-days"));
 });
 
 test("the heritage collection includes only packages with explicit historic itinerary stops", () => {
@@ -98,7 +104,6 @@ test("the heritage collection includes only packages with explicit historic itin
     heritagePackages.map((tourPackage) => tourPackage.id),
     [
       "skardu-deosai-air-3-days",
-      "skardu-basho-6-days",
       "skardu-khaplu-deosai-basho-air-7-days",
       "kashmir-shogran-9-days",
       "hunza-skardu-naran-12-days",
@@ -123,7 +128,9 @@ test("the tour discovery catalog restores unique historical route ideas without 
     `${[...journey.destinationSlugs].sort().join(",")}|${[...journey.routeStops].sort().join(",")}|${Number.parseInt(journey.duration, 10)}`,
   );
 
-  assert.equal(journeys.length, 24);
+  assert.equal(journeys.length, 20);
+  assert.ok(!ids.includes("ranikot-fort-2-days"));
+  assert.ok(!ids.includes("charo-machi-2-days"));
   assert.equal(new Set(ids).size, ids.length, "journey ids must be unique across catalog and ideas");
   assert.equal(new Set(images).size, images.length, "each journey must use a unique image");
   assert.equal(new Set(routeDurations).size, routeDurations.length, "the same destination set and duration must not be listed twice");
@@ -145,6 +152,22 @@ test("the tour discovery catalog restores unique historical route ideas without 
       assert.equal(idea.pricingGroups?.length, 2);
     } else if (idea.id === "kashmir-arangkel-3-days") {
       assert.equal(idea.pricePerPerson, 22000);
+    } else if (idea.id === "hunza-skardu-12-days") {
+      assert.equal(idea.pricePerPerson, 55000);
+      assert.deepEqual(idea.pricingGroups?.[0]?.rows.map((row) => row.price), [
+        "PKR 55,000 per person",
+        "PKR 59,500 per person",
+        "PKR 128,000 per couple",
+        "PKR 90,000 per person",
+      ]);
+    } else if (idea.id === "skardu-manthoka-basho-10-days") {
+      assert.equal(idea.pricePerPerson, 45000);
+      assert.deepEqual(idea.pricingGroups?.[0]?.rows.map((row) => row.price), [
+        "PKR 45,000 per person",
+        "PKR 49,000 per person",
+        "PKR 75,000 per couple",
+        "PKR 65,000 per person",
+      ]);
     } else {
       assert.ok(!("pricePerPerson" in idea), `${idea.id} must not expose historical pricing`);
     }
@@ -177,22 +200,13 @@ test("the new Swat and Neelum Valley posters have complete, name-based package d
   assert.equal(getPackagePath(kashmir.id), "/packages/neelum-valley-kel-and-arang-kel");
 });
 
-test("the Skardu and Basho package matches its six-day road itinerary and listed price", () => {
-  const journey = tourPackages.find((tourPackage) => tourPackage.id === "skardu-basho-6-days");
-  const sourceRoute = routes.find((route) => route.id === "skardu-basho-6days");
+test("the Skardu and Khaplu journey starts in Karachi and includes Chilas on its route", () => {
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "skardu-khaplu-deosai-basho-air-7-days");
 
   assert.ok(journey);
-  assert.ok(sourceRoute?.dayByDayItinerary);
-  assert.equal(journey.title, "Skardu & Basho by Road · 6 Days");
-  assert.equal(journey.duration, "6 Days / 5 Nights");
-  assert.equal(journey.pricePerPerson, 43000);
-  assert.equal(journey.couplePrice, 100000);
-  assert.deepEqual(journey.sharingPrices, { quad: 43000, triple: 47000, twin: 50000, solo: 74000 });
-  assert.deepEqual(journey.sharingPricesWithoutIslamabadStay, { quad: 40000, triple: 44000, twin: 46000, solo: 65000 });
-  assert.equal(journey.priceOnRequest, undefined);
-  assert.deepEqual(journey.itinerary, sourceRoute.dayByDayItinerary);
-  assert.ok(journey.transport?.some((item) => /road transport/i.test(item)));
-  assert.ok(!journey.excludes?.some((item) => /air tickets|airport/i.test(item)));
+  assert.equal(journey.routeStops[0], "Karachi");
+  assert.ok(journey.routeStops.includes("Chilas"));
+  assert.match(journey.description, /from Karachi through Chilas/i);
 });
 
 test("the seven-day Skardu and Hunza by-air tour is listed at PKR 55,000 per person", () => {
@@ -262,6 +276,13 @@ test("the relaxed 10-day Skardu, Manthoka and Basho package has all itinerary da
   assert.equal(journey.title, "Skardu, Manthoka & Basho");
   assert.equal(journey.duration, "10 Days / 9 Nights");
   assert.equal(journey.pace, "Relaxed");
+  assert.equal(journey.pricePerPerson, 45000);
+  assert.deepEqual(journey.pricingGroups?.[0]?.rows.map((row) => row.price), [
+    "PKR 45,000 per person",
+    "PKR 49,000 per person",
+    "PKR 75,000 per couple",
+    "PKR 65,000 per person",
+  ]);
   assert.deepEqual(
     journey.itinerary?.map((day) => day.day),
     Array.from({ length: 10 }, (_, index) => `Day ${index + 1}`),
@@ -278,6 +299,13 @@ test("the relaxed 12-day Hunza and Skardu package has seasonal routing and all i
   assert.equal(journey.title, "Hunza & Skardu");
   assert.equal(journey.duration, "12 Days / 11 Nights");
   assert.equal(journey.pace, "Relaxed");
+  assert.equal(journey.pricePerPerson, 55000);
+  assert.deepEqual(journey.pricingGroups?.[0]?.rows.map((row) => row.price), [
+    "PKR 55,000 per person",
+    "PKR 59,500 per person",
+    "PKR 128,000 per couple",
+    "PKR 90,000 per person",
+  ]);
   assert.deepEqual(
     journey.itinerary?.map((day) => day.day),
     Array.from({ length: 12 }, (_, index) => `Day ${index + 1}`),
@@ -294,6 +322,11 @@ test("the relaxed Naran and Shogran package is five days with the supplied itine
   assert.equal(journey.title, "Naran & Shogran");
   assert.equal(journey.duration, "5 Days / 4 Nights");
   assert.equal(journey.pace, "Relaxed");
+  assert.deepEqual(journey.packagePrice, { amount: 140000, label: "Private package" });
+  assert.equal(journey.pricePerPerson, undefined);
+  assert.deepEqual(journey.pricingGroups?.[0]?.rows, [
+    { label: "Total package price", price: "PKR 140,000" },
+  ]);
   assert.deepEqual(
     journey.itinerary?.map((day) => day.day),
     ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"],
@@ -371,8 +404,7 @@ test("provided Ormara and Skardu-Deosai-Naran itineraries match their listed tri
 test("poster-matched packages use the supplied names, durations, itinerary, and current price status", () => {
   const posterJourneys = [
     { id: "skardu-deosai-air-3-days", title: "Skardu, Deosai & Naran by Road", days: 6, priceOnRequest: true },
-    { id: "skardu-basho-6-days", title: "Skardu & Basho by Road · 6 Days", days: 6, priceOnRequest: undefined },
-    { id: "swat-kalam-shogran-10-days", title: "Swat, Kalam, Malam Jabba, Balakot & Shogran", days: 6, priceOnRequest: undefined },
+    { id: "swat-kalam-shogran-10-days", title: "Swat, Shogran & Khanpur Dam", days: 6, priceOnRequest: undefined },
     { id: "kashmir-shogran-9-days", title: "Kashmir, Shogran & Murree", days: 6, priceOnRequest: true },
     { id: "hunza-skardu-naran-12-days", title: "Hunza, Skardu & Basho", days: 8, priceOnRequest: undefined },
   ];
@@ -394,6 +426,20 @@ test("poster-matched packages use the supplied names, durations, itinerary, and 
   assert.deepEqual(swatShogranJourney.sharingPricesWithoutIslamabadStay, { quad: 45000, triple: 49500, twin: 52500, solo: 68500 });
   assert.equal(swatShogranJourney.duration, "6 Days / 5 Nights");
   assert.deepEqual(swatShogranJourney.itinerary?.map((day) => day.day), Array.from({ length: 6 }, (_, index) => `Day ${index + 1}`));
+  assert.deepEqual(swatShogranJourney.itinerary?.map((day) => day.title), [
+    "Islamabad → Malam Jabba → Fizagat",
+    "Fizagat → Madyan → Bahrain → Kalam",
+    "Kalam → Ushu Forest → Fizagat",
+    "Fizagat → Chakdara → Mansehra → Balakot",
+    "Balakot → Kiwai → Shogran → Balakot",
+    "Balakot → Khanpur Dam → Islamabad",
+  ]);
+  assert.ok(swatShogranJourney.itinerary?.[0]?.description.includes("Overnight in Fizagat"));
+  assert.ok(swatShogranJourney.itinerary?.[1]?.description.includes("Overnight in Kalam"));
+  assert.ok(swatShogranJourney.itinerary?.[2]?.description.includes("Overnight in Fizagat"));
+  assert.ok(swatShogranJourney.itinerary?.[3]?.description.includes("Overnight in Balakot"));
+  assert.ok(swatShogranJourney.itinerary?.[4]?.description.includes("Overnight in Balakot"));
+  assert.ok(swatShogranJourney.itinerary?.[5]?.description.includes("Tour ends"));
 
   const pricedPosterJourney = tourPackages.find((tourPackage) => tourPackage.id === "skardu-deosai-naran-10-days");
   assert.ok(pricedPosterJourney);
@@ -404,12 +450,11 @@ test("poster-matched packages use the supplied names, durations, itinerary, and 
   assert.deepEqual(pricedPosterJourney.itinerary?.map((day) => day.day), Array.from({ length: 10 }, (_, index) => `Day ${index + 1}`));
 });
 
-test("Gorakh Hill and Moola Chotok remain without unprovided day-by-day itineraries", () => {
-  for (const journeyId of ["seasonal-53", "seasonal-54"]) {
-    const journey = tourPackages.find((tourPackage) => tourPackage.id === journeyId);
-    assert.ok(journey, `missing journey ${journeyId}`);
-    assert.equal(journey.itinerary, undefined);
-  }
+test("Gorakh Hill remains without an unprovided day-by-day itinerary", () => {
+  const journey = tourPackages.find((tourPackage) => tourPackage.id === "seasonal-53");
+  assert.ok(journey);
+  assert.equal(journey.itinerary, undefined);
+  assert.ok(!tourPackages.some((tourPackage) => tourPackage.id === "seasonal-54"));
 });
 
 test("Kashmir Arang Kel and Taobat follows the supplied five-day poster itinerary", () => {
@@ -432,12 +477,13 @@ test("destination relationships are explicit and never fall back to unrelated pa
     assert.ok(matches.every((tourPackage) => tourPackage.destinationSlugs.includes(item.destinationSlug)));
   }
 
-  for (const destinationSlug of ["moola", "gorakh", "ormara"]) {
+  for (const destinationSlug of ["gorakh", "ormara"]) {
     const matchingIds = getTourPackagesForDestination(destinationSlug).map((tourPackage) => tourPackage.id);
     assert.ok(matchingIds.length > 0, `${destinationSlug} should retain its canonical package relation`);
     assert.ok(!matchingIds.includes("swat-kalam-shogran-10-days"), `${destinationSlug} must not include the Swat journey`);
   }
 
+  assert.deepEqual(getTourPackagesForDestination("moola"), []);
   assert.deepEqual(getTourPackagesForDestination("unmapped-destination"), []);
 });
 
@@ -446,7 +492,6 @@ test("the eight audited destinations resolve only their canonical journeys", () 
     hunza: ["skardu-hunza-air-7-days", "hunza-skardu-naran-12-days"],
     skardu: [
       "skardu-deosai-air-3-days",
-      "skardu-basho-6-days",
       "skardu-khaplu-deosai-basho-air-7-days",
       "skardu-hunza-air-7-days",
       "hunza-skardu-naran-12-days",
@@ -457,7 +502,7 @@ test("the eight audited destinations resolve only their canonical journeys", () 
     kashmir: ["kashmir-swat-shogran-7-days", "kashmir-arangkel-4-days", "kashmir-shogran-9-days", "seasonal-11"],
     ormara: ["ormara-beach-camping"],
     gorakh: ["seasonal-53"],
-    moola: ["seasonal-54"],
+    moola: [],
   };
 
   for (const [destinationSlug, expectedIds] of Object.entries(expectedByDestination)) {
@@ -474,13 +519,12 @@ test("missing southern guide slugs redirect only to their explicit destination c
     const category = tourMenu.flatMap((group) => group.items).find((item) => item.destinationSlug === destinationSlug);
     assert.equal(category?.href, href);
     const matches = getTourPackagesForDestination(destinationSlug);
-    assert.ok(matches.length > 0);
     assert.ok(matches.every((tourPackage) => tourPackage.region === "southern"));
   }
 });
 
 test("southern and northern destination relations stay in their canonical regions", () => {
-  const southernJourneyIds = ["ormara-beach-camping", "seasonal-53", "seasonal-54"];
+  const southernJourneyIds = ["ormara-beach-camping", "seasonal-53"];
   const northernStops = new Set(["Hunza", "Skardu", "Naran", "Kashmir", "Swat", "Kalam", "Shogran"]);
   for (const id of southernJourneyIds) {
     const tourPackage = tourPackages.find((item) => item.id === id);
@@ -491,7 +535,7 @@ test("southern and northern destination relations stay in their canonical region
 
   assert.deepEqual(getTourPackagesForRegion("southern").map((item) => item.id), southernJourneyIds);
   assert.ok(getTourPackagesForRegion("northern").every((item) => item.region === "northern"));
-  assert.equal(getTourPackagesForDestination("moola")[0]?.id, "seasonal-54");
+  assert.deepEqual(getTourPackagesForDestination("moola"), []);
   assert.equal(getTourPackagesForDestination("gorakh")[0]?.id, "seasonal-53");
   assert.equal(getTourPackagesForDestination("ormara")[0]?.id, "ormara-beach-camping");
 });

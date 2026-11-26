@@ -46,7 +46,7 @@ export default async function UmrahPackageDetailPage({ params }: PageProps) {
             <div className="mt-10 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#777]">{pkg.originalTier} tier · {pkg.duration} days</p>
-                <h1 className="mt-3 font-[var(--font-display)] text-3xl leading-tight sm:text-4xl">{pkg.name}</h1>
+                <h1 className="miqat-package-name mt-3 font-[var(--font-display)] text-3xl font-bold leading-tight text-[#FCC000] sm:text-4xl">{pkg.name}</h1>
                 <p className="mt-4 max-w-xl text-base leading-7 text-[#5d5a54]">{pkg.tagline}. A clear package view for your accommodation and room occupancy choices.</p>
               </div>
               <div className="flex flex-wrap gap-3">

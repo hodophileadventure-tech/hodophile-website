@@ -17,7 +17,6 @@ const whatsappNumber = "https://wa.me/923377777460";
 
 const packageHeadingByTitle: Record<string, string> = {
   "Skardu, Deosai & Naran by Road": "Skardu, Deosai and Naran by Road",
-  "Skardu & Basho by Road · 6 Days": "Skardu and Basho by Road, 6 Days",
   "Skardu & Khaplu": "Skardu and Khaplu",
   "Skardu & Hunza by Air": "Skardu and Hunza by Air",
   "Skardu & Hunza": "Skardu and Hunza",
@@ -43,7 +42,6 @@ const vehicleDetails = [
 
 const packagePrices = [
   "Skardu, Deosai and Naran by Road: PKR 45,000",
-  "Skardu and Basho by Road, 6 Days: PKR 55,000",
   "Skardu and Khaplu: PKR 47,500",
   "Skardu and Hunza by Air: PKR 55,000",
   "Skardu and Hunza: PKR 55,000",
@@ -318,7 +316,7 @@ export function SkarduTourPageContent({ packages }: { packages: TourPackage[] })
         </section>
 
         <section id="available-departures" className="mt-12 scroll-mt-24">
-          <SectionHeading label="Canonical journeys">Affordable Skardu Tour Packages: 6 Matching Journeys</SectionHeading>
+          <SectionHeading label="Canonical journeys">Affordable Skardu Tour Packages: 5 Matching Journeys</SectionHeading>
           <p className="mt-4 max-w-4xl text-sm leading-7 text-stone-600">
             Compare every Skardu package in one place. Prices are listed per person. This destination page does not have one approved day by day plan for every departure, so open a package to review its itinerary and confirm the final schedule with our team.
           </p>

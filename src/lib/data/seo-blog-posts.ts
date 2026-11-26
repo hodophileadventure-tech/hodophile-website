@@ -223,7 +223,7 @@ Common expenses include:
 - Ski resort activities and attraction fees.
 - Additional expenses caused by weather delays.
 
-Hodophile offers different Swat travel options for visitors who want to explore the region. You can review our [Swat, Kalam and Malam Jabba four day tour](/packages/swat-kalam-and-malam-jabba) or explore our [Swat, Kalam, Malam Jabba, Balakot and Shogran tour](/packages/swat-kalam-malam-jabba-balakot-and-shogran).
+Hodophile offers different Swat travel options for visitors who want to explore the region. You can review our [Swat, Kalam and Malam Jabba four day tour](/packages/swat-kalam-and-malam-jabba) or explore our [Swat, Shogran and Khanpur Dam tour](/packages/swat-shogran-and-khanpur-dam).
 
 Confirm current prices, inclusions, hotel availability, and winter transport arrangements before booking.
 
@@ -505,7 +505,7 @@ Deosai is a high altitude plateau, so its weather is much colder than Skardu cit
 
 Basho Valley is known for its forests, open landscapes, and beautiful mountain views. It is a rewarding destination for travelers who want to experience the natural beauty of Baltistan. Summer is generally a practical time to plan a Basho trip. The route can be rough, and local access conditions may change. A suitable 4x4 vehicle is commonly needed for the journey.
 
-For travelers interested in exploring Skardu and Basho together, Hodophile offers a dedicated [Skardu and Basho by Road tour package](/packages/skardu-and-basho-by-road-6-days).
+Travelers interested in Skardu and Basho can compare current options on Hodophile's [Skardu Valley tour packages](/tours/northern-tours/skardu-valley-tour-packages). Basho access and 4x4 requirements vary by itinerary.
 
 ## Skardu Road Conditions and Weather Updates
 
@@ -574,9 +574,9 @@ Choosing the right travel dates is only one part of a successful Skardu holiday.
 
 You can explore the [Skardu destination guide](/destinations/skardu) to learn more about the region and available journeys.
 
-If you want to explore Skardu and Basho Valley together, check the [Skardu and Basho by Road six day tour](/packages/skardu-and-basho-by-road-6-days). The listed journey includes Skardu, Basho Valley, Shangrila Resort, Manthoka Waterfall, Shigar Fort, and Sarfaranga Cold Desert. It also includes a 4x4 jeep journey for Basho.
+If you want to explore Skardu and Basho Valley together, compare the current routes on Hodophile's [Skardu Valley tour packages](/tours/northern-tours/skardu-valley-tour-packages). Included stops and 4x4 access vary by itinerary.
 
-The package page currently lists a starting rate of PKR 55,000. Confirm the latest price, hotel arrangements, inclusions, availability, and route details for your selected dates before booking. Visit [Hodophile.pk](/) to explore travel options and plan your next northern Pakistan adventure.
+Confirm the current price, hotel arrangements, inclusions, availability, and route details for your selected dates before booking. Visit [Hodophile.pk](/) to explore travel options and plan your next northern Pakistan adventure.
 
 ## Frequently Asked Questions About Skardu Weather
 
@@ -610,7 +610,7 @@ Wear comfortable light clothing during warm summer days, but carry a jacket for 
 
 ### 8. How can I book a Skardu and Basho tour with Hodophile?
 
-Visit the [Skardu and Basho by Road package page](/packages/skardu-and-basho-by-road-6-days). Share your preferred dates and group size to confirm the current price, availability, itinerary, accommodation, and package details.
+Explore Hodophile's current [Skardu Valley tour packages](/tours/northern-tours/skardu-valley-tour-packages). Share your preferred dates and group size to confirm the current price, availability, itinerary, accommodation, and package details.
 
 Final Travel Tip: Skardu is beautiful in every season, but the best experience comes from choosing travel dates according to your interests and checking the latest weather and road conditions. Plan ahead, keep your itinerary flexible, and enjoy the natural beauty of Baltistan with Hodophile.
 `,
@@ -862,9 +862,9 @@ Choosing the right travel dates is only one part of a successful Skardu holiday.
 
 Hodophile helps travelers plan northern Pakistan tours with organized routes and destination-focused travel experiences. Visit the [Skardu destination guide](/destinations/skardu) to learn more about the region and available journeys.
 
-If you want to explore Skardu and Basho Valley together, check the [Skardu and Basho by Road six day tour](/packages/skardu-and-basho-by-road-6-days). The itinerary includes Skardu, Basho Valley, Shangrila Resort, Manthoka Waterfall, Shigar Fort, and the Sarfaranga Cold Desert. It also includes a 4x4 jeep journey for Basho.
+If you want to explore Skardu and Basho Valley together, compare the current routes on Hodophile's [Skardu Valley tour packages](/tours/northern-tours/skardu-valley-tour-packages). Included stops and 4x4 access vary by itinerary.
 
-The package page currently lists a starting rate of PKR 55,000. Confirm the latest price, hotel arrangements, inclusions, availability, and route details for your selected dates before booking.
+Confirm the current price, hotel arrangements, inclusions, availability, and route details for your selected dates before booking.
 
 ## Frequently Asked Questions About the Best Time to Visit Skardu
 

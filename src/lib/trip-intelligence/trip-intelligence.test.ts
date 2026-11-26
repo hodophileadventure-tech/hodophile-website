@@ -87,9 +87,11 @@ test("getSimilarTrips returns only genuinely related trips and excludes the curr
 });
 
 test("similar trip scoring is deterministic and removes duplicates", () => {
-  const uniqueResults = getSimilarTrips(tourPackages[0], [tourPackages[0], tourPackages[0], tourPackages[1]]);
+  const similarTrip = tourPackages.find((trip) => trip.id === "skardu-khaplu-deosai-basho-air-7-days");
+  assert.ok(similarTrip);
+  const uniqueResults = getSimilarTrips(tourPackages[0], [tourPackages[0], tourPackages[0], similarTrip]);
   assert.equal(uniqueResults.length, 1);
-  assert.equal(uniqueResults[0].trip.id, "skardu-basho-6-days");
+  assert.equal(uniqueResults[0].trip.id, similarTrip.id);
 });
 
 test("saved-trip related journeys reuse canonical similarity for one seed", () => {
@@ -234,7 +236,7 @@ test("recommendations change materially with style, duration, budget, and destin
   assert.notDeepEqual(shortAdventure.map((result) => result.trip.id), longAdventure.map((result) => result.trip.id));
   assert.notDeepEqual(shortAdventure.map((result) => result.trip.id), family.map((result) => result.trip.id));
   assert.notDeepEqual(family.map((result) => result.trip.id), lowBudget.map((result) => result.trip.id));
-  assert.equal(kashmir[0]?.trip.id, "seasonal-11");
+  assert.ok(kashmir[0]?.trip.destinationSlugs.includes("kashmir"));
   assert.ok(kashmir.every((result) => result.score > 0));
   assert.ok(lowBudget[0]?.score > 0);
   assert.ok(lowBudget[0]?.reasons.some((reason) => reason.criterion === "budget" && reason.type === "match"));
@@ -249,17 +251,15 @@ test("near matches retain factual mismatch reasons and honest on-request month w
   assert.ok(!result.reasons.some((reason) => reason.detail.includes("confirmed departure") && reason.type === "match"));
 });
 
-test("gorakh hill and moola chotok are unavailable in april through september", () => {
+test("gorakh hill is unavailable in april through september", () => {
   const blockedMonths = ["april", "may", "june", "july", "august", "september"];
 
-  for (const id of ["seasonal-53", "seasonal-54"]) {
-    const trip = tourPackages.find((candidate) => candidate.id === id);
-    assert.ok(trip, `missing canonical trip ${id}`);
+  const trip = tourPackages.find((candidate) => candidate.id === "seasonal-53");
+  assert.ok(trip, "missing canonical Gorakh Hill trip");
 
-    for (const month of blockedMonths) {
-      const result = calculateTripFit({ departureMonth: month }, trip);
-      assert.equal(result.matchedCriteria.includes("departureMonth"), false, `${id} should not be available in ${month}`);
-      assert.ok(result.reasons.some((reason) => reason.criterion === "departureMonth" && reason.type === "mismatch"));
-    }
+  for (const month of blockedMonths) {
+    const result = calculateTripFit({ departureMonth: month }, trip);
+    assert.equal(result.matchedCriteria.includes("departureMonth"), false, `Gorakh Hill should not be available in ${month}`);
+    assert.ok(result.reasons.some((reason) => reason.criterion === "departureMonth" && reason.type === "mismatch"));
   }
 });

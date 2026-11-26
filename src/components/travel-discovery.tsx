@@ -35,6 +35,7 @@ type DiscoveryPackage = {
   duration: string;
   pricePerPerson?: number;
   listedPricePerPerson?: number;
+  packagePrice?: { amount: number; label: string };
   detailHref?: string;
   listedPriceNote?: string;
   requestOnly?: boolean;
@@ -78,7 +79,7 @@ function journeyHref(packageItem: DiscoveryPackage) {
 }
 
 function listedPrice(packageItem: DiscoveryPackage) {
-  const price = packageItem.pricePerPerson ?? packageItem.listedPricePerPerson;
+  const price = packageItem.pricePerPerson ?? packageItem.listedPricePerPerson ?? packageItem.packagePrice?.amount;
   return price === undefined ? "Price on request" : formatCurrency(price);
 }
 
@@ -112,13 +113,15 @@ const packageList: DiscoveryPackage[] = [
     ...idea,
     scheduleNote: idea.pricePerPerson
       ? "Confirm dates, availability, and the current rate"
-      : "Dates, itinerary details, and current price to confirm",
+      : idea.packagePrice
+        ? "Confirm dates and availability for the private package rate"
+        : "Dates, itinerary details, and current price to confirm",
     departureAvailability: "on-request",
     notes: [],
     departures: [],
     transport: [],
     includes: [],
-    requestOnly: idea.pricePerPerson === undefined,
+    requestOnly: idea.pricePerPerson === undefined && idea.packagePrice === undefined,
     summary: idea.description,
   })),
 ];
@@ -248,7 +251,6 @@ export function JourneyActions({ packageId, packageTitle }: { packageId: string;
 
 function RouteCard({
   packageItem,
-  destinationLabel,
   isWishlistEnabled,
   isCompareEnabled,
   onToggleWishlist,
@@ -257,7 +259,6 @@ function RouteCard({
   matchScore,
 }: {
   packageItem: DiscoveryPackage;
-  destinationLabel?: string;
   isWishlistEnabled: boolean;
   isCompareEnabled: boolean;
   onToggleWishlist: (id: string) => void;
@@ -273,7 +274,7 @@ function RouteCard({
       imageAlt={packageItem.title}
       imageSizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
       imageHeight="aspect-[16/10]"
-      badge={destinationLabel ?? packageItem.routeStops[0] ?? (packageItem.region === "northern" ? "Northern" : "Southern")}
+      badge="Departure city"
       counter={matchScore !== undefined ? `${matchScore}% match` : undefined}
       eyebrow={`${packageItem.duration}${packageItem.pace ? ` · ${packageItem.pace} pace` : ""}`}
       title={packageItem.title}
@@ -309,7 +310,7 @@ function RouteCard({
         <div className="mt-auto flex items-end justify-between gap-3 border-t border-stone-300 pt-4">
           <div>
             <p className="text-[10px] uppercase tracking-[0.18em] text-stone-500">
-              {packageItem.listedPriceNote ?? (packageItem.pricePerPerson === undefined && packageItem.listedPricePerPerson === undefined ? "Pricing" : "From")}
+              {packageItem.listedPriceNote ?? packageItem.packagePrice?.label ?? (packageItem.pricePerPerson === undefined && packageItem.listedPricePerPerson === undefined ? "Pricing" : "From")}
             </p>
             <p className="mt-1 text-xl font-semibold text-[#806000]">{priceText}</p>
           </div>

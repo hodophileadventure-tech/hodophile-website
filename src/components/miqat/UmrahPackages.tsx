@@ -41,7 +41,7 @@ function PackageCard({ pkg }: { pkg: UmrahPackage }) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#777]">{pkg.originalTier} tier</p>
-            <h3 className="mt-2 font-[var(--font-display)] text-3xl text-[#111]">{pkg.name}</h3>
+            <h3 className="miqat-package-name mt-2 font-[var(--font-display)] text-3xl font-bold text-[#FCC000]">{pkg.name}</h3>
           </div>
           <p className="whitespace-nowrap border border-[#d7b200] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#5d4b00]">{pkg.duration} days</p>
         </div>

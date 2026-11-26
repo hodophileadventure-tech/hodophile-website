@@ -18,7 +18,7 @@ const heroImageAlt = "Swat Valley green hills and river scenery in Khyber Pakhtu
 const whatsappNumber = "https://wa.me/923377777460";
 
 const packageHeadingById: Record<string, string> = {
-  "swat-kalam-shogran-10-days": "Swat, Kalam, Malam Jabba, Balakot and Shogran",
+  "swat-kalam-shogran-10-days": "Swat, Shogran and Khanpur Dam",
   "swat-kalam-malam-jabba-khanpur-4-days": "Swat, Kalam and Malam Jabba",
 };
 
@@ -257,10 +257,10 @@ export function SwatTourPageContent({ packages }: { packages: TourPackage[] }) {
               const heading = packageHeadingById[tourPackage.id] ?? tourPackage.title;
               const packagePath = getPackagePath(tourPackage.id);
               const description = tourPackage.id === "swat-kalam-shogran-10-days"
-                ? "A six day private journey from Islamabad through Malam Jabba, Kalam, Balakot, and Shogran."
+                ? "A six-day private journey from Islamabad through Malam Jabba, Swat, Shogran, and Khanpur Dam."
                 : "A four day journey from Islamabad to Kalam, Ushu Forest, and Malam Jabba, with an optional Khanpur Dam stop on the return.";
               const scheduleNote = tourPackage.id === "swat-kalam-shogran-10-days"
-                ? "Six day private tour from Islamabad; Khanpur Dam is visited only if time allows."
+                ? "Pickup and drop-off in Islamabad; Malam Jabba is visited on Day 1 and Khanpur Dam on Day 6."
                 : "Four day tour from Islamabad; Khanpur Dam is visited only if time allows.";
               return (
                 <article key={tourPackage.id} className="group flex h-full flex-col rounded-[1.5rem] border border-stone-200 bg-white p-5 shadow-[0_12px_34px_rgba(54,44,18,0.05)] transition duration-300 hover:-translate-y-1 hover:border-[#c39a21]/70">

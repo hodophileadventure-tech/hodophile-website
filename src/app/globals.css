@@ -1323,6 +1323,10 @@ html[data-theme="light"] .site-theme :is(.journey-card, [class*="bg-[#fff"], [cl
   color: #211f1a;
 }
 
+html[data-theme="light"] .site-theme :is(h1, h3).miqat-package-name {
+  color: #FCC000;
+}
+
 /* Card grids: one card per row on narrow mobile screens */
 @media (max-width: 639px) {
   .site-theme [class*="grid"]:has(> .journey-card),

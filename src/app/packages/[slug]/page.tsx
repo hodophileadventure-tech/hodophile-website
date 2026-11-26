@@ -311,19 +311,25 @@ allPackages.push(
       duration: idea.duration,
       bestFor: idea.bestFor,
       factsNeedConfirmation: true,
-      priceDisplay: idea.pricePerPerson
+      priceDisplay: idea.packagePrice
         ? {
-            label: idea.pricingGroups?.length ? "Starting rate from Islamabad" : "Listed starting rate",
-            value: `PKR ${idea.pricePerPerson.toLocaleString()}`,
-            note: idea.pricingGroups?.length
-              ? "The listed starting rate is for quad sharing without an Islamabad stay. Confirm the current rate and configuration for your dates."
-              : "This listed rate is a reference; confirm the current price and package configuration for your dates.",
+            label: idea.packagePrice.label,
+            value: `PKR ${idea.packagePrice.amount.toLocaleString()}`,
+            note: "This listed amount is the total private-package rate; confirm its configuration and availability for your dates.",
           }
-        : {
-            label: "Package rate",
-            value: "Price on request",
-            note: "A specific rate is not listed for this journey. Request a quote for your dates and group size.",
-          },
+        : idea.pricePerPerson
+          ? {
+              label: idea.pricingGroups?.length ? "Starting rate from Islamabad" : "Listed starting rate",
+              value: `PKR ${idea.pricePerPerson.toLocaleString()}`,
+              note: idea.pricingGroups?.length
+                ? "The listed starting rate is the quad-sharing rate. Confirm the current rate and configuration for your dates."
+                : "This listed rate is a reference; confirm the current price and package configuration for your dates.",
+            }
+          : {
+              label: "Package rate",
+              value: "Price on request",
+              note: "A specific rate is not listed for this journey. Request a quote for your dates and group size.",
+            },
       summary: idea.description,
       description: idea.description,
       overview: idea.description,
@@ -342,6 +348,7 @@ allPackages.push(
           content: [
             `Destinations: ${idea.routeStops.join(" → ")}.`,
             `Travel pace: ${idea.pace.toLowerCase()}.`,
+            ...(idea.packagePrice ? [`Listed private-package total: PKR ${idea.packagePrice.amount.toLocaleString()}.`] : []),
             ...(idea.pricePerPerson ? [`Listed starting rate: PKR ${idea.pricePerPerson.toLocaleString()} per person.`] : []),
           ],
         },

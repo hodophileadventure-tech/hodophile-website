@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 
 import { DealsPopup } from "@/components/deals-popup";
-import { LeadCapturePopup } from "@/components/lead-capture-popup";
 
 export function SitePopups() {
   const pathname = usePathname();
@@ -13,9 +12,6 @@ export function SitePopups() {
   }
 
   return (
-    <>
-      <DealsPopup />
-      <LeadCapturePopup />
-    </>
+    <DealsPopup />
   );
 }

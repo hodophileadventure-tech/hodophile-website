@@ -332,7 +332,8 @@ function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number 
       title={pkg.name}
       imageCaption={
         <>
-          From <span className="text-[#FCC000]">{pkg.price}</span>
+          From <span className="text-base font-bold text-[#FCC000]">{pkg.price}</span>
+          <span className="ml-1 text-sm font-semibold text-[#FCC000]">per person</span>
           {pkg.artwork?.route ? <span className="ml-2 text-white/55">· {pkg.artwork.route}</span> : null}
         </>
       }
@@ -376,7 +377,10 @@ function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number 
                 <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-stone-500">
                   Listed from
                 </p>
-                <p className="mt-1 font-[var(--font-display)] text-xl text-stone-950">{pkg.price}</p>
+                <p className="theme-preserve-dark mt-1 rounded-md bg-[#11110f] px-2 py-1 font-[var(--font-display)] text-xl font-bold text-[#FCC000]">
+                  {pkg.price}
+                  <span className="ml-1 text-xs font-semibold">per person</span>
+                </p>
               </div>
             </div>
             {pkg.sections.map((section, sectionIndex) => (
@@ -391,9 +395,15 @@ function PackageCard({ pkg, index }: { pkg: InternationalPackage; index: number 
                 </div>
                 <ul className="mt-3 space-y-2.5 pl-7">
                   {section.items.map((item) => (
-                    <li key={item} className="flex gap-3 text-sm leading-6 text-stone-600">
-                      <span aria-hidden="true" className="mt-[0.65rem] h-1 w-1 shrink-0 rounded-full bg-[#c69a00]" />
-                      <span>{item}</span>
+                    <li
+                      key={item}
+                      className={`flex gap-3 text-sm leading-6 ${/\bPKR\b/i.test(item) ? "theme-preserve-dark rounded-lg bg-[#11110f] px-3 py-2 text-[#FCC000]" : "text-stone-600"}`}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`mt-[0.65rem] h-1 w-1 shrink-0 rounded-full ${/\bPKR\b/i.test(item) ? "bg-[#FCC000]" : "bg-[#c69a00]"}`}
+                      />
+                      <span className={/\bPKR\b/i.test(item) ? "font-semibold text-[#FCC000]" : ""}>{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -554,9 +564,9 @@ export default function BeyondPakistanPage() {
                   </p>
                 </div>
                 <div className="border-l border-white/25 pl-4 sm:pl-6 lg:border-l-0 lg:pl-0">
-                  <p className="font-[var(--font-display)] text-2xl text-white sm:text-3xl">PKR 170K</p>
-                  <p className="mt-1 text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-white/70 sm:text-[0.65rem]">
-                    Listed starting fare
+                  <p className="font-[var(--font-display)] text-2xl font-bold text-[#FCC000] sm:text-3xl">PKR 170K</p>
+                  <p className="mt-1 text-[0.58rem] font-semibold uppercase leading-4 tracking-[0.14em] text-[#FCC000] sm:text-[0.65rem]">
+                    Listed starting fare per person
                   </p>
                 </div>
                 <div className="border-l border-white/25 pl-4 sm:pl-6 lg:border-l-0 lg:pl-0">
