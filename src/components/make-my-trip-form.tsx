@@ -135,6 +135,7 @@ const CITY_MINIMUM_DAYS: Record<string, number> = {
   Naran: 3,
   Kashmir: 3,
   Swat: 3,
+  "Malam Jabba": 3,
   "Fairy Meadows": 5,
   Astore: 5,
   Murree: 2,
@@ -147,11 +148,17 @@ const destinationCardDetails: Record<string, { image?: string; description: stri
   Astore: { image: "/images/package-cards/images__astore-ready.webp", description: "Remote valley routes" },
   Kashmir: { image: "/images/package-cards/destination-kashmir-valley-planner.webp", description: "Forests and valleys" },
   Swat: { image: "/images/package-cards/destination-swat-valley-planner.webp", description: "Green mountain valleys" },
+  "Malam Jabba": { image: "/images/package-cards/images__destinations__featured-kalam-malam-jabba.webp", description: "Ski resort and mountain views" },
   "Fairy Meadows": { image: "/images/package-cards/destination-fairy-meadows-planner.webp", description: "Alpine meadow journeys" },
   Shogran: { image: "/images/package-cards/images__honeymoon__naran-shogran.webp", description: "Meadows and mountain views" },
   "Nathia Gali": { image: "/images/package-cards/destination-nathia-gali-planner.webp", description: "Forest-covered hills" },
   Murree: { image: "/images/package-cards/images__honeymoon__murree-tour.webp", description: "Hill-station escapes" },
 };
+
+function getHotelStayLabel(city: string) {
+  return city === "Malam Jabba" ? "Swat stay for Malam Jabba" : city;
+}
+
 const plannerInspirations = [
   { city: "Hunza", image: "/images/package-cards/hero-images__hunza.avif", description: "Terraced valleys beneath towering peaks." },
   { city: "Skardu", image: "/images/package-cards/hero-images__skurdu.webp", description: "Glacial lakes, wide skies, and mountain roads." },
@@ -2215,7 +2222,8 @@ export function MakeMyTripForm() {
       const hotel = getHotelsByCity(baseCity).find((item) => item.id === hotelId)
         ?? availableHotels.find((item) => item.id === hotelId);
       if (!hotel) return "";
-      return `${city ? `${city}: ` : ""}${hotel.name}${roomId ? ` · ${roomId}` : ""}`;
+      const stayLabel = getHotelStayLabel(city);
+      return `${stayLabel ? `${stayLabel}: ` : ""}${hotel.name}${roomId ? ` · ${roomId}` : ""}`;
     };
 
     if (supportsMultipleHotelsInCustomSingleCity || supportsMultipleHotelsInSingleCity) {
@@ -3297,7 +3305,7 @@ export function MakeMyTripForm() {
                       className="mb-4 pb-4 border-b border-[#f4d77d] last:border-b-0 rounded-[10px] bg-white p-3"
                     >
                       <p className="text-xs uppercase tracking-widest text-[#7f5a00] mb-3 font-bold">
-                        {city}
+                        {getHotelStayLabel(city)}
                       </p>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
                         <div className="grid gap-2 text-sm font-medium text-black">
@@ -3305,7 +3313,7 @@ export function MakeMyTripForm() {
                           <HotelCardPicker
                             hotels={hotelsForCity}
                             selectedHotelId={currentSelection?.hotelId || ""}
-                            label={`${city} executive hotel options`}
+                            label={`${getHotelStayLabel(city)} executive hotel options`}
                             onSelect={(nextHotelId) =>
                               setMultiCityHotels({
                                 ...multiCityHotels,
@@ -3384,7 +3392,7 @@ export function MakeMyTripForm() {
                     >
                       <div className="flex items-center justify-between gap-2 mb-3">
                         <p className="text-xs uppercase tracking-widest text-[#6e5200] font-semibold">
-                          {city} {nightsForCity > 0 && `(${nightsForCity} night${nightsForCity !== 1 ? 's' : ''})`}
+                          {getHotelStayLabel(city)} {nightsForCity > 0 && `(${nightsForCity} night${nightsForCity !== 1 ? 's' : ''})`}
                         </p>
                       </div>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
@@ -3393,7 +3401,7 @@ export function MakeMyTripForm() {
                           <HotelCardPicker
                             hotels={hotelsForCity}
                             selectedHotelId={currentSelection?.hotelId || ""}
-                            label={`${city} hotel options`}
+                            label={`${getHotelStayLabel(city)} hotel options`}
                             onSelect={(nextHotelId) =>
                               setMultiCityHotels({
                                 ...multiCityHotels,
@@ -3445,7 +3453,7 @@ export function MakeMyTripForm() {
                   <div>
                     <p className="inline-flex items-center gap-2 text-sm font-semibold text-green-900">
                       <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
-                      <span>Select Hotels for {selectedCities[0] || "your selected city"}</span>
+                      <span>Select Hotels for {getHotelStayLabel(selectedCities[0] || "your selected city")}</span>
                     </p>
                     <p className="text-xs text-green-800 mt-1">You can split the stay across multiple hotels because this trip is longer than 2 nights.</p>
                   </div>
@@ -3696,7 +3704,7 @@ export function MakeMyTripForm() {
                       className="mb-4 pb-4 border-b border-[#f4d77d] last:border-b-0 rounded-[10px] bg-white p-3"
                     >
                       <p className="text-xs uppercase tracking-widest text-green-800 mb-3 font-semibold">
-                        {city}
+                        {getHotelStayLabel(city)}
                       </p>
                       <div className="grid gap-3 grid-cols-1 lg:grid-cols-2">
                         <div className="grid gap-2 text-sm font-medium text-black">
@@ -3704,7 +3712,7 @@ export function MakeMyTripForm() {
                           <HotelCardPicker
                             hotels={hotelsForCity}
                             selectedHotelId={currentSelection?.hotelId || ""}
-                            label={`${city} hotel options`}
+                            label={`${getHotelStayLabel(city)} hotel options`}
                             onSelect={(nextHotelId) =>
                               setMultiCityHotels({
                                 ...multiCityHotels,

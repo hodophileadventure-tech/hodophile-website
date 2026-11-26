@@ -1014,6 +1014,7 @@ export const hotels: Hotel[] = [
 ];
 
 const hotelCityAliases: Record<string, string> = {
+  "Malam Jabba": "Swat",
   Taobat: "Kashmir",
   "Arang Kel": "Kashmir",
   Arangkel: "Kashmir",

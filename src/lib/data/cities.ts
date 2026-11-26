@@ -40,6 +40,7 @@ export const citiesWithHotels = [
   "Astore",
   "Kashmir",
   "Swat",
+  "Malam Jabba",
   "Fairy Meadows",
   "Shogran",
   "Nathia Gali",

@@ -14,6 +14,7 @@ const locations: Record<string, TransportLocation> = {
   "karachi": { name: "Karachi", coordinate: [67.0011, 24.8607] },
   "nathia gali": { name: "Nathia Gali", coordinate: [73.3861, 34.0725] },
   "swat": { name: "Swat", coordinate: [72.3601, 34.7717] },
+  "malam jabba": { name: "Malam Jabba", coordinate: [72.579, 34.8] },
   "shogran": {
     name: "Shogran",
     coordinate: [73.492, 34.629],
