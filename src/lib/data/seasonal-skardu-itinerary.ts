@@ -5,9 +5,28 @@ export interface CityStay {
 
 const ROAD_STOPOVER_CITIES = new Set(["Naran", "Chilas", "Besham"]);
 const CUSTOM_SKARDU_ROUTE_CITIES = new Set(["Hunza", "Skardu", "Fairy Meadows", "Astore"]);
+const STOPOVER_EXCLUSION_CITIES = new Set(["Shogran", "Swat", "Kashmir", "Murree"]);
 
 function getBaseCity(city: string): string {
   return city.trim().replace(/\s+\([^)]*\)$/, "");
+}
+
+export function shouldExcludeRoadStopovers(destinations: readonly string[]): boolean {
+  return destinations.some((city) => STOPOVER_EXCLUSION_CITIES.has(getBaseCity(city)));
+}
+
+export function isExcludedRoadStopover(
+  destinations: readonly string[],
+  city: string,
+): boolean {
+  return shouldExcludeRoadStopovers(destinations) &&
+    ROAD_STOPOVER_CITIES.has(getBaseCity(city));
+}
+
+export function excludeConflictingRoadStopovers(destinations: readonly string[]): string[] {
+  return shouldExcludeRoadStopovers(destinations)
+    ? destinations.filter((city) => !ROAD_STOPOVER_CITIES.has(getBaseCity(city)))
+    : [...destinations];
 }
 
 export function getCustomRoadStopoverCities(
@@ -15,18 +34,21 @@ export function getCustomRoadStopoverCities(
   travelMode: "road" | "air",
   month: number,
 ): string[] {
+  const effectiveDestinations = excludeConflictingRoadStopovers(destinations);
   if (
     travelMode === "air" ||
-    !destinations.some((city) => CUSTOM_SKARDU_ROUTE_CITIES.has(getBaseCity(city)))
+    shouldExcludeRoadStopovers(destinations) ||
+    effectiveDestinations.length !== destinations.length ||
+    !effectiveDestinations.some((city) => CUSTOM_SKARDU_ROUTE_CITIES.has(getBaseCity(city)))
   ) {
     return [];
   }
 
-  const selectedCities = new Set(destinations.map(getBaseCity));
+  const selectedCities = new Set(effectiveDestinations.map(getBaseCity));
   if (month >= 5 && month <= 11) {
     return [
-      ...(destinations.filter((city) => getBaseCity(city) === "Naran").length >= 1 ? [] : ["Naran (Outbound)"]),
-      ...(destinations.filter((city) => getBaseCity(city) === "Naran").length >= 2 ? [] : ["Naran (Return)"]),
+      ...(effectiveDestinations.filter((city) => getBaseCity(city) === "Naran").length >= 1 ? [] : ["Naran (Outbound)"]),
+      ...(effectiveDestinations.filter((city) => getBaseCity(city) === "Naran").length >= 2 ? [] : ["Naran (Return)"]),
     ];
   }
 

@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { getHotelsByCity } from "./hotels";
-import { getCustomRoadStopoverCities, getSeasonalSkarduStays } from "./seasonal-skardu-itinerary";
+import {
+  excludeConflictingRoadStopovers,
+  getCustomRoadStopoverCities,
+  getSeasonalSkarduStays,
+} from "./seasonal-skardu-itinerary";
 import { getTransportLocation } from "../transport/locations";
 
 test("uses Naran outbound and return from May through November", () => {
@@ -129,4 +133,14 @@ test("does not duplicate selected seasonal stops or add road stopovers to air tr
   assert.deepEqual(getCustomRoadStopoverCities(["Chilas", "Besham", "Hunza"], "road", 1), []);
   assert.deepEqual(getCustomRoadStopoverCities(["Hunza", "Skardu"], "air", 7), []);
   assert.deepEqual(getCustomRoadStopoverCities(["Swat"], "road", 7), []);
+});
+
+test("excludes Naran, Chilas, and Besham from custom routes containing specified hill destinations", () => {
+  for (const city of ["Shogran", "Swat", "Kashmir", "Murree"]) {
+    assert.deepEqual(
+      excludeConflictingRoadStopovers([city, "Naran", "Chilas (Arrival)", "Besham (Return)"]),
+      [city],
+    );
+    assert.deepEqual(getCustomRoadStopoverCities([city, "Hunza"], "road", 7), []);
+  }
 });

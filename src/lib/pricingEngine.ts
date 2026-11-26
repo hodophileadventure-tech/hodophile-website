@@ -1,12 +1,11 @@
 import { getRouteById } from "./data/routes";
 import { getHotelById } from "./data/hotels";
-import { calculateJeepCost } from "./data/jeeps";
+import { calculateJeepCost, getJeepAddonById } from "./data/jeeps";
 import { getRouteDistance } from "./data/distances";
 import { estimateCustomItineraryDistance, estimateCustomVehicleDays } from "./data/custom-itinerary";
 import { getVehicleRate } from "./data/vehicleRates";
 import { currentFuelPrices } from "./data/fuel";
-import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "./data/routeActivities";
-import { isAirJeepRideDestination } from "./transport/air-routing";
+import { getMandatoryJeepCost } from "./data/routeActivities";
 import {
   calculateTransportExpense,
   type TransportCostSettings,
@@ -80,8 +79,6 @@ export interface ServerTransportOptions {
   distanceKm?: number;
   vehicleConfiguration?: TransportVehicleConfiguration | null;
   settings?: TransportCostSettings;
-  airDestinationJeepCost?: number;
-  airDestinationJeepDetails?: string[];
 }
 
 function getSeasonFromDate(date: string): "peak" | "blossom" | "off" | "fixed" {
@@ -456,17 +453,9 @@ export function calculateQuotation(
 
     const routeJeepCostPerJeep = getMandatoryJeepCost(route?.id || input.routeId);
     // Air-mode Astore/Fairy Meadows rides use the server-priced destination fees below.
-    const citiesForExistingJeepCosts = input.customCities?.filter(
-      (city) => input.travelMode !== "air" || !isAirJeepRideDestination(city),
-    );
-    const customCityJeepCostPerJeep = citiesForExistingJeepCosts
-      ? getMandatoryJeepCostForCities(citiesForExistingJeepCosts)
-      : 0;
-
-    // Derive mandatory activity costs from the selected route/cities so callers
-    // cannot override server-side pricing with a client-supplied total.
+    // Derive mandatory activity costs from the selected package route.
     let actualMandatoryJeepCost = 0;
-    const perJeep = input.customCities ? customCityJeepCostPerJeep : routeJeepCostPerJeep;
+    const perJeep = input.customCities ? 0 : routeJeepCostPerJeep;
     const estimatedJeepCount = Math.ceil((input.adults + input.kids) / 6) || 1;
     if (perJeep && perJeep > 0) {
       actualMandatoryJeepCost = perJeep * Math.max(1, estimatedJeepCount);
@@ -474,29 +463,22 @@ export function calculateQuotation(
 
     let jeepAddonsCost = 0;
     const jeepDetails: string[] = [];
-    const airDestinationJeepCost = input.travelMode === "air"
-      ? serverTransportOptions?.airDestinationJeepCost ?? 0
-      : 0;
-
     // Add mandatory jeep costs
     if (actualMandatoryJeepCost > 0) {
       jeepAddonsCost += actualMandatoryJeepCost;
       jeepDetails.push(`Mandatory jeep activity: ${actualMandatoryJeepCost}`);
     }
 
-    if (airDestinationJeepCost > 0) {
-      jeepAddonsCost += airDestinationJeepCost;
-      jeepDetails.push(
-        ...(serverTransportOptions?.airDestinationJeepDetails ??
-          [`By Air destination jeep rides: PKR ${airDestinationJeepCost.toLocaleString("en-PK")}`]),
-      );
-    }
-
     // Add optional jeep addons
     if (input.jeepAddons && input.jeepAddons.length > 0) {
       const additionalJeepCost = calculateJeepCost(input.jeepAddons);
       jeepAddonsCost += additionalJeepCost;
-      jeepDetails.push(`Additional jeep addons: ${input.jeepAddons.length} selected`);
+      jeepDetails.push(
+        ...input.jeepAddons.flatMap(({ id, quantity }) => {
+          const addon = getJeepAddonById(id);
+          return addon ? [`${addon.name} (${quantity} jeep${quantity === 1 ? "" : "s"})`] : [];
+        }),
+      );
     }
 
     const subtotal = transportCost + hotelCost + jeepAddonsCost;

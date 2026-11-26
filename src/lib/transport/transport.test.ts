@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { calculateQuotation, calculateTransportCost } from "@/lib/pricingEngine";
+import { calculateJeepCost, getPackageJeepRideOptions } from "@/lib/data/jeeps";
 
 import { isTransportAdminAuthorized } from "./admin-auth";
 import { calculateTransportExpense } from "./calculations";
@@ -418,7 +419,7 @@ test("keeps configured package-route transport pricing independent of custom-rou
 });
 
 test("uses a supplied road distance once in a custom quotation", () => {
-  const quote = calculateQuotation({
+  const input = {
     routeId: "custom-itinerary",
     customCities: ["Naran"],
     routeDestinations: ["Naran"],
@@ -430,11 +431,13 @@ test("uses a supplied road distance once in a custom quotation", () => {
     adults: 2,
     kids: 0,
     tripDate: "2026-06-15",
-  }, {
+    jeepAddons: [{ id: "package-jeep-naran", quantity: 1 }],
+  };
+  const options = {
     distanceKm: 500,
     vehicleConfiguration: {
       name: "Toyota Corolla",
-      fuelType: "petrol",
+      fuelType: "petrol" as const,
       averageKmPerLiter: 10,
       maintenanceCostPerKm: 2,
     },
@@ -444,15 +447,45 @@ test("uses a supplied road distance once in a custom quotation", () => {
       additionalDistanceKm: 0,
       additionalDistancePercent: 10,
     },
-  });
+  };
+  const quote = calculateQuotation(input, options);
+  const quoteWithoutSelectedRide = calculateQuotation({ ...input, jeepAddons: undefined }, options);
 
   assert.ok(quote);
+  assert.ok(quoteWithoutSelectedRide);
+  assert.equal(quote.jeepAddonsCost, 7_000);
+  assert.equal(quoteWithoutSelectedRide.jeepAddonsCost, 0);
+  assert.deepEqual(getPackageJeepRideOptions(["Naran"], "road").map((ride) => ride.pricePerJeep), [7_000]);
   assert.equal(quote.transportBreakdown?.distance, 550);
   assert.equal(quote.transportBreakdown?.fuelCost, 16_500);
   assert.equal(quote.transportBreakdown?.maintenanceCost, 1_100);
   assert.equal(quote.transportBreakdown?.rentalCost, 6_000);
   assert.equal(quote.transportBreakdown?.tollTax, 8_000);
   assert.equal(quote.transportCost, 31_600);
+});
+
+test("offers the requested per-jeep rates and selects the By Air Astore rate", () => {
+  assert.deepEqual(
+    getPackageJeepRideOptions(
+      ["Hunza", "Skardu", "Naran", "Astore", "Kashmir", "Swat", "Fairy Meadows", "Shogran"],
+      "road",
+    ).map(({ city, pricePerJeep }) => [city, pricePerJeep]),
+    [
+      ["Hunza", 20_000],
+      ["Skardu", 22_000],
+      ["Naran", 7_000],
+      ["Astore", 35_000],
+      ["Kashmir", 30_000],
+      ["Swat", 15_000],
+      ["Fairy Meadows", 20_000],
+      ["Shogran", 12_000],
+    ],
+  );
+  assert.deepEqual(
+    getPackageJeepRideOptions(["Astore"], "air").map(({ pricePerJeep }) => pricePerJeep),
+    [70_000],
+  );
+  assert.equal(calculateJeepCost([{ id: "package-jeep-naran", quantity: 2 }]), 14_000);
 });
 
 test("uses only the server-calculated Skardu road distance for air transport pricing", () => {
@@ -501,7 +534,7 @@ test("uses only the server-calculated Skardu road distance for air transport pri
   assert.equal(skarduOnlyQuote.transportBreakdown?.distance, 0);
 });
 
-test("adds server-calculated By Air jeep rides without duplicating the custom Fairy Meadows jeep fee", () => {
+test("adds only selected By Air jeep rides to a custom destination quote", () => {
   const quote = calculateQuotation({
     routeId: "skardu-basho-6days",
     vehicleName: "Toyota Corolla",
@@ -514,6 +547,10 @@ test("adds server-calculated By Air jeep rides without duplicating the custom Fa
     kids: 0,
     tripDate: "2026-06-15",
     travelMode: "air",
+    jeepAddons: [
+      { id: "package-jeep-astore-air", quantity: 1 },
+      { id: "package-jeep-fairy-meadows", quantity: 1 },
+    ],
   }, {
     distanceKm: 1_200,
     vehicleConfiguration: {
@@ -529,19 +566,14 @@ test("adds server-calculated By Air jeep rides without duplicating the custom Fa
       additionalDistanceKm: 0,
       additionalDistancePercent: 0,
     },
-    airDestinationJeepCost: 90_000,
-    airDestinationJeepDetails: [
-      "Astore jeep ride: PKR 70,000",
-      "Fairy Meadows jeep ride: PKR 20,000",
-    ],
   });
 
   assert.ok(quote);
   assert.equal(quote.transportBreakdown?.distance, 1_200);
   assert.equal(quote.jeepAddonsCost, 90_000);
   assert.deepEqual(quote.details.jeepAddonsDetails, [
-    "Astore jeep ride: PKR 70,000",
-    "Fairy Meadows jeep ride: PKR 20,000",
+    "Astore jeep ride (By Air) (1 jeep)",
+    "Fairy Meadows jeep ride (1 jeep)",
   ]);
 });
 

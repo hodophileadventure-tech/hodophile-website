@@ -38,6 +38,8 @@ interface QuotationDisplayData {
   vehicleName?: string;
   roomType?: string;
   tourStartingPoint?: string;
+  jeepAddons?: Array<{ id: string; quantity: number }>;
+  jeepRideNames?: string[];
 }
 
 export function QuotationResultContent() {
@@ -87,6 +89,7 @@ export function QuotationResultContent() {
               kids: decoded.kids,
               tripDate: decoded.tripDate,
               promoCode: decoded.promoCode,
+              jeepAddons: decoded.jeepAddons,
             }),
           });
           const result = await response.json();
@@ -167,10 +170,14 @@ export function QuotationResultContent() {
     : "To be confirmed";
   const quoteNumber = quotation.quoteNumber || "Q";
   const quoteDate = new Date().toLocaleDateString("en-GB");
+  const jeepRideNames = quotation.jeepRideNames ?? [];
   const inclusions = [
-    "Transport by selected vehicle",
-    "Hotel accommodation as quoted",
-    "Sightseeing and route coordination",
+    `${quotation.vehicleName || "Selected car"} with fuel and toll tax`,
+    "Breakfast",
+    ...(jeepRideNames.length > 0
+      ? [`Jeep ride${jeepRideNames.length === 1 ? "" : "s"}: ${jeepRideNames.join(", ")}`]
+      : []),
+    "Hotel accommodation",
   ];
 
   const handleWhatsApp = () => {
@@ -251,7 +258,7 @@ export function QuotationResultContent() {
             <tfoot>
               <tr>
                 <td colSpan={2} className="quotation-inclusions">
-                  <strong>Package included:</strong>
+                  <strong>Package includes:</strong>
                   <ul>
                     {inclusions.map((item) => <li key={item}>- {item}</li>)}
                   </ul>

@@ -28,8 +28,15 @@ import { calculateQuotation, type QuotationBreakdown, type QuotationInput } from
 import { formatPKR } from "@/lib/currency";
 import { getHotelsByCity, type Hotel } from "@/lib/data/hotels";
 import { routes, type PackagePricing, type Route, type RouteItineraryDay } from "@/lib/data/routes";
-import { getCustomRoadStopoverCities, getSeasonalSkarduStays } from "@/lib/data/seasonal-skardu-itinerary";
-import { getMandatoryJeepCost, getMandatoryJeepCostForCities } from "@/lib/data/routeActivities";
+import {
+  excludeConflictingRoadStopovers,
+  getCustomRoadStopoverCities,
+  getSeasonalSkarduStays,
+  isExcludedRoadStopover,
+  shouldExcludeRoadStopovers,
+} from "@/lib/data/seasonal-skardu-itinerary";
+import { getMandatoryJeepCost } from "@/lib/data/routeActivities";
+import { getPackageJeepRideOptions } from "@/lib/data/jeeps";
 import { sortedCitiesWithHotels } from "@/lib/data/cities";
 import COMBO_ITINERARIES from "@/lib/data/combo-itineraries";
 import { normalizeComboKey as toCombinationKey } from "@/lib/data/combo-keys";
@@ -239,6 +246,7 @@ export function MakeMyTripForm() {
   const [hideAutoIslamabad, setHideAutoIslamabad] = useState(false);
   const [routeId, setRouteId] = useState("");
   const [selectedCities, setSelectedCities] = useState<string[]>([]); // For individual city selection
+  const [selectedPackageJeepRideIds, setSelectedPackageJeepRideIds] = useState<string[]>([]);
   const [customCityNights, setCustomCityNights] = useState<Record<string, number>>({});
   const [hotelCategory, setHotelCategory] = useState("standard"); // standard, deluxe, executive
   const [hotelId, setHotelId] = useState("");
@@ -937,7 +945,7 @@ export function MakeMyTripForm() {
   };
 
   const effectiveSelectedCities = useMemo(() => {
-    let base = [...selectedCities];
+    let base = excludeConflictingRoadStopovers(selectedCities);
 
     if (shouldAutoIncludeIslamabad() && !base.includes("Islamabad")) {
       base = [...base, "Islamabad"];
@@ -1032,6 +1040,31 @@ export function MakeMyTripForm() {
     }
     return selectedCities;
   }, [effectiveSelectedCities, routeId, selectedCities, selectedRoute, travelMode, tripDate]);
+  const packageJeepDestinations = useMemo(
+    () => travelMode === "air"
+      ? selectedAirDestinations
+      : isCustomCitySelection()
+        ? effectiveSelectedCities
+        : selectedRoute
+          ? getVisibleMultiCityConfig(routeId)?.cities ?? [selectedRoute.city]
+          : [],
+    [effectiveSelectedCities, routeId, selectedAirDestinations, selectedCities, selectedRoute, travelMode, tripDate],
+  );
+  const availablePackageJeepRides = useMemo(
+    () => getPackageJeepRideOptions(packageJeepDestinations, travelMode),
+    [packageJeepDestinations, travelMode],
+  );
+  const selectedPackageJeepRides = useMemo(
+    () => availablePackageJeepRides.filter((ride) => selectedPackageJeepRideIds.includes(ride.id)),
+    [availablePackageJeepRides, selectedPackageJeepRideIds],
+  );
+  const selectedPackageJeepAddons = useMemo(
+    () => selectedPackageJeepRides.map((ride) => ({
+      id: ride.id,
+      quantity: computedJeepCount,
+    })),
+    [computedJeepCount, selectedPackageJeepRides],
+  );
 
   // Detect if a package (luxury / honeymoon / preplanned) is currently chosen
   const chosenPackage = useMemo<{ type: "luxury" | "honeymoon" | "preplanned"; key: string; label: string } | null>(() => {
@@ -1157,10 +1190,10 @@ export function MakeMyTripForm() {
   // Check if the selected city combination is valid using the itinerary graph.
   useEffect(() => {
     const isValid = travelMode === "air"
-      ? selectedCities.every(isAirDestination)
-      : isValidCustomRoute(getActualStartingPoint(), selectedCities);
-    setIsInvalidCombination(!isValid && selectedCities.length > 0);
-  }, [selectedCities, startingPoint, otherStartingPoint, travelMode]);
+      ? effectiveSelectedCities.every(isAirDestination)
+      : isValidCustomRoute(getActualStartingPoint(), effectiveSelectedCities);
+    setIsInvalidCombination(!isValid && effectiveSelectedCities.length > 0);
+  }, [selectedCities, effectiveSelectedCities, startingPoint, otherStartingPoint, travelMode]);
 
   // If the selected combination matches a pre-defined itinerary, auto-fill nights and show itinerary
   useEffect(() => {
@@ -1250,11 +1283,27 @@ export function MakeMyTripForm() {
         return updatedCities;
       }
 
-      const proposed = [...currentCities, city];
+      if (isExcludedRoadStopover(currentCities, city)) return currentCities;
+
+      const proposed = excludeConflictingRoadStopovers([...currentCities, city]);
       if (travelMode === "air" && !isAirDestination(city)) return currentCities;
       if (travelMode !== "air" && !isValidCustomRoute(getActualStartingPoint(), proposed)) {
         // Reject off-route combination silently
         return currentCities;
+      }
+
+      const removedStops = currentCities.filter((selectedCity) => !proposed.includes(selectedCity));
+      if (removedStops.length > 0) {
+        setMultiCityHotels((currentHotels) => {
+          const nextHotels = { ...currentHotels };
+          removedStops.forEach((removedCity) => delete nextHotels[removedCity]);
+          return nextHotels;
+        });
+        setCustomCityNights((currentNights) => {
+          const nextNights = { ...currentNights };
+          removedStops.forEach((removedCity) => delete nextNights[removedCity]);
+          return nextNights;
+        });
       }
 
       if (routeId) {
@@ -1420,16 +1469,13 @@ export function MakeMyTripForm() {
           const allStaysSelected = singleCityHotelStays.length > 0 && singleCityHotelStays.every((stay) => stay.hotelId && stay.roomId && stay.nights > 0);
 
           if (allStaysSelected && totalSingleCityNights === customSingleCityNightCount) {
-            const customJeepCost = getMandatoryJeepCostForCities(
-              effectiveSelectedCities.filter((city) => city !== "Islamabad")
-            );
             const quotationInput: QuotationInput = {
               routeId: "custom-itinerary",
               vehicleName,
               hotelCategory,
               customCities: effectiveSelectedCities,
               startingPoint: getActualStartingPoint(),
-              routeDestinations: travelMode === "air" ? selectedAirDestinations : selectedCities,
+              routeDestinations: travelMode === "air" ? selectedAirDestinations : effectiveSelectedCities,
               includeIslamabadTransit: !hideAutoIslamabad,
               customRouteLabel: effectiveSelectedCities.join(" + "),
               singleCityHotelStays,
@@ -1437,7 +1483,7 @@ export function MakeMyTripForm() {
               adults,
               kids,
               tripDate,
-              mandatoryJeepCost: customJeepCost,
+              jeepAddons: selectedPackageJeepAddons,
               travelMode: travelMode as "road" | "air",
             };
             refreshCustomQuotation(quotationInput, customQuoteRequestId);
@@ -1452,9 +1498,6 @@ export function MakeMyTripForm() {
           const allNightsSelected = effectiveSelectedCities.every((city) => (effectiveCustomCityNights[city] ?? 0) > 0);
 
           if (allHotelsSelected && allNightsSelected) {
-            const customJeepCost = getMandatoryJeepCostForCities(
-              effectiveSelectedCities.filter((city) => city !== "Islamabad")
-            );
             // Ensure Chilas hotel is added for CHILLAS-related selections
             const {
               multiCityHotels: _augHotels,
@@ -1468,7 +1511,7 @@ export function MakeMyTripForm() {
               hotelCategory,
               customCities: _augCities,
               startingPoint: getActualStartingPoint(),
-              routeDestinations: travelMode === "air" ? selectedAirDestinations : selectedCities,
+              routeDestinations: travelMode === "air" ? selectedAirDestinations : effectiveSelectedCities,
               includeIslamabadTransit: !hideAutoIslamabad,
               customRouteLabel: _augCities.join(" + "),
               multiCityHotels: _augHotels,
@@ -1477,7 +1520,7 @@ export function MakeMyTripForm() {
               adults,
               kids,
               tripDate,
-              mandatoryJeepCost: customJeepCost,
+              jeepAddons: selectedPackageJeepAddons,
               travelMode: travelMode as "road" | "air",
             };
             refreshCustomQuotation(quotationInput, customQuoteRequestId);
@@ -1515,6 +1558,7 @@ export function MakeMyTripForm() {
                   jeepCount: computedJeepCount,
                   tripDate,
                   mandatoryJeepCost,
+                  jeepAddons: selectedPackageJeepAddons,
                   travelMode: travelMode as "road" | "air",
                 };
                 refreshQuotationForMode(quotationInput, customQuoteRequestId);
@@ -1541,6 +1585,7 @@ export function MakeMyTripForm() {
               jeepCount: computedJeepCount,
               tripDate,
               mandatoryJeepCost,
+              jeepAddons: selectedPackageJeepAddons,
               travelMode: travelMode as "road" | "air",
             };
             if (promoCode && getPromotionForTour(routeId)) {
@@ -1566,6 +1611,7 @@ export function MakeMyTripForm() {
               jeepCount: computedJeepCount,
               tripDate,
               mandatoryJeepCost,
+              jeepAddons: selectedPackageJeepAddons,
               travelMode: travelMode as "road" | "air",
             };
             if (promoCode && getPromotionForTour(routeId)) {
@@ -1587,7 +1633,7 @@ export function MakeMyTripForm() {
       }
       customQuoteAbortRef.current?.abort();
     };
-  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, selectedAirDestinations, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode, startingPoint, otherStartingPoint, hideAutoIslamabad, roadRouteResult]);
+  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, selectedAirDestinations, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode, startingPoint, otherStartingPoint, hideAutoIslamabad, roadRouteResult, selectedPackageJeepAddons]);
 
   useEffect(() => {
     if (promoCode && !getPromotionForTour(routeId)) {
@@ -1642,6 +1688,7 @@ export function MakeMyTripForm() {
         travelMode: travelMode as "road" | "air",
         jeepCount: computedJeepCount,
         mandatoryJeepCost,
+        jeepAddons: selectedPackageJeepAddons,
       };
       const response = await fetch("/api/promotions/validate", {
         method: "POST",
@@ -1787,6 +1834,8 @@ export function MakeMyTripForm() {
         kidsAges,
         hotelCategory,
         tourType,
+        jeepAddons: selectedPackageJeepAddons,
+        jeepRideNames: selectedPackageJeepRides.map((ride) => ride.name),
         // Include full breakdown
         transportCost: quotation.transportCost,
         hotelCost: quotation.hotelCost,
@@ -1799,7 +1848,7 @@ export function MakeMyTripForm() {
         isInvalidCombination,
         singleCityHotelStays: selectedSingleCityHotelStays,
         travelMode,
-        routeDestinations: travelMode === "air" ? selectedAirDestinations : selectedCities,
+        routeDestinations: travelMode === "air" ? selectedAirDestinations : effectiveSelectedCities,
         // Include multi-city data (use augmented hotels when available)
         multiCityHotels: ((isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity) || isMultiCityTour()) ? selectedMultiCityHotels : undefined,
         multiCityNights: selectedMultiCityNights,
@@ -1890,9 +1939,10 @@ export function MakeMyTripForm() {
           multiCityHotels: ((isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity) || isMultiCityTour()) ? selectedMultiCityHotels : undefined,
           multiCityNights: selectedMultiCityNights,
           customCities: selectedCustomCities,
-          routeDestinations: travelMode === "air" ? selectedAirDestinations : selectedCities,
+          routeDestinations: travelMode === "air" ? selectedAirDestinations : effectiveSelectedCities,
           includeIslamabadTransit: !hideAutoIslamabad,
           customRouteLabel: isCustomCitySelection() ? effectiveSelectedCities.join(" + ") : undefined,
+          jeepAddons: selectedPackageJeepAddons,
         }),
       });
 
@@ -2058,7 +2108,7 @@ export function MakeMyTripForm() {
     if (!origin) return [];
 
     if (selectedCities.length > 0 && !routeId) {
-      return getCustomRoadStops(origin, selectedCities, "road", !hideAutoIslamabad);
+      return getCustomRoadStops(origin, effectiveSelectedCities, "road", !hideAutoIslamabad);
     }
 
     if (!selectedRoute) return [];
@@ -2770,16 +2820,20 @@ export function MakeMyTripForm() {
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {sortedCitiesWithHotels.map((city) => {
-                  const willAllow = selectedCities.includes(city) ||
+                  const blockedByStopoverRule = isExcludedRoadStopover(selectedCities, city);
+                  const willAllow = !blockedByStopoverRule && (selectedCities.includes(city) ||
                     (travelMode === "air"
                       ? isAirDestination(city)
-                      : isValidCustomRoute(getActualStartingPoint(), [...selectedCities, city]));
+                      : isValidCustomRoute(
+                        getActualStartingPoint(),
+                        excludeConflictingRoadStopovers([...selectedCities, city]),
+                      )));
                   const cardDetails = destinationCardDetails[city];
                   return (
                     <label
                       key={city}
                       className={`group theme-preserve-dark relative isolate flex min-h-28 items-end overflow-hidden border bg-stone-700 transition focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[#8b6b00] ${willAllow ? 'cursor-pointer border-stone-300 hover:border-[#fcc000]' : 'cursor-not-allowed border-stone-300 opacity-55'} ${effectiveSelectedCities.includes(city) ? 'ring-2 ring-[#fcc000]' : ''}`}
-                      title={willAllow ? undefined : 'Off-route combination'}
+                      title={blockedByStopoverRule ? "Unavailable with Shogran, Swat, Kashmir, or Murree" : willAllow ? undefined : "Off-route combination"}
                     >
                       {cardDetails.image ? (
                         <Image
@@ -2814,6 +2868,11 @@ export function MakeMyTripForm() {
                       <div className="ml-0 max-w-full break-words text-sm text-stone-700 sm:ml-4">Automatically added: <span className="font-semibold">Islamabad (2 nights)</span></div>
                     )}
                   </div>
+                  {shouldExcludeRoadStopovers(selectedCities) ? (
+                    <p role="status" className="text-xs text-stone-600">
+                      Naran, Chilas, and Besham stopovers are excluded for these selected destinations.
+                    </p>
+                  ) : null}
                   {shouldAutoIncludeIslamabad() && (
                     <div className="mt-2 rounded-[14px] bg-[#fff2c8] border border-[#f4d77d] p-3 text-sm text-black flex flex-wrap items-start justify-between gap-3">
                       <div className="min-w-0 max-w-full">
@@ -2893,6 +2952,41 @@ export function MakeMyTripForm() {
                 </div>
               )}
             </div>
+
+            {availablePackageJeepRides.length > 0 ? (
+              <fieldset
+                hidden={plannerStep !== 2}
+                className="rounded-[20px] border border-[#f4d77d] bg-white p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)]"
+              >
+                <legend className="px-2 text-sm font-semibold text-[#6e5200]">Optional jeep rides</legend>
+                <p className="mb-3 text-xs text-stone-600">
+                  Select any rides to include in your package. Rates are per jeep for up to 6 travelers.
+                </p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {availablePackageJeepRides.map((ride) => (
+                    <label
+                      key={ride.id}
+                      className="flex cursor-pointer items-start gap-3 border border-stone-200 bg-[#fffdf8] p-3 hover:border-[#b98d00]"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedPackageJeepRideIds.includes(ride.id)}
+                        onChange={() => setSelectedPackageJeepRideIds((current) =>
+                          current.includes(ride.id)
+                            ? current.filter((id) => id !== ride.id)
+                            : [...current, ride.id],
+                        )}
+                        className="mt-1 h-4 w-4 accent-[#fcc000]"
+                      />
+                      <span>
+                        <span className="block text-sm font-semibold text-stone-900">{ride.name}</span>
+                        <span className="mt-1 block text-xs text-stone-600">{formatPKR(ride.pricePerJeep)} per jeep</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ) : null}
 
             {plannerStep === 2 && airDestinationError ? (
               <p role="alert" className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">

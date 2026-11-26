@@ -27,8 +27,6 @@ export async function getCustomItineraryTransportOptions(
   try {
     const settings = await getOperationalTransportSettings();
     let distanceKm: number;
-    let airDestinationJeepCost = 0;
-    let airDestinationJeepDetails: string[] = [];
     if (isAir) {
       const selectedDestinations = getAirQuotationDestinations(input, getRouteById(input.routeId));
       const adjustments = getAirDestinationAdjustments(selectedDestinations);
@@ -37,8 +35,6 @@ export async function getCustomItineraryTransportOptions(
         ? 0
         : (await calculateRoadRoute(stops, settings, undefined, undefined, false)).baseDistanceKm;
       distanceKm = mapDistanceKm + adjustments.distanceAdditionKm;
-      airDestinationJeepCost = adjustments.jeepRideCost;
-      airDestinationJeepDetails = adjustments.jeepRideDetails;
     } else {
       const destinations = input.routeDestinations ?? (input.customCities ?? [])
         .filter((city) => !city.startsWith("Chilas"));
@@ -64,8 +60,6 @@ export async function getCustomItineraryTransportOptions(
       distanceKm,
       vehicleConfiguration,
       settings: transportSettings,
-      airDestinationJeepCost,
-      airDestinationJeepDetails,
     };
   } catch (error) {
     if (!(error instanceof RouteCalculationError)) throw error;

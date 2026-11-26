@@ -13,6 +13,26 @@ export interface JeepLocation {
   addons: JeepAddon[];
 }
 
+export interface PackageJeepRideOption {
+  id: string;
+  city: string;
+  name: string;
+  pricePerJeep: number;
+  travelMode: "road" | "air" | "both";
+}
+
+export const packageJeepRideOptions: PackageJeepRideOption[] = [
+  { id: "package-jeep-hunza", city: "Hunza", name: "Hunza jeep ride", pricePerJeep: 20000, travelMode: "both" },
+  { id: "package-jeep-skardu", city: "Skardu", name: "Skardu jeep ride", pricePerJeep: 22000, travelMode: "both" },
+  { id: "package-jeep-naran", city: "Naran", name: "Naran jeep ride", pricePerJeep: 7000, travelMode: "road" },
+  { id: "package-jeep-astore-road", city: "Astore", name: "Astore jeep ride", pricePerJeep: 35000, travelMode: "road" },
+  { id: "package-jeep-astore-air", city: "Astore", name: "Astore jeep ride (By Air)", pricePerJeep: 70000, travelMode: "air" },
+  { id: "package-jeep-kashmir", city: "Kashmir", name: "Kashmir jeep ride", pricePerJeep: 30000, travelMode: "road" },
+  { id: "package-jeep-swat", city: "Swat", name: "Swat jeep ride", pricePerJeep: 15000, travelMode: "road" },
+  { id: "package-jeep-fairy-meadows", city: "Fairy Meadows", name: "Fairy Meadows jeep ride", pricePerJeep: 20000, travelMode: "both" },
+  { id: "package-jeep-shogran", city: "Shogran", name: "Shogran jeep ride", pricePerJeep: 12000, travelMode: "road" },
+];
+
 export const jeepAddons: JeepLocation[] = [
   {
     id: "skardu-jeeps",
@@ -115,7 +135,28 @@ export const jeepAddons: JeepLocation[] = [
       },
     ],
   },
+  {
+    id: "package-jeep-rides",
+    name: "Package jeep rides",
+    addons: packageJeepRideOptions.map((ride) => ({
+      id: ride.id,
+      name: ride.name,
+      base_price: ride.pricePerJeep,
+    })),
+  },
 ];
+
+export function getPackageJeepRideOptions(
+  cities: readonly string[],
+  travelMode: "road" | "air",
+): PackageJeepRideOption[] {
+  const normalizeCity = (city: string) => city.trim().replace(/\s+\([^)]*\)$/, "").toLocaleLowerCase("en");
+  const selectedCities = new Set(cities.map(normalizeCity));
+  return packageJeepRideOptions.filter((ride) =>
+    selectedCities.has(normalizeCity(ride.city)) &&
+    (ride.travelMode === "both" || ride.travelMode === travelMode),
+  );
+}
 
 export function getJeepsByLocation(locationId: string): JeepAddon[] {
   const location = jeepAddons.find((j) => j.id === locationId);
@@ -127,7 +168,7 @@ export function calculateJeepCost(
 ): number {
   let total = 0;
   for (const addon of addons) {
-    const jeepAddon = findJeepAddonById(addon.id);
+    const jeepAddon = getJeepAddonById(addon.id);
     if (jeepAddon) {
       const price = jeepAddon.base_price || 0;
       total += price * addon.quantity;
@@ -136,7 +177,7 @@ export function calculateJeepCost(
   return total;
 }
 
-function findJeepAddonById(id: string): JeepAddon | undefined {
+export function getJeepAddonById(id: string): JeepAddon | undefined {
   for (const location of jeepAddons) {
     const addon = location.addons.find((a) => a.id === id);
     if (addon) return addon;

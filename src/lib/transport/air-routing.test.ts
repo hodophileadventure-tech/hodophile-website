@@ -25,28 +25,14 @@ test("builds Skardu round trips for one or multiple eligible destinations", () =
   );
 });
 
-test("adds By Air destination kilometers and jeep rides once per selected destination", () => {
+test("adds By Air destination kilometers once per selected destination", () => {
   assert.deepEqual(
     getAirDestinationAdjustments(["Skardu", "Hunza", "Astore", "Fairy Meadows", "Fairy Meadows"]),
-    {
-      distanceAdditionKm: 1_350,
-      jeepRideCost: 90_000,
-      jeepRideDetails: [
-        "Astore jeep ride: PKR 70,000",
-        "Fairy Meadows jeep ride: PKR 20,000",
-      ],
-    },
+    { distanceAdditionKm: 1_350 },
   );
   assert.deepEqual(
     getAirDestinationAdjustments(["Astore", "Fairy Meadows"]),
-    {
-      distanceAdditionKm: 0,
-      jeepRideCost: 90_000,
-      jeepRideDetails: [
-        "Astore jeep ride: PKR 70,000",
-        "Fairy Meadows jeep ride: PKR 20,000",
-      ],
-    },
+    { distanceAdditionKm: 0 },
   );
 });
 
