@@ -5,13 +5,45 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { routes } from "@/lib/data/routes";
 import { formatPKR } from "@/lib/currency";
-import { siteConfig } from "@/lib/site";
-import { whatsappUrl } from "@/lib/site";
+import { siteConfig, whatsappUrl } from "@/lib/site";
+
+interface QuotationDisplayData {
+  routeId?: string;
+  customCities?: string[];
+  customRouteLabel?: string;
+  destination?: string;
+  details?: {
+    numberOfGuests?: number;
+    roomType?: string;
+    accommodationType?: string;
+    vehicle?: string;
+    hotel?: string;
+  };
+  adults?: number;
+  kids?: number;
+  perPersonCost?: number;
+  totalCost?: number;
+  promotion?: {
+    code: string;
+    discountPercent: number;
+    discountAmount: number;
+    originalPrice: number;
+  };
+  travelMode?: "road" | "air";
+  startingPoint?: string;
+  tripDate?: string;
+  quoteNumber?: string;
+  customerName?: string;
+  customerPhone?: string;
+  vehicleName?: string;
+  roomType?: string;
+  tourStartingPoint?: string;
+}
 
 export function QuotationResultContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [quotation, setQuotation] = useState<any>(null);
+  const [quotation, setQuotation] = useState<QuotationDisplayData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
 
@@ -26,6 +58,7 @@ export function QuotationResultContent() {
           return;
         }
         const decoded = JSON.parse(atob(quotationData));
+        const quoteNumber = decoded.quoteNumber || `Q${Date.now().toString().slice(-6)}`;
         isAirQuote = decoded.travelMode === "air";
         const requiresServerCalculation =
           decoded.travelMode === "air" ||
@@ -65,9 +98,15 @@ export function QuotationResultContent() {
             router.push("/make-my-trip");
             return;
           }
-          if (isCurrent) setQuotation({ ...decoded, ...result.quotation });
+          if (isCurrent) {
+            setQuotation({
+              ...decoded,
+              ...result.quotation,
+              quoteNumber: result.quotation?.quoteNumber || quoteNumber,
+            });
+          }
         } else if (isCurrent) {
-          setQuotation(decoded);
+          setQuotation({ ...decoded, quoteNumber });
         }
       } catch (error) {
         console.error("Failed to parse quotation data:", error);
@@ -115,109 +154,24 @@ export function QuotationResultContent() {
     quotation.customCities.length > 0;
   const route = isCustomItinerary ? undefined : routes.find((r) => r.id === quotation.routeId);
   const routeName = isCustomItinerary
-    ? quotation.customRouteLabel || quotation.customCities.join(" + ") || "Custom Package"
+    ? quotation.customRouteLabel || quotation.customCities?.join(" + ") || "Custom Package"
     : route?.name || quotation.destination || "Unknown";
-
   const numberOfGuests = quotation.details?.numberOfGuests ?? ((quotation.adults || 0) + (quotation.kids || 0));
-  const transportCost = quotation.transportCost ?? 0;
-  const hotelCost = quotation.hotelCost ?? 0;
-  const jeepCost = quotation.jeepAddonsCost ?? 0;
-  const offRouteCost = quotation.offRouteChargePKR ?? 0;
-  const subtotal = quotation.subtotal ?? 0;
-  const markupAmount = quotation.markupAmount ?? 0;
   const perPersonPrice = quotation.perPersonCost ?? 0;
   const totalAmount = quotation.totalCost ?? 0;
-  const promotion = quotation.promotion as { code: string; discountPercent: number; discountAmount: number; originalPrice: number } | undefined;
-  const inclusionList = [
+  const promotion = quotation.promotion;
+  const travelMode = quotation.travelMode || "road";
+  const departureLocation = quotation.startingPoint || quotation.destination || "To be confirmed";
+  const tripDate = quotation.tripDate
+    ? new Date(`${quotation.tripDate}T00:00:00`).toLocaleDateString("en-GB")
+    : "To be confirmed";
+  const quoteNumber = quotation.quoteNumber || "Q";
+  const quoteDate = new Date().toLocaleDateString("en-GB");
+  const inclusions = [
     "Transport by selected vehicle",
     "Hotel accommodation as quoted",
-    "City-to-city route planning",
     "Sightseeing and route coordination",
   ];
-  const extraNotes = [
-    quotation.customerName ? `Prepared for ${quotation.customerName}` : "Prepared for the selected traveler",
-    quotation.startingPoint ? `Departure: ${quotation.startingPoint}` : "Departure city to be confirmed",
-    quotation.details?.hotel ? `Stay: ${quotation.details.hotel}` : "Hotel category to be confirmed",
-  ];
-  const travelMode = quotation.travelMode || "road";
-  const packageDescription = quotation.details?.vehicle
-    ? `with ${quotation.details.vehicle}`
-    : quotation.vehicleName
-    ? `with ${quotation.vehicleName}`
-    : "Package includes transport and hotel";
-
-  const summaryCards = [
-    { label: "Route", value: routeName },
-    { label: "Travelers", value: `${numberOfGuests} guest${numberOfGuests === 1 ? "" : "s"}` },
-    { label: "Travel Mode", value: travelMode === "air" ? "By Air" : "By Road" },
-    { label: "Vehicle", value: quotation.details?.vehicle || quotation.vehicleName || "To be confirmed" },
-  ];
-
-  const totalBeforeAddOns = subtotal + markupAmount;
-
-  const items = [
-    {
-      item: "Transport",
-      description: quotation.details?.vehicle
-        ? `Transport by ${quotation.details.vehicle}`
-        : quotation.vehicleName
-        ? `Transport by ${quotation.vehicleName}`
-        : "Vehicle and fuel charges",
-      unitPrice: "",
-      quantity: "",
-      amount: transportCost,
-    },
-    {
-      item: "Hotel",
-      description: quotation.details?.hotel || "Hotel accommodation",
-      unitPrice: "",
-      quantity: quotation.details?.numberOfRooms ?? quotation.numberOfRooms ?? "-",
-      amount: hotelCost,
-    },
-  ];
-
-  // If detailed transport breakdown is present, add sub-rows for clarity
-  if (quotation.transportBreakdown) {
-    const tb = quotation.transportBreakdown;
-    items.push(
-      { item: "- Fuel", description: `Estimated fuel (${Math.round(tb.fuelNeeded)}L @ per L)`, unitPrice: "", quantity: "", amount: tb.fuelCost },
-      { item: "- Rental", description: `${tb.vehicleDays} days × ${formatPKR(tb.dailyRate)}`, unitPrice: "", quantity: "", amount: tb.rentalCost },
-      { item: "- Toll/Tax", description: "Fixed toll and taxes", unitPrice: "", quantity: "", amount: tb.tollTax }
-    );
-  }
-
-  if (jeepCost > 0) {
-    items.push({
-      item: "Jeep Add-ons",
-      description: "Mandatory jeep activities and optional add-ons",
-      unitPrice: "",
-      quantity: "",
-      amount: jeepCost,
-    });
-  }
-
-  if (offRouteCost > 0) {
-    items.push({
-      item: "Off-Route Surcharge",
-      description: "Additional petrol surcharge for non-standard city combinations",
-      unitPrice: "",
-      quantity: "",
-      amount: offRouteCost,
-    });
-  }
-
-  if (promotion) {
-    items.push({
-      item: "Promo discount",
-      description: `${promotion.code} · ${promotion.discountPercent}% off original quotation`,
-      unitPrice: "",
-      quantity: "",
-      amount: -promotion.discountAmount,
-    });
-  }
-
-  const quoteNumber = quotation.quoteNumber || `Q${Date.now().toString().slice(-6)}`;
-  const quoteDate = new Date().toLocaleDateString("en-GB");
 
   const handleWhatsApp = () => {
     const promoDetails = promotion
@@ -231,217 +185,117 @@ export function QuotationResultContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--surface-page)] py-10 px-4 print:bg-white print:py-0 print:px-0">
-      <div className="mx-auto w-full max-w-[900px] bg-white border border-stone-200 shadow-xl print:shadow-none print:border-black/10 print:m-0 print:max-w-none">
-        <div className="px-8 py-8 print:px-6 print:py-4">
-          <div className="flex flex-wrap items-center justify-between gap-6 border-b border-stone-200 pb-6 print:gap-3 print:pb-3">
-            <div className="flex items-center gap-4 print:gap-2">
-              <div className="h-20 w-20 overflow-hidden rounded-3xl bg-white p-3 shadow-sm print:h-12 print:w-12 print:rounded-xl print:p-1">
-                <Image src="/images/package-cards/logo-transparent.webp" alt="Hodophile Adventures logo" width={80} height={80} className="h-full w-full object-contain" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-black uppercase tracking-[0.12em] text-stone-950 print:text-xl">Hodophile Adventures</h1>
-                <p className="mt-1 text-sm uppercase tracking-[0.3em] text-stone-600 print:text-xs print:mt-0">The Perfect Experience</p>
-                <p className="mt-2 text-sm text-stone-700 print:text-xs print:mt-0">Government License# 5436</p>
-              </div>
-            </div>
+    <div className="quotation-page pdf-page">
+      <article className="quotation-canvas pdf-canvas">
+        <header className="quotation-brand">
+          <Image
+            src="/images/package-cards/logo-transparent.webp"
+            alt="Hodophile Adventures logo"
+            width={300}
+            height={140}
+            className="quotation-logo"
+          />
+          <div className="quotation-brand-copy">
+            <h1>Hodophile Adventures</h1>
+            <p>The Perfect Experience</p>
+            <span>Government License# 5436</span>
           </div>
+        </header>
 
-          <div className="mt-8 grid gap-6 md:grid-cols-[1.25fr_0.75fr] items-start print:gap-4 print:mt-2 print:grid-cols-2">
-            <div className="rounded-2xl border border-stone-300 bg-stone-100 p-6 print:rounded-lg print:p-3">
-              <p className="text-2xl font-bold text-stone-900 print:text-base">To, {quotation.customerName ? quotation.customerName : "Customer"}</p>
-              <div className="mt-6 space-y-3 text-sm text-stone-800 print:mt-2 print:space-y-1 print:text-xs">
-                <p>{quotation.customerPhone || "Cell#"}</p>
-                <p>{quotation.destination || "Destination not specified"}</p>
-                <p>{routeName}</p>
-                <p>{quotation.details?.roomType || quotation.roomType || "Room type to be selected"}</p>
+        <main className="quotation-content">
+          <section className="quotation-header-info">
+            <div className="quotation-header-top">
+              <div className="quotation-customer">
+                <strong>To, {quotation.customerName || "Customer"}</strong>
+                <p>Cell# {quotation.customerPhone || "—"}</p>
+                <p>{departureLocation}</p>
+              </div>
+              <div className="quotation-title">
+                <h2>Quotation</h2>
+                <p><strong>Quote #</strong> {quoteNumber}</p>
+                <p><strong>Quote Date</strong> {quoteDate}</p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-4xl font-black uppercase tracking-[0.18em] text-[#fcc000] print:text-2xl">Quotation</p>
-              <div className="mt-8 space-y-3 text-sm text-stone-900 print:mt-2 print:space-y-1 print:text-xs">
-                <div>
-                  <span className="font-semibold">Quote #</span>
-                  <span className="ml-2">{quoteNumber}</span>
-                </div>
-                <div>
-                  <span className="font-semibold">Quote Date</span>
-                  <span className="ml-2">{quoteDate}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          </section>
 
-          <div className="mt-8 grid gap-3 md:grid-cols-4 print:mt-2 print:grid-cols-4">
-            {summaryCards.map((card) => (
-              <div key={card.label} className="rounded-2xl border border-stone-200 bg-stone-50 p-4 print:rounded-md print:p-2">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-stone-500 print:text-[8px]">{card.label}</p>
-                <p className="mt-2 text-sm font-semibold text-stone-900 print:text-[10px]">{card.value}</p>
-              </div>
-            ))}
-          </div>
+          <table className="pdf-main-table">
+            <thead>
+              <tr>
+                <th className="quotation-item-column">Item</th>
+                <th>Description</th>
+                <th className="quotation-unit-column">Unit Price</th>
+                <th className="quotation-quantity-column">Quantity</th>
+                <th className="quotation-amount-column">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="quotation-package-row">
+                <td><strong>1</strong></td>
+                <td>
+                  <strong>{routeName}</strong>
+                  <div className="quotation-notes">
+                    <strong>NOTES:</strong>
+                    <p>Accommodation Type: {quotation.details?.accommodationType || quotation.details?.roomType || quotation.roomType || "To be confirmed"}</p>
+                    <p>Transportation Type: {quotation.details?.vehicle || quotation.vehicleName || "To be confirmed"}</p>
+                    <p>Departure Location: {departureLocation}</p>
+                    <p>Trip Date: {tripDate}</p>
+                    {quotation.tourStartingPoint ? <p>Tour starts: {quotation.tourStartingPoint}</p> : null}
+                    {travelMode === "air" ? <p className="quotation-air-note">Air tickets to and from Skardu are not included.</p> : null}
+                  </div>
+                </td>
+                <td className="quotation-number">{formatPKR(perPersonPrice)}</td>
+                <td className="quotation-number">{numberOfGuests} traveler{numberOfGuests === 1 ? "" : "s"}</td>
+                <td className="quotation-number"><strong>{formatPKR(totalAmount)}</strong></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={2} className="quotation-inclusions">
+                  <strong>Package included:</strong>
+                  <ul>
+                    {inclusions.map((item) => <li key={item}>- {item}</li>)}
+                  </ul>
+                  {promotion ? <p className="quotation-promotion">{promotion.code} discount applied.</p> : null}
+                  <strong>Quotation valid for confirmation and booking.</strong>
+                </td>
+                <td colSpan={3} className="quotation-total-cell">
+                  <div className="quotation-total">
+                    <span>Quote Total</span>
+                    <strong>{formatPKR(totalAmount)}</strong>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </main>
 
-          <div className="mt-10 overflow-hidden rounded-3xl border border-stone-300 bg-white p-6 print:mt-3 print:p-3 print:rounded-lg">
-            <div className="text-sm text-stone-900 print:text-xs">
-              <p className="font-semibold mb-2 print:mb-1">Quotation Details</p>
-              <p className="mb-4 print:mb-2 print:text-xs">This quotation is prepared for the selected destination and traveler profile. It is a planning document for your trip and is valid as a guide for confirmation and booking with our team.</p>
-              <div className="mt-4 rounded-[10px] border border-stone-200 bg-stone-50 p-4 print:mt-2 print:p-2 print:rounded-md">
-                <p className="text-sm print:text-xs"><span className="font-semibold">Route:</span> {routeName}</p>
-                <p className="text-sm print:text-xs"><span className="font-semibold">Passengers:</span> {numberOfGuests}</p>
-                <p className="text-sm print:text-xs"><span className="font-semibold">Departure:</span> {quotation.startingPoint || "-"}</p>
-                {quotation.tourStartingPoint ? (
-                  <p className="text-sm print:text-xs"><span className="font-semibold">Tour starts:</span> {quotation.tourStartingPoint}</p>
-                ) : null}
-                {travelMode === "air" ? (
-                  <>
-                    <p className="text-sm print:text-xs"><span className="font-semibold">Travel Mode:</span> By Air</p>
-                    <p className="text-sm print:text-xs"><span className="font-semibold">Arrival &amp; Departure Hub:</span> Skardu</p>
-                    <p className="text-sm font-bold print:text-xs"><span className="font-semibold">Air Tickets:</span> NOT INCLUDED</p>
-                    <p className="mt-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 print:mt-1 print:p-2 print:text-xs">
-                      Air tickets to and from Skardu are not included in this quotation. Customers are responsible for arranging their own flight tickets.
-                    </p>
-                  </>
-                ) : null}
-                <p className="text-sm print:text-xs"><span className="font-semibold">Trip Mode:</span> {travelMode === "air" ? "By Air" : "By Road"}</p>
-                <p className="text-sm print:text-xs"><span className="font-semibold">Trip Style:</span> {packageDescription}</p>
-              </div>
-              <div className="mt-6 print:mt-2">
-                <p className="text-sm font-semibold print:text-xs">NOTES:</p>
-                <div className="mt-3 space-y-2 text-sm text-stone-800 print:mt-1 print:space-y-1 print:text-xs">
-                  <p><span className="font-semibold">Accommodation Type:</span> {quotation.details?.accommodationType || quotation.details?.roomType || quotation.roomType || "-"}</p>
-                  <p><span className="font-semibold">Transportation Type:</span> {quotation.details?.vehicle || quotation.vehicleName || "-"}</p>
-                  <p><span className="font-semibold">Tour Mode:</span> {travelMode === "air" ? "By Air" : "By Road"}</p>
-                  <p><span className="font-semibold">Departure Location:</span> {quotation.startingPoint || "-"}</p>
-                  {extraNotes.map((note) => (
-                    <p key={note}><span className="font-semibold">Trip Note:</span> {note}</p>
-                  ))}
-                  {quotation.isInvalidCombination && offRouteCost > 0 && (
-                    <div className="mt-3 rounded-lg bg-amber-50 border border-amber-200 p-3 print:mt-1 print:p-1">
-                      <p className="text-amber-900 font-medium print:text-xs">
-                        ⚠️ Off-Route Surcharge Applied
-                      </p>
-                      <p className="text-amber-800 text-xs mt-1 print:mt-0">
-                        Your selected city combination is outside our standard routes. An additional petrol surcharge of {formatPKR(offRouteCost)} has been added to your quotation.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Pricing Breakdown Table */}
-          <div className="mt-10 overflow-x-auto print:mt-3">
-            <table className="w-full border-collapse rounded-lg overflow-hidden text-xs print:text-[10px]">
-              <thead>
-                <tr className="bg-[#fcc000]">
-                  <th className="border border-stone-300 px-4 py-3 text-left text-sm font-bold text-black print:px-2 print:py-1 print:text-[10px]">Item</th>
-                  <th className="border border-stone-300 px-4 py-3 text-left text-sm font-bold text-black print:px-2 print:py-1 print:text-[10px]">Description</th>
-                  <th className="border border-stone-300 px-4 py-3 text-center text-sm font-bold text-black print:px-2 print:py-1 print:text-[10px]">Qty</th>
-                  <th className="border border-stone-300 px-4 py-3 text-right text-sm font-bold text-black print:px-2 print:py-1 print:text-[10px]">Amount (PKR)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, idx) => (
-                  <tr key={idx} className="border-b border-stone-200 hover:bg-stone-50">
-                    <td className="border border-stone-300 px-4 py-3 text-sm font-medium text-stone-900 print:px-2 print:py-1 print:text-[10px]">{item.item}</td>
-                    <td className="border border-stone-300 px-4 py-3 text-sm text-stone-700 print:px-2 print:py-1 print:text-[10px]">{item.description}</td>
-                    <td className="border border-stone-300 px-4 py-3 text-center text-sm text-stone-700 print:px-2 print:py-1 print:text-[10px]">{item.quantity}</td>
-                    <td className="border border-stone-300 px-4 py-3 text-right text-sm font-semibold text-stone-900 print:px-2 print:py-1 print:text-[10px]">{formatPKR(item.amount)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="mt-8 grid gap-6 lg:grid-cols-2 print:mt-3 print:grid-cols-2">
-            <div className="rounded-3xl border border-stone-200 bg-stone-50 p-6 print:rounded-lg print:p-3">
-              <p className="text-sm font-semibold text-stone-900 print:text-[11px]">Included in the plan</p>
-              <ul className="mt-4 space-y-2 text-sm text-stone-700 print:mt-2 print:space-y-1 print:text-[10px]">
-                {inclusionList.map((item) => (
-                  <li key={item} className="flex items-start gap-2">
-                    <span className="mt-2 h-2 w-2 rounded-full bg-[#fcc000] print:mt-1" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="rounded-3xl border border-stone-200 bg-[#fff8df] p-6 print:rounded-lg print:p-3">
-              <p className="text-sm font-semibold text-stone-900 print:text-[11px]">Pricing summary</p>
-              <div className="mt-4 space-y-3 text-sm text-stone-700 print:space-y-1 print:text-[10px]">
-                <div className="flex items-center justify-between gap-3"><span>Trip subtotal</span><span className="font-semibold text-stone-900">{formatPKR(subtotal)}</span></div>
-                <div className="flex items-center justify-between gap-3"><span>Planning / markup</span><span className="font-semibold text-stone-900">{formatPKR(markupAmount)}</span></div>
-                <div className="flex items-center justify-between gap-3"><span>Additional charges</span><span className="font-semibold text-stone-900">{formatPKR(offRouteCost + jeepCost)}</span></div>
-                <div className="mt-3 border-t border-stone-300 pt-3 flex items-center justify-between gap-3"><span className="font-bold text-stone-900">Grand total</span><span className="font-black text-[#0b0b0b]">{formatPKR(totalAmount)}</span></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Totals Summary */}
-          <div className="mt-6 grid gap-6 lg:grid-cols-[1.4fr_0.9fr] print:gap-2 print:mt-2 print:grid-cols-2">
-            <div className="rounded-3xl border border-stone-300 bg-stone-100 p-6 text-sm text-stone-900 print:rounded-lg print:p-3 print:text-xs">
-              <p className="font-semibold print:text-xs">Package included:</p>
-              <ul className="mt-3 list-disc space-y-2 pl-5 print:mt-1 print:space-y-0 print:pl-4 print:text-[10px]">
-                <li>Transport by the selected vehicle category</li>
-                <li>Hotel accommodation as quoted</li>
-                <li>Sightseeing and route coordination</li>
-              </ul>
-              <p className="mt-6 font-semibold print:mt-2 print:text-xs">Quotation valid for confirmation and booking coordination.</p>
-              <p className="mt-3 text-xs text-stone-700 print:mt-1 print:text-[9px]">Personal purchases and optional activities remain excluded unless expressly mentioned in the final booking confirmation.</p>
-            </div>
-
-            <div className="rounded-3xl border border-stone-300 bg-white p-6 print:rounded-lg print:p-3">
-              <div className="space-y-4 text-sm text-stone-900 print:space-y-1 print:text-xs">
-                <div className="flex justify-between pt-2 bg-[#fcc000]/10 p-3 rounded-lg print:p-2 print:rounded-md print:text-[11px]">
-                  <span className="font-bold text-lg print:text-sm">Total Trip Cost:</span>
-                  <span className="font-bold text-lg text-[#fcc000] print:text-sm">{formatPKR(totalAmount)}</span>
-                </div>
-                <div className="flex justify-between bg-stone-50 p-3 rounded-lg border border-stone-200 print:p-2 print:rounded-md print:text-[11px]">
-                  <span className="font-semibold print:text-[11px]">Per Person Cost:</span>
-                  <span className="font-bold text-stone-900 print:text-[11px]">{formatPKR(perPersonPrice)}</span>
-                </div>
-                <div className="flex justify-between bg-stone-50 p-3 rounded-lg border border-stone-200 print:p-2 print:rounded-md print:text-[11px]">
-                  <span className="font-semibold print:text-[11px]">Trip subtotal</span>
-                  <span className="font-bold text-stone-900 print:text-[11px]">{formatPKR(totalBeforeAddOns)}</span>
-                </div>
-                {promotion ? (
-                  <>
-                    <div className="flex justify-between bg-stone-50 p-3 rounded-lg border border-stone-200 print:p-2 print:rounded-md print:text-[11px]">
-                      <span className="font-semibold print:text-[11px]">Original total</span>
-                      <span className="font-bold text-stone-700 line-through print:text-[11px]">{formatPKR(promotion.originalPrice)}</span>
-                    </div>
-                    <div className="flex justify-between bg-green-50 p-3 rounded-lg border border-green-200 print:p-2 print:rounded-md print:text-[11px]">
-                      <span className="font-semibold text-green-800 print:text-[11px]">{promotion.code} · {promotion.discountPercent}% discount</span>
-                      <span className="font-bold text-green-800 print:text-[11px]">−{formatPKR(promotion.discountAmount)}</span>
-                    </div>
-                  </>
-                ) : null}
-              </div>
-            </div>
-          </div>
+        <div className="quotation-accreditations" aria-label="Licensing and affiliations">
+          <Image src="/images/footer/govt-pakistan.webp" alt="Government of Pakistan" width={80} height={72} />
+          <Image src="/images/footer/taap-logo.webp" alt="TAAP" width={100} height={72} />
+          <Image src="/images/footer/affiliation-pato.webp" alt="PATO" width={90} height={72} />
         </div>
+        <footer className="quotation-footer">
+          <span>hodophile.pk</span>
+          <span>{siteConfig.email}</span>
+          <span>{siteConfig.phone}</span>
+          <span>{siteConfig.location}</span>
+        </footer>
 
-        <div className="print:hidden border-t border-stone-200 bg-white px-8 py-6 text-right space-x-3">
+        <div className="quotation-actions">
           <button
             onClick={() => window.print()}
-            className="inline-flex rounded-full bg-[#fcc000] px-8 py-3 text-sm font-semibold text-black transition hover:bg-[#e4b200]"
+            className="rounded-full bg-[#fcc000] px-8 py-3 text-sm font-semibold text-black transition hover:bg-[#e4b200]"
           >
-            Print Quotation
+            Print Quotation / Save PDF
           </button>
           <button
             onClick={handleWhatsApp}
-            className="inline-flex rounded-full border border-stone-300 bg-white px-8 py-3 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
+            className="rounded-full border border-stone-300 bg-white px-8 py-3 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
           >
             Share on WhatsApp
           </button>
-          <button
-            onClick={() => window.print()}
-            className="inline-flex rounded-full border border-stone-300 bg-white px-8 py-3 text-sm font-semibold text-stone-900 transition hover:bg-stone-100"
-          >
-            Download PDF
-          </button>
         </div>
-      </div>
+      </article>
     </div>
   );
 }

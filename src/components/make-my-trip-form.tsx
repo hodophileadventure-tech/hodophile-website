@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -52,11 +51,6 @@ import { JourneySummary } from "@/components/make-my-trip/journey-summary";
 import { HotelCardPicker } from "@/components/make-my-trip/hotel-card-picker";
 import { RouteVisualizer } from "@/components/make-my-trip/route-visualizer";
 import { TripPlannerProgress } from "@/components/make-my-trip/trip-planner-progress";
-
-const RouteDistanceMap = dynamic(() => import("@/components/make-my-trip/route-distance-map"), {
-  ssr: false,
-  loading: () => <div className="h-[320px] animate-pulse rounded-[18px] border border-[#e8d7a3] bg-stone-100 sm:h-[390px]" aria-label="Loading route map" />,
-});
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -2083,10 +2077,6 @@ export function MakeMyTripForm() {
   const routeError = unsupportedRouteStop
     ? `Road routing is not available for "${unsupportedRouteStop}". Choose a supported city or contact Hodophile.`
     : currentRoadRouteResult?.error ?? "";
-  const isLoadingRoadRoute = routeStops.length > 1 &&
-    !unsupportedRouteStop &&
-    currentRoadRouteResult === null;
-
   useEffect(() => {
     const requestId = ++roadRouteRequestRef.current;
     const stops = routeStopsKey ? routeStopsKey.split("\u001f") : [];
@@ -2908,16 +2898,6 @@ export function MakeMyTripForm() {
               <p role="alert" className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
                 {airDestinationError}
               </p>
-            ) : null}
-
-            {plannerStep === 2 &&
-            (routeStops.length > 1 || (travelMode === "air" && routeStops.length === 1)) ? (
-              <RouteDistanceMap
-                stops={routeStops}
-                route={roadRoute}
-                loading={isLoadingRoadRoute}
-                error={routeError}
-              />
             ) : null}
 
             {/* Invalid Combination Alert */}

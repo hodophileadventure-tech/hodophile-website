@@ -94,6 +94,494 @@
   --glass-shadow: 0 18px 55px rgba(0, 0, 0, 0.12);
 }
 
+.quotation-page {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: #f2f2f2;
+}
+
+.quotation-canvas {
+  position: relative;
+  display: flex;
+  width: min(100%, 792px);
+  min-height: 1024px;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 42px 46px 150px;
+  background: #fff;
+  box-shadow: 0 12px 40px rgb(0 0 0 / 12%);
+  color: #111827;
+}
+
+.quotation-brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.quotation-logo {
+  width: 150px;
+  height: 82px;
+  object-fit: contain;
+}
+
+.quotation-brand-copy {
+  flex: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.quotation-brand-copy h1 {
+  font-size: clamp(1.35rem, 4vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.quotation-brand-copy p {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+}
+
+.quotation-brand-copy span {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: none;
+}
+
+.quotation-content {
+  margin-top: 42px;
+}
+
+.quotation-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.quotation-customer {
+  width: 48%;
+  min-height: 112px;
+  border: 1px solid #111827;
+  background: #eee;
+  padding: 12px;
+}
+
+.quotation-customer strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+.quotation-customer p,
+.quotation-title p {
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.quotation-title {
+  text-align: right;
+}
+
+.quotation-title h2 {
+  margin-bottom: 14px;
+  color: #f4b400;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.quotation-title p + p {
+  margin-top: 8px;
+}
+
+.pdf-main-table {
+  width: 100%;
+  margin-top: 28px;
+  border: 1px solid #111827;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.pdf-main-table th,
+.pdf-main-table td {
+  border-top: 1px solid #111827;
+  padding: 9px;
+  color: #111827;
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.75rem;
+}
+
+.pdf-main-table thead th {
+  background: #e9edef;
+  font-weight: 800;
+}
+
+.quotation-item-column {
+  width: 8%;
+}
+
+.quotation-unit-column {
+  width: 15%;
+}
+
+.quotation-quantity-column {
+  width: 15%;
+}
+
+.quotation-amount-column {
+  width: 17%;
+}
+
+.quotation-package-row {
+  height: 258px;
+}
+
+.quotation-package-row td:first-child,
+.quotation-package-row td:nth-child(2) {
+  font-size: 0.88rem;
+}
+
+.quotation-notes {
+  margin-top: 112px;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.quotation-notes p {
+  margin-top: 2px;
+}
+
+.quotation-air-note,
+.quotation-promotion {
+  font-weight: 700;
+}
+
+.quotation-number {
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.quotation-inclusions {
+  width: 58%;
+  line-height: 1.45;
+}
+
+.quotation-inclusions ul {
+  margin: 4px 0 8px;
+  padding-left: 4px;
+}
+
+.quotation-total-cell {
+  padding: 0 !important;
+  vertical-align: middle !important;
+}
+
+.quotation-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #e9edef;
+  padding: 13px;
+  font-weight: 800;
+}
+
+.quotation-total strong {
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+
+.quotation-accreditations {
+  position: absolute;
+  right: 46px;
+  bottom: 66px;
+  left: 46px;
+  display: flex;
+  height: 54px;
+  align-items: center;
+  justify-content: space-around;
+  gap: 24px;
+}
+
+.quotation-accreditations img {
+  max-width: 100px;
+  max-height: 52px;
+  object-fit: contain;
+}
+
+.quotation-footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: space-around;
+  gap: 12px;
+  background: #050505;
+  padding: 8px 14px;
+  color: #fff;
+  font-size: 0.65rem;
+}
+
+.quotation-footer span:last-child {
+  max-width: 30%;
+}
+
+.quotation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 24px;
+}
+
+@media (max-width: 640px) {
+  .quotation-page {
+    padding: 0;
+  }
+
+  .quotation-canvas {
+    min-height: 100svh;
+    padding: 24px 16px 120px;
+  }
+
+  .quotation-brand {
+    gap: 8px;
+  }
+
+  .quotation-logo {
+    width: 90px;
+    height: 62px;
+  }
+
+  .quotation-brand-copy p {
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+  }
+
+  .quotation-brand-copy span {
+    font-size: 0.6rem;
+  }
+
+  .quotation-content {
+    margin-top: 28px;
+  }
+
+  .quotation-header-top {
+    gap: 12px;
+  }
+
+  .quotation-customer {
+    min-height: 100px;
+    padding: 8px;
+  }
+
+  .quotation-customer strong {
+    font-size: 0.88rem;
+  }
+
+  .quotation-customer p,
+  .quotation-title p {
+    font-size: 0.65rem;
+  }
+
+  .quotation-title h2 {
+    font-size: 1.4rem;
+  }
+
+  .pdf-main-table th,
+  .pdf-main-table td {
+    padding: 5px 3px;
+    font-size: 0.58rem;
+    overflow-wrap: anywhere;
+  }
+
+  .quotation-item-column {
+    width: 7%;
+  }
+
+  .quotation-unit-column {
+    width: 16%;
+  }
+
+  .quotation-quantity-column {
+    width: 17%;
+  }
+
+  .quotation-amount-column {
+    width: 20%;
+  }
+
+  .quotation-package-row {
+    height: 220px;
+  }
+
+  .quotation-package-row td:first-child,
+  .quotation-package-row td:nth-child(2) {
+    font-size: 0.65rem;
+  }
+
+  .quotation-notes {
+    margin-top: 90px;
+    font-size: 0.58rem;
+  }
+
+  .quotation-accreditations {
+    right: 16px;
+    left: 16px;
+    gap: 12px;
+  }
+
+  .quotation-footer {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 12px;
+    font-size: 0.58rem;
+  }
+
+  .quotation-footer span:last-child {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .quotation-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html,
+  body {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 !important;
+    background: #fff !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .quotation-page {
+    display: block;
+    width: 210mm;
+    height: 297mm;
+    padding: 0;
+    background: #fff;
+  }
+
+  .quotation-canvas {
+    width: 210mm;
+    height: 297mm;
+    min-height: 0;
+    margin: 0;
+    padding: 15mm 12mm 22mm;
+    box-shadow: none;
+  }
+
+  .quotation-brand {
+    gap: 5mm;
+  }
+
+  .quotation-logo {
+    width: 42mm;
+    height: 24mm;
+  }
+
+  .quotation-brand-copy h1 {
+    font-size: 24pt;
+  }
+
+  .quotation-brand-copy p,
+  .quotation-brand-copy span {
+    font-size: 8pt;
+  }
+
+  .quotation-content {
+    margin-top: 16mm;
+  }
+
+  .quotation-customer {
+    min-height: 30mm;
+    padding: 3mm;
+  }
+
+  .quotation-customer strong {
+    font-size: 13pt;
+  }
+
+  .quotation-customer p,
+  .quotation-title p {
+    font-size: 9pt;
+  }
+
+  .quotation-title h2 {
+    font-size: 25pt;
+  }
+
+  .pdf-main-table {
+    margin-top: 8mm;
+  }
+
+  .pdf-main-table th,
+  .pdf-main-table td {
+    padding: 2.5mm;
+    font-size: 9pt;
+  }
+
+  .quotation-package-row {
+    height: 72mm;
+  }
+
+  .quotation-notes {
+    margin-top: 32mm;
+    font-size: 8pt;
+  }
+
+  .quotation-total {
+    padding: 3mm;
+  }
+
+  .quotation-total strong {
+    font-size: 12pt;
+  }
+
+  .quotation-accreditations {
+    right: 12mm;
+    bottom: 20mm;
+    left: 12mm;
+    height: 14mm;
+  }
+
+  .quotation-accreditations img {
+    max-height: 13mm;
+  }
+
+  .quotation-footer {
+    min-height: 15mm;
+    font-size: 7pt;
+  }
+
+  .quotation-actions {
+    display: none !important;
+  }
+}
+
 .site-hero-height {
   height: min(var(--site-hero-max-height), calc(100svh - var(--site-header-height)));
 }
