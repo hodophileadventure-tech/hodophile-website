@@ -103,6 +103,7 @@ function QuotationEditContent() {
         numberOfRooms: quotationData.numberOfRooms,
         adults: quotationData.adults,
         kids: quotationData.kids,
+        jeepAddons: quotationData.jeepAddons,
         tripDate: quotationData.tripDate,
       };
 
@@ -145,6 +146,7 @@ function QuotationEditContent() {
       numberOfRooms: quotationData.numberOfRooms,
       adults: quotationData.adults,
       kids: quotationData.kids,
+      jeepAddons: quotationData.jeepAddons,
       tripDate: quotationData.tripDate,
       mandatoryJeepCost: 0,
       travelMode: quotationData.travelMode,
@@ -181,6 +183,7 @@ function QuotationEditContent() {
             numberOfRooms: quotationData.numberOfRooms,
             adults: quotationData.adults,
             kids: quotationData.kids,
+            jeepAddons: quotationData.jeepAddons,
             tripDate: quotationData.tripDate,
             travelMode: quotationData.travelMode,
             promoCode: quotationData.promoCode,
