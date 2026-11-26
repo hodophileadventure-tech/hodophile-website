@@ -5,16 +5,15 @@ import { PageHeroImage } from "@/components/page-hero-image";
 import { PageShell } from "@/components/page-shell";
 import { absoluteUrl } from "@/lib/site";
 
-const galleryImages = [
-  { src: "/images/package-cards/destination-skardu-mountains-gallery.webp", alt: "Skardu landscape", caption: "Skardu" },
-  { src: "/images/package-cards/images__destinations__naran-saif.webp", alt: "Naran landscape", caption: "Naran" },
-  { src: "/images/package-cards/destination-swat-valley-gallery.webp", alt: "Swat landscape", caption: "Swat" },
-  { src: "/images/package-cards/destination-kashmir-valley-gallery.webp", alt: "Kashmir landscape", caption: "Kashmir" },
-  { src: "/images/package-cards/images__editorial__editorial-3.webp", alt: "Northern valley", caption: "Valley views" },
-  { src: "/images/package-cards/images__editorial__editorial-5.webp", alt: "Mountain route", caption: "Scenic roads" },
-  { src: "/images/package-cards/images__editorial__editorial-6.webp", alt: "Travel in highlands", caption: "Highland escapes" },
-  { src: "/images/package-cards/images__editorial__editorial-8.webp", alt: "Cinematic landscape", caption: "Cinematic Pakistan" },
-];
+const galleryImages = Array.from({ length: 136 }, (_, index) => {
+  const photoNumber = String(index + 1).padStart(3, "0");
+
+  return {
+    src: `/images/gallery/gallery-${photoNumber}.webp`,
+    alt: `Pakistan travel gallery photo ${photoNumber}`,
+    caption: `Gallery photo ${photoNumber}`,
+  };
+});
 
 export const metadata: Metadata = {
   title: "Gallery",
@@ -45,7 +44,7 @@ export default function GalleryPage() {
         {galleryImages.map((image) => (
           <article key={image.src} className="group overflow-hidden rounded-[2rem] border border-black/10 bg-white/95 shadow-[0_22px_50px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_28px_60px_rgba(15,23,42,0.12)]">
             <div className="relative aspect-[4/3] overflow-hidden">
-              <Image src={image.src} alt={image.alt} fill sizes="(max-width: 1280px) 50vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
+              <Image src={image.src} alt={image.alt} fill sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw" className="object-cover transition duration-700 group-hover:scale-105" />
             </div>
             <div className="p-6">
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#fcc000]/75">
