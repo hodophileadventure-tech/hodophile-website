@@ -3951,7 +3951,7 @@ export function MakeMyTripForm() {
                   <div><span className="block text-xs uppercase tracking-[0.16em] text-stone-500">Accommodation</span><strong>{formatPKR(quotation.hotelCost)}</strong></div>
                   <div><span className="block text-xs uppercase tracking-[0.16em] text-stone-500">Add-ons</span><strong>{formatPKR(quotation.jeepAddonsCost)}</strong></div>
                 </div>
-                <a href={whatsappUrl(journeyWhatsAppMessage)} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex w-full items-center justify-center rounded-[14px] bg-[#31563f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#244432]">Get my itinerary on WhatsApp</a>
+                <a href={whatsappUrl(journeyWhatsAppMessage)} target="_blank" rel="noopener noreferrer" className="theme-preserve-dark mt-5 inline-flex w-full items-center justify-center rounded-[14px] bg-[#31563f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#244432]">Get my itinerary on WhatsApp</a>
               </section>
             ) : null}
 
@@ -3987,7 +3987,7 @@ export function MakeMyTripForm() {
             <button
               type="submit"
               disabled={isSubmitting || !quotation || isInvalidCombination || Boolean(airDestinationError) || (travelMode === "air" && routeStops.length > 1 && Boolean(routeError))}
-              className="mt-2 inline-flex min-h-14 w-full items-center justify-center gap-3 bg-black px-6 py-4 text-lg font-bold text-[#FCC000] shadow-[0_12px_30px_rgba(0,0,0,0.18)] transition duration-300 hover:brightness-110 active:brightness-95 disabled:cursor-not-allowed disabled:border disabled:border-stone-500 disabled:bg-stone-700 disabled:opacity-100 disabled:shadow-none"
+              className="theme-preserve-dark mt-2 inline-flex min-h-14 w-full items-center justify-center gap-3 bg-black px-6 py-4 text-lg font-bold text-[#FCC000] shadow-[0_12px_30px_rgba(0,0,0,0.18)] transition duration-300 hover:brightness-110 active:brightness-95 disabled:cursor-not-allowed disabled:border disabled:border-stone-500 disabled:bg-stone-700 disabled:opacity-100 disabled:shadow-none"
             >
               {isSubmitting ? (
                 <>
