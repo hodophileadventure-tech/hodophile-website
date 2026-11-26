@@ -491,6 +491,7 @@ test("charges transport but no accommodation for a zero-night destination", () =
   assert.equal(quote.hotelCost, 0);
   assert.equal(quote.details.hotel, "");
   assert.ok(quote.transportCost > 0);
+  assert.equal(quote.totalCost, 25_800);
 });
 
 test("offers the requested per-jeep rates and selects the By Air Astore rate", () => {

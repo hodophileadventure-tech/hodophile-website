@@ -493,8 +493,11 @@ export function calculateQuotation(
       ? 0.15
       : 0.10;
 
-    const markupAmount = Math.round(subtotal * profitPercentage);
-    const totalCost = subtotal + markupAmount;
+    const existingMarkupAmount = Math.round(subtotal * profitPercentage);
+    const currentTotal = subtotal + existingMarkupAmount;
+    const additionalMarkupAmount = Math.round(currentTotal * 0.2);
+    const markupAmount = existingMarkupAmount + additionalMarkupAmount;
+    const totalCost = currentTotal + additionalMarkupAmount;
     
     const numberOfGuests = input.adults + input.kids;
     const perPersonCost =

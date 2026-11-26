@@ -11,6 +11,8 @@ interface QuotationDisplayData {
   routeId?: string;
   customCities?: string[];
   customRouteLabel?: string;
+  multiCityNights?: Record<string, number>;
+  singleCityHotelStays?: Array<{ nights: number }>;
   destination?: string;
   details?: {
     numberOfGuests?: number;
@@ -23,6 +25,7 @@ interface QuotationDisplayData {
   kids?: number;
   perPersonCost?: number;
   totalCost?: number;
+  hotelCost?: number;
   promotion?: {
     code: string;
     discountPercent: number;
@@ -156,9 +159,29 @@ export function QuotationResultContent() {
     Array.isArray(quotation.customCities) &&
     quotation.customCities.length > 0;
   const route = isCustomItinerary ? undefined : routes.find((r) => r.id === quotation.routeId);
-  const routeName = isCustomItinerary
+  const packageName = isCustomItinerary
     ? quotation.customRouteLabel || quotation.customCities?.join(" + ") || "Custom Package"
     : route?.name || quotation.destination || "Unknown";
+  const multiCityNightCount = Object.values(quotation.multiCityNights || {}).reduce(
+    (total, nights) => total + Math.max(0, nights),
+    0,
+  );
+  const singleCityHotelNightCount = (quotation.singleCityHotelStays || []).reduce(
+    (total, stay) => total + Math.max(0, stay.nights),
+    0,
+  );
+  const tripNights = isCustomItinerary
+    ? Math.max(multiCityNightCount, singleCityHotelNightCount)
+    : Math.max(0, (route?.duration || 1) - 1);
+  const tripDays = isCustomItinerary ? Math.max(1, tripNights + 1) : route?.duration || 0;
+  const packageNameWithoutDuration = packageName.replace(
+    /^\d+\s*days?(?:\s*\/\s*\d+\s*nights?)?\s*[·-]?\s*/i,
+    "",
+  );
+  const durationLabel = `${tripDays} Day${tripDays === 1 ? "" : "s"} / ${tripNights} Night${tripNights === 1 ? "" : "s"} Trip`;
+  const routeName = tripDays > 0
+    ? `${durationLabel} · ${packageNameWithoutDuration || packageName}`
+    : packageName;
   const numberOfGuests = quotation.details?.numberOfGuests ?? ((quotation.adults || 0) + (quotation.kids || 0));
   const perPersonPrice = quotation.perPersonCost ?? 0;
   const totalAmount = quotation.totalCost ?? 0;
@@ -177,7 +200,7 @@ export function QuotationResultContent() {
     ...(jeepRideNames.length > 0
       ? [`Jeep ride${jeepRideNames.length === 1 ? "" : "s"}: ${jeepRideNames.join(", ")}`]
       : []),
-    "Hotel accommodation",
+    ...(quotation.hotelCost && quotation.hotelCost > 0 ? ["Hotel accommodation"] : []),
   ];
 
   const handleWhatsApp = () => {
@@ -242,7 +265,9 @@ export function QuotationResultContent() {
                   <strong>{routeName}</strong>
                   <div className="quotation-notes">
                     <strong>NOTES:</strong>
-                    <p>Accommodation Type: {quotation.details?.accommodationType || quotation.details?.roomType || quotation.roomType || "To be confirmed"}</p>
+                    {quotation.hotelCost && quotation.hotelCost > 0 ? (
+                      <p>Accommodation Type: {quotation.details?.accommodationType || quotation.details?.roomType || quotation.roomType || "To be confirmed"}</p>
+                    ) : null}
                     <p>Transportation Type: {quotation.details?.vehicle || quotation.vehicleName || "To be confirmed"}</p>
                     <p>Departure Location: {departureLocation}</p>
                     <p>Trip Date: {tripDate}</p>

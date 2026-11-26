@@ -4052,7 +4052,7 @@ export function MakeMyTripForm() {
                     <Sparkles className="w-6 h-6 text-[#FCC000]" aria-hidden="true" />
                     <span className="text-base text-[#FCC000] sm:text-lg">Get Quotation</span>
                   </span>
-                  {quotation ? <span className="text-right text-sm font-bold text-white sm:text-base">{formatPKR(quotation.totalCost + offRouteChargePKR)}</span> : null}
+                  {quotation ? <span className="text-right text-sm font-black !text-[#FCC000] sm:text-base">{formatPKR(quotation.totalCost + offRouteChargePKR)}</span> : null}
                 </span>
               )}
             </button>
