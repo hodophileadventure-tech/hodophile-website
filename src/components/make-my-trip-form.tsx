@@ -138,15 +138,15 @@ const LABEL_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
 const VALIDATION_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
 const destinationCardDetails: Record<string, { image?: string; description: string }> = {
   Hunza: { image: "/images/package-cards/images__destinations__hunza-custom.webp", description: "Mountain valleys" },
-  Skardu: { image: "/images/package-cards/destination-skardu-mountains-planner.webp", description: "Lakes and highlands" },
+  Skardu: { image: "/images/custom-skardu.jpg", description: "Lakes and highlands" },
   Naran: { image: "/images/package-cards/images__destinations__naran.webp", description: "Alpine lakes" },
-  Astore: { image: "/images/package-cards/images__astore-ready.webp", description: "Remote valley routes" },
+  Astore: { image: "/images/custom-astore.jpg", description: "Remote valley routes" },
   Kashmir: { image: "/images/package-cards/destination-kashmir-valley-planner.webp", description: "Forests and valleys" },
   Swat: { image: "/images/package-cards/destination-swat-valley-planner.webp", description: "Green mountain valleys" },
-  "Malam Jabba": { image: "/images/package-cards/images__destinations__featured-kalam-malam-jabba.webp", description: "Ski resort and mountain views" },
+  "Malam Jabba": { image: "/images/custom-malam-jabba.jpg", description: "Ski resort and mountain views" },
   "Fairy Meadows": { image: "/images/package-cards/destination-fairy-meadows-planner.webp", description: "Alpine meadow journeys" },
-  Shogran: { image: "/images/package-cards/images__honeymoon__naran-shogran.webp", description: "Meadows and mountain views" },
-  "Nathia Gali": { image: "/images/package-cards/destination-nathia-gali-planner.webp", description: "Forest-covered hills" },
+  Shogran: { image: "/images/custom-shogran.jpg", description: "Meadows and mountain views" },
+  "Nathia Gali": { image: "/images/custom-nathia-gali.png", description: "Forest-covered hills" },
   Murree: { image: "/images/package-cards/images__honeymoon__murree-tour.webp", description: "Hill-station escapes" },
 };
 
