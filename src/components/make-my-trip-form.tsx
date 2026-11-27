@@ -4462,12 +4462,6 @@ export function MakeMyTripForm() {
                   ) : null}
                   <ItineraryViewer itinerary={generatedItinerary} />
                 </div>
-                <div className="mt-5 grid gap-3 border-t border-stone-200 pt-4 text-sm sm:grid-cols-4">
-                  <div><span className="block text-xs uppercase tracking-[0.16em] text-stone-500">Transport</span><strong>{formatPKR(quotation.transportCost)}</strong></div>
-                  <div><span className="block text-xs uppercase tracking-[0.16em] text-stone-500">Accommodation</span><strong>{formatPKR(quotation.hotelCost)}</strong></div>
-                  <div><span className="block text-xs uppercase tracking-[0.16em] text-stone-500">Breakfast</span><strong>{formatPKR(quotation.breakfastCost)}</strong></div>
-                  <div><span className="block text-xs uppercase tracking-[0.16em] text-stone-500">Add-ons</span><strong>{formatPKR(quotation.jeepAddonsCost)}</strong></div>
-                </div>
                 <a href={whatsappUrl(journeyWhatsAppMessage)} target="_blank" rel="noopener noreferrer" className="theme-preserve-dark mt-5 inline-flex w-full items-center justify-center rounded-[14px] bg-[#31563f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#244432]">Get my itinerary on WhatsApp</a>
               </section>
             ) : null}
