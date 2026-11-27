@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { generateItinerary } from "./itinerary-generator";
+import { generateItinerary, getItineraryAttractionRouteGroups } from "./itinerary-generator";
 import { decodeBase64Json, encodeBase64Json } from "./base64-json";
 
 const routeTrip = {
@@ -54,12 +54,17 @@ test("generates the exact selected duration, route order, and hotel allocation",
 test("pace changes the number of attractions without repeating them", () => {
   const base = {
     selectedCities: ["Skardu"],
-    nightsByCity: { Skardu: 3 },
+    nightsByCity: { Skardu: 1 },
     routeSequence: ["Skardu"],
     tripDate: "2026-07-10",
     startingPoint: "Skardu",
     travelMode: "road" as const,
-    durationDays: 4,
+    durationDays: 2,
+    attractionRouteLegs: [
+      { fromAttractionId: "skardu-shangrila", toAttractionId: "skardu-upper-kachura", distanceKm: 5, durationSeconds: 1_200 },
+      { fromAttractionId: "skardu-upper-kachura", toAttractionId: "skardu-shigar-fort", distanceKm: 20, durationSeconds: 1_200 },
+      { fromAttractionId: "skardu-shigar-fort", toAttractionId: "skardu-sarfaranga", distanceKm: 12, durationSeconds: 1_200 },
+    ],
   };
   const getAttractions = (pace: "relaxed" | "balanced" | "adventure") =>
     generateItinerary({ ...base, pace }).days.flatMap((day) =>
@@ -74,6 +79,84 @@ test("pace changes the number of attractions without repeating them", () => {
   assert.ok(relaxed.length < balanced.length);
   assert.ok(balanced.length < adventure.length);
   assert.equal(new Set(adventure).size, adventure.length);
+});
+
+test("uses verified local drive estimates and credits OpenStreetMap coordinates", () => {
+  const input = {
+    selectedCities: ["Hunza"],
+    nightsByCity: { Hunza: 2 },
+    routeSequence: ["Hunza"],
+    tripDate: "2026-07-10",
+    startingPoint: "Hunza",
+    travelMode: "road" as const,
+    pace: "balanced" as const,
+    attractionRouteLegs: [{
+      fromAttractionId: "hunza-baltit-fort",
+      toAttractionId: "hunza-altit-fort",
+      distanceKm: 4.2,
+      durationSeconds: 900,
+    }],
+  };
+  const itinerary = generateItinerary(input);
+  const activities = itinerary.days.flatMap((day) =>
+    [...day.morning, ...day.afternoon, ...day.evening],
+  );
+  const localDrive = activities.find((activity) =>
+    activity.title === "Travel: Baltit Fort to Altit Fort",
+  );
+
+  assert.equal(localDrive?.distanceKm, 4.2);
+  assert.equal(localDrive?.drivingMinutes, 15);
+  assert.equal(itinerary.usesOpenStreetMap, true);
+  assert.ok(itinerary.notes.some((note) => note.includes("OpenStreetMap contributors")));
+  assert.ok(getItineraryAttractionRouteGroups(input).some((group) =>
+    group.attractionIds.includes("hunza-baltit-fort") &&
+    group.attractionIds.includes("hunza-altit-fort"),
+  ));
+});
+
+test("does not invent local drive times when mapped routes are unavailable", () => {
+  const itinerary = generateItinerary({
+    selectedCities: ["Hunza"],
+    nightsByCity: { Hunza: 2 },
+    routeSequence: ["Hunza"],
+    tripDate: "2026-07-10",
+    startingPoint: "Hunza",
+    travelMode: "road",
+    pace: "balanced",
+  });
+  const activities = itinerary.days.flatMap((day) =>
+    [...day.morning, ...day.afternoon, ...day.evening],
+  );
+
+  assert.ok(itinerary.notes.some((note) => note.includes("Local attraction drive times are not available")));
+  assert.ok(!activities.some((activity) =>
+    activity.title === "Travel: Baltit Fort to Altit Fort",
+  ));
+});
+
+test("uses leisure on extra days without repeating a destination's attractions", () => {
+  const itinerary = generateItinerary({
+    selectedCities: ["Malam Jabba"],
+    nightsByCity: { "Malam Jabba": 3 },
+    routeSequence: ["Malam Jabba"],
+    tripDate: "2026-07-10",
+    startingPoint: "Malam Jabba",
+    travelMode: "road",
+    pace: "balanced",
+  });
+  const attractions = itinerary.days.flatMap((day) =>
+    [...day.morning, ...day.afternoon, ...day.evening]
+      .filter((activity) => activity.kind === "sightseeing")
+      .map((activity) => activity.title),
+  );
+
+  assert.equal(itinerary.days.length, 4);
+  assert.deepEqual(attractions, ["Malam Jabba"]);
+  assert.ok(itinerary.days.slice(1).some((day) =>
+    [...day.morning, ...day.afternoon, ...day.evening]
+      .some((activity) => activity.kind === "leisure"),
+  ));
 });
 
 test("schedules a selected optional jeep experience on a local exploration day", () => {

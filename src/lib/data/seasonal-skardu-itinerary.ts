@@ -11,6 +11,10 @@ function getBaseCity(city: string): string {
   return city.trim().replace(/\s+\([^)]*\)$/, "");
 }
 
+export function isNaranStopoverSeason(month: number): boolean {
+  return month >= 6 && month <= 10;
+}
+
 export function shouldExcludeRoadStopovers(destinations: readonly string[]): boolean {
   return destinations.some((city) => STOPOVER_EXCLUSION_CITIES.has(getBaseCity(city)));
 }
@@ -45,7 +49,7 @@ export function getCustomRoadStopoverCities(
   }
 
   const selectedCities = new Set(effectiveDestinations.map(getBaseCity));
-  if (month >= 5 && month <= 11) {
+  if (isNaranStopoverSeason(month)) {
     return [
       ...(effectiveDestinations.filter((city) => getBaseCity(city) === "Naran").length >= 1 ? [] : ["Naran (Outbound)"]),
       ...(effectiveDestinations.filter((city) => getBaseCity(city) === "Naran").length >= 2 ? [] : ["Naran (Return)"]),
@@ -92,9 +96,9 @@ export function getSeasonalSkarduStays(
   }
 
   const existingStopoverNights = stopovers.reduce((total, stay) => total + stay.nights, 0);
-  const adjustedDestinations = addNightsToSkardu(destinationStays, existingStopoverNights - 2);
 
-  if (month >= 5 && month <= 11) {
+  if (isNaranStopoverSeason(month)) {
+    const adjustedDestinations = addNightsToSkardu(destinationStays, existingStopoverNights - 2);
     return [
       ...islamabadStays,
       { city: "Naran (Outbound)", nights: 1 },
@@ -105,6 +109,10 @@ export function getSeasonalSkarduStays(
 
   const chilasStay = stopovers.find((stay) => getBaseCity(stay.city) === "Chilas") ?? { city: "Chilas", nights: 1 };
   const beshamStay = stopovers.find((stay) => getBaseCity(stay.city) === "Besham") ?? { city: "Besham", nights: 1 };
+  const adjustedDestinations = addNightsToSkardu(
+    destinationStays,
+    existingStopoverNights - chilasStay.nights - beshamStay.nights,
+  );
 
   return [
     ...islamabadStays,

@@ -110,6 +110,20 @@ export function ItineraryViewer({ itinerary }: { itinerary: GeneratedItinerary }
           {itinerary.notes.map((note) => <li key={note}>{note}</li>)}
         </ul>
       ) : null}
+      {itinerary.usesOpenStreetMap ? (
+        <p className="border-t border-stone-200 bg-white px-5 py-3 text-xs text-stone-500 sm:px-6">
+          Location data ©{" "}
+          <a
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-2"
+          >
+            OpenStreetMap contributors
+          </a>{" "}
+          (ODbL).
+        </p>
+      ) : null}
     </section>
   );
 }

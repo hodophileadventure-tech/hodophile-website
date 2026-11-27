@@ -10,6 +10,7 @@ import {
   type MapCoordinate,
 } from "./locations";
 import type { OperationalTransportSettings } from "./settings";
+import { itineraryAttractions } from "@/lib/data/itinerary-attractions";
 
 const ROUTE_CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const OPENROUTESERVICE_TIMEOUT_MS = 12_000;
@@ -181,6 +182,42 @@ export function prepareRoadRoute(
   };
 }
 
+export function prepareAttractionRoadRoute(requestedAttractionIds: unknown): PreparedRoadRoute {
+  if (!Array.isArray(requestedAttractionIds) ||
+      requestedAttractionIds.length < 2 ||
+      requestedAttractionIds.length > MAX_STOPS ||
+      requestedAttractionIds.some((id) => typeof id !== "string") ||
+      new Set(requestedAttractionIds).size !== requestedAttractionIds.length) {
+    throw new RouteCalculationError(
+      `Select between 2 and ${MAX_STOPS} distinct supported attractions for local routing.`,
+      "invalid-stops",
+      400,
+    );
+  }
+
+  const attractions = requestedAttractionIds.map((id) =>
+    itineraryAttractions.find((attraction) => attraction.id === id),
+  );
+  if (attractions.some((attraction) =>
+    !attraction?.coordinate || attraction.routeMode === "walking",
+  )) {
+    throw new RouteCalculationError(
+      "One or more selected attractions do not have a verified road-routing location.",
+      "invalid-stops",
+      400,
+    );
+  }
+
+  const ids = requestedAttractionIds as string[];
+  const coordinates = attractions.map((attraction) => attraction!.coordinate!);
+  return {
+    itineraryKey: makeRouteKey(["attraction-route", ...ids]),
+    stops: ids,
+    coordinates,
+    destinationAdjustmentsKmByLeg: Array(ids.length - 1).fill(0),
+  };
+}
+
 function isCoordinate(value: unknown): value is MapCoordinate {
   return Array.isArray(value) && value.length === 2 &&
     typeof value[0] === "number" && Number.isFinite(value[0]) && value[0] >= -180 && value[0] <= 180 &&
@@ -304,6 +341,37 @@ async function saveCachedRoute(route: StoredRoute, requirePersistence = false): 
     console.error(`Unable to persist route cache ${route.itineraryKey}:`, error);
     if (requirePersistence) throw new Error("Unable to persist the route override.");
   }
+}
+
+async function getOrFetchStoredRoute(
+  prepared: PreparedRoadRoute,
+  fetcher: typeof fetch,
+  apiKey: string | undefined,
+): Promise<StoredRoute> {
+  const cached = await readCachedRoute(prepared.itineraryKey);
+  if (cached) {
+    memoryCache.set(prepared.itineraryKey, cached);
+    return cached;
+  }
+
+  const unexpiredMemoryRoute = memoryCache.get(prepared.itineraryKey);
+  if (unexpiredMemoryRoute && unexpiredMemoryRoute.expiresAt.getTime() > Date.now()) {
+    return unexpiredMemoryRoute;
+  }
+
+  let pending = inFlightRoutes.get(prepared.itineraryKey);
+  if (!pending) {
+    pending = fetchOpenRouteServiceRoute(prepared, fetcher, apiKey)
+      .then(async (route) => {
+        memoryCache.set(route.itineraryKey, route);
+        await saveCachedRoute(route);
+        return route;
+      })
+      .finally(() => inFlightRoutes.delete(prepared.itineraryKey));
+    inFlightRoutes.set(prepared.itineraryKey, pending);
+  }
+
+  return pending;
 }
 
 function parseOrsFeature(value: unknown, stops: string[], itineraryKey: string): StoredRoute {
@@ -566,31 +634,17 @@ export async function calculateRoadRoute(
     settings.includeReturnJourney,
     includeDestinationAdjustments,
   );
-  const cached = await readCachedRoute(prepared.itineraryKey);
-  if (cached) {
-    memoryCache.set(prepared.itineraryKey, cached);
-    return applyRouteDistanceAdjustments(cached, settings, prepared);
-  }
-
-  const unexpiredMemoryRoute = memoryCache.get(prepared.itineraryKey);
-  if (unexpiredMemoryRoute && unexpiredMemoryRoute.expiresAt.getTime() > Date.now()) {
-    return applyRouteDistanceAdjustments(unexpiredMemoryRoute, settings, prepared);
-  }
-
-  let pending = inFlightRoutes.get(prepared.itineraryKey);
-  if (!pending) {
-    pending = fetchOpenRouteServiceRoute(prepared, fetcher, apiKey)
-      .then(async (route) => {
-        memoryCache.set(route.itineraryKey, route);
-        await saveCachedRoute(route);
-        return route;
-      })
-      .finally(() => inFlightRoutes.delete(prepared.itineraryKey));
-    inFlightRoutes.set(prepared.itineraryKey, pending);
-  }
-
-  const route = await pending;
+  const route = await getOrFetchStoredRoute(prepared, fetcher, apiKey);
   return applyRouteDistanceAdjustments(route, settings, prepared);
+}
+
+export async function calculateAttractionRoadRoute(
+  attractionIds: unknown,
+  fetcher: typeof fetch = fetch,
+  apiKey = process.env.OPENROUTESERVICE_API_KEY,
+): Promise<StoredRoute> {
+  const prepared = prepareAttractionRoadRoute(attractionIds);
+  return getOrFetchStoredRoute(prepared, fetcher, apiKey);
 }
 
 export function invalidateMemoryRoute(itineraryKey: string): void {

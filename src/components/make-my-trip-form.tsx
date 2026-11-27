@@ -44,6 +44,7 @@ import {
   getCustomRoadStopoverCities,
   getSeasonalSkarduStays,
   isExcludedRoadStopover,
+  isNaranStopoverSeason,
   shouldExcludeRoadStopovers,
 } from "@/lib/data/seasonal-skardu-itinerary";
 import { getMandatoryJeepCost } from "@/lib/data/routeActivities";
@@ -70,7 +71,14 @@ import { HotelCardPicker } from "@/components/make-my-trip/hotel-card-picker";
 import { RouteVisualizer } from "@/components/make-my-trip/route-visualizer";
 import { TripPlannerProgress } from "@/components/make-my-trip/trip-planner-progress";
 import { ItineraryViewer } from "@/components/make-my-trip/itinerary-viewer";
-import { generateItinerary, type ItineraryGeneratorInput, type ItineraryPace } from "@/lib/itinerary-generator";
+import {
+  generateItinerary,
+  getItineraryAttractionRouteGroups,
+  type ItineraryAttractionRouteGroup,
+  type ItineraryAttractionRouteLeg,
+  type ItineraryGeneratorInput,
+  type ItineraryPace,
+} from "@/lib/itinerary-generator";
 import { encodeBase64Json } from "@/lib/base64-json";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -105,6 +113,34 @@ function isRoadRouteEstimate(value: unknown): value is RoadRouteEstimate {
     typeof value.allowanceKm === "number" && Number.isFinite(value.allowanceKm) &&
     (value.durationSeconds === null || (typeof value.durationSeconds === "number" && Number.isFinite(value.durationSeconds))) &&
     (value.source === "OPENROUTESERVICE" || value.source === "MANUAL");
+}
+
+function isAttractionRouteGroups(value: unknown): value is ItineraryAttractionRouteGroup[] {
+  return Array.isArray(value) && value.every((group) =>
+    isRecord(group) &&
+    typeof group.city === "string" &&
+    Array.isArray(group.attractionIds) &&
+    group.attractionIds.every((id) => typeof id === "string"),
+  );
+}
+
+function isAttractionRouteResponse(
+  value: unknown,
+): value is { routes: Array<{ city: string; legs: ItineraryAttractionRouteLeg[] }> } {
+  return isRecord(value) && Array.isArray(value.routes) && value.routes.every((route) =>
+    isRecord(route) &&
+    typeof route.city === "string" &&
+    Array.isArray(route.legs) &&
+    route.legs.every((leg) =>
+      isRecord(leg) &&
+      typeof leg.fromAttractionId === "string" &&
+      typeof leg.toAttractionId === "string" &&
+      typeof leg.distanceKm === "number" &&
+      Number.isFinite(leg.distanceKm) &&
+      (leg.durationSeconds === null ||
+        (typeof leg.durationSeconds === "number" && Number.isFinite(leg.durationSeconds))),
+    ),
+  );
 }
 
 // Map featured tours to their corresponding route slugs
@@ -302,6 +338,11 @@ export function MakeMyTripForm() {
     route: RoadRouteEstimate | null;
     error: string;
   } | null>(null);
+  const [attractionRouteResult, setAttractionRouteResult] = useState<{
+    itineraryKey: string;
+    routeLegs: ItineraryAttractionRouteLeg[];
+    error: string;
+  } | null>(null);
   const [promoInput, setPromoInput] = useState("");
   const [promoCode, setPromoCode] = useState("");
   const [promoValidation, setPromoValidation] = useState<PromotionSummary | null>(null);
@@ -312,6 +353,7 @@ export function MakeMyTripForm() {
   const customQuoteTimeoutRef = useRef<number | null>(null);
   const customQuoteAbortRef = useRef<AbortController | null>(null);
   const roadRouteRequestRef = useRef(0);
+  const attractionRouteRequestRef = useRef(0);
   const [availableHotels, setAvailableHotels] = useState<Hotel[]>([]);
   const [availableRooms, setAvailableRooms] = useState<any[]>([]);
   const [availableVehicles, setAvailableVehicles] = useState<Array<{ name: string; price: number }>>([]);
@@ -807,9 +849,9 @@ export function MakeMyTripForm() {
     return getCustomRoadStopoverCities(selectedCities, travelMode as "road" | "air", selectedTripMonth);
   }, [selectedCities, routeId, isFixedPackageSelection, travelMode, selectedTripMonth]);
   const usesSeasonalRoadStopovers = seasonalRoadStopoverCities.length > 0;
-  const seasonalRoadStopoverDescription = selectedTripMonth >= 5 && selectedTripMonth <= 11
-    ? "By road, stay in Chilas on the way out and Besham on the return from May through November."
-    : "By road, stay in Naran once on the way out and once on the return.";
+  const seasonalRoadStopoverDescription = isNaranStopoverSeason(selectedTripMonth)
+    ? "By road, stay in Naran on the way out and return from June through October."
+    : "By road, stay in Chilas on the way out and Besham on the return from November through May.";
 
   // Check if user is using a package route
   const isPackageRoute = (): boolean => {
@@ -826,9 +868,9 @@ export function MakeMyTripForm() {
     ? "By air, the tour starts at Skardu Airport. Naran, Chilas, and Besham stopover stays are not included."
     : !isSkarduPackage
       ? ""
-      : selectedTripMonth >= 5 && selectedTripMonth <= 11
-      ? "By road, stay in Chilas on the way out and Besham on the return from May through November."
-      : "By road, stay in Naran once on the way out and once on the return.";
+      : isNaranStopoverSeason(selectedTripMonth)
+      ? "By road, stay in Naran on the way out and return from June through October."
+      : "By road, stay in Chilas on the way out and Besham on the return from November through May.";
   const singleCityNightCount = Math.max(1, (selectedRoute?.duration || 1) - 1);
   const supportsMultipleHotelsInSingleCity = Boolean(
     selectedRoute && !isMultiCityTour() && !isCustomCitySelection() && singleCityNightCount > 2
@@ -1830,6 +1872,12 @@ export function MakeMyTripForm() {
         return;
       }
 
+      if (attractionRoutesPending) {
+        setSubmitError("Please wait for the local attraction route estimates before submitting your itinerary.");
+        setIsSubmitting(false);
+        return;
+      }
+
       if (!quotation) {
         setSubmitError("Please complete all required fields");
         setIsSubmitting(false);
@@ -1963,7 +2011,7 @@ export function MakeMyTripForm() {
         customerPhone,
         promoCode: undefined as string | undefined,
         promotion: undefined as PromotionSummary | undefined,
-        itineraryConfiguration,
+        itineraryConfiguration: generatedItineraryConfiguration,
       };
 
       // Build a concise description for the receipt: package/route, vehicle, hotels, and prices in PKR
@@ -2479,7 +2527,86 @@ export function MakeMyTripForm() {
       travelerCount: adults + kids,
     };
   })();
-  const generatedItinerary = generateItinerary(itineraryConfiguration);
+  const attractionRouteGroupsKey = JSON.stringify(getItineraryAttractionRouteGroups(itineraryConfiguration));
+  const currentAttractionRouteResult = attractionRouteResult?.itineraryKey === attractionRouteGroupsKey
+    ? attractionRouteResult
+    : null;
+  const attractionRoutesPending = attractionRouteGroupsKey !== "[]" && !currentAttractionRouteResult;
+  const attractionRouteError = currentAttractionRouteResult?.error ?? "";
+
+  useEffect(() => {
+    const requestId = ++attractionRouteRequestRef.current;
+    const routeGroups: unknown = JSON.parse(attractionRouteGroupsKey);
+    if (!isAttractionRouteGroups(routeGroups) || routeGroups.length === 0) return;
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => {
+      void fetch("/api/transport/attraction-routes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ routes: routeGroups }),
+        signal: controller.signal,
+      })
+        .then(async (response) => {
+          const responseText = await response.text();
+          let body: unknown = null;
+          try {
+            body = JSON.parse(responseText);
+          } catch {
+            body = null;
+          }
+          if (attractionRouteRequestRef.current !== requestId) return;
+          const payload = isRecord(body) ? body : null;
+          if (!response.ok) {
+            setAttractionRouteResult({
+              itineraryKey: attractionRouteGroupsKey,
+              routeLegs: [],
+              error: typeof payload?.error === "string"
+                ? payload.error
+                : `Attraction route request failed (HTTP ${response.status}).`,
+            });
+            return;
+          }
+          if (!isAttractionRouteResponse(body)) {
+            console.error("Attraction route API returned an invalid response", {
+              status: response.status,
+              responsePreview: responseText.slice(0, 500),
+            });
+            setAttractionRouteResult({
+              itineraryKey: attractionRouteGroupsKey,
+              routeLegs: [],
+              error: "Attraction route estimates returned an unexpected response.",
+            });
+            return;
+          }
+          setAttractionRouteResult({
+            itineraryKey: attractionRouteGroupsKey,
+            routeLegs: body.routes.flatMap((route) => route.legs),
+            error: "",
+          });
+        })
+        .catch((error: unknown) => {
+          if (controller.signal.aborted || attractionRouteRequestRef.current !== requestId) return;
+          console.error("Attraction route request failed before a valid API response was received", error);
+          setAttractionRouteResult({
+            itineraryKey: attractionRouteGroupsKey,
+            routeLegs: [],
+            error: "Could not reach the attraction routing service. Local drive times have not been estimated.",
+          });
+        });
+    }, 350);
+
+    return () => {
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [attractionRouteGroupsKey]);
+
+  const generatedItineraryConfiguration: ItineraryGeneratorInput = {
+    ...itineraryConfiguration,
+    attractionRouteLegs: currentAttractionRouteResult?.routeLegs ?? [],
+  };
+  const generatedItinerary = generateItinerary(generatedItineraryConfiguration);
 
   const journeyLabel = isCustomCitySelection()
     ? effectiveSelectedCities.join(" + ") || "Custom itinerary"
@@ -4321,6 +4448,16 @@ export function MakeMyTripForm() {
                   </div>
                 </div>
                 <div className="mt-5">
+                  {attractionRoutesPending ? (
+                    <p role="status" className="mb-3 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-xs text-stone-600">
+                      Checking mapped attraction-to-attraction road times…
+                    </p>
+                  ) : null}
+                  {attractionRouteError ? (
+                    <p role="alert" className="mb-3 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                      {attractionRouteError} Local drive times are not estimated where verified routing data is unavailable.
+                    </p>
+                  ) : null}
                   <ItineraryViewer itinerary={generatedItinerary} />
                 </div>
                 <div className="mt-5 grid gap-3 border-t border-stone-200 pt-4 text-sm sm:grid-cols-3">

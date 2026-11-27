@@ -12,6 +12,7 @@ import { getTransportLocation } from "./locations";
 import { allowRouteCalculation } from "./rate-limit";
 import {
   applyRouteDistanceAdjustments,
+  prepareAttractionRoadRoute,
   createManualRouteOverride,
   fetchOpenRouteServiceRoute,
   prepareRoadRoute,
@@ -50,6 +51,25 @@ test("prepares multi-destination routes in order and includes the return stop", 
   );
   assert.throws(
     () => prepareRoadRoute(["Islamabad", "Islamabad"], false),
+    (error: unknown) => error instanceof RouteCalculationError && error.code === "invalid-stops",
+  );
+});
+
+test("prepares attraction routes from verified points without distance adjustments or a return stop", () => {
+  const route = prepareAttractionRoadRoute(["hunza-baltit-fort", "hunza-altit-fort"]);
+
+  assert.deepEqual(route.stops, ["hunza-baltit-fort", "hunza-altit-fort"]);
+  assert.deepEqual(route.coordinates, [
+    [74.6698917, 36.3255234],
+    [74.6821016, 36.3168395],
+  ]);
+  assert.deepEqual(route.destinationAdjustmentsKmByLeg, [0]);
+  assert.throws(
+    () => prepareAttractionRoadRoute(["hunza-baltit-fort", "unknown-attraction"]),
+    (error: unknown) => error instanceof RouteCalculationError && error.code === "invalid-stops",
+  );
+  assert.throws(
+    () => prepareAttractionRoadRoute(["nathia-mukshpuri", "nathia-ayubia"]),
     (error: unknown) => error instanceof RouteCalculationError && error.code === "invalid-stops",
   );
 });

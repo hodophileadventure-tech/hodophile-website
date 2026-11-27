@@ -29,9 +29,22 @@ export interface ItineraryActivity {
   title: string;
   description: string;
   kind: "travel" | "sightseeing" | "meal" | "hotel" | "optional" | "leisure";
+  attractionId?: string;
   distanceKm?: number;
   drivingMinutes?: number;
   visitMinutes?: number;
+}
+
+export interface ItineraryAttractionRouteLeg {
+  fromAttractionId: string;
+  toAttractionId: string;
+  distanceKm: number;
+  durationSeconds: number | null;
+}
+
+export interface ItineraryAttractionRouteGroup {
+  city: string;
+  attractionIds: string[];
 }
 
 export interface GeneratedItineraryDay {
@@ -65,6 +78,7 @@ export interface GeneratedItinerary {
   hotelCategory?: string;
   specialOccasion?: string;
   selectedDestinations: string[];
+  usesOpenStreetMap: boolean;
   notes: string[];
   days: GeneratedItineraryDay[];
 }
@@ -88,6 +102,7 @@ export interface ItineraryGeneratorInput {
   singleCityHotelStays?: Array<{ hotelId: string; roomId: string; nights: number }>;
   customCityHotelStays?: CustomCityHotelStay[];
   routeLegs?: ItineraryRouteLeg[];
+  attractionRouteLegs?: ItineraryAttractionRouteLeg[];
   presetDays?: ItineraryPresetDay[];
   packageItinerary?: string;
   jeepRideNames?: string[];
@@ -96,10 +111,22 @@ export interface ItineraryGeneratorInput {
 }
 
 const DAY_START_MINUTES = 8 * 60;
+const SIGHTSEEING_DAY_START_MINUTES = 9 * 60;
+const SIGHTSEEING_DAY_END_MINUTES = 20 * 60;
+const PACE_VISIT_BUDGET_MINUTES: Record<ItineraryPace, number> = {
+  relaxed: 240,
+  balanced: 360,
+  adventure: 420,
+};
 const PERIOD_START: Record<AttractionPeriod, number> = {
   morning: 9 * 60,
   afternoon: 13 * 60 + 30,
   evening: 18 * 60,
+};
+const PERIOD_END: Record<AttractionPeriod, number> = {
+  morning: 12 * 60,
+  afternoon: 17 * 60,
+  evening: 20 * 60,
 };
 
 function normalizeCity(city: string): string {
@@ -176,6 +203,62 @@ function getAttractionsForCity(city: string): ItineraryAttraction[] {
     );
   }
   return itineraryAttractions.filter((attraction) => normalizeCity(attraction.city) === normalizedCity);
+}
+
+function getScheduledAttractions(
+  city: string,
+  input: ItineraryGeneratorInput,
+  month: number,
+  selectedRides: string[],
+): ItineraryAttraction[] {
+  const attractions = getAttractionsForCity(city).filter((attraction) =>
+    isAttractionAvailable(attraction, month) &&
+    (!attraction.requiresJeep || Boolean(getSelectedJeepForCity(selectedRides, city))),
+  );
+  const basho = attractions.find((attraction) => attraction.id === "skardu-basho");
+  const deosai = attractions.find((attraction) => attraction.id === "skardu-deosai");
+  if (!basho || !deosai) return attractions;
+
+  const nights = input.nightsByCity[city] ?? 0;
+  const preferredExcursion = nights >= 3 && input.pace !== "relaxed" ? deosai : basho;
+  return attractions.filter((attraction) =>
+    attraction.id !== "skardu-basho" && attraction.id !== "skardu-deosai" ||
+    attraction.id === preferredExcursion.id,
+  );
+}
+
+export function getItineraryAttractionRouteGroups(
+  input: ItineraryGeneratorInput,
+): ItineraryAttractionRouteGroup[] {
+  const month = getTripMonth(input.tripDate);
+  const selectedRides = selectedJeepNames(input);
+  const groups = new Map<string, ItineraryAttraction[]>();
+  for (const city of input.selectedCities) {
+    const attractions = getScheduledAttractions(city, input, month, selectedRides);
+    if (normalizeCity(city) === "kashmir") {
+      const selectedAreas = new Set((input.customCityHotelStays ?? []).map((stay) => normalizeCity(stay.location)));
+      for (const attraction of attractions) {
+        const area = normalizeCity(attraction.city);
+        if (attraction.coordinate && attraction.routeMode !== "walking" &&
+            (selectedAreas.has(area) || area === "kashmir")) {
+          groups.set(area, [...(groups.get(area) ?? []), attraction]);
+        }
+      }
+      continue;
+    }
+
+    const routable = attractions.filter((attraction) =>
+      attraction.coordinate && attraction.routeMode !== "walking",
+    );
+    if (routable.length > 0) groups.set(normalizeCity(city), routable);
+  }
+
+  return [...groups.entries()]
+    .map(([city, attractions]) => ({
+      city,
+      attractionIds: attractions.map((attraction) => attraction.id),
+    }))
+    .filter((group) => group.attractionIds.length > 1);
 }
 
 function getStayArea(city: string, input: ItineraryGeneratorInput, stayIndex: number): string {
@@ -338,14 +421,44 @@ function addAttraction(
     `Suggested visit: about ${attraction.recommendedVisitMinutes} minutes.`,
     attraction.accessNote,
   ].filter(Boolean).join(" ");
-  getScheduleSlot(day, period).push(createActivity(
+  getScheduleSlot(day, period).push({
+    ...createActivity(
     time,
     attraction.name,
     details,
     "sightseeing",
     { visitMinutes: attraction.recommendedVisitMinutes },
-  ));
+    ),
+    attractionId: attraction.id,
+  });
   if (attraction.seasonalNote) day.notes.push(attraction.seasonalNote);
+}
+
+function getAttractionRouteLeg(
+  routeLegs: ItineraryAttractionRouteLeg[],
+  fromAttractionId: string,
+  toAttractionId: string,
+): ItineraryAttractionRouteLeg | undefined {
+  return routeLegs.find((leg) =>
+    leg.fromAttractionId === fromAttractionId && leg.toAttractionId === toAttractionId,
+  );
+}
+
+function getAttractionStartTime(
+  currentMinutes: number,
+  period: AttractionPeriod,
+  visitMinutes: number,
+  availableUntil: number,
+): number | undefined {
+  const periods: AttractionPeriod[] = ["morning", "afternoon", "evening"];
+  const preferredPeriodIndex = periods.indexOf(period);
+  for (const candidatePeriod of periods.slice(preferredPeriodIndex)) {
+    const start = Math.max(currentMinutes, PERIOD_START[candidatePeriod]);
+    if (start + visitMinutes <= Math.min(PERIOD_END[candidatePeriod], availableUntil)) {
+      return start;
+    }
+  }
+  return undefined;
 }
 
 function addLocalDayActivities(
@@ -357,32 +470,72 @@ function addLocalDayActivities(
   scheduledIds: Set<string>,
   includeJeepRide: boolean,
   selectedRides: string[],
+  availableFrom = SIGHTSEEING_DAY_START_MINUTES,
+  availableUntil = SIGHTSEEING_DAY_END_MINUTES,
 ): void {
-  const candidates = getAttractionsForCity(city).filter((attraction) =>
-    isAttractionAvailable(attraction, month) &&
-    (!attraction.requiresJeep || Boolean(getSelectedJeepForCity(selectedRides, city))),
-  );
-  const count = input.pace === "relaxed" ? 1 : input.pace === "adventure" ? 3 : 2;
-  const visitBudgetMinutes = input.pace === "relaxed" ? 300 : input.pace === "adventure" ? 420 : 360;
+  const candidates = getScheduledAttractions(city, input, month, selectedRides);
   const normalizedCity = normalizeCity(city);
   let cursor = attractionIndexByCity.get(normalizedCity) ?? 0;
-  let added = 0;
-  let totalVisitMinutes = 0;
-  while (cursor < candidates.length && added < count) {
+  let currentMinutes = Math.max(availableFrom, SIGHTSEEING_DAY_START_MINUTES);
+  let totalMinutes = 0;
+  let previousAttraction: ItineraryAttraction | undefined;
+  while (cursor < candidates.length) {
     const attraction = candidates[cursor];
-    cursor += 1;
-    if (scheduledIds.has(attraction.id)) continue;
-    if (totalVisitMinutes + attraction.recommendedVisitMinutes > visitBudgetMinutes) continue;
+    if (scheduledIds.has(attraction.id)) {
+      cursor += 1;
+      continue;
+    }
+
+    const routeLeg = previousAttraction
+      ? getAttractionRouteLeg(input.attractionRouteLegs ?? [], previousAttraction.id, attraction.id)
+      : undefined;
+    let transferMinutes = 0;
+    if (previousAttraction && !routeLeg) {
+      day.notes.push("Driving time between these sightseeing stops is unavailable; confirm local travel timing before departure.");
+      break;
+    }
+    if (routeLeg) {
+      if (routeLeg.durationSeconds === null) {
+        day.notes.push("Driving time between these sightseeing stops is unavailable; confirm local travel timing before departure.");
+        break;
+      }
+      transferMinutes = Math.ceil(routeLeg.durationSeconds / 60);
+    }
+
+    const startMinutes = getAttractionStartTime(
+      currentMinutes + transferMinutes,
+      attraction.bestTime,
+      attraction.recommendedVisitMinutes,
+      availableUntil,
+    );
+    if (
+      startMinutes === undefined ||
+      totalMinutes + transferMinutes + attraction.recommendedVisitMinutes > PACE_VISIT_BUDGET_MINUTES[input.pace]
+    ) {
+      break;
+    }
+
+    if (routeLeg && previousAttraction && transferMinutes > 0) {
+      const travelPeriod = getPeriod(currentMinutes);
+      getScheduleSlot(day, travelPeriod).push(createActivity(
+        `${formatClock(currentMinutes)}–${formatClock(currentMinutes + transferMinutes)}`,
+        `Travel: ${previousAttraction.name} to ${attraction.name}`,
+        "OpenRouteService driving estimate between mapped attraction locations. Actual traffic and access conditions can change the journey.",
+        "travel",
+        { distanceKm: routeLeg.distanceKm, drivingMinutes: transferMinutes },
+      ));
+    }
+
     scheduledIds.add(attraction.id);
-    const time = formatClock(PERIOD_START[attraction.bestTime]);
-    addAttraction(day, attraction, attraction.bestTime, `Suggested ${time}`);
-    added += 1;
-    totalVisitMinutes += attraction.recommendedVisitMinutes;
-    if (attraction.recommendedVisitMinutes >= 240) break;
+    addAttraction(day, attraction, getPeriod(startMinutes), `Suggested ${formatClock(startMinutes)}`);
+    totalMinutes += transferMinutes + attraction.recommendedVisitMinutes;
+    currentMinutes = startMinutes + attraction.recommendedVisitMinutes;
+    previousAttraction = attraction;
+    cursor += 1;
   }
   attractionIndexByCity.set(normalizedCity, cursor);
 
-  if (added === 0) {
+  if (previousAttraction === undefined) {
     day.afternoon.push(createActivity("Flexible", "Leisure time", "Keep this time flexible for rest, local conditions, or activities arranged with your guide.", "leisure"));
   }
   if (includeJeepRide) {
@@ -468,6 +621,17 @@ export function generateItinerary(input: ItineraryGeneratorInput): GeneratedItin
 
   const month = getTripMonth(input.tripDate);
   const selectedRides = selectedJeepNames(input);
+  const usesOpenStreetMap = input.selectedCities.some((city) =>
+    getScheduledAttractions(city, input, month, selectedRides)
+      .some((attraction) => Boolean(attraction.coordinate && attraction.openStreetMapElement)),
+  );
+  const attractionRouteGroups = getItineraryAttractionRouteGroups(input);
+  if (usesOpenStreetMap) {
+    notes.push("Mapped attraction coordinates are credited to OpenStreetMap contributors; road estimates use OpenRouteService where a verified route is available.");
+  }
+  if (attractionRouteGroups.length > 0 && (input.attractionRouteLegs?.length ?? 0) === 0) {
+    notes.push("Local attraction drive times are not available yet. No unverified time or distance has been assumed.");
+  }
   const attractionIndexByCity = new Map<string, number>();
   const scheduledAttractionIds = new Set<string>();
   const orderedOvernights = normalizedNights
@@ -538,6 +702,7 @@ export function generateItinerary(input: ItineraryGeneratorInput): GeneratedItin
           scheduledAttractionIds,
           false,
           selectedRides,
+          departureMinutes,
         );
       }
       if (hasKnownDurations && totalDrivingMinutes > 480) {
@@ -705,6 +870,7 @@ export function generateItinerary(input: ItineraryGeneratorInput): GeneratedItin
     hotelCategory: input.hotelCategory,
     specialOccasion: input.specialOccasion,
     selectedDestinations: [...input.selectedCities],
+    usesOpenStreetMap,
     notes,
     days,
   };
