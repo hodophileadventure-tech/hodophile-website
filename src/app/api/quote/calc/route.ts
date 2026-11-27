@@ -6,8 +6,13 @@ import { applyPromotionToQuotation, validatePromoCode } from "@/lib/promotions/p
 import { getRouteById } from "@/lib/data/routes";
 import { AirDestinationValidationError, getAirQuotationDestinations } from "@/lib/transport/air-routing";
 import { RouteCalculationError } from "@/lib/transport/route-service";
-import { getHotelById } from "@/lib/data/hotels";
+import {
+  getHotelById,
+  getRoomOccupancyError,
+  isMalamJabbaHotelSelection,
+} from "@/lib/data/hotels";
 import { getKashmirStayLocations } from "@/lib/data/custom-city-stays";
+import { isPackageJeepRideAvailable, packageJeepRideOptions } from "@/lib/data/jeeps";
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,11 +33,73 @@ export async function POST(request: NextRequest) {
           body.customCities.some((city) => typeof city !== "string" || city.length > 80))) {
       return NextResponse.json({ error: "Please provide a valid list of custom destinations." }, { status: 400 });
     }
+    if (
+      !Number.isInteger(body.numberOfRooms) ||
+      body.numberOfRooms < 1 ||
+      !Number.isInteger(body.adults) ||
+      body.adults < 1 ||
+      !Number.isInteger(body.kids) ||
+      body.kids < 0
+    ) {
+      return NextResponse.json(
+        { error: "Please provide valid traveler and room counts." },
+        { status: 400 },
+      );
+    }
+    const roomCapacityError = getRoomOccupancyError(
+      body.adults + body.kids,
+      body.numberOfRooms,
+    );
+    if (roomCapacityError) {
+      return NextResponse.json({ error: roomCapacityError }, { status: 400 });
+    }
+
+    const month = Number(body.tripDate?.slice(5, 7)) || 5;
+    const unavailablePackageRide = body.jeepAddons?.find((addon) =>
+      packageJeepRideOptions.some((ride) => ride.id === addon.id) &&
+      !isPackageJeepRideAvailable(addon.id, month),
+    );
+    if (unavailablePackageRide) {
+      return NextResponse.json(
+        { error: "Kashmir jeep rides are available only from May through October." },
+        { status: 400 },
+      );
+    }
+
+    if (body.customCities?.includes("Malam Jabba")) {
+      const singleCityNights = (body.singleCityHotelStays || [])
+        .reduce((total, stay) => total + stay.nights, 0);
+      const malamJabbaNights = body.singleCityHotelStays?.length
+        ? singleCityNights
+        : body.multiCityNights?.["Malam Jabba"] ?? 0;
+      if (malamJabbaNights < 1) {
+        return NextResponse.json(
+          { error: "Malam Jabba requires at least one night." },
+          { status: 400 },
+        );
+      }
+
+      const multiCitySelection = body.multiCityHotels?.["Malam Jabba"];
+      if (
+        (multiCitySelection &&
+          !isMalamJabbaHotelSelection(multiCitySelection.hotelId, multiCitySelection.roomId)) ||
+        body.singleCityHotelStays?.some(
+          (stay) => !isMalamJabbaHotelSelection(stay.hotelId, stay.roomId),
+        ) ||
+        (body.hotelId &&
+          body.roomId &&
+          !isMalamJabbaHotelSelection(body.hotelId, body.roomId))
+      ) {
+        return NextResponse.json(
+          { error: "Choose a hotel and room in Bahrain or Fizaghat for Malam Jabba." },
+          { status: 400 },
+        );
+      }
+    }
     if (body.customCityHotelStays !== undefined) {
       if (!Array.isArray(body.customCityHotelStays)) {
         return NextResponse.json({ error: "Please provide valid hotel stays for Kashmir." }, { status: 400 });
       }
-      const month = Number(body.tripDate?.slice(5, 7)) || 5;
       const validKashmirStays = body.customCityHotelStays.every((stay, index) => {
         if (
           !stay ||

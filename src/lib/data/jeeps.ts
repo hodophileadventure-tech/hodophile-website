@@ -19,7 +19,10 @@ export interface PackageJeepRideOption {
   name: string;
   pricePerJeep: number;
   travelMode: "road" | "air" | "both";
+  availableMonths?: readonly number[];
 }
+
+const KASHMIR_JEEP_RIDE_MONTHS = [5, 6, 7, 8, 9, 10] as const;
 
 export const packageJeepRideOptions: PackageJeepRideOption[] = [
   { id: "package-jeep-hunza", city: "Hunza", name: "Hunza jeep ride", pricePerJeep: 20000, travelMode: "both" },
@@ -27,7 +30,7 @@ export const packageJeepRideOptions: PackageJeepRideOption[] = [
   { id: "package-jeep-naran", city: "Naran", name: "Naran jeep ride", pricePerJeep: 7000, travelMode: "road" },
   { id: "package-jeep-astore-road", city: "Astore", name: "Astore jeep ride", pricePerJeep: 35000, travelMode: "road" },
   { id: "package-jeep-astore-air", city: "Astore", name: "Astore jeep ride (By Air)", pricePerJeep: 70000, travelMode: "air" },
-  { id: "package-jeep-kashmir", city: "Kashmir", name: "Kashmir jeep ride", pricePerJeep: 30000, travelMode: "road" },
+  { id: "package-jeep-kashmir", city: "Kashmir", name: "Kashmir jeep ride", pricePerJeep: 30000, travelMode: "road", availableMonths: KASHMIR_JEEP_RIDE_MONTHS },
   { id: "package-jeep-swat", city: "Swat", name: "Swat jeep ride", pricePerJeep: 15000, travelMode: "road" },
   { id: "package-jeep-fairy-meadows", city: "Fairy Meadows", name: "Fairy Meadows jeep ride", pricePerJeep: 20000, travelMode: "both" },
   { id: "package-jeep-shogran", city: "Shogran", name: "Shogran jeep ride", pricePerJeep: 12000, travelMode: "road" },
@@ -149,13 +152,20 @@ export const jeepAddons: JeepLocation[] = [
 export function getPackageJeepRideOptions(
   cities: readonly string[],
   travelMode: "road" | "air",
+  month?: number,
 ): PackageJeepRideOption[] {
   const normalizeCity = (city: string) => city.trim().replace(/\s+\([^)]*\)$/, "").toLocaleLowerCase("en");
   const selectedCities = new Set(cities.map(normalizeCity));
   return packageJeepRideOptions.filter((ride) =>
     selectedCities.has(normalizeCity(ride.city)) &&
-    (ride.travelMode === "both" || ride.travelMode === travelMode),
+    (ride.travelMode === "both" || ride.travelMode === travelMode) &&
+    (month === undefined || !ride.availableMonths || ride.availableMonths.includes(month)),
   );
+}
+
+export function isPackageJeepRideAvailable(id: string, month: number): boolean {
+  const ride = packageJeepRideOptions.find((option) => option.id === id);
+  return Boolean(ride && (!ride.availableMonths || ride.availableMonths.includes(month)));
 }
 
 export function getJeepsByLocation(locationId: string): JeepAddon[] {

@@ -34,3 +34,33 @@ test("quote endpoint rejects unsupported air destinations before calculating a p
     "By Air trips are currently available only for Skardu, Hunza, Astore, and Fairy Meadows. Please select an eligible destination or switch to By Road.",
   );
 });
+
+test("quote endpoint rejects more than four guests per room", async () => {
+  const request = new NextRequest("http://localhost/api/quote", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      customerName: "Test Traveler",
+      customerPhone: "03000000000",
+      startingPoint: "Islamabad",
+      routeId: "skardu-basho-6days",
+      vehicleName: "Toyota Corolla",
+      hotelId: "skardu-dera-lamsa",
+      roomId: "Lamsa Executive Room",
+      numberOfRooms: 1,
+      adults: 5,
+      kids: 0,
+      tripDate: "2027-06-15",
+      tourType: "private",
+    }),
+  });
+
+  const response = await POST(request);
+  const body = await response.json() as { error?: string };
+
+  assert.equal(response.status, 400);
+  assert.equal(
+    body.error,
+    "A maximum of 4 people can share one room. Please select at least 2 rooms or reduce the number of people.",
+  );
+});

@@ -4,8 +4,13 @@ import { getVehicleRate } from "@/lib/data/vehicleRates";
 import { sendWhatsAppNotification, logQuotationNotification } from "@/lib/whatsapp";
 import { saveQuotationToSheet } from "@/lib/googleSheets";
 import { getRouteById } from "@/lib/data/routes";
-import { getHotelById } from "@/lib/data/hotels";
+import {
+  getHotelById,
+  getRoomOccupancyError,
+  isMalamJabbaHotelSelection,
+} from "@/lib/data/hotels";
 import { getKashmirStayLocations } from "@/lib/data/custom-city-stays";
+import { isPackageJeepRideAvailable, packageJeepRideOptions } from "@/lib/data/jeeps";
 import { applyPromotionToQuotation, validatePromoCode } from "@/lib/promotions/promotion-service";
 import {
   createPromotionRedemption,
@@ -111,8 +116,52 @@ function buildValidationError(body: QuoteRequestBody) {
   if (nights.some((value) => !Number.isInteger(value) || value < 0 || value > 60)) {
     return "Hotel nights must be whole numbers between 0 and 60.";
   }
+  const roomCapacityError = getRoomOccupancyError(body.adults + body.kids, body.numberOfRooms);
+  if (roomCapacityError) return roomCapacityError;
+
+  const month = Number(body.tripDate.slice(5, 7)) || 5;
+  const unavailablePackageRide = body.jeepAddons?.find((addon) =>
+    packageJeepRideOptions.some((ride) => ride.id === addon.id) &&
+    !isPackageJeepRideAvailable(addon.id, month),
+  );
+  if (unavailablePackageRide) {
+    return "Kashmir jeep rides are available only from May through October.";
+  }
+
+  if (body.customCities?.includes("Malam Jabba")) {
+    const singleCityNights = (body.singleCityHotelStays || [])
+      .reduce((total, stay) => total + stay.nights, 0);
+    const malamJabbaNights = body.singleCityHotelStays?.length
+      ? singleCityNights
+      : body.multiCityNights?.["Malam Jabba"] ?? 0;
+    if (malamJabbaNights < 1) {
+      return "Malam Jabba requires at least one night.";
+    }
+
+    const multiCitySelection = body.multiCityHotels?.["Malam Jabba"];
+    if (
+      multiCitySelection &&
+      !isMalamJabbaHotelSelection(multiCitySelection.hotelId, multiCitySelection.roomId)
+    ) {
+      return "Choose a hotel and room in Bahrain or Fizaghat for Malam Jabba.";
+    }
+    if (
+      body.singleCityHotelStays?.some(
+        (stay) => !isMalamJabbaHotelSelection(stay.hotelId, stay.roomId),
+      )
+    ) {
+      return "Choose a hotel and room in Bahrain or Fizaghat for Malam Jabba.";
+    }
+    if (
+      body.hotelId &&
+      body.roomId &&
+      !isMalamJabbaHotelSelection(body.hotelId, body.roomId)
+    ) {
+      return "Choose a hotel and room in Bahrain or Fizaghat for Malam Jabba.";
+    }
+  }
+
   if (body.customCityHotelStays !== undefined) {
-    const month = Number(body.tripDate.slice(5, 7)) || 5;
     const validKashmirStays = body.customCityHotelStays.every((stay, index) => {
       if (
         stay.city !== "Kashmir" ||

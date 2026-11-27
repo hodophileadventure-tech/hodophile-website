@@ -90,3 +90,62 @@ test("live quote rejects a missing per-night Kashmir hotel selection", async () 
   assert.equal(result.status, 400);
   assert.equal(result.body.error, "Please select a hotel and room for each Kashmir night.");
 });
+
+test("live quote rejects more than four guests per room", async () => {
+  const result = await quote({ ...input, adults: 5, numberOfRooms: 1 });
+
+  assert.equal(result.status, 400);
+  assert.equal(
+    result.body.error,
+    "A maximum of 4 people can share one room. Please select at least 2 rooms or reduce the number of people.",
+  );
+});
+
+test("live quote allows four guests in one room", async () => {
+  const result = await quote({ ...input, adults: 4, numberOfRooms: 1 });
+
+  assert.equal(result.status, 200);
+  assert.equal(result.body.success, true);
+});
+
+test("live quote requires at least one Malam Jabba night", async () => {
+  const result = await quote({
+    ...input,
+    customCities: ["Malam Jabba"],
+    multiCityHotels: {
+      "Malam Jabba": { hotelId: "hill-city-hotel-fizaghat", roomId: "Standard" },
+    },
+    multiCityNights: { "Malam Jabba": 0 },
+  });
+
+  assert.equal(result.status, 400);
+  assert.equal(result.body.error, "Malam Jabba requires at least one night.");
+});
+
+test("live quote restricts Malam Jabba hotels to Bahrain and Fizaghat", async () => {
+  const result = await quote({
+    ...input,
+    customCities: ["Malam Jabba"],
+    multiCityHotels: {
+      "Malam Jabba": { hotelId: hotel.id, roomId: room.name },
+    },
+    multiCityNights: { "Malam Jabba": 1 },
+  });
+
+  assert.equal(result.status, 400);
+  assert.equal(
+    result.body.error,
+    "Choose a hotel and room in Bahrain or Fizaghat for Malam Jabba.",
+  );
+});
+
+test("live quote rejects Kashmir jeep rides outside May through October", async () => {
+  const result = await quote({
+    ...input,
+    tripDate: "2027-04-15",
+    jeepAddons: [{ id: "package-jeep-kashmir", quantity: 1 }],
+  });
+
+  assert.equal(result.status, 400);
+  assert.equal(result.body.error, "Kashmir jeep rides are available only from May through October.");
+});

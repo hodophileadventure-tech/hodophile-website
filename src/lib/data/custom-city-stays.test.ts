@@ -23,7 +23,7 @@ test("uses the requested custom-city minimum nights", () => {
     Shogran: 0,
     "Nathia Gali": 0,
     Murree: 0,
-    "Malam Jabba": 0,
+    "Malam Jabba": 1,
   });
   assert.equal(getMinimumCustomCityNights("Naran"), 1);
 });
@@ -68,6 +68,25 @@ test("includes the requested Balakot hotels and room rates", () => {
     "Dcozy Resort": { Deluxe: 12000 },
     "White Palace": { Deluxe: 12000 },
   });
+});
+
+test("limits Malam Jabba stays to the requested Bahrain and Fizaghat hotels", () => {
+  const prices = Object.fromEntries(
+    getHotelsByCity("Malam Jabba").map((hotel) => [
+      hotel.name,
+      Object.fromEntries(hotel.rooms.map((room) => [room.name, room.price])),
+    ]),
+  );
+
+  assert.deepEqual(prices, {
+    "Kuwait Continental (Bahrain)": { Standard: 5000, Deluxe: 12000 },
+    "Bahrain Continental": { Standard: 5000, Deluxe: 12000 },
+    "North Hills (Bahrain)": { Standard: 5000, Deluxe: 12000 },
+    "Hill City Hotel (Fizaghat)": { Standard: 5000 },
+    "Hotel One Swat (Fizaghat)": { Executive: 25000 },
+    "River Nest (Fizaghat)": { Standard: 5000 },
+  });
+  assert.ok(getHotelsByCity("Malam Jabba").length < getHotelsByCity("Swat").length);
 });
 
 test("includes the supplied Kashmir-area hotels and rates", () => {

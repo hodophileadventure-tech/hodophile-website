@@ -38,7 +38,7 @@ export const CUSTOM_CITY_MINIMUM_NIGHTS: Readonly<Record<string, number>> = {
   Shogran: 0,
   "Nathia Gali": 0,
   Murree: 0,
-  "Malam Jabba": 0,
+  "Malam Jabba": 1,
 };
 
 export function getMinimumCustomCityNights(city: string): number {

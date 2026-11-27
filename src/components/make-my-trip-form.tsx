@@ -26,7 +26,12 @@ import {
 } from "lucide-react";
 import { calculateQuotation, type QuotationBreakdown, type QuotationInput } from "@/lib/pricingEngine";
 import { formatPKR } from "@/lib/currency";
-import { getHotelById, getHotelsByCity, type Hotel } from "@/lib/data/hotels";
+import {
+  getHotelById,
+  getHotelsByCity,
+  getRoomOccupancyError,
+  type Hotel,
+} from "@/lib/data/hotels";
 import {
   getCitiesWithOvernightStays,
   getCustomCityHotelLocation,
@@ -836,6 +841,7 @@ export function MakeMyTripForm() {
   };
 
   const totalGuests = adults + kids;
+  const roomCapacityError = getRoomOccupancyError(totalGuests, numberOfRooms);
 
   // Check if user is using custom city selection instead of a package route
   const isCustomCitySelection = (): boolean => {
@@ -889,7 +895,10 @@ export function MakeMyTripForm() {
     !selectedCities.includes("Islamabad");
   const customCityEffectiveCount = selectedCities.length + (autoAddsIslamabad ? 1 : 0);
   const customSingleCityNightCount = selectedCities.length === 1 && !usesSeasonalRoadStopovers
-    ? Math.max(0, customCityNights[selectedCities[0]] ?? getMinimumCustomCityNights(selectedCities[0]))
+    ? Math.max(
+      getMinimumCustomCityNights(selectedCities[0]),
+      customCityNights[selectedCities[0]] ?? getMinimumCustomCityNights(selectedCities[0]),
+    )
     : 0;
   const supportsMultipleHotelsInCustomSingleCity = Boolean(
     isCustomCitySelection() &&
@@ -1180,8 +1189,8 @@ export function MakeMyTripForm() {
     [effectiveSelectedCities, routeId, selectedAirDestinations, selectedCities, selectedRoute, travelMode, tripDate],
   );
   const availablePackageJeepRides = useMemo(
-    () => getPackageJeepRideOptions(packageJeepDestinations, travelMode),
-    [packageJeepDestinations, travelMode],
+    () => getPackageJeepRideOptions(packageJeepDestinations, travelMode, selectedTripMonth),
+    [packageJeepDestinations, selectedTripMonth, travelMode],
   );
   const selectedPackageJeepRides = useMemo(
     () => availablePackageJeepRides.filter((ride) => selectedPackageJeepRideIds.includes(ride.id)),
@@ -1855,6 +1864,11 @@ export function MakeMyTripForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (roomCapacityError) {
+      setPlannerStep(3);
+      setStepError(roomCapacityError);
+      return;
+    }
     setIsSubmitting(true);
     setSubmitMessage("");
     setSubmitError("");
@@ -2242,7 +2256,7 @@ export function MakeMyTripForm() {
   const completedPlannerSteps = [
     tripDateValid && startingPointValid,
     destinationValid && !isInvalidCombination,
-    adultsValid && numberOfRooms > 0,
+    adultsValid && numberOfRooms > 0 && !roomCapacityError,
     vehicleValid && hotelSelectionValid,
     customerNameValid && customerPhoneValid && quotationReady,
   ];
@@ -2440,6 +2454,7 @@ export function MakeMyTripForm() {
     if (step === 3) {
       if (!adultsValid) return "Please add at least one adult traveler.";
       if (numberOfRooms < 1) return "Please select at least one room.";
+      if (roomCapacityError) return roomCapacityError;
     }
 
     if (step === 4) {
@@ -2885,6 +2900,11 @@ export function MakeMyTripForm() {
               completedSteps={completedPlannerSteps}
               error={stepError}
               onSelectStep={(step) => {
+                if (step > 3 && roomCapacityError) {
+                  setStepError(roomCapacityError);
+                  setPlannerStep(3);
+                  return;
+                }
                 setStepError("");
                 setPlannerStep(step);
               }}
@@ -3256,6 +3276,11 @@ export function MakeMyTripForm() {
                             <span className="mt-0.5 block text-[10px] text-stone-500">
                               {nights === 0 ? "Day trip · transport only" : `${nights} night${nights === 1 ? "" : "s"}`}
                             </span>
+                            {city === "Malam Jabba" ? (
+                              <span className="mt-0.5 block text-[10px] font-medium text-[#8b6b00]">
+                                At least 1 night is required.
+                              </span>
+                            ) : null}
                           </span>
                           <div className="flex shrink-0 items-center gap-1">
                             {selectedCities.length > 1 && selectedCities.includes(city) ? (
@@ -3841,7 +3866,7 @@ export function MakeMyTripForm() {
                   // Extract base city name (e.g., "Chilas" from "Chilas (Arrival)")
                   const baseCityName = city.includes("(") ? city.split("(")[0].trim() : city;
                   const hotelCity = getCustomHotelCity(baseCityName);
-                  let hotelsForCity = getHotelsByCity(hotelCity);
+                  let hotelsForCity = getHotelsByCity(baseCityName === "Malam Jabba" ? baseCityName : hotelCity);
                   if (selectedLuxuryPackage) {
                     hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
                   }
@@ -4182,7 +4207,7 @@ export function MakeMyTripForm() {
                 ) : null}
                 {customHotelStayCities.map((city) => {
                   const hotelCity = getCustomHotelCity(city);
-                  let hotelsForCity = getHotelsByCity(hotelCity);
+                  let hotelsForCity = getHotelsByCity(city === "Malam Jabba" ? city : hotelCity);
                   if (selectedLuxuryPackage) {
                     hotelsForCity = hotelsForCity.filter((h) => h.rooms?.some((r) => /executive/i.test(r.name)));
                   }
@@ -4357,6 +4382,15 @@ export function MakeMyTripForm() {
                 />
               </label>
             </div>
+            {roomCapacityError ? (
+              <p
+                hidden={plannerStep !== 3}
+                role="alert"
+                className="rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm font-medium text-red-700"
+              >
+                {roomCapacityError}
+              </p>
+            ) : null}
 
             {/* Kids Ages */}
             {kids > 0 && (

@@ -23,8 +23,8 @@ export function HotelCardPicker({ hotels, selectedHotelId, label, onSelect }: Ho
   }
 
   return (
-    <div>
-      <div role="group" aria-label={label} className="grid gap-2 sm:grid-cols-2">
+    <div className="w-full max-w-[590px]">
+      <div role="group" aria-label={label} className="grid gap-3 sm:grid-cols-2">
         {visibleHotels.map((hotel) => {
           const isSelected = selectedHotelId === hotel.id;
 

@@ -577,6 +577,19 @@ test("offers the requested per-jeep rates and selects the By Air Astore rate", (
   assert.equal(calculateJeepCost([{ id: "package-jeep-naran", quantity: 2 }]), 14_000);
 });
 
+test("offers the Kashmir jeep ride only from May through October", () => {
+  assert.deepEqual(getPackageJeepRideOptions(["Kashmir"], "road", 4), []);
+  assert.deepEqual(
+    getPackageJeepRideOptions(["Kashmir"], "road", 5).map(({ id }) => id),
+    ["package-jeep-kashmir"],
+  );
+  assert.deepEqual(
+    getPackageJeepRideOptions(["Kashmir"], "road", 10).map(({ id }) => id),
+    ["package-jeep-kashmir"],
+  );
+  assert.deepEqual(getPackageJeepRideOptions(["Kashmir"], "road", 11), []);
+});
+
 test("uses only the server-calculated Skardu road distance for air transport pricing", () => {
   const airInput = {
     routeId: "skardu-basho-6days",

@@ -18,7 +18,6 @@ export function ItineraryViewer({ itinerary }: { itinerary: GeneratedItinerary }
               </span>
               <span className="mt-1 block text-base font-semibold text-stone-950">{day.title}</span>
             </span>
-            <span className="text-xs font-semibold text-stone-700">View day</span>
           </div>
         ))}
       </div>

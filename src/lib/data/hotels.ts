@@ -45,6 +45,8 @@ export interface Hotel {
   };
 }
 
+export const MAX_GUESTS_PER_ROOM = 4;
+
 export const hotels: Hotel[] = [
   {
     id: "skardu-dera-lamsa",
@@ -633,6 +635,51 @@ export const hotels: Hotel[] = [
     ],
   },
   {
+    id: "kuwait-continental-bahrain",
+    name: "Kuwait Continental (Bahrain)",
+    city: "Swat",
+    rooms: [
+      { name: "Standard", price: 5000 },
+      { name: "Deluxe", price: 12000 },
+    ],
+  },
+  {
+    id: "bahrain-continental",
+    name: "Bahrain Continental",
+    city: "Swat",
+    rooms: [
+      { name: "Standard", price: 5000 },
+      { name: "Deluxe", price: 12000 },
+    ],
+  },
+  {
+    id: "north-hills-bahrain",
+    name: "North Hills (Bahrain)",
+    city: "Swat",
+    rooms: [
+      { name: "Standard", price: 5000 },
+      { name: "Deluxe", price: 12000 },
+    ],
+  },
+  {
+    id: "hill-city-hotel-fizaghat",
+    name: "Hill City Hotel (Fizaghat)",
+    city: "Swat",
+    rooms: [{ name: "Standard", price: 5000 }],
+  },
+  {
+    id: "hotel-one-swat-fizaghat",
+    name: "Hotel One Swat (Fizaghat)",
+    city: "Swat",
+    rooms: [{ name: "Executive", price: 25000 }],
+  },
+  {
+    id: "river-nest-fizaghat",
+    name: "River Nest (Fizaghat)",
+    city: "Swat",
+    rooms: [{ name: "Standard", price: 5000 }],
+  },
+  {
     id: "north-palace-khaplu",
     name: "North Palace Khaplu",
     city: "Khaplu",
@@ -1121,6 +1168,15 @@ const hotelCityAliases: Record<string, string> = {
   Neelum: "Kashmir",
 };
 
+const MALAM_JABBA_HOTEL_IDS = new Set([
+  "kuwait-continental-bahrain",
+  "bahrain-continental",
+  "north-hills-bahrain",
+  "hill-city-hotel-fizaghat",
+  "hotel-one-swat-fizaghat",
+  "river-nest-fizaghat",
+]);
+
 function resolveHotelCity(city: string): string {
   return hotelCityAliases[city] || city;
 }
@@ -1130,6 +1186,9 @@ export function getHotelsByCity(
 ): Hotel[] {
   const resolvedCity = resolveHotelCity(city);
   const cityHotels = hotels.filter((hotel) => hotel.city === resolvedCity);
+  if (city === "Malam Jabba") {
+    return cityHotels.filter((hotel) => MALAM_JABBA_HOTEL_IDS.has(hotel.id));
+  }
   if (resolvedCity === "Kashmir" && city !== "Kashmir") {
     const location = city === "Arang Kel" ? "Arangkel" : city;
     return cityHotels.filter((hotel) => hotel.location === location);
@@ -1139,4 +1198,16 @@ export function getHotelsByCity(
 
 export function getHotelById(id: string): Hotel | undefined {
   return hotels.find((h) => h.id === id);
+}
+
+export function isMalamJabbaHotelSelection(hotelId: string, roomId: string): boolean {
+  const hotel = getHotelsByCity("Malam Jabba").find((candidate) => candidate.id === hotelId);
+  return Boolean(hotel?.rooms.some((room) => room.name === roomId));
+}
+
+export function getRoomOccupancyError(guestCount: number, numberOfRooms: number): string | null {
+  if (numberOfRooms < 1 || guestCount < 1) return null;
+  if (guestCount <= numberOfRooms * MAX_GUESTS_PER_ROOM) return null;
+  const requiredRooms = Math.ceil(guestCount / MAX_GUESTS_PER_ROOM);
+  return `A maximum of ${MAX_GUESTS_PER_ROOM} people can share one room. Please select at least ${requiredRooms} rooms or reduce the number of people.`;
 }

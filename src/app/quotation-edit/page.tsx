@@ -627,7 +627,6 @@ function QuotationEditContent() {
                 <p className="font-serif text-5xl text-[#fcc000] font-bold">
                   {formatPKR(quotation.totalCost)}
                 </p>
-                <p className="mt-2 text-sm text-stone-600">Breakfast: {formatPKR(quotation.breakfastCost)}</p>
                 {quotation.promotion ? (
                   <div className="mx-auto mt-4 max-w-sm border-t border-[#fcc000]/30 pt-3 text-left text-sm">
                     <p className="font-semibold text-green-800">{quotation.promotion.code} · {quotation.promotion.discountPercent}% off</p>

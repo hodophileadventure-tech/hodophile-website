@@ -280,7 +280,6 @@ export function QuotationResultContent() {
                     {quotation.hotelCost && quotation.hotelCost > 0 ? (
                       <p>Accommodation Type: {quotation.details?.accommodationType || quotation.details?.roomType || quotation.roomType || "To be confirmed"}</p>
                     ) : null}
-                    {quotation.breakfastCost ? <p>Breakfast: {formatPKR(quotation.breakfastCost)}</p> : null}
                     <p>Transportation Type: {quotation.details?.vehicle || quotation.vehicleName || "To be confirmed"}</p>
                     <p>Departure Location: {departureLocation}</p>
                     <p>Trip Date: {tripDate}</p>

@@ -101,7 +101,6 @@ function SummaryContent({
             {quotation.promotion ? <div className="flex justify-between gap-3"><span className="text-stone-600">{quotation.promotion.discountPercent}% promo discount</span><span className="font-medium text-[#32633e]">−{formatPKR(quotation.promotion.discountAmount)}</span></div> : null}
             <div className="flex justify-between gap-3"><span className="text-stone-600">Transport</span><span className="font-medium text-stone-900">{formatPKR(quotation.transportCost)}</span></div>
             <div className="flex justify-between gap-3"><span className="text-stone-600">Accommodation</span><span className="font-medium text-stone-900">{formatPKR(quotation.hotelCost)}</span></div>
-            <div className="flex justify-between gap-3"><span className="text-stone-600">Breakfast</span><span className="font-medium text-stone-900">{formatPKR(quotation.breakfastCost)}</span></div>
             {quotation.jeepAddonsCost > 0 ? <div className="flex justify-between gap-3"><span className="text-stone-600">Activities</span><span className="font-medium text-stone-900">{formatPKR(quotation.jeepAddonsCost)}</span></div> : null}
           </div>
         </div>
