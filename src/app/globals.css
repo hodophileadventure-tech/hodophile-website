@@ -232,14 +232,17 @@
 
 .quotation-unit-column {
   width: 15%;
+  text-align: center !important;
 }
 
 .quotation-quantity-column {
   width: 15%;
+  text-align: center !important;
 }
 
 .quotation-amount-column {
   width: 17%;
+  text-align: center !important;
 }
 
 .quotation-package-row {
@@ -267,7 +270,7 @@
 }
 
 .quotation-number {
-  text-align: right !important;
+  text-align: center !important;
   white-space: nowrap;
 }
 

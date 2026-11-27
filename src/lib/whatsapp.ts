@@ -40,6 +40,7 @@ ${airDetails}
    - Fuel: ${formatPKR(quotation.transportBreakdown?.fuelCost ?? 0)}
    - Rental: ${formatPKR(quotation.transportBreakdown?.rentalCost ?? 0)}
    - Toll/Tax: ${formatPKR(quotation.transportBreakdown?.tollTax ?? 0)}
+🍳 Breakfast: ${formatPKR(quotation.breakfastCost)}
 ${quotation.jeepAddonsCost > 0 ? `🏔️ Jeep Add-ons: ${formatPKR(quotation.jeepAddonsCost)}\n` : ""}
 ${promotion ? `*Original total: ${formatPKR(promotion.originalPrice)}*\n*Promo code ${promotion.code}: ${promotion.discountPercent}% off (-${formatPKR(promotion.discountAmount)})*\n` : ""}*Total: ${formatPKR(quotation.totalCost)}*
 💰 Per Person: ${formatPKR(quotation.perPersonCost)}

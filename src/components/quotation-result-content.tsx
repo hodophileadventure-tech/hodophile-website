@@ -7,8 +7,6 @@ import { routes } from "@/lib/data/routes";
 import { formatPKR } from "@/lib/currency";
 import { siteConfig, whatsappUrl } from "@/lib/site";
 import type { CustomCityHotelStay } from "@/lib/data/custom-city-stays";
-import { ItineraryViewer } from "@/components/make-my-trip/itinerary-viewer";
-import { generateItinerary, type GeneratedItinerary, type ItineraryGeneratorInput } from "@/lib/itinerary-generator";
 import { decodeBase64Json } from "@/lib/base64-json";
 
 interface QuotationDisplayData {
@@ -38,6 +36,7 @@ interface QuotationDisplayData {
   perPersonCost?: number;
   totalCost?: number;
   hotelCost?: number;
+  breakfastCost?: number;
   promotion?: {
     code: string;
     discountPercent: number;
@@ -55,8 +54,6 @@ interface QuotationDisplayData {
   tourStartingPoint?: string;
   jeepAddons?: Array<{ id: string; quantity: number }>;
   jeepRideNames?: string[];
-  itinerary?: GeneratedItinerary;
-  itineraryConfiguration?: ItineraryGeneratorInput;
 }
 
 export function QuotationResultContent() {
@@ -209,9 +206,6 @@ export function QuotationResultContent() {
   const quoteNumber = quotation.quoteNumber || "Q";
   const quoteDate = new Date().toLocaleDateString("en-GB");
   const jeepRideNames = quotation.jeepRideNames ?? [];
-  const generatedItinerary = quotation.itineraryConfiguration
-    ? generateItinerary(quotation.itineraryConfiguration)
-    : quotation.itinerary;
   const inclusions = [
     `${quotation.vehicleName || "Selected car"} with fuel and toll tax`,
     "Breakfast",
@@ -228,15 +222,7 @@ export function QuotationResultContent() {
     const airDetails = travelMode === "air"
       ? " Travel Mode: By Air. Arrival & Departure Hub: Skardu. Air Tickets: NOT INCLUDED. Air tickets to and from Skardu are not included in this quotation. Customers are responsible for arranging their own flight tickets."
       : "";
-    const itineraryDetails = generatedItinerary
-      ? ` Personalized itinerary: ${generatedItinerary.days.map((day) => {
-          const activities = [...day.morning, ...day.afternoon, ...day.evening]
-            .filter((activity) => activity.kind !== "meal")
-            .map((activity) => activity.title);
-          return `Day ${day.dayNumber} - ${day.title}: ${activities.join(", ") || "Flexible time"}${day.overnight ? `; overnight ${day.overnight.location}${day.overnight.hotelName ? ` at ${day.overnight.hotelName}` : ""}` : ""}`;
-        }).join(" | ")}`
-      : "";
-    const message = `Hi Hodophile, I would like to confirm the quotation for ${routeName}. Quote number: ${quoteNumber}.${airDetails}${promoDetails}${itineraryDetails} Please share the final trip details and next steps.`;
+    const message = `Hi Hodophile, I would like to confirm the quotation for ${routeName}. Quote number: ${quoteNumber}.${airDetails}${promoDetails} Please share the final trip details and next steps.`;
     window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
   };
 
@@ -279,8 +265,8 @@ export function QuotationResultContent() {
               <tr>
                 <th className="quotation-item-column">Item</th>
                 <th>Description</th>
-                <th className="quotation-unit-column">Unit Price</th>
-                <th className="quotation-quantity-column">Quantity</th>
+                <th className="quotation-unit-column">Price</th>
+                <th className="quotation-quantity-column">No. of Person(s)</th>
                 <th className="quotation-amount-column">Amount</th>
               </tr>
             </thead>
@@ -294,6 +280,7 @@ export function QuotationResultContent() {
                     {quotation.hotelCost && quotation.hotelCost > 0 ? (
                       <p>Accommodation Type: {quotation.details?.accommodationType || quotation.details?.roomType || quotation.roomType || "To be confirmed"}</p>
                     ) : null}
+                    {quotation.breakfastCost ? <p>Breakfast: {formatPKR(quotation.breakfastCost)}</p> : null}
                     <p>Transportation Type: {quotation.details?.vehicle || quotation.vehicleName || "To be confirmed"}</p>
                     <p>Departure Location: {departureLocation}</p>
                     <p>Trip Date: {tripDate}</p>
@@ -302,7 +289,7 @@ export function QuotationResultContent() {
                   </div>
                 </td>
                 <td className="quotation-number">{formatPKR(perPersonPrice)}</td>
-                <td className="quotation-number">{numberOfGuests} traveler{numberOfGuests === 1 ? "" : "s"}</td>
+                <td className="quotation-number">{numberOfGuests}</td>
                 <td className="quotation-number"><strong>{formatPKR(totalAmount)}</strong></td>
               </tr>
             </tbody>
@@ -326,8 +313,6 @@ export function QuotationResultContent() {
             </tfoot>
           </table>
         </main>
-
-        {generatedItinerary ? <ItineraryViewer itinerary={generatedItinerary} /> : null}
 
         <div className="quotation-accreditations" aria-label="Licensing and affiliations">
           <Image src="/images/footer/govt-pakistan.webp" alt="Government of Pakistan" width={80} height={72} />

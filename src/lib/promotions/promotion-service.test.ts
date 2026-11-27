@@ -73,6 +73,7 @@ test("discount uses whole-PKR rounding and updates only the quotation total", ()
   const quotation = applyPromotionToQuotation({
     transportCost: 20_000,
     hotelCost: 30_000,
+    breakfastCost: 0,
     jeepAddonsCost: 5_000,
     subtotal: 55_000,
     markupAmount: 20_001,

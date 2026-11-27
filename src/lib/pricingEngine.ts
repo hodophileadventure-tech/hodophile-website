@@ -15,6 +15,8 @@ import type { Room } from "./data/hotels";
 import type { PromotionSummary } from "./promotions/promotion-types";
 import type { CustomCityHotelStay } from "./data/custom-city-stays";
 
+const BREAKFAST_COST_PER_PERSON_PER_DAY = 500;
+
 export interface QuotationInput {
   routeId: string;
   vehicleName: string;
@@ -48,6 +50,7 @@ export interface QuotationInput {
 export interface QuotationBreakdown {
   transportCost: number;
   hotelCost: number;
+  breakfastCost: number;
   jeepAddonsCost: number;
   subtotal: number;
   markupAmount: number; // applied profit margin based on subtotal tier
@@ -339,6 +342,30 @@ export function calculateQuotation(
             return acc;
           }, {})
         : {});
+    const nightsFromCityMap = Object.values(input.multiCityNights || {}).reduce(
+      (total, nights) => total + Math.max(0, nights),
+      0,
+    );
+    const nightsFromSingleCityStays = (input.singleCityHotelStays || []).reduce(
+      (total, stay) => total + Math.max(0, stay.nights),
+      0,
+    );
+    const nightsFromCustomCityStays = (input.customCityHotelStays || []).reduce(
+      (total, stay) => total + Math.max(0, stay.nights),
+      0,
+    );
+    const hasCustomNightSelection = Boolean(
+      input.multiCityNights || input.singleCityHotelStays?.length || input.customCityHotelStays?.length,
+    );
+    const customTripNights = Math.max(
+      nightsFromCityMap,
+      nightsFromSingleCityStays,
+      nightsFromCustomCityStays,
+    );
+    const tripDays = isCustomItinerary
+      ? Math.max(1, (hasCustomNightSelection ? customTripNights : 1) + 1)
+      : Math.max(1, route?.duration || 1);
+    const breakfastCost = (input.adults + input.kids) * tripDays * BREAKFAST_COST_PER_PERSON_PER_DAY;
     const customVehicleDays = isCustomItinerary ? estimateCustomVehicleDays(effectiveCustomNights) : undefined;
 
     // Use dynamic transport cost calculation with vehicle rental rates
@@ -499,7 +526,7 @@ export function calculateQuotation(
       );
     }
 
-    const subtotal = transportCost + hotelCost + jeepAddonsCost;
+    const subtotal = transportCost + hotelCost + breakfastCost + jeepAddonsCost;
     
     const profitPercentage = subtotal < 500_000
       ? 0.25
@@ -522,6 +549,7 @@ export function calculateQuotation(
     return {
       transportCost,
       hotelCost,
+      breakfastCost,
       jeepAddonsCost,
       subtotal,
       markupAmount,

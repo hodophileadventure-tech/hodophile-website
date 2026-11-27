@@ -509,9 +509,48 @@ test("charges transport but no accommodation for a zero-night destination", () =
 
   assert.ok(quote);
   assert.equal(quote.hotelCost, 0);
+  assert.equal(quote.breakfastCost, 1_000);
   assert.equal(quote.details.hotel, "");
   assert.ok(quote.transportCost > 0);
-  assert.equal(quote.totalCost, 25_800);
+  assert.equal(quote.totalCost, 27_300);
+});
+
+test("adds PKR 500 per traveler per trip day for breakfast", () => {
+  const shogranHotel = getHotelsByCity("Shogran")[0];
+  assert.ok(shogranHotel);
+  const room = shogranHotel.rooms[0];
+  assert.ok(room);
+
+  const baseInput = {
+    routeId: "custom-itinerary",
+    customCities: ["Shogran"],
+    routeDestinations: ["Shogran"],
+    startingPoint: "Islamabad",
+    vehicleName: "Toyota Corolla",
+    numberOfRooms: 1,
+    kids: 0,
+    tripDate: "2026-06-15",
+    multiCityHotels: {
+      Shogran: { hotelId: shogranHotel.id, roomId: room.name },
+    },
+    multiCityNights: { Shogran: 1 },
+  };
+  const twoTravelerQuote = calculateQuotation({
+    ...baseInput,
+    adults: 2,
+  });
+  const fourTravelerQuote = calculateQuotation({
+    ...baseInput,
+    adults: 4,
+  });
+
+  assert.ok(twoTravelerQuote);
+  assert.ok(fourTravelerQuote);
+  assert.equal(twoTravelerQuote.breakfastCost, 2_000);
+  assert.equal(fourTravelerQuote.breakfastCost, 4_000);
+  assert.equal(fourTravelerQuote.hotelCost, twoTravelerQuote.hotelCost);
+  assert.equal(fourTravelerQuote.transportCost, twoTravelerQuote.transportCost);
+  assert.ok(fourTravelerQuote.totalCost > twoTravelerQuote.totalCost);
 });
 
 test("offers the requested per-jeep rates and selects the By Air Astore rate", () => {
