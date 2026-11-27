@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { generateItinerary, getItineraryAttractionRouteGroups } from "./itinerary-generator";
+import { citiesWithHotels } from "./data/cities";
+import { itineraryAttractions } from "./data/itinerary-attractions";
 import { decodeBase64Json, encodeBase64Json } from "./base64-json";
 
 const routeTrip = {
@@ -135,6 +137,44 @@ test("does not invent local drive times when mapped routes are unavailable", () 
   ));
 });
 
+test("keeps every in-season catalog spot visible for each supported destination", () => {
+  for (const city of citiesWithHotels) {
+    const itinerary = generateItinerary({
+      selectedCities: [city],
+      nightsByCity: { [city]: 1 },
+      routeSequence: [city],
+      tripDate: "2026-07-10",
+      startingPoint: city,
+      travelMode: "road",
+      pace: "balanced",
+    });
+    const scheduledIds = itinerary.days.flatMap((day) =>
+      [...day.morning, ...day.afternoon, ...day.evening]
+        .flatMap((activity) => activity.attractionId ? [activity.attractionId] : []),
+    );
+    const visibleIds = new Set([
+      ...scheduledIds,
+      ...(itinerary.additionalAttractions ?? []).map((attraction) => attraction.id),
+    ]);
+    const expectedIds = itineraryAttractions
+      .filter((attraction) => {
+        const attractionCity = attraction.city.toLocaleLowerCase("en");
+        if (city === "Kashmir") {
+          return ["keran", "neelum", "sharda", "arangkel", "taobat", "kashmir"].includes(attractionCity);
+        }
+        if (city === "Swat") return attractionCity === "swat" || attractionCity === "malam jabba";
+        if (city === "Malam Jabba") {
+          return attraction.id === "swat-malam-jabba" || attractionCity === "malam jabba";
+        }
+        return attractionCity === city.toLocaleLowerCase("en");
+      })
+      .filter((attraction) => !attraction.availableMonths || attraction.availableMonths.includes(7))
+      .map((attraction) => attraction.id);
+
+    assert.deepEqual([...visibleIds].sort(), expectedIds.sort(), city);
+  }
+});
+
 test("uses leisure on extra days without repeating a destination's attractions", () => {
   const itinerary = generateItinerary({
     selectedCities: ["Malam Jabba"],
@@ -152,7 +192,7 @@ test("uses leisure on extra days without repeating a destination's attractions",
   );
 
   assert.equal(itinerary.days.length, 4);
-  assert.deepEqual(attractions, ["Malam Jabba"]);
+  assert.deepEqual(attractions, ["Malam Jabba", "Malam Jabba Chairlift and Resort"]);
   assert.ok(itinerary.days.slice(1).some((day) =>
     [...day.morning, ...day.afternoon, ...day.evening]
       .some((activity) => activity.kind === "leisure"),

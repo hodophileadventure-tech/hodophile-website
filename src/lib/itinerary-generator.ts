@@ -67,6 +67,15 @@ export interface GeneratedItineraryDay {
   notes: string[];
 }
 
+export interface GeneratedItineraryAttractionSuggestion {
+  id: string;
+  city: string;
+  name: string;
+  description: string;
+  accessNote?: string;
+  seasonalNote?: string;
+}
+
 export interface GeneratedItinerary {
   title: string;
   travelMode: ItineraryTravelMode;
@@ -81,6 +90,7 @@ export interface GeneratedItinerary {
   usesOpenStreetMap: boolean;
   notes: string[];
   days: GeneratedItineraryDay[];
+  additionalAttractions?: GeneratedItineraryAttractionSuggestion[];
 }
 
 export interface ItineraryGeneratorInput {
@@ -195,7 +205,14 @@ function isAttractionAvailable(attraction: ItineraryAttraction, month: number): 
 function getAttractionsForCity(city: string): ItineraryAttraction[] {
   const normalizedCity = normalizeCity(city);
   if (normalizedCity === "malam jabba") {
-    return itineraryAttractions.filter((attraction) => attraction.id === "swat-malam-jabba");
+    return itineraryAttractions.filter((attraction) =>
+      attraction.id === "swat-malam-jabba" || normalizeCity(attraction.city) === normalizedCity,
+    );
+  }
+  if (normalizedCity === "swat") {
+    return itineraryAttractions.filter((attraction) =>
+      ["swat", "malam jabba"].includes(normalizeCity(attraction.city)),
+    );
   }
   if (normalizedCity === "kashmir") {
     return itineraryAttractions.filter((attraction) =>
@@ -859,6 +876,23 @@ export function generateItinerary(input: ItineraryGeneratorInput): GeneratedItin
   if (input.vehicleName) notes.push(`Selected transport: ${input.vehicleName}.`);
   if (input.hotelCategory) notes.push(`Accommodation category: ${input.hotelCategory}.`);
 
+  const additionalAttractions: GeneratedItineraryAttractionSuggestion[] = [];
+  const includedAttractionIds = new Set(scheduledAttractionIds);
+  for (const city of selectedCities) {
+    for (const attraction of getAttractionsForCity(city)) {
+      if (!isAttractionAvailable(attraction, month) || includedAttractionIds.has(attraction.id)) continue;
+      includedAttractionIds.add(attraction.id);
+      additionalAttractions.push({
+        id: attraction.id,
+        city: attraction.city,
+        name: attraction.name,
+        description: attraction.description,
+        accessNote: attraction.accessNote,
+        seasonalNote: attraction.seasonalNote,
+      });
+    }
+  }
+
   return {
     title: input.title || (input.selectedCities.length ? input.selectedCities.join(" + ") : "Selected tour"),
     travelMode: input.travelMode,
@@ -873,5 +907,6 @@ export function generateItinerary(input: ItineraryGeneratorInput): GeneratedItin
     usesOpenStreetMap,
     notes,
     days,
+    additionalAttractions,
   };
 }

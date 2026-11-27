@@ -105,6 +105,34 @@ export function ItineraryViewer({ itinerary }: { itinerary: GeneratedItinerary }
       <div className="space-y-3 p-3 sm:p-5">
         {itinerary.days.map((day) => <ItineraryDayCard key={day.dayNumber} day={day} />)}
       </div>
+      {itinerary.additionalAttractions && itinerary.additionalAttractions.length > 0 ? (
+        <details className="mx-3 mb-4 rounded-xl border border-stone-200 bg-white sm:mx-5">
+          <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-stone-900">
+            More popular places to explore ({itinerary.additionalAttractions.length})
+          </summary>
+          <div className="border-t border-stone-100 px-4 py-3">
+            <p className="mb-3 text-xs leading-5 text-stone-600">
+              These spots are not in the timed day-by-day schedule. Ask your tour operator to include them if travel time, access, and conditions allow.
+            </p>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {itinerary.additionalAttractions.map((attraction) => (
+                <li key={attraction.id} className="rounded-lg bg-stone-50 p-3">
+                  <p className="text-xs font-semibold text-stone-900">
+                    {attraction.name} <span className="font-normal text-stone-500">· {attraction.city}</span>
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-stone-600">{attraction.description}</p>
+                  {attraction.accessNote ? (
+                    <p className="mt-1 text-xs leading-5 text-stone-500">{attraction.accessNote}</p>
+                  ) : null}
+                  {attraction.seasonalNote ? (
+                    <p className="mt-1 text-xs leading-5 text-stone-500">{attraction.seasonalNote}</p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </details>
+      ) : null}
       {itinerary.notes.length > 0 ? (
         <ul className="space-y-1 border-t border-stone-200 bg-white px-5 py-4 text-xs leading-5 text-stone-600 sm:px-6">
           {itinerary.notes.map((note) => <li key={note}>{note}</li>)}
