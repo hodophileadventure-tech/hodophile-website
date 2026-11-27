@@ -6,13 +6,18 @@ import { Suspense } from "react";
 import { calculateQuotation, type QuotationBreakdown } from "@/lib/pricingEngine";
 import { getHotelById, getHotelsByCity } from "@/lib/data/hotels";
 import {
+  getKashmirStayLocations,
   getCitiesWithOvernightStays,
   getCustomCityHotelLocation,
   getHotelStayLabel,
+  type CustomCityHotelStay,
   type ShogranStayLocation,
 } from "@/lib/data/custom-city-stays";
 import { formatPKR } from "@/lib/currency";
 import { PageShell } from "@/components/page-shell";
+import { ItineraryViewer } from "@/components/make-my-trip/itinerary-viewer";
+import { generateItinerary, type ItineraryGeneratorInput } from "@/lib/itinerary-generator";
+import { decodeBase64Json, encodeBase64Json } from "@/lib/base64-json";
 
 function QuotationEditContent() {
   const searchParams = useSearchParams();
@@ -22,6 +27,7 @@ function QuotationEditContent() {
   const [customCityNights, setCustomCityNights] = useState<Record<string, number>>({});
   const [multiCityHotels, setMultiCityHotels] = useState<Record<string, { hotelId: string; roomId: string }>>({});
   const [singleCityHotelStays, setSingleCityHotelStays] = useState<Array<{ hotelId: string; roomId: string; nights: number }>>([]);
+  const [customCityHotelStays, setCustomCityHotelStays] = useState<CustomCityHotelStay[]>([]);
   const [shogranStayLocation, setShogranStayLocation] = useState<ShogranStayLocation | null>(null);
   const [vehicleName, setVehicleName] = useState("");
   const [quotation, setQuotation] = useState<QuotationBreakdown | null>(null);
@@ -66,7 +72,7 @@ function QuotationEditContent() {
     const data = searchParams.get("data");
     if (data) {
       try {
-        const decoded = JSON.parse(atob(data));
+        const decoded = decodeBase64Json(data) as typeof quotationData;
         setQuotationData(decoded);
         const decodedNights = decoded.multiCityNights || {};
         setCustomCityNights(
@@ -76,6 +82,7 @@ function QuotationEditContent() {
         );
         setMultiCityHotels(decoded.multiCityHotels || {});
         setSingleCityHotelStays(decoded.singleCityHotelStays || []);
+        setCustomCityHotelStays(decoded.customCityHotelStays || []);
         const selectedShogranHotel = getHotelById(decoded.multiCityHotels?.Shogran?.hotelId || "");
         if (selectedShogranHotel?.city === "Balakot" || selectedShogranHotel?.city === "Shogran") {
           setShogranStayLocation(selectedShogranHotel.city);
@@ -96,15 +103,42 @@ function QuotationEditContent() {
     [multiCityHotels, customCityNights],
   );
   const isSingleCitySplitStay = Array.isArray(quotationData?.singleCityHotelStays) && quotationData.singleCityHotelStays.length > 0;
+  const hasKashmirCustomStays = customCityHotelStays.length > 0;
   const cities = Array.isArray(quotationData?.customCities) ? quotationData.customCities : [];
   const displayNightsByCity = Object.fromEntries(
     cities.map((city: string) => [city, customCityNights[city] ?? 1]),
   );
   const overnightCities = getCitiesWithOvernightStays(cities, displayNightsByCity);
-  const missingOvernightHotel = !isSingleCitySplitStay && overnightCities.some(
+  const missingOvernightHotel = !isSingleCitySplitStay && overnightCities
+    .filter((city) => city !== "Kashmir" || !hasKashmirCustomStays)
+    .some(
     (city) => !overnightMultiCityHotels[city]?.hotelId || !overnightMultiCityHotels[city]?.roomId,
   );
   const splitStayCity = quotationData?.customCities?.[0] || quotationData?.destination || "";
+  const itineraryConfiguration: ItineraryGeneratorInput | null = (() => {
+    const stored = quotationData?.itineraryConfiguration as ItineraryGeneratorInput | undefined;
+    if (!stored) return null;
+    const currentNights = Object.keys(customCityNights).length > 0
+      ? customCityNights
+      : stored.nightsByCity;
+    const originalNightTotal = Object.values(stored.nightsByCity).reduce((total, nights) => total + Math.max(0, nights), 0);
+    const currentNightTotal = Object.values(currentNights).reduce((total, nights) => total + Math.max(0, nights), 0);
+    return {
+      ...stored,
+      selectedCities: cities.length > 0 ? cities : stored.selectedCities,
+      nightsByCity: currentNights,
+      durationDays: stored.durationDays && currentNightTotal === originalNightTotal
+        ? stored.durationDays
+        : undefined,
+      multiCityHotels: overnightMultiCityHotels,
+      singleCityHotelStays: isSingleCitySplitStay ? singleCityHotelStays : stored.singleCityHotelStays,
+      customCityHotelStays: hasKashmirCustomStays ? customCityHotelStays : stored.customCityHotelStays,
+      vehicleName,
+    };
+  })();
+  const generatedItinerary = itineraryConfiguration
+    ? generateItinerary(itineraryConfiguration)
+    : quotationData?.itinerary;
 
   // Recalculate quotation when edits are made
   useEffect(() => {
@@ -125,6 +159,7 @@ function QuotationEditContent() {
         roomId: quotationData.roomType,
         hotelCategory: quotationData.hotelCategory,
         singleCityHotelStays: useSingleCitySplitStay ? singleCityHotelStays : undefined,
+        customCityHotelStays: hasKashmirCustomStays ? customCityHotelStays : undefined,
         multiCityHotels: useSingleCitySplitStay ? undefined : overnightMultiCityHotels,
         multiCityNights: useSingleCitySplitStay ? undefined : customCityNights,
         customCities: quotationData.customCities,
@@ -174,6 +209,7 @@ function QuotationEditContent() {
       customCities: quotationData.customCities,
       customRouteLabel: quotationData.customRouteLabel,
       singleCityHotelStays: useSingleCitySplitStay ? singleCityHotelStays : undefined,
+      customCityHotelStays: hasKashmirCustomStays ? customCityHotelStays : undefined,
       multiCityHotels: useSingleCitySplitStay ? undefined : overnightMultiCityHotels,
       multiCityNights: useSingleCitySplitStay ? undefined : customCityNights,
       numberOfRooms: quotationData.numberOfRooms,
@@ -189,7 +225,7 @@ function QuotationEditContent() {
       setQuotation(updatedQuotation);
       setQuoteError("");
     }
-  }, [customCityNights, multiCityHotels, missingOvernightHotel, overnightMultiCityHotels, singleCityHotelStays, vehicleName, quotationData]);
+  }, [customCityNights, multiCityHotels, missingOvernightHotel, overnightMultiCityHotels, singleCityHotelStays, customCityHotelStays, hasKashmirCustomStays, vehicleName, quotationData]);
 
   const handleProceed = async () => {
     if (missingOvernightHotel) return;
@@ -207,6 +243,7 @@ function QuotationEditContent() {
             roomId: quotationData.roomType,
             hotelCategory: quotationData.hotelCategory,
             singleCityHotelStays: isSingleCitySplitStay ? singleCityHotelStays : undefined,
+            customCityHotelStays: hasKashmirCustomStays ? customCityHotelStays : undefined,
             multiCityHotels: isSingleCitySplitStay ? undefined : overnightMultiCityHotels,
             multiCityNights: isSingleCitySplitStay ? undefined : customCityNights,
             customCities: quotationData.customCities,
@@ -244,10 +281,12 @@ function QuotationEditContent() {
         perPersonCost: authoritativeQuotation?.perPersonCost,
         promotion: authoritativeQuotation?.promotion,
         singleCityHotelStays,
+        customCityHotelStays,
         travelMode: quotationData?.travelMode,
+        itineraryConfiguration: itineraryConfiguration ?? quotationData.itineraryConfiguration,
       };
 
-      const encoded = btoa(JSON.stringify(updatedData));
+      const encoded = encodeBase64Json(updatedData);
       router.push(`/quotation-result?data=${encoded}`);
     } catch (error) {
       console.error("Error proceeding:", error);
@@ -284,6 +323,87 @@ function QuotationEditContent() {
           </div>
 
           <div className="space-y-8">
+            {hasKashmirCustomStays ? (
+              <div className="rounded-[15px] border border-[#f4d77d] bg-white p-6">
+                <h2 className="mb-2 font-semibold text-stone-900">Kashmir stays</h2>
+                <p className="mb-4 text-sm text-stone-600">The first night must be in Keran or Neelum. Taobat is available June through October.</p>
+                <div className="space-y-4">
+                  {customCityHotelStays.map((stay, index) => {
+                    const month = Number(quotationData.tripDate?.slice(5, 7)) || 5;
+                    const locations = getKashmirStayLocations(index + 1, month);
+                    const hotelsForStay = getHotelsByCity(stay.location);
+                    const selectedHotel = hotelsForStay.find((hotel) => hotel.id === stay.hotelId);
+                    return (
+                      <div key={`kashmir-edit-night-${index + 1}`} className="rounded-[12px] border border-stone-200 p-4">
+                        <p className="mb-3 text-sm font-semibold text-stone-900">Night {index + 1}</p>
+                        <div className="grid gap-3 md:grid-cols-3">
+                          <label className="grid gap-2 text-sm font-medium text-stone-900">
+                            Stay location *
+                            <select
+                              required
+                              value={stay.location}
+                              onChange={(event) => {
+                                const location = locations.find((option) => option === event.target.value);
+                                if (!location) return;
+                                setCustomCityHotelStays((current) =>
+                                  current.map((item, itemIndex) =>
+                                    itemIndex === index
+                                      ? { ...item, location, hotelId: "", roomId: "" }
+                                      : item
+                                  )
+                                );
+                              }}
+                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900"
+                            >
+                              {locations.map((location) => <option key={location} value={location}>{location}</option>)}
+                            </select>
+                          </label>
+                          <label className="grid gap-2 text-sm font-medium text-stone-900 md:col-span-2">
+                            Hotel *
+                            <select
+                              required
+                              value={stay.hotelId}
+                              onChange={(event) =>
+                                setCustomCityHotelStays((current) =>
+                                  current.map((item, itemIndex) =>
+                                    itemIndex === index
+                                      ? { ...item, hotelId: event.target.value, roomId: "" }
+                                      : item
+                                  )
+                                )
+                              }
+                              className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900"
+                            >
+                              <option value="">Select hotel...</option>
+                              {hotelsForStay.map((hotel) => <option key={hotel.id} value={hotel.id}>{hotel.name}</option>)}
+                            </select>
+                          </label>
+                        </div>
+                        <label className="mt-3 grid max-w-md gap-2 text-sm font-medium text-stone-900">
+                          Room type *
+                          <select
+                            required
+                            value={stay.roomId}
+                            disabled={!selectedHotel}
+                            onChange={(event) =>
+                              setCustomCityHotelStays((current) =>
+                                current.map((item, itemIndex) =>
+                                  itemIndex === index ? { ...item, roomId: event.target.value } : item
+                                )
+                              )
+                            }
+                            className="rounded-[10px] border border-stone-200 bg-white px-3 py-2 text-sm text-stone-900 disabled:bg-stone-100"
+                          >
+                            <option value="">Select room...</option>
+                            {selectedHotel?.rooms.map((room) => <option key={room.name} value={room.name}>{room.name}</option>)}
+                          </select>
+                        </label>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
             {isSingleCitySplitStay ? (
               <div className="rounded-[15px] border border-green-200 bg-green-50 p-6">
                 <h2 className="font-semibold text-stone-900 mb-4">🏨 Select Hotels</h2>
@@ -525,6 +645,7 @@ function QuotationEditContent() {
                 <p className="mt-1">Air tickets to and from Skardu are not included in this quotation. Customers are responsible for arranging their own flight tickets.</p>
               </div>
             ) : null}
+            {generatedItinerary ? <ItineraryViewer itinerary={generatedItinerary} /> : null}
             {quoteError ? (
               <p role="alert" className="rounded-[15px] border border-red-200 bg-red-50 p-4 text-sm text-red-800">
                 {quoteError}

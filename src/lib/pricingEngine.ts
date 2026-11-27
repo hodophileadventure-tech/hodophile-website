@@ -13,6 +13,7 @@ import {
 } from "./transport/calculations";
 import type { Room } from "./data/hotels";
 import type { PromotionSummary } from "./promotions/promotion-types";
+import type { CustomCityHotelStay } from "./data/custom-city-stays";
 
 export interface QuotationInput {
   routeId: string;
@@ -24,7 +25,9 @@ export interface QuotationInput {
     hotelId: string;
     roomId: string;
     nights: number;
+    location?: string;
   }>;
+  customCityHotelStays?: CustomCityHotelStay[];
   multiCityHotels?: Record<string, { hotelId: string; roomId: string }>;
   multiCityNights?: Record<string, number>; // nights for each city
   customCities?: string[]; // cities for custom itinerary
@@ -260,7 +263,7 @@ function getAccommodationType(category?: string): string {
 }
 
 function calculateSingleCityHotelCost(
-  stays: Array<{ hotelId: string; roomId: string; nights: number }>,
+  stays: Array<{ hotelId: string; roomId: string; nights: number; location?: string }>,
   tripDate: string,
   numberOfRooms: number
 ): { hotelCost: number; hotelName: string; roomType: string } | null {
@@ -292,7 +295,7 @@ function calculateSingleCityHotelCost(
 
     const stayCost = roomPrice * numberOfRooms * stay.nights;
     totalHotelCost += stayCost;
-    hotelNames.push(hotel.name);
+    hotelNames.push(stay.location ? `${hotel.name} (${stay.location})` : hotel.name);
     roomNames.push(`${selectedRoom.name} (${stay.nights} nights)`);
   }
 
@@ -405,6 +408,17 @@ export function calculateQuotation(
 
       hotelCost = totalHotelCost;
       hotelName = hotelNames.join(" + ");
+      if (input.customCityHotelStays?.length) {
+        const kashmirStays = calculateSingleCityHotelCost(
+          input.customCityHotelStays,
+          input.tripDate,
+          input.numberOfRooms,
+        );
+        if (!kashmirStays) return null;
+        hotelCost += kashmirStays.hotelCost;
+        hotelName = [hotelName, kashmirStays.hotelName].filter(Boolean).join(" + ");
+        roomType = kashmirStays.roomType;
+      }
     } else if (input.singleCityHotelStays && input.singleCityHotelStays.length > 0) {
       const singleCityHotelResult = calculateSingleCityHotelCost(
         input.singleCityHotelStays,

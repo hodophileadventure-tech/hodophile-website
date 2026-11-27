@@ -6,6 +6,8 @@ import { applyPromotionToQuotation, validatePromoCode } from "@/lib/promotions/p
 import { getRouteById } from "@/lib/data/routes";
 import { AirDestinationValidationError, getAirQuotationDestinations } from "@/lib/transport/air-routing";
 import { RouteCalculationError } from "@/lib/transport/route-service";
+import { getHotelById } from "@/lib/data/hotels";
+import { getKashmirStayLocations } from "@/lib/data/custom-city-stays";
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,6 +27,39 @@ export async function POST(request: NextRequest) {
         (!Array.isArray(body.customCities) || body.customCities.length > 10 ||
           body.customCities.some((city) => typeof city !== "string" || city.length > 80))) {
       return NextResponse.json({ error: "Please provide a valid list of custom destinations." }, { status: 400 });
+    }
+    if (body.customCityHotelStays !== undefined) {
+      if (!Array.isArray(body.customCityHotelStays)) {
+        return NextResponse.json({ error: "Please provide valid hotel stays for Kashmir." }, { status: 400 });
+      }
+      const month = Number(body.tripDate?.slice(5, 7)) || 5;
+      const validKashmirStays = body.customCityHotelStays.every((stay, index) => {
+        if (
+          !stay ||
+          stay.city !== "Kashmir" ||
+          stay.nights !== 1 ||
+          !getKashmirStayLocations(index + 1, month).includes(stay.location)
+        ) {
+          return false;
+        }
+        const hotel = getHotelById(stay.hotelId);
+        return hotel?.location === stay.location && hotel.rooms.some((room) => room.name === stay.roomId);
+      });
+      if (!validKashmirStays) {
+        return NextResponse.json(
+          { error: "Choose an available Kashmir hotel and room for each night. Taobat is available June through October." },
+          { status: 400 },
+        );
+      }
+      const requiredKashmirNights = body.customCities?.includes("Kashmir")
+        ? body.multiCityNights?.Kashmir ?? 0
+        : 0;
+      if (body.customCityHotelStays.length !== requiredKashmirNights) {
+        return NextResponse.json(
+          { error: "Please select a hotel and room for each Kashmir night." },
+          { status: 400 },
+        );
+      }
     }
     if (body.travelMode === "air") {
       try {

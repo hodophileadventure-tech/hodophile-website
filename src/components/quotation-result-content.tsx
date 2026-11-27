@@ -6,13 +6,25 @@ import { useState, useEffect } from "react";
 import { routes } from "@/lib/data/routes";
 import { formatPKR } from "@/lib/currency";
 import { siteConfig, whatsappUrl } from "@/lib/site";
+import type { CustomCityHotelStay } from "@/lib/data/custom-city-stays";
+import { ItineraryViewer } from "@/components/make-my-trip/itinerary-viewer";
+import { generateItinerary, type GeneratedItinerary, type ItineraryGeneratorInput } from "@/lib/itinerary-generator";
+import { decodeBase64Json } from "@/lib/base64-json";
 
 interface QuotationDisplayData {
   routeId?: string;
+  promoCode?: string;
+  hotelId?: string;
+  hotelCategory?: string;
+  numberOfRooms?: number;
   customCities?: string[];
   customRouteLabel?: string;
   multiCityNights?: Record<string, number>;
-  singleCityHotelStays?: Array<{ nights: number }>;
+  multiCityHotels?: Record<string, { hotelId: string; roomId: string }>;
+  singleCityHotelStays?: Array<{ hotelId: string; roomId: string; nights: number }>;
+  customCityHotelStays?: CustomCityHotelStay[];
+  routeDestinations?: string[];
+  includeIslamabadTransit?: boolean;
   destination?: string;
   details?: {
     numberOfGuests?: number;
@@ -43,6 +55,8 @@ interface QuotationDisplayData {
   tourStartingPoint?: string;
   jeepAddons?: Array<{ id: string; quantity: number }>;
   jeepRideNames?: string[];
+  itinerary?: GeneratedItinerary;
+  itineraryConfiguration?: ItineraryGeneratorInput;
 }
 
 export function QuotationResultContent() {
@@ -62,7 +76,7 @@ export function QuotationResultContent() {
           router.push("/make-my-trip");
           return;
         }
-        const decoded = JSON.parse(atob(quotationData));
+        const decoded = decodeBase64Json(quotationData) as QuotationDisplayData;
         const quoteNumber = decoded.quoteNumber || `Q${Date.now().toString().slice(-6)}`;
         isAirQuote = decoded.travelMode === "air";
         const requiresServerCalculation =
@@ -79,6 +93,7 @@ export function QuotationResultContent() {
               roomId: decoded.roomType,
               hotelCategory: decoded.hotelCategory,
               singleCityHotelStays: decoded.singleCityHotelStays,
+              customCityHotelStays: decoded.customCityHotelStays,
               multiCityHotels: decoded.multiCityHotels,
               multiCityNights: decoded.multiCityNights,
               customCities: decoded.customCities,
@@ -194,6 +209,9 @@ export function QuotationResultContent() {
   const quoteNumber = quotation.quoteNumber || "Q";
   const quoteDate = new Date().toLocaleDateString("en-GB");
   const jeepRideNames = quotation.jeepRideNames ?? [];
+  const generatedItinerary = quotation.itineraryConfiguration
+    ? generateItinerary(quotation.itineraryConfiguration)
+    : quotation.itinerary;
   const inclusions = [
     `${quotation.vehicleName || "Selected car"} with fuel and toll tax`,
     "Breakfast",
@@ -210,7 +228,15 @@ export function QuotationResultContent() {
     const airDetails = travelMode === "air"
       ? " Travel Mode: By Air. Arrival & Departure Hub: Skardu. Air Tickets: NOT INCLUDED. Air tickets to and from Skardu are not included in this quotation. Customers are responsible for arranging their own flight tickets."
       : "";
-    const message = `Hi Hodophile, I would like to confirm the quotation for ${routeName}. Quote number: ${quoteNumber}.${airDetails}${promoDetails} Please share the final trip details and next steps.`;
+    const itineraryDetails = generatedItinerary
+      ? ` Personalized itinerary: ${generatedItinerary.days.map((day) => {
+          const activities = [...day.morning, ...day.afternoon, ...day.evening]
+            .filter((activity) => activity.kind !== "meal")
+            .map((activity) => activity.title);
+          return `Day ${day.dayNumber} - ${day.title}: ${activities.join(", ") || "Flexible time"}${day.overnight ? `; overnight ${day.overnight.location}${day.overnight.hotelName ? ` at ${day.overnight.hotelName}` : ""}` : ""}`;
+        }).join(" | ")}`
+      : "";
+    const message = `Hi Hodophile, I would like to confirm the quotation for ${routeName}. Quote number: ${quoteNumber}.${airDetails}${promoDetails}${itineraryDetails} Please share the final trip details and next steps.`;
     window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
   };
 
@@ -300,6 +326,8 @@ export function QuotationResultContent() {
             </tfoot>
           </table>
         </main>
+
+        {generatedItinerary ? <ItineraryViewer itinerary={generatedItinerary} /> : null}
 
         <div className="quotation-accreditations" aria-label="Licensing and affiliations">
           <Image src="/images/footer/govt-pakistan.webp" alt="Government of Pakistan" width={80} height={72} />

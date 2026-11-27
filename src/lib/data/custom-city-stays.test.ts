@@ -3,10 +3,12 @@ import { test } from "node:test";
 
 import {
   CUSTOM_CITY_MINIMUM_NIGHTS,
+  getKashmirStayLocations,
   getCitiesWithOvernightStays,
   getCustomCityHotelLocation,
   getHotelStayLabel,
   getMinimumCustomCityNights,
+  isTaobatAvailable,
 } from "./custom-city-stays";
 import { getHotelsByCity } from "./hotels";
 
@@ -45,6 +47,13 @@ test("defaults combined Shogran trips to Balakot and supports choosing Shogran",
   assert.equal(getHotelStayLabel("Shogran", "Balakot"), "Balakot stay for Shogran");
 });
 
+test("requires Keran or Neelum on the first Kashmir night and limits Taobat to June through October", () => {
+  assert.deepEqual(getKashmirStayLocations(1, 7), ["Keran", "Neelum"]);
+  assert.deepEqual(getKashmirStayLocations(2, 5), ["Keran", "Neelum", "Sharda", "Arangkel"]);
+  assert.deepEqual(getKashmirStayLocations(2, 6), ["Keran", "Neelum", "Sharda", "Arangkel", "Taobat"]);
+  assert.equal(isTaobatAvailable(11), false);
+});
+
 test("includes the requested Balakot hotels and room rates", () => {
   const hotels = getHotelsByCity("Balakot");
   const prices = Object.fromEntries(
@@ -58,5 +67,44 @@ test("includes the requested Balakot hotels and room rates", () => {
     "Royal Park": { Standard: 5000 },
     "Dcozy Resort": { Deluxe: 12000 },
     "White Palace": { Deluxe: 12000 },
+  });
+});
+
+test("includes the supplied Kashmir-area hotels and rates", () => {
+  const pricesByArea = (area: string) =>
+    Object.fromEntries(
+      getHotelsByCity(area).map((hotel) => [
+        hotel.name,
+        Object.fromEntries(hotel.rooms.map((room) => [room.name, room.price])),
+      ]),
+    );
+
+  assert.deepEqual(pricesByArea("Keran"), {
+    "Keran Neelum Elites": { Standard: 5000, Deluxe: 12000 },
+    "Keran Luxus": { Standard: 5000 },
+    "Keran Retreat": { Deluxe: 12000 },
+    "Keran Resort": { Deluxe: 12000 },
+    "Keran Residency": { Standard: 5000 },
+  });
+  assert.deepEqual(pricesByArea("Neelum"), {
+    "Green Village": { Standard: 5000 },
+    "Cozy Cottage": { Deluxe: 12000 },
+    "Selina Inn": { Standard: 5000 },
+    "Swiss Wood Cottage": { Executive: 25000 },
+    "Neelum Green Hills": { Standard: 5000 },
+    "Gillani Guest House": { Standard: 5000 },
+  });
+  assert.deepEqual(pricesByArea("Arangkel"), {
+    "State Continental": { Standard: 7000 },
+    "Arangkel Residency": { Standard: 7000 },
+    Khanabados: { Executive: 25000 },
+    "Gul Palace": { Standard: 7000 },
+    "1+ Corridor": { Standard: 7000 },
+  });
+  assert.deepEqual(pricesByArea("Taobat"), {
+    "Greenland Guest House": { Standard: 7000 },
+    "Neelum Resort Taobat": { Deluxe: 15000 },
+    "River Chalet by State Continental": { Executive: 27000 },
+    "Cedarwood Hotel": { Deluxe: 15000 },
   });
 });

@@ -16,6 +16,7 @@ export interface Room {
 export interface Hotel {
   id: string;
   name: string;
+  location?: "Keran" | "Neelum" | "Sharda" | "Arangkel" | "Taobat";
   city:
     | "Skardu"
     | "Hunza"
@@ -707,28 +708,39 @@ export const hotels: Hotel[] = [
     id: "sharda-lodge-kashmir",
     name: "Sharda Lodge",
     city: "Kashmir",
+    location: "Sharda",
     rooms: [
       { name: "River Facing Room", price: 7500 },
       { name: "Standard View Room", price: 6500 },
     ],
   },
   {
-    id: "corner-view-cottage-taobat",
-    name: "Corner View Cottage Taobat",
+    id: "greenland-guest-house-taobat",
+    name: "Greenland Guest House",
     city: "Kashmir",
-    rooms: [
-      { name: "Standard Room", price: 8500 },
-      { name: "Deluxe Room", price: 10500 },
-    ],
+    location: "Taobat",
+    rooms: [{ name: "Standard", price: 7000 }],
   },
   {
-    id: "shangrila-taobat",
-    name: "Shangrila Taobat",
+    id: "neelum-resort-taobat",
+    name: "Neelum Resort Taobat",
     city: "Kashmir",
-    rooms: [
-      { name: "Standard Cottage", price: 9000 },
-      { name: "Deluxe Cottage", price: 12000 },
-    ],
+    location: "Taobat",
+    rooms: [{ name: "Deluxe", price: 15000 }],
+  },
+  {
+    id: "river-chalet-state-continental-taobat",
+    name: "River Chalet by State Continental",
+    city: "Kashmir",
+    location: "Taobat",
+    rooms: [{ name: "Executive", price: 27000 }],
+  },
+  {
+    id: "cedarwood-hotel-taobat",
+    name: "Cedarwood Hotel",
+    city: "Kashmir",
+    location: "Taobat",
+    rooms: [{ name: "Deluxe", price: 15000 }],
   },
   {
     id: "nathia-lodge-nathia-gali",
@@ -810,74 +822,119 @@ export const hotels: Hotel[] = [
     rooms: [{ name: "Executive Room", price: 50000 }],
   },
   {
-    id: "corner-cottage-arangkel",
-    name: "Hotel Corner Cottage Arangkel",
+    id: "state-continental-arangkel",
+    name: "State Continental",
     city: "Kashmir",
+    location: "Arangkel",
+    rooms: [{ name: "Standard", price: 7000 }],
+  },
+  {
+    id: "arangkel-residency",
+    name: "Arangkel Residency",
+    city: "Kashmir",
+    location: "Arangkel",
+    rooms: [{ name: "Standard", price: 7000 }],
+  },
+  {
+    id: "khanabados-arangkel",
+    name: "Khanabados",
+    city: "Kashmir",
+    location: "Arangkel",
+    rooms: [{ name: "Executive", price: 25000 }],
+  },
+  {
+    id: "gul-palace-arangkel",
+    name: "Gul Palace",
+    city: "Kashmir",
+    location: "Arangkel",
+    rooms: [{ name: "Standard", price: 7000 }],
+  },
+  {
+    id: "one-plus-corridor-arangkel",
+    name: "1+ Corridor",
+    city: "Kashmir",
+    location: "Arangkel",
+    rooms: [{ name: "Standard", price: 7000 }],
+  },
+  {
+    id: "keran-neelum-elites",
+    name: "Keran Neelum Elites",
+    city: "Kashmir",
+    location: "Keran",
     rooms: [
-      { name: "Standard", price: 7000 },
-      { name: "Deluxe", price: 8500 },
-      { name: "Executive", price: 9500 },
+      { name: "Standard", price: 5000 },
+      { name: "Deluxe", price: 12000 },
     ],
   },
   {
-    id: "timber-resort-keran",
-    name: "Timber Resort Keran Kashmir",
+    id: "keran-luxus",
+    name: "Keran Luxus",
     city: "Kashmir",
-    rooms: [
-      { name: "Standard Room (Building, max 2 persons)", price: 5000 },
-      { name: "Deluxe Room (Building)", price: 12000 },
-      { name: "Resort 1-B/2-B/3-B", price: 20000 },
-      { name: "Resort 1-A/2-A/3-A/4-A/5-A", low: 30000, high: 35000 },
-    ],
+    location: "Keran",
+    rooms: [{ name: "Standard", price: 5000 }],
   },
   {
-    id: "ibex-cottage-keran",
-    name: "Ibex Cottage Keran",
+    id: "keran-retreat",
+    name: "Keran Retreat",
     city: "Kashmir",
-    rooms: [
-      { name: "Standard Room", price: 8000 },
-      { name: "Deluxe Room", price: 9800 },
-    ],
+    location: "Keran",
+    rooms: [{ name: "Deluxe", price: 12000 }],
   },
   {
-    id: "keran-resort-kashmir",
-    name: "Keran Resort Kashmir",
+    id: "keran-resort",
+    name: "Keran Resort",
     city: "Kashmir",
-    rooms: [
-      { name: "Standard Room", price: 8500 },
-      { name: "Executive Room", price: 11000 },
-    ],
+    location: "Keran",
+    rooms: [{ name: "Deluxe", price: 12000 }],
   },
   {
-    id: "arangkel-wanderlust-resort",
-    name: "Arangkel Wanderlust Resort",
+    id: "keran-residency",
+    name: "Keran Residency",
     city: "Kashmir",
-    seasons: {
-      low: "Mar - May, Sep - Dec",
-      high: "Jun - Aug",
-    },
-    rooms: [
-      { name: "Rustic Cottage Room", low: 5999, high: 8999 },
-      { name: "Standard Room", low: 7999, high: 12999 },
-      { name: "Deluxe Room (Heating +2500)", low: 8999, high: 13999 },
-      { name: "Family Room (Heating +2500)", low: 10999, high: 15999 },
-      { name: "Executive Room (Heating +2500)", low: 12999, high: 19999 },
-    ],
+    location: "Keran",
+    rooms: [{ name: "Standard", price: 5000 }],
   },
   {
-    id: "arangkel-wanderlust-resort-second",
-    name: "Arangkel Wanderlust Resort (Second Hotel)",
+    id: "green-village-neelum",
+    name: "Green Village",
     city: "Kashmir",
-    seasons: {
-      low: "Mar - May, Sep - Dec",
-      high: "Jun - Aug",
-    },
-    rooms: [
-      { name: "Cozy Room", low: 7999, high: 10999 },
-      { name: "Cozy View Room", low: 8999, high: 13999 },
-      { name: "Deluxe Room (Heating +2500)", low: 10999, high: 14999 },
-      { name: "Executive Room (Heating +2500)", low: 12999, high: 19999 },
-    ],
+    location: "Neelum",
+    rooms: [{ name: "Standard", price: 5000 }],
+  },
+  {
+    id: "cozy-cottage-neelum",
+    name: "Cozy Cottage",
+    city: "Kashmir",
+    location: "Neelum",
+    rooms: [{ name: "Deluxe", price: 12000 }],
+  },
+  {
+    id: "selina-inn-neelum",
+    name: "Selina Inn",
+    city: "Kashmir",
+    location: "Neelum",
+    rooms: [{ name: "Standard", price: 5000 }],
+  },
+  {
+    id: "swiss-wood-cottage-neelum",
+    name: "Swiss Wood Cottage",
+    city: "Kashmir",
+    location: "Neelum",
+    rooms: [{ name: "Executive", price: 25000 }],
+  },
+  {
+    id: "neelum-green-hills",
+    name: "Neelum Green Hills",
+    city: "Kashmir",
+    location: "Neelum",
+    rooms: [{ name: "Standard", price: 5000 }],
+  },
+  {
+    id: "gillani-guest-house-neelum",
+    name: "Gillani Guest House",
+    city: "Kashmir",
+    location: "Neelum",
+    rooms: [{ name: "Standard", price: 5000 }],
   },
   {
     id: "swiss-wood-cottages-naran",
@@ -1061,6 +1118,7 @@ const hotelCityAliases: Record<string, string> = {
   Arangkel: "Kashmir",
   Sharda: "Kashmir",
   Keran: "Kashmir",
+  Neelum: "Kashmir",
 };
 
 function resolveHotelCity(city: string): string {
@@ -1070,7 +1128,13 @@ function resolveHotelCity(city: string): string {
 export function getHotelsByCity(
   city: string
 ): Hotel[] {
-  return hotels.filter((hotel) => hotel.city === resolveHotelCity(city));
+  const resolvedCity = resolveHotelCity(city);
+  const cityHotels = hotels.filter((hotel) => hotel.city === resolvedCity);
+  if (resolvedCity === "Kashmir" && city !== "Kashmir") {
+    const location = city === "Arang Kel" ? "Arangkel" : city;
+    return cityHotels.filter((hotel) => hotel.location === location);
+  }
+  return cityHotels;
 }
 
 export function getHotelById(id: string): Hotel | undefined {

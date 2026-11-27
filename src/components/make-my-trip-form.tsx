@@ -31,7 +31,11 @@ import {
   getCitiesWithOvernightStays,
   getCustomCityHotelLocation,
   getHotelStayLabel,
+  getKashmirStayLocations,
   getMinimumCustomCityNights,
+  isTaobatAvailable,
+  type CustomCityHotelStay,
+  type KashmirStayLocation,
   type ShogranStayLocation,
 } from "@/lib/data/custom-city-stays";
 import { routes, type PackagePricing, type Route, type RouteItineraryDay } from "@/lib/data/routes";
@@ -65,6 +69,9 @@ import { JourneySummary } from "@/components/make-my-trip/journey-summary";
 import { HotelCardPicker } from "@/components/make-my-trip/hotel-card-picker";
 import { RouteVisualizer } from "@/components/make-my-trip/route-visualizer";
 import { TripPlannerProgress } from "@/components/make-my-trip/trip-planner-progress";
+import { ItineraryViewer } from "@/components/make-my-trip/itinerary-viewer";
+import { generateItinerary, type ItineraryGeneratorInput, type ItineraryPace } from "@/lib/itinerary-generator";
+import { encodeBase64Json } from "@/lib/base64-json";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -136,6 +143,44 @@ const phoneRegex13Digit = /^\+92\d{10}$/;
 const phoneRegex11Digit = /^03\d{9}$/;
 const LABEL_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
 const VALIDATION_ICON_CLASS = "h-4 w-4 shrink-0 text-black";
+
+function getKashmirHotelsForLocation(
+  location: KashmirStayLocation,
+  category: string,
+  isLuxury: boolean,
+): Hotel[] {
+  return getHotelsByCity(location).filter((hotel) =>
+    hotel.rooms.some((room) =>
+      room.name.toLowerCase().includes(category.toLowerCase()) &&
+      (!isLuxury || /executive/i.test(room.name))
+    )
+  );
+}
+
+function makeKashmirHotelStay(
+  location: KashmirStayLocation,
+  previousStay: CustomCityHotelStay | undefined,
+  category: string,
+  isLuxury: boolean,
+): CustomCityHotelStay {
+  const hotels = getKashmirHotelsForLocation(location, category, isLuxury);
+  const previousHotel = hotels.find((hotel) => hotel.id === previousStay?.hotelId);
+  const selectedHotel = previousHotel ?? hotels[0];
+  const allowedRooms = selectedHotel?.rooms.filter((room) =>
+    room.name.toLowerCase().includes(category.toLowerCase()) &&
+    (!isLuxury || /executive/i.test(room.name))
+  ) ?? [];
+  const previousRoom = allowedRooms.find((room) => room.name === previousStay?.roomId);
+
+  return {
+    city: "Kashmir",
+    location,
+    hotelId: selectedHotel?.id ?? "",
+    roomId: previousRoom?.name ?? allowedRooms[0]?.name ?? "",
+    nights: 1,
+  };
+}
+
 const destinationCardDetails: Record<string, { image?: string; description: string }> = {
   Hunza: { image: "/images/package-cards/images__destinations__hunza-custom.webp", description: "Mountain valleys" },
   Skardu: { image: "/images/custom-skardu.jpg", description: "Lakes and highlands" },
@@ -218,6 +263,7 @@ export function MakeMyTripForm() {
   const [selectedCities, setSelectedCities] = useState<string[]>([]); // For individual city selection
   const [selectedPackageJeepRideIds, setSelectedPackageJeepRideIds] = useState<string[]>([]);
   const [customCityNights, setCustomCityNights] = useState<Record<string, number>>({});
+  const [kashmirHotelStays, setKashmirHotelStays] = useState<CustomCityHotelStay[]>([]);
   const [shogranStayLocation, setShogranStayLocation] = useState<ShogranStayLocation | null>(null);
   const [hotelCategory, setHotelCategory] = useState("standard"); // standard, deluxe, executive
   const [hotelId, setHotelId] = useState("");
@@ -227,6 +273,7 @@ export function MakeMyTripForm() {
   const [vehicleName, setVehicleName] = useState("");
   const [tourType, setTourType] = useState("private");
   const [travelMode, setTravelMode] = useState<"road" | "air">("road");
+  const [itineraryPace, setItineraryPace] = useState<ItineraryPace>("balanced");
   const [numberOfRooms, setNumberOfRooms] = useState(0);
   const [adults, setAdults] = useState(0);
   const [kids, setKids] = useState(0);
@@ -804,6 +851,7 @@ export function MakeMyTripForm() {
     : 0;
   const supportsMultipleHotelsInCustomSingleCity = Boolean(
     isCustomCitySelection() &&
+    selectedCities[0] !== "Kashmir" &&
     customCityEffectiveCount === 1 &&
     !usesSeasonalRoadStopovers &&
     customSingleCityNightCount > 2
@@ -960,8 +1008,58 @@ export function MakeMyTripForm() {
   }, [customCityNights, selectedCities, startingPoint, otherStartingPoint, routeId, hideAutoIslamabad, travelMode, seasonalRoadStopoverCities]);
 
   const customHotelStayCities = useMemo(
-    () => getCitiesWithOvernightStays(effectiveSelectedCities, effectiveCustomCityNights),
+    () => getCitiesWithOvernightStays(effectiveSelectedCities, effectiveCustomCityNights)
+      .filter((city) => city !== "Kashmir"),
     [effectiveSelectedCities, effectiveCustomCityNights],
+  );
+  const usesKashmirCustomStays = isCustomCitySelection() && selectedCities.includes("Kashmir");
+  const requiredKashmirNights = usesKashmirCustomStays
+    ? effectiveCustomCityNights.Kashmir ?? getMinimumCustomCityNights("Kashmir")
+    : 0;
+  const kashmirHotelStaysForPlanner = useMemo(() => {
+    if (!usesKashmirCustomStays) return [];
+
+    const month = tripDate ? Number(tripDate.slice(5, 7)) : 5;
+    return Array.from({ length: requiredKashmirNights }, (_, index) => {
+      const allowedLocations = getKashmirStayLocations(index + 1, month);
+      const previousStay = kashmirHotelStays[index];
+      const previousLocation = previousStay && allowedLocations.includes(previousStay.location)
+        ? previousStay.location
+        : undefined;
+      const location = previousLocation && getKashmirHotelsForLocation(
+        previousLocation,
+        hotelCategory,
+        Boolean(selectedLuxuryPackage),
+      ).length > 0
+        ? previousLocation
+        : allowedLocations.find((option) => getKashmirHotelsForLocation(
+            option,
+            hotelCategory,
+            Boolean(selectedLuxuryPackage),
+          ).length > 0)
+          ?? allowedLocations[0]
+          ?? "Keran";
+      return makeKashmirHotelStay(location, previousStay, hotelCategory, Boolean(selectedLuxuryPackage));
+    });
+  }, [
+    usesKashmirCustomStays,
+    requiredKashmirNights,
+    tripDate,
+    kashmirHotelStays,
+    hotelCategory,
+    selectedLuxuryPackage,
+  ]);
+  const kashmirHotelStaysComplete = !usesKashmirCustomStays || (
+    kashmirHotelStaysForPlanner.length === requiredKashmirNights &&
+    kashmirHotelStaysForPlanner.every((stay, index) =>
+      stay.city === "Kashmir" &&
+      stay.nights === 1 &&
+      getKashmirStayLocations(index + 1, selectedTripMonth).includes(stay.location) &&
+      getHotelsByCity(stay.location).some((hotel) =>
+        hotel.id === stay.hotelId &&
+        hotel.rooms.some((room) => room.name === stay.roomId)
+      )
+    )
   );
   const getCustomHotelCity = (city: string) =>
     getCustomCityHotelLocation(city, effectiveSelectedCities, shogranStayLocation ?? undefined);
@@ -1258,6 +1356,7 @@ export function MakeMyTripForm() {
       if (currentCities.includes(city)) {
         const updatedCities = currentCities.filter((selectedCity) => selectedCity !== city);
         if (city === "Shogran") setShogranStayLocation(null);
+        if (city === "Kashmir") setKashmirHotelStays([]);
         setMultiCityHotels((currentHotels) => {
           const nextHotels = { ...currentHotels };
           delete nextHotels[city];
@@ -1286,6 +1385,7 @@ export function MakeMyTripForm() {
       const removedStops = currentCities.filter((selectedCity) => !proposed.includes(selectedCity));
       if (removedStops.length > 0) {
         if (removedStops.includes("Shogran")) setShogranStayLocation(null);
+        if (removedStops.includes("Kashmir")) setKashmirHotelStays([]);
         setMultiCityHotels((currentHotels) => {
           const nextHotels = { ...currentHotels };
           removedStops.forEach((removedCity) => delete nextHotels[removedCity]);
@@ -1489,15 +1589,18 @@ export function MakeMyTripForm() {
           // Custom city selection - treat as multi-city
           const allHotelsSelected = customHotelStayCities.every(
             (city) => effectiveMultiCityHotels[city]?.hotelId && effectiveMultiCityHotels[city]?.roomId
-          );
+          ) && kashmirHotelStaysComplete;
 
           if (allHotelsSelected) {
             // Ensure Chilas hotel is added for CHILLAS-related selections
+            const hotelSelections = usesKashmirCustomStays
+              ? Object.fromEntries(Object.entries(effectiveMultiCityHotels).filter(([city]) => city !== "Kashmir"))
+              : effectiveMultiCityHotels;
             const {
               multiCityHotels: _augHotels,
               multiCityNights: _augNights,
               customCities: _augCities,
-            } = ensureSeasonalRoadStopsInMultiCityData(effectiveMultiCityHotels, effectiveCustomCityNights, effectiveSelectedCities);
+            } = ensureSeasonalRoadStopsInMultiCityData(hotelSelections, effectiveCustomCityNights, effectiveSelectedCities);
 
             const quotationInput: QuotationInput = {
               routeId: "custom-itinerary",
@@ -1510,6 +1613,7 @@ export function MakeMyTripForm() {
               customRouteLabel: _augCities.join(" + "),
               multiCityHotels: _augHotels,
               multiCityNights: _augNights,
+              customCityHotelStays: usesKashmirCustomStays ? kashmirHotelStaysForPlanner : undefined,
               numberOfRooms,
               adults,
               kids,
@@ -1627,7 +1731,7 @@ export function MakeMyTripForm() {
       }
       customQuoteAbortRef.current?.abort();
     };
-  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, selectedAirDestinations, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, customHotelStayCities, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode, startingPoint, otherStartingPoint, hideAutoIslamabad, roadRouteResult, selectedPackageJeepAddons]);
+  }, [tripDate, routeId, selectedRoute, hotelId, roomId, vehicleName, numberOfRooms, adults, kids, multiCityHotels, customCityNights, mandatoryJeepCost, selectedCities, selectedAirDestinations, effectiveSelectedCities, effectiveCustomCityNights, effectiveMultiCityHotels, customHotelStayCities, singleCityHotelStays, singleCityNightCount, supportsMultipleHotelsInSingleCity, travelMode, promoCode, startingPoint, otherStartingPoint, hideAutoIslamabad, roadRouteResult, selectedPackageJeepAddons, usesKashmirCustomStays, kashmirHotelStaysForPlanner, kashmirHotelStaysComplete]);
 
   useEffect(() => {
     if (promoCode && !getPromotionForTour(routeId)) {
@@ -1755,6 +1859,7 @@ export function MakeMyTripForm() {
       let selectedMultiCityNights: Record<string, number> | undefined;
       let selectedCustomCities: string[] | undefined;
       let selectedSingleCityHotelStays: typeof singleCityHotelStays | undefined;
+      let selectedKashmirHotelStays: CustomCityHotelStay[] | undefined;
       if (supportsMultipleHotelsInCustomSingleCity) {
         selectedCustomCities = effectiveSelectedCities;
         selectedSingleCityHotelStays = singleCityHotelStays;
@@ -1763,6 +1868,7 @@ export function MakeMyTripForm() {
       } else if (isCustomCitySelection()) {
         selectedCustomCities = effectiveSelectedCities;
         selectedMultiCityNights = { ...effectiveCustomCityNights };
+        selectedKashmirHotelStays = usesKashmirCustomStays ? kashmirHotelStaysForPlanner : undefined;
         primaryHotelId = "";
         primaryRoomId = "Multiple";
       } else if (supportsMultipleHotelsInSingleCity) {
@@ -1789,7 +1895,9 @@ export function MakeMyTripForm() {
       const shouldIncludeMultiCityHotels = isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity;
       let augmentedMultiCityHotels: Record<string, { hotelId: string; roomId: string }> | undefined = undefined;
       if (shouldIncludeMultiCityHotels) {
-        const hotelsForAug = effectiveMultiCityHotels || {};
+        const hotelsForAug = usesKashmirCustomStays
+          ? Object.fromEntries(Object.entries(effectiveMultiCityHotels).filter(([city]) => city !== "Kashmir"))
+          : effectiveMultiCityHotels || {};
         const nightsForAug = selectedMultiCityNights;
         const citiesForAug = selectedCustomCities || effectiveSelectedCities;
 
@@ -1843,6 +1951,7 @@ export function MakeMyTripForm() {
         offRouteChargePKR: offRouteChargePKR,
         isInvalidCombination,
         singleCityHotelStays: selectedSingleCityHotelStays,
+        customCityHotelStays: selectedKashmirHotelStays,
         travelMode,
         routeDestinations: travelMode === "air" ? selectedAirDestinations : effectiveSelectedCities,
         // Include multi-city data (use augmented hotels when available)
@@ -1854,6 +1963,7 @@ export function MakeMyTripForm() {
         customerPhone,
         promoCode: undefined as string | undefined,
         promotion: undefined as PromotionSummary | undefined,
+        itineraryConfiguration,
       };
 
       // Build a concise description for the receipt: package/route, vehicle, hotels, and prices in PKR
@@ -1902,6 +2012,12 @@ export function MakeMyTripForm() {
         const city = selectedRoute?.city || effectiveSelectedCities[0];
         hotelsSummary = findHotelName(quotationData.hotelId, city);
       }
+      if (selectedKashmirHotelStays?.length) {
+        const kashmirSummary = selectedKashmirHotelStays
+          .map((stay, index) => `Kashmir Night ${index + 1} · ${stay.location}: ${findHotelName(stay.hotelId)} (${stay.nights} night)`)
+          .join(" / ");
+        hotelsSummary = [hotelsSummary, kashmirSummary].filter(Boolean).join(" / ");
+      }
 
       const fmt = (n: number | undefined) => {
         if (typeof n !== 'number' || Number.isNaN(n)) return 'PKR 0';
@@ -1936,6 +2052,7 @@ export function MakeMyTripForm() {
           jeepCount: computedJeepCount,
           travelMode,
           singleCityHotelStays: selectedSingleCityHotelStays,
+          customCityHotelStays: selectedKashmirHotelStays,
           multiCityHotels: ((isCustomCitySelection() && !supportsMultipleHotelsInCustomSingleCity) || isMultiCityTour()) ? selectedMultiCityHotels : undefined,
           multiCityNights: selectedMultiCityNights,
           customCities: selectedCustomCities,
@@ -1943,6 +2060,7 @@ export function MakeMyTripForm() {
           includeIslamabadTransit: !hideAutoIslamabad,
           customRouteLabel: isCustomCitySelection() ? effectiveSelectedCities.join(" + ") : undefined,
           jeepAddons: selectedPackageJeepAddons,
+          itinerary: generatedItinerary,
         }),
       });
 
@@ -1961,7 +2079,7 @@ export function MakeMyTripForm() {
         quotationData.promotion = serverQuotation.promotion;
         const serverPricesText = `Total: ${fmt(quotationData.totalCost)} | Per person: ${fmt(quotationData.perPersonCost)}`;
         (quotationData as any).description = `${packageText} | Vehicle: ${vehicleText}${hotelsSummary ? ` | Hotels: ${hotelsSummary}` : ""} | ${serverPricesText}`;
-        const encoded = btoa(JSON.stringify(quotationData));
+        const encoded = encodeBase64Json(quotationData);
         // Redirect to quotation edit page
         router.push(`/quotation-edit?data=${encoded}`);
       } else {
@@ -2006,6 +2124,7 @@ export function MakeMyTripForm() {
     if (isCustomCitySelection()) {
       return (
         effectiveSelectedCities.length > 0 &&
+        kashmirHotelStaysComplete &&
         customHotelStayCities.every((city) => effectiveMultiCityHotels[city]?.hotelId && effectiveMultiCityHotels[city]?.roomId)
       );
     }
@@ -2035,6 +2154,7 @@ export function MakeMyTripForm() {
     effectiveSelectedCities,
     customHotelStayCities,
     effectiveMultiCityHotels,
+    kashmirHotelStaysComplete,
     isMultiCityTour,
     routeId,
     multiCityHotels,
@@ -2232,12 +2352,20 @@ export function MakeMyTripForm() {
       const cities = isCustomCitySelection()
         ? effectiveSelectedCities
         : getVisibleMultiCityConfig(routeId)?.cities ?? [];
-      return cities
+      const cityDetails = cities
         .map((city) => {
+          if (city === "Kashmir" && usesKashmirCustomStays) return "";
           const selection = effectiveMultiCityHotels[city];
           return selection ? describeStay(city, selection.hotelId, selection.roomId) : "";
         })
         .filter(Boolean);
+      const kashmirDetails = usesKashmirCustomStays
+        ? kashmirHotelStaysForPlanner.map((stay, index) => {
+            const hotel = getHotelById(stay.hotelId);
+            return hotel ? `Kashmir night ${index + 1} · ${stay.location}: ${hotel.name}${stay.roomId ? ` · ${stay.roomId}` : ""}` : "";
+          }).filter(Boolean)
+        : [];
+      return [...cityDetails, ...kashmirDetails];
     }
 
     return hotelId ? [describeStay(selectedRoute?.city || "", hotelId, roomId)].filter(Boolean) : [];
@@ -2294,6 +2422,65 @@ export function MakeMyTripForm() {
     setPlannerStep((currentStep) => Math.max(1, currentStep - 1));
   };
 
+  const itineraryConfiguration: ItineraryGeneratorInput = (() => {
+    let cities: string[] = [];
+    let nightsByCity: Record<string, number> = {};
+    if (isCustomCitySelection()) {
+      cities = effectiveSelectedCities;
+      nightsByCity = { ...effectiveCustomCityNights };
+      if (supportsMultipleHotelsInCustomSingleCity && selectedCities[0]) {
+        nightsByCity[selectedCities[0]] = customSingleCityNightCount;
+      }
+    } else if (selectedRoute) {
+      const multiCity = getVisibleMultiCityConfig(routeId);
+      if (multiCity) {
+        cities = multiCity.cities;
+        nightsByCity = Object.fromEntries(multiCity.cities.map((city, index) => [city, multiCity.nights[index] ?? 0]));
+      } else {
+        cities = [selectedRoute.city];
+        nightsByCity = { [selectedRoute.city]: singleCityNightCount };
+      }
+    }
+
+    return {
+      title: chosenPackage?.label || selectedRoute?.name || cities.join(" + "),
+      selectedCities: cities,
+      nightsByCity,
+      routeSequence: routeStops,
+      tripDate,
+      startingPoint: travelMode === "air" ? "Skardu" : getActualStartingPoint(),
+      travelMode,
+      pace: itineraryPace,
+      hotelCategory,
+      vehicleName,
+      specialOccasion: chosenPackage?.type === "honeymoon"
+        ? "Honeymoon"
+        : chosenPackage?.type === "luxury"
+          ? "Luxury tour"
+          : undefined,
+      durationDays: selectedRoute?.duration,
+      hotelId,
+      roomId,
+      multiCityHotels: effectiveMultiCityHotels,
+      singleCityHotelStays: supportsMultipleHotelsInSingleCity || supportsMultipleHotelsInCustomSingleCity
+        ? singleCityHotelStays
+        : undefined,
+      customCityHotelStays: usesKashmirCustomStays ? kashmirHotelStaysForPlanner : undefined,
+      routeLegs: roadRoute?.legs.map(({ from, to, distanceKm, durationSeconds }) => ({
+        from,
+        to,
+        distanceKm,
+        durationSeconds,
+      })),
+      presetDays: selectedRoute?.dayByDayItinerary?.map(({ day, title, description }) => ({ day, title, description })),
+      packageItinerary: selectedRoute?.itinerary,
+      jeepRideNames: selectedPackageJeepRides.map((ride) => ride.name),
+      jeepAddonIds: selectedPackageJeepAddons.map((addon) => addon.id),
+      travelerCount: adults + kids,
+    };
+  })();
+  const generatedItinerary = generateItinerary(itineraryConfiguration);
+
   const journeyLabel = isCustomCitySelection()
     ? effectiveSelectedCities.join(" + ") || "Custom itinerary"
     : selectedRoute?.name || "Your selected route";
@@ -2319,6 +2506,14 @@ export function MakeMyTripForm() {
     `Vehicle: ${vehicleName || "Not selected"}`,
     `Hotels and rooms: ${summaryHotelDetails.join(" | ") || "Not selected"}`,
     `Nights: ${configuredSummaryStops.filter((stop) => (stop.nights ?? 0) > 0).map((stop) => `${stop.name} ${stop.nights} night${stop.nights === 1 ? "" : "s"}`).join(" | ") || "To be planned"}`,
+    `Pace: ${itineraryPace}`,
+    "Personalized day-by-day plan:",
+    ...generatedItinerary.days.map((day) => {
+      const activities = [...day.morning, ...day.afternoon, ...day.evening]
+        .filter((activity) => activity.kind !== "meal")
+        .map((activity) => activity.title);
+      return `Day ${day.dayNumber} · ${day.title}: ${activities.join(", ") || "Flexible time"}${day.overnight ? ` · Overnight: ${day.overnight.location}${day.overnight.hotelName ? ` at ${day.overnight.hotelName}` : ""}` : ""}`;
+    }),
     `Package: ${chosenPackage?.label || selectedRoute?.name || "Custom itinerary"}`,
     ...(quotation?.promotion ? [`Promo Code: ${quotation.promotion.code}`, `Discount: ${quotation.promotion.discountPercent}%`, `Discount Amount: ${formatPKR(quotation.promotion.discountAmount)}`, `Original Total: ${formatPKR(quotation.promotion.originalPrice)}`] : []),
     `Estimated quotation: ${quotation ? formatPKR(quotation.totalCost + offRouteChargePKR) : "Pending"}`,
@@ -2813,6 +3008,32 @@ export function MakeMyTripForm() {
               </div>
             )}
 
+            <fieldset hidden={plannerStep !== 2} className="mb-4 grid gap-2 rounded-[16px] border border-[#f4d77d] bg-white p-4">
+              <legend className="px-1 text-xs font-semibold uppercase tracking-[0.12em] text-stone-700">Preferred itinerary pace</legend>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {([
+                  ["relaxed", "Relaxed", "Fewer stops with more room to rest."],
+                  ["balanced", "Balanced", "A moderate mix of sightseeing and breaks."],
+                  ["adventure", "Adventure", "More sightseeing when time and access allow."],
+                ] as const).map(([pace, label, description]) => (
+                  <button
+                    key={pace}
+                    type="button"
+                    aria-pressed={itineraryPace === pace}
+                    onClick={() => setItineraryPace(pace)}
+                    className={`min-h-16 border px-3 py-2 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8b6b00] ${
+                      itineraryPace === pace
+                        ? "border-[#b98d00] bg-[#fff9e8] ring-1 ring-[#fcc000]/50"
+                        : "border-stone-300 bg-white hover:border-[#b98d00]"
+                    }`}
+                  >
+                    <span className="block text-xs font-semibold text-stone-950">{label}</span>
+                    <span className="mt-1 block text-[10px] leading-4 text-stone-600">{description}</span>
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
             <div hidden={plannerStep !== 2} className={`rounded-[20px] border border-[#f4d77d] bg-white p-4 shadow-[0_8px_20px_rgba(252,192,0,0.06)] ${chosenPackage ? 'hidden' : ''}`}>
               <p className="text-sm font-semibold text-[#6e5200] mb-4">
                 Select Destination Cities (Multiple Allowed) *
@@ -3060,6 +3281,107 @@ export function MakeMyTripForm() {
             </fieldset>
 
             {/* Hotel & Vehicle Selection */}
+            {usesKashmirCustomStays ? (
+              <div className="mb-4 rounded-[15px] border border-[#f4d77d] bg-white p-4">
+                <p className="mb-1 inline-flex items-center gap-2 text-sm font-semibold text-[#6e5200]">
+                  <HotelIcon className={LABEL_ICON_CLASS} aria-hidden="true" />
+                  <span>Select a Kashmir stay for each night</span>
+                </p>
+                <p className="mb-4 text-xs text-stone-600">
+                  Night one must be in Keran or Neelum. Later nights can be in Keran, Neelum, Sharda, or Arangkel{isTaobatAvailable(selectedTripMonth) ? ", or Taobat" : ""}.
+                </p>
+                <div className="space-y-4">
+                  {kashmirHotelStaysForPlanner.map((stay, index) => {
+                    const hotelsForStay = getKashmirHotelsForLocation(stay.location, hotelCategory, Boolean(selectedLuxuryPackage));
+                    const selectedHotel = hotelsForStay.find((hotel) => hotel.id === stay.hotelId);
+                    const availableLocations = getKashmirStayLocations(index + 1, selectedTripMonth);
+                    return (
+                      <div key={`kashmir-night-${index + 1}`} className="rounded-[10px] border border-[#f4d77d] bg-[#fffdf8] p-3">
+                        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#6e5200]">Night {index + 1}</p>
+                        <div className="grid gap-3 lg:grid-cols-3">
+                          <label className="grid gap-2 text-sm font-medium text-black">
+                            Stay location *
+                            <select
+                              required
+                              value={stay.location}
+                              onChange={(event) => {
+                                const nextLocation = availableLocations.find((location) => location === event.target.value);
+                                if (!nextLocation) return;
+                                setKashmirHotelStays(
+                                  kashmirHotelStaysForPlanner.map((currentStay, currentIndex) =>
+                                    currentIndex === index
+                                      ? makeKashmirHotelStay(nextLocation, currentStay, hotelCategory, Boolean(selectedLuxuryPackage))
+                                      : currentStay
+                                  )
+                                );
+                              }}
+                              className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15"
+                            >
+                              {availableLocations.map((location) => (
+                                <option
+                                  key={location}
+                                  value={location}
+                                  disabled={getKashmirHotelsForLocation(location, hotelCategory, Boolean(selectedLuxuryPackage)).length === 0}
+                                >
+                                  {location}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <div className="grid gap-2 text-sm font-medium text-black lg:col-span-2">
+                            <span>Hotel *</span>
+                            <HotelCardPicker
+                              hotels={hotelsForStay}
+                              selectedHotelId={stay.hotelId}
+                              label={`Kashmir night ${index + 1} ${stay.location} hotel options`}
+                              onSelect={(nextHotelId) => {
+                                const nextHotel = hotelsForStay.find((hotel) => hotel.id === nextHotelId);
+                                setKashmirHotelStays(
+                                  kashmirHotelStaysForPlanner.map((currentStay, currentIndex) =>
+                                    currentIndex === index
+                                      ? {
+                                          ...currentStay,
+                                          hotelId: nextHotelId,
+                                          roomId: nextHotel ? selectRoomByCategory(nextHotel.rooms, hotelCategory) : "",
+                                        }
+                                      : currentStay
+                                  )
+                                );
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <label className="mt-3 grid max-w-md gap-2 text-sm font-medium text-black">
+                          Room type *
+                          <select
+                            required
+                            value={stay.roomId}
+                            disabled={!selectedHotel}
+                            onChange={(event) =>
+                              setKashmirHotelStays(
+                                kashmirHotelStaysForPlanner.map((currentStay, currentIndex) =>
+                                  currentIndex === index
+                                    ? { ...currentStay, roomId: event.target.value }
+                                    : currentStay
+                                )
+                              )
+                            }
+                            className="rounded-[10px] border border-[#f4d77d] bg-white px-3 py-2 text-sm text-black outline-none focus:border-[#fcc000] focus:ring-4 focus:ring-[#fcc000]/15 disabled:bg-[#f8efc8] disabled:text-stone-500"
+                          >
+                            <option value="">Select room...</option>
+                            {selectedHotel?.rooms
+                              .filter((room) => room.name.toLowerCase().includes(hotelCategory))
+                              .map((room) => (
+                                <option key={room.name} value={room.name}>{formatRoomOptionLabel(room)}</option>
+                              ))}
+                          </select>
+                        </label>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
             {isPackageRoute() && !isMultiCityTour() ? (
               <div className="grid gap-4 grid-cols-1 xl:grid-cols-2">
                 <div className="grid min-w-0 gap-2 text-sm font-medium text-black">
@@ -3997,6 +4319,9 @@ export function MakeMyTripForm() {
                       {preplannedRoute?.itinerary || selectedRoute?.itinerary || "A route summary is shown above. Detailed day-by-day information is not listed for this custom selection."}
                     </p>
                   </div>
+                </div>
+                <div className="mt-5">
+                  <ItineraryViewer itinerary={generatedItinerary} />
                 </div>
                 <div className="mt-5 grid gap-3 border-t border-stone-200 pt-4 text-sm sm:grid-cols-3">
                   <div><span className="block text-xs uppercase tracking-[0.16em] text-stone-500">Transport</span><strong>{formatPKR(quotation.transportCost)}</strong></div>

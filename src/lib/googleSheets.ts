@@ -1,3 +1,6 @@
+import type { CustomCityHotelStay } from "./data/custom-city-stays";
+import type { GeneratedItinerary } from "./itinerary-generator";
+
 interface QuotationRecord {
   timestamp: string;
   customerName: string;
@@ -25,6 +28,8 @@ interface QuotationRecord {
   multiCityHotels?: Record<string, { hotelId: string; roomId: string }>;
   multiCityNights?: Record<string, number>;
   singleCityHotelStays?: Array<{ hotelId: string; roomId: string; nights: number }>;
+  customCityHotelStays?: CustomCityHotelStay[];
+  itinerary?: GeneratedItinerary;
   transportCost: number;
   hotelCost: number;
   jeepAddonsCost: number;
@@ -97,6 +102,8 @@ export async function saveQuotationToSheet(
         dataWithTimestamp.discountPercent || 0,
         dataWithTimestamp.discountAmount || 0,
         dataWithTimestamp.originalTotalCost || dataWithTimestamp.totalCost,
+        JSON.stringify(dataWithTimestamp.customCityHotelStays || []),
+        JSON.stringify(dataWithTimestamp.itinerary || {}),
       ],
     ];
 
@@ -146,6 +153,8 @@ export async function saveQuotationToSheet(
           "Discount Percent",
           "Discount Amount",
           "Original Total Cost",
+          "Custom City Hotel Stays",
+          "Generated Itinerary",
         ],
       }),
     });

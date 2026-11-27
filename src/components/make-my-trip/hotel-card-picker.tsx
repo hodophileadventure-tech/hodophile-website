@@ -49,7 +49,7 @@ export function HotelCardPicker({ hotels, selectedHotelId, label, onSelect }: Ho
               ) : null}
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-xs font-semibold text-stone-950">{hotel.name}</span>
-                <span className="mt-1 block text-[10px] text-stone-600">{hotel.city}</span>
+                <span className="mt-1 block text-[10px] text-stone-600">{hotel.location ?? hotel.city}</span>
                 <span className="mt-1 block text-[10px] text-stone-500">{hotel.rooms.length} room {hotel.rooms.length === 1 ? "option" : "options"}</span>
               </span>
               {isSelected ? <span aria-hidden="true" className="mr-1 flex h-5 w-5 shrink-0 items-center justify-center bg-[#fcc000] text-[10px] font-bold text-stone-950">✓</span> : null}

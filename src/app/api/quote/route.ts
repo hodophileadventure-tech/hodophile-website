@@ -5,6 +5,7 @@ import { sendWhatsAppNotification, logQuotationNotification } from "@/lib/whatsa
 import { saveQuotationToSheet } from "@/lib/googleSheets";
 import { getRouteById } from "@/lib/data/routes";
 import { getHotelById } from "@/lib/data/hotels";
+import { getKashmirStayLocations } from "@/lib/data/custom-city-stays";
 import { applyPromotionToQuotation, validatePromoCode } from "@/lib/promotions/promotion-service";
 import {
   createPromotionRedemption,
@@ -19,6 +20,7 @@ import {
   getAirQuotationDestinations,
 } from "@/lib/transport/air-routing";
 import { RouteCalculationError } from "@/lib/transport/route-service";
+import type { GeneratedItinerary } from "@/lib/itinerary-generator";
 
 interface QuoteRequestBody extends QuotationInput {
   customerName: string;
@@ -28,6 +30,7 @@ interface QuoteRequestBody extends QuotationInput {
   kidsAges?: string[];
   hotelCategory?: string;
   promoCode?: string;
+  itinerary?: GeneratedItinerary;
 }
 
 function getMissingFields(body: QuoteRequestBody) {
@@ -81,6 +84,17 @@ function buildValidationError(body: QuoteRequestBody) {
         body.customCities.some((city) => typeof city !== "string" || city.length > 80))) {
     return "Please provide a valid list of custom destinations.";
   }
+  if (body.customCityHotelStays !== undefined && !Array.isArray(body.customCityHotelStays)) {
+    return "Please provide valid hotel stays for Kashmir.";
+  }
+  if (
+    body.itinerary !== undefined &&
+    (!Array.isArray(body.itinerary.days) ||
+      body.itinerary.days.length > 20 ||
+      JSON.stringify(body.itinerary).length > 100_000)
+  ) {
+    return "Please provide a valid itinerary with no more than 20 days.";
+  }
   if (body.travelMode === "air") {
     try {
       getAirQuotationDestinations(body, getRouteById(body.routeId));
@@ -92,9 +106,27 @@ function buildValidationError(body: QuoteRequestBody) {
   const nights = [
     ...Object.values(body.multiCityNights || {}),
     ...(body.singleCityHotelStays || []).map((stay) => stay.nights),
+    ...(body.customCityHotelStays || []).map((stay) => stay.nights),
   ];
   if (nights.some((value) => !Number.isInteger(value) || value < 0 || value > 60)) {
     return "Hotel nights must be whole numbers between 0 and 60.";
+  }
+  if (body.customCityHotelStays !== undefined) {
+    const month = Number(body.tripDate.slice(5, 7)) || 5;
+    const validKashmirStays = body.customCityHotelStays.every((stay, index) => {
+      if (
+        stay.city !== "Kashmir" ||
+        stay.nights !== 1 ||
+        !getKashmirStayLocations(index + 1, month).includes(stay.location)
+      ) {
+        return false;
+      }
+      const hotel = getHotelById(stay.hotelId);
+      return hotel?.location === stay.location && hotel.rooms.some((room) => room.name === stay.roomId);
+    });
+    if (!validKashmirStays) {
+      return "Choose an available Kashmir hotel and room for each night. The first night must be in Keran or Neelum, and Taobat is available June through October.";
+    }
   }
   if (body.jeepAddons?.some((addon) => !Number.isInteger(addon.quantity) || addon.quantity < 0 || addon.quantity > 20)) {
     return "Jeep add-on quantities must be whole numbers between 0 and 20.";
@@ -132,13 +164,23 @@ function buildValidationError(body: QuoteRequestBody) {
       return "Custom package requires hotel and night selections.";
     } else {
       const missingCitySelections = body.customCities
-        .filter((city) => (body.multiCityNights?.[city] ?? 0) > 0)
+        .filter((city) => (body.multiCityNights?.[city] ?? 0) > 0 && city !== "Kashmir")
         .filter((city) => {
           const selection = body.multiCityHotels?.[city];
           return !selection?.hotelId || !selection?.roomId;
         });
+      const requiredKashmirNights = body.multiCityNights.Kashmir ?? 0;
+      const selectedKashmirNights = (body.customCityHotelStays || [])
+        .filter((stay) => stay.city === "Kashmir")
+        .reduce((total, stay) => total + stay.nights, 0);
 
-      if (missingCitySelections.length > 0) {
+      if (
+        missingCitySelections.length > 0 ||
+        (requiredKashmirNights > 0 && selectedKashmirNights !== requiredKashmirNights)
+      ) {
+        if (requiredKashmirNights > 0 && selectedKashmirNights !== requiredKashmirNights) {
+          return "Please select a hotel and room for each Kashmir night.";
+        }
         return `Please select hotel and room for: ${missingCitySelections.join(", ")}`;
       }
     }
@@ -211,6 +253,7 @@ export async function POST(request: NextRequest) {
       hotelId: body.hotelId,
       roomId: body.roomId,
       singleCityHotelStays: body.singleCityHotelStays,
+      customCityHotelStays: body.customCityHotelStays,
       multiCityHotels: body.multiCityHotels,
       multiCityNights: body.multiCityNights,
       customCities: body.customCities,
@@ -305,7 +348,16 @@ export async function POST(request: NextRequest) {
         })
         .filter(Boolean)
         .join(" | ");
-      hotelName = hotelNames;
+      const kashmirHotelNames = (body.customCityHotelStays || [])
+        .map((stay, index) => {
+          const hotel = getHotelById(stay.hotelId);
+          return hotel
+            ? `Kashmir night ${index + 1} · ${stay.location}: ${hotel.name} (${stay.roomId})`
+            : null;
+        })
+        .filter(Boolean)
+        .join(" | ");
+      hotelName = [hotelNames, kashmirHotelNames].filter(Boolean).join(" | ");
       roomType = "Multiple";
     } else if (isSingleCityMultiStay && body.singleCityHotelStays) {
       const stayNames = body.singleCityHotelStays
@@ -353,6 +405,8 @@ export async function POST(request: NextRequest) {
       multiCityHotels: body.multiCityHotels,
       multiCityNights: body.multiCityNights,
       singleCityHotelStays: body.singleCityHotelStays,
+      customCityHotelStays: body.customCityHotelStays,
+      itinerary: body.itinerary,
       transportCost: quotation.transportCost,
       hotelCost: quotation.hotelCost,
       jeepAddonsCost: quotation.jeepAddonsCost,

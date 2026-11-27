@@ -78,3 +78,15 @@ test("live air quote rejects unsupported destinations server-side", async () => 
     "By Air trips are currently available only for Skardu, Hunza, Astore, and Fairy Meadows. Please select an eligible destination or switch to By Road.",
   );
 });
+
+test("live quote rejects a missing per-night Kashmir hotel selection", async () => {
+  const result = await quote({
+    ...input,
+    customCities: ["Kashmir"],
+    multiCityNights: { Kashmir: 2 },
+    customCityHotelStays: [],
+  });
+
+  assert.equal(result.status, 400);
+  assert.equal(result.body.error, "Please select a hotel and room for each Kashmir night.");
+});

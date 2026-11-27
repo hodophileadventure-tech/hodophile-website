@@ -1,4 +1,32 @@
 export type ShogranStayLocation = "Balakot" | "Shogran";
+export type KashmirStayLocation = "Keran" | "Neelum" | "Sharda" | "Arangkel" | "Taobat";
+export type CustomCityHotelStay = {
+  city: string;
+  location: KashmirStayLocation;
+  hotelId: string;
+  roomId: string;
+  nights: number;
+};
+
+const KASHMIR_STAY_LOCATIONS: readonly KashmirStayLocation[] = [
+  "Keran",
+  "Neelum",
+  "Sharda",
+  "Arangkel",
+];
+
+export function isTaobatAvailable(month: number): boolean {
+  return month >= 6 && month <= 10;
+}
+
+export function getKashmirStayLocations(nightNumber: number, month: number): KashmirStayLocation[] {
+  const locations = nightNumber === 1
+    ? ["Keran", "Neelum"] as const
+    : KASHMIR_STAY_LOCATIONS;
+  return isTaobatAvailable(month) && nightNumber > 1
+    ? [...locations, "Taobat"]
+    : [...locations];
+}
 
 export const CUSTOM_CITY_MINIMUM_NIGHTS: Readonly<Record<string, number>> = {
   Skardu: 3,
